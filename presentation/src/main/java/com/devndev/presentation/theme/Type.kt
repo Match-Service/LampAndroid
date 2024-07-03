@@ -1,4 +1,4 @@
-package com.devndev.lamp.ui.theme
+package com.devndev.presentation.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

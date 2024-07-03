@@ -21,3 +21,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "Lamp"
 include(":app")
+include(":data")
+include(":domain")
+include(":presentation")
