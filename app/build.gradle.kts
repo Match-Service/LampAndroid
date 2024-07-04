@@ -11,7 +11,6 @@ android {
     namespace = AppConfig.appNameSpace
     compileSdk = AppConfig.compileSdk
 
-
     defaultConfig {
         applicationId = AppConfig.applicationId
         minSdk = AppConfig.minSdk
