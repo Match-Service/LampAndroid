@@ -9,7 +9,7 @@ plugins {
 }
 
 android {
-    namespace = AppConfig.appNameSpace
+    namespace = AppConfig.dataNameSpace
     compileSdk = AppConfig.compileSdk
 
     defaultConfig {
@@ -45,6 +45,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.converter)
 
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)

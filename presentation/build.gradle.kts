@@ -8,7 +8,7 @@ plugins {
 }
 
 android {
-    namespace = AppConfig.appNameSpace
+    namespace = AppConfig.presentationNameSpace
     compileSdk = AppConfig.compileSdk
 
     defaultConfig {
@@ -52,7 +52,10 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.compose.material3)
+    implementation(libs.compose.material)
     implementation(libs.androidx.lifecycle.runtime.compose.android)
+    implementation(libs.androidx.compose.runtime)
+    implementation(project(":data"))
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -60,9 +63,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
+    implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
-    implementation(libs.hilt.navigation.compose)
-    implementation(libs.navigation.compose)
 }
