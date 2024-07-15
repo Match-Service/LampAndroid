@@ -1,4 +1,4 @@
-package com.devndev.lamp.ui.theme
+package com.devndev.presentation.ui.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme

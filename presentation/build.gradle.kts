@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import com.devndev.lamp.buildsrc.AppConfig
 
 plugins {
@@ -13,6 +14,9 @@ android {
 
     defaultConfig {
         minSdk = AppConfig.minSdk
+
+        manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] =
+            gradleLocalProperties(rootDir, providers).getProperty("kakao_native_app_key")
 
         testInstrumentationRunner = AppConfig.testRunner
         consumerProguardFiles("consumer-rules.pro")
@@ -64,6 +68,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.hilt.navigation.compose)
+    implementation(libs.navigation.compose)
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
+
+    implementation(libs.kakao.login)
 }
