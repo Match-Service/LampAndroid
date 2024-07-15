@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import com.devndev.lamp.buildsrc.AppConfig
 
 plugins {
@@ -17,6 +18,12 @@ android {
         targetSdk = AppConfig.targetSdk
         versionCode = AppConfig.appVersionCode
         versionName = AppConfig.appVersionName
+
+        buildConfigField(
+            type = "String",
+            name = "KAKAO_NATIVE_APP_KEY",
+            value = "\"${gradleLocalProperties(rootDir, providers).getProperty("kakao_native_app_key")}\""
+        )
 
         testInstrumentationRunner = AppConfig.testRunner
         vectorDrawables {
@@ -76,6 +83,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
+
+    implementation(libs.kakao.login)
 
     implementation(libs.hilt.navigation.compose)
     implementation(libs.navigation.compose)

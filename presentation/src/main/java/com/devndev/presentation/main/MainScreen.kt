@@ -1,4 +1,4 @@
-package com.devndev.lamp
+package com.devndev.presentation.main
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
@@ -23,9 +23,8 @@ import com.devndev.presentation.ui.s3.Screen3
 import com.devndev.presentation.ui.s4.Screen4
 
 @Composable
-fun MainScreen() {
+fun MainScreen(modifier: Modifier) {
     val navController = rememberNavController()
-
     Scaffold(
         bottomBar = {
             BottomNavigation {
