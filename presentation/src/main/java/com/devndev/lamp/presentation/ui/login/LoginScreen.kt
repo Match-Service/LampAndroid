@@ -1,28 +1,31 @@
 package com.devndev.lamp.presentation.ui.login
 
-import android.util.Log
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.devndev.lamp.presentation.R
-import kotlinx.coroutines.launch
+import androidx.navigation.NavController
 
 @Composable
-fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), modifier: Modifier) {
-    val coroutineScope = rememberCoroutineScope()
+fun LoginScreen(
+    navController: NavController,
+    viewModel: LoginViewModel = hiltViewModel()
+) {
+    val signInLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result: ActivityResult ->
+        viewModel.signInWithGoogle(result.data)
+    }
 
     Column(
         modifier = Modifier
@@ -35,28 +38,11 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel(), modifier: Modifier)
             text = "Login Screen",
             modifier = Modifier.padding(bottom = 16.dp)
         )
-
-        val kakaoLogin = {
-            viewModel.login { success ->
-                if (success) {
-                    Log.d("LoginScreen", "Kakao login success")
-                } else {
-                    Log.d("LoginScreen", "Kakao login fail")
-                }
-            }
+        Button(onClick = {
+            val signInIntent = viewModel.getSignInIntent()
+            signInLauncher.launch(signInIntent)
+        }) {
+            Text(text = "Sign in with Google")
         }
-
-        Image(
-            painter = painterResource(id = R.drawable.kakao_login_medium_narrow),
-            contentDescription = "Kakao Login",
-            modifier = Modifier
-                .width(200.dp)
-                .height(80.dp)
-                .clickable {
-                    coroutineScope.launch {
-                        kakaoLogin.invoke()
-                    }
-                }
-        )
     }
 }

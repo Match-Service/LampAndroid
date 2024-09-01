@@ -20,6 +20,7 @@ ktlint = "11.6.1"
 compose = "1.6.8"
 retrofit = "2.9.0"
 kakaoLogin = "2.20.1"
+googleLogin = "20.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -55,6 +56,7 @@ retrofit = {group = "com.squareup.retrofit2", name = "retrofit", version.ref = "
 retrofit-converter = {group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit"}
 
 kakao-login = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoLogin" }
+google-login = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "googleLogin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

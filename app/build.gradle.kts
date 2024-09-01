@@ -1,4 +1,3 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import com.devndev.lamp.buildsrc.AppConfig
 
 plugins {
@@ -19,11 +18,14 @@ android {
         versionCode = AppConfig.appVersionCode
         versionName = AppConfig.appVersionName
 
-        buildConfigField(
-            type = "String",
-            name = "KAKAO_NATIVE_APP_KEY",
-            value = "\"${gradleLocalProperties(rootDir, providers).getProperty("kakao_native_app_key")}\""
-        )
+//        buildConfigField(
+//            type = "String",
+//            name = "KAKAO_NATIVE_APP_KEY",
+//            value = "\"${gradleLocalProperties(rootDir, providers).getProperty("kakao_native_app_key")}\""
+//        )
+//
+//        manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] =
+//            gradleLocalProperties(rootDir, providers).getProperty("kakao_native_app_key")
 
         testInstrumentationRunner = AppConfig.testRunner
         vectorDrawables {
