@@ -15,8 +15,16 @@ android {
     defaultConfig {
         minSdk = AppConfig.minSdk
 
-        manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] =
-            gradleLocalProperties(rootDir, providers).getProperty("kakao_native_app_key")
+        buildConfigField(
+            type = "String",
+            name = "GOOGLE_CLIENT_ID",
+            value = "\"${
+            gradleLocalProperties(
+                rootDir,
+                providers
+            ).getProperty("google_client_id")
+            }\""
+        )
 
         testInstrumentationRunner = AppConfig.testRunner
         consumerProguardFiles("consumer-rules.pro")
@@ -71,6 +79,8 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
+
+    implementation(libs.google.login)
 
     implementation(libs.kakao.login)
 }
