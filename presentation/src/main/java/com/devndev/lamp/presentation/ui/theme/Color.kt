@@ -13,12 +13,12 @@ val Pink40 = Color(0xFF7D5260)
 val BackGroundColor = Color.Black
 
 val ManColor = Color(0xFF16B9F7)
-val WomanColor = Color (0xFFE4313C)
+val WomanColor = Color(0xFFE4313C)
 
 // 남녀 색 구분 필요
 var MainColor = Color(0xFF16B9F7)
 
-fun getMainColor(sex: String){
+fun getMainColor(sex: String) {
     MainColor = if (sex == "man") {
         ManColor
     } else {

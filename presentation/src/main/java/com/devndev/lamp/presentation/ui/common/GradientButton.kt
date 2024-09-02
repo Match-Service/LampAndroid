@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -24,6 +23,7 @@ import androidx.compose.ui.unit.sp
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.ManColor
+import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
@@ -57,28 +57,28 @@ fun LampButton(isGradient: Boolean, buttonText: String, guideButtonText: String 
             }
         )
 
-
     Button(
         onClick = { /* Do something */ },
         modifier = buttonModifier,
-        colors = buttonColors,
+        colors = buttonColors
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(30.dp),
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 10.dp)
+            modifier = Modifier.padding(10.dp)
         ) {
             Column() {
                 Text(
                     text = buttonText,
                     fontSize = 18.sp,
-                    fontWeight = FontWeight(500),
+                    style = Typography.medium18,
                     textAlign = TextAlign.Center
                 )
                 if (guideButtonText != "") {
                     Text(
                         text = guideButtonText,
                         modifier = Modifier.padding(top = 8.dp),
+                        style = Typography.normal12,
                         fontSize = 12.sp
                     )
                 }
