@@ -13,9 +13,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.devndev.lamp.domain.model.Item
+import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.theme.IncTypography
 import com.devndev.lamp.presentation.ui.theme.MainColor
@@ -24,6 +26,8 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier) {
     val items: List<Item> by viewModel.items.collectAsState()
+
+    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -36,18 +40,18 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = "북창동루쥬라 님",
+                text = "북창동루쥬라 " + context.getString(R.string.sir),
                 color = MainColor,
                 style = IncTypography.normal42
             )
             Text(
-                text = "램프를 비춰볼까요?",
+                text = context.getString(R.string.main_header),
                 color = Color.White,
                 style = Typography.semiBold32
             )
             Spacer(modifier = Modifier.height(20.dp))
             Text(
-                text = "램프와 함께 빛나는 만남을 찾아보세요",
+                text = context.getString(R.string.meet_with_lamp),
                 color = Color.White,
                 style = Typography.normal12
             )
@@ -56,8 +60,16 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier) {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            LampButton(isGradient = true, buttonText = "램프 생성하기", "램프를 만들고 만남을 시작해 보세요")
-            LampButton(isGradient = false, buttonText = "친구 찾아가기", "친구를 검색하고 램프를 찾아가보세요")
+            LampButton(
+                isGradient = true,
+                buttonText = context.getString(R.string.make_lamp),
+                context.getString(R.string.guide_make_lamp)
+            )
+            LampButton(
+                isGradient = false,
+                buttonText = context.getString(R.string.find_friend),
+                context.getString(R.string.guide_find_friend)
+            )
         }
     }
 }

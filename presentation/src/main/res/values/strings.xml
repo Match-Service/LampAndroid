@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_header">램프를 비춰볼까요?</string>
+    <string name="meet_with_lamp">램프와 함께 빛나는 만남을 찾아보세요</string>
+    <string name="make_lamp">램프 생성하기</string>
+    <string name="guide_make_lamp">램프를 만들고 만남을 시작해 보세요</string>
+    <string name="find_friend">친구 찾아가기</string>
+    <string name="guide_find_friend">친구를 검색하고 램프를 찾아가세요</string>
+    <string name="sir">님</string>
+</resources>
