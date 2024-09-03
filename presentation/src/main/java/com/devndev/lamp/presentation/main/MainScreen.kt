@@ -1,5 +1,7 @@
 package com.devndev.lamp.presentation.main
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,13 +24,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.home.HomeScreen
-import com.devndev.lamp.presentation.ui.s2.Screen2
-import com.devndev.lamp.presentation.ui.s4.Screen4
+import com.devndev.lamp.presentation.ui.chatting.navigation.chattingNavGraph
+import com.devndev.lamp.presentation.ui.chatting.navigation.navigateChatting
+import com.devndev.lamp.presentation.ui.common.Route
+import com.devndev.lamp.presentation.ui.home.navigaion.homeNavGraph
+import com.devndev.lamp.presentation.ui.home.navigaion.navigateHome
+import com.devndev.lamp.presentation.ui.mypage.navigation.myPageNavGraph
+import com.devndev.lamp.presentation.ui.mypage.navigation.navigateMyPage
 import com.devndev.lamp.presentation.ui.theme.BackGroundColor
 import com.devndev.lamp.presentation.ui.theme.LightGray
 
@@ -36,6 +42,14 @@ import com.devndev.lamp.presentation.ui.theme.LightGray
 fun MainScreen(modifier: Modifier) {
     val navController = rememberNavController()
     val context = LocalContext.current
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    BackHandler {
+        Log.d("llll", "back button clicked")
+    }
+
     Scaffold(
         containerColor = BackGroundColor,
         topBar = { LampTopBar() },
@@ -43,16 +57,10 @@ fun MainScreen(modifier: Modifier) {
             LampBottomNavigation(navController = navController)
         }
     ) { innerPadding ->
-        NavHost(navController, startDestination = "home") {
-            composable("home") {
-                HomeScreen(modifier = Modifier.padding(innerPadding))
-            }
-            composable("chatting") {
-                Screen2()
-            }
-            composable("mypage") {
-                Screen4()
-            }
+        NavHost(navController, startDestination = Route.HOME) {
+            homeNavGraph(padding = innerPadding)
+            chattingNavGraph(padding = innerPadding)
+            myPageNavGraph(padding = innerPadding)
         }
     }
 }
@@ -92,26 +100,37 @@ fun LampBottomNavigation(navController: NavController) {
     ) {
         val navBackStackEntry by navController.currentBackStackEntryAsState()
         val currentRoute = navBackStackEntry?.destination?.route
+        val homeNavOptions = navOptions {
+            launchSingleTop = true
+            popUpTo(Route.HOME) { inclusive = true }
+        }
+
+        val chattingNavOptions = navOptions {
+            launchSingleTop = true
+            popUpTo(Route.CHATTING) { inclusive = true }
+        }
+
+        val myPageNavOptions = navOptions {
+            launchSingleTop = true
+            popUpTo(Route.MYPAGE) { inclusive = true }
+        }
 
         BottomNavigationItem(
             icon = {
                 Column {
                     Icon(
                         painter = painterResource(id = R.drawable.home),
-                        contentDescription = "Home",
-                        tint = if (currentRoute == "home") Color.White else LightGray,
+                        contentDescription = Route.HOME,
+                        tint = if (currentRoute == Route.HOME) Color.White else LightGray,
                         modifier = Modifier
                             .size(24.dp)
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                 }
             },
-            selected = currentRoute == "home",
+            selected = currentRoute == Route.HOME,
             onClick = {
-                navController.navigate("home") {
-                    launchSingleTop = true
-                    popUpTo("home") { saveState = true }
-                }
+                navController.navigateHome(homeNavOptions)
             },
             modifier = Modifier.padding(top = 15.dp, bottom = 20.dp)
         )
@@ -120,20 +139,17 @@ fun LampBottomNavigation(navController: NavController) {
                 Column {
                     Icon(
                         painter = painterResource(id = R.drawable.chatting),
-                        contentDescription = "Chatting",
-                        tint = if (currentRoute == "chatting") Color.White else LightGray,
+                        contentDescription = Route.CHATTING,
+                        tint = if (currentRoute == Route.CHATTING) Color.White else LightGray,
                         modifier = Modifier
                             .size(24.dp)
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                 }
             },
-            selected = currentRoute == "chatting",
+            selected = currentRoute == Route.CHATTING,
             onClick = {
-                navController.navigate("chatting") {
-                    launchSingleTop = true
-                    popUpTo("chatting") { saveState = true }
-                }
+                navController.navigateChatting(chattingNavOptions)
             },
             modifier = Modifier.padding(top = 15.dp, bottom = 20.dp)
         )
@@ -142,20 +158,17 @@ fun LampBottomNavigation(navController: NavController) {
                 Column {
                     Icon(
                         painter = painterResource(id = R.drawable.mypage),
-                        contentDescription = "MyPage",
-                        tint = if (currentRoute == "mypage") Color.White else LightGray,
+                        contentDescription = Route.MYPAGE,
+                        tint = if (currentRoute == Route.MYPAGE) Color.White else LightGray,
                         modifier = Modifier
                             .size(24.dp)
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                 }
             },
-            selected = currentRoute == "mypage",
+            selected = currentRoute == Route.MYPAGE,
             onClick = {
-                navController.navigate("mypage") {
-                    launchSingleTop = true
-                    popUpTo("mypage") { saveState = true }
-                }
+                navController.navigateMyPage(myPageNavOptions)
             },
             modifier = Modifier.padding(top = 15.dp, bottom = 20.dp)
         )

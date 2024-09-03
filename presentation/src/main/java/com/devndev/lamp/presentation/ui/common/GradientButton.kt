@@ -27,7 +27,12 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
-fun LampButton(isGradient: Boolean, buttonText: String, guideButtonText: String = "") {
+fun LampButton(
+    isGradient: Boolean,
+    buttonText: String,
+    guideButtonText: String = "",
+    onClick: () -> Unit
+) {
     val buttonColors = if (isGradient) {
         ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
@@ -58,7 +63,7 @@ fun LampButton(isGradient: Boolean, buttonText: String, guideButtonText: String 
         )
 
     Button(
-        onClick = { /* Do something */ },
+        onClick = onClick,
         modifier = buttonModifier,
         colors = buttonColors
     ) {
@@ -91,5 +96,5 @@ fun LampButton(isGradient: Boolean, buttonText: String, guideButtonText: String 
 @Preview
 @Composable
 fun A() {
-    LampButton(true, "램프 생성하기", "램프를 만들고 만남을 시작해 보세요")
+    LampButton(true, "램프 생성하기", "램프를 만들고 만남을 시작해 보세요", {})
 }
