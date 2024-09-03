@@ -4,8 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,13 +31,17 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier) {
 
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .padding(top = 70.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(70.dp)
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(
+            modifier = Modifier
+                .weight(0.3f)
+                .fillMaxWidth()
+        )
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.weight(1f)
         ) {
             Text(
                 text = "북창동루쥬라 " + context.getString(R.string.sir),
@@ -58,7 +62,8 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier) {
         }
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.weight(1f)
         ) {
             LampButton(
                 isGradient = true,
@@ -71,5 +76,10 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier) {
                 context.getString(R.string.guide_find_friend)
             )
         }
+        Spacer(
+            modifier = Modifier
+                .weight(0.3f)
+                .fillMaxWidth()
+        )
     }
 }

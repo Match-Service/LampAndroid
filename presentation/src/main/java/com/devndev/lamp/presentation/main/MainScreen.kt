@@ -30,6 +30,7 @@ import com.devndev.lamp.presentation.ui.home.HomeScreen
 import com.devndev.lamp.presentation.ui.s2.Screen2
 import com.devndev.lamp.presentation.ui.s4.Screen4
 import com.devndev.lamp.presentation.ui.theme.BackGroundColor
+import com.devndev.lamp.presentation.ui.theme.LightGray
 
 @Composable
 fun MainScreen(modifier: Modifier) {
@@ -69,13 +70,13 @@ fun LampTopBar() {
         Icon(
             painterResource(id = R.drawable.app_logo),
             contentDescription = "AppLogo",
-            tint = Color.Gray,
+            tint = LightGray,
             modifier = Modifier.height(24.dp)
         )
         Icon(
             painterResource(id = R.drawable.alarm_icon),
             contentDescription = "AlarmIcon",
-            tint = Color.Gray,
+            tint = LightGray,
             modifier = Modifier.size(24.dp)
         )
     }
@@ -98,7 +99,7 @@ fun LampBottomNavigation(navController: NavController) {
                     Icon(
                         painter = painterResource(id = R.drawable.home),
                         contentDescription = "Home",
-                        tint = if (currentRoute == "home") Color.White else Color.Gray,
+                        tint = if (currentRoute == "home") Color.White else LightGray,
                         modifier = Modifier
                             .size(24.dp)
                     )
@@ -118,9 +119,9 @@ fun LampBottomNavigation(navController: NavController) {
             icon = {
                 Column {
                     Icon(
-                        painter = painterResource(id = R.drawable.chating),
+                        painter = painterResource(id = R.drawable.chatting),
                         contentDescription = "Chatting",
-                        tint = if (currentRoute == "chatting") Color.White else Color.Gray,
+                        tint = if (currentRoute == "chatting") Color.White else LightGray,
                         modifier = Modifier
                             .size(24.dp)
                     )
@@ -142,7 +143,7 @@ fun LampBottomNavigation(navController: NavController) {
                     Icon(
                         painter = painterResource(id = R.drawable.mypage),
                         contentDescription = "MyPage",
-                        tint = if (currentRoute == "mypage") Color.White else Color.Gray,
+                        tint = if (currentRoute == "mypage") Color.White else LightGray,
                         modifier = Modifier
                             .size(24.dp)
                     )
