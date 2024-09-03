@@ -1,5 +1,10 @@
 package com.devndev.lamp.presentation.ui.home
 
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +15,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,12 +28,34 @@ import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.theme.IncTypography
 import com.devndev.lamp.presentation.ui.theme.MainColor
 import com.devndev.lamp.presentation.ui.theme.Typography
+import kotlin.system.exitProcess
 
 @Composable
 fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier) {
-    val items: List<Item> by viewModel.items.collectAsState()
-
+    val logTag = "HomeScreen"
     val context = LocalContext.current
+    val items: List<Item> by viewModel.items.collectAsState()
+    val handler = remember { Handler(Looper.getMainLooper()) }
+    var backPressedOnce = remember { false }
+
+    BackHandler {
+        Log.d(logTag, "back button clicked")
+        if (backPressedOnce) {
+            Log.d(logTag, "back button clicked 2 times end process")
+            exitProcess(0)
+        } else {
+            Log.d(logTag, "back button clicked 1 times show Toast")
+            Toast.makeText(
+                context,
+                context.getString(R.string.back_button_end_message),
+                Toast.LENGTH_SHORT
+            ).show()
+            backPressedOnce = true
+            handler.postDelayed({
+                backPressedOnce = false
+            }, 2000)
+        }
+    }
 
     Column(
         modifier = modifier

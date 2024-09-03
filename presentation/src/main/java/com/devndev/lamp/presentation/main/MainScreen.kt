@@ -1,5 +1,7 @@
 package com.devndev.lamp.presentation.main
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -40,6 +42,14 @@ import com.devndev.lamp.presentation.ui.theme.LightGray
 fun MainScreen(modifier: Modifier) {
     val navController = rememberNavController()
     val context = LocalContext.current
+
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    BackHandler {
+        Log.d("llll", "back button clicked")
+    }
+
     Scaffold(
         containerColor = BackGroundColor,
         topBar = { LampTopBar() },

@@ -1,6 +1,7 @@
 package com.devndev.lamp.presentation.ui.home.navigaion
 
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -18,6 +19,6 @@ fun NavGraphBuilder.homeNavGraph(
     modifier: Modifier = Modifier
 ) {
     composable(Route.HOME) {
-        HomeScreen(modifier = modifier)
+        HomeScreen(modifier = modifier.padding(padding))
     }
 }
