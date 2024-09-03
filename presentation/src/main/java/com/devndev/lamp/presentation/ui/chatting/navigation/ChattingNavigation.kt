@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.main.navigation
+package com.devndev.lamp.presentation.ui.chatting.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.Modifier
@@ -6,18 +6,18 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
-import com.devndev.lamp.presentation.main.MainScreen
+import com.devndev.lamp.presentation.ui.chatting.Screen2
 import com.devndev.lamp.presentation.ui.common.Route
 
-fun NavController.navigateMain(navOptions: NavOptions? = null) {
-    this.navigate(Route.MAIN, navOptions)
+fun NavController.navigateChatting(navOptions: NavOptions? = null) {
+    this.navigate(Route.CHATTING, navOptions)
 }
 
-fun NavGraphBuilder.mainNavGraph(
+fun NavGraphBuilder.chattingNavGraph(
     padding: PaddingValues,
     modifier: Modifier = Modifier
 ) {
-    composable(Route.MAIN) {
-        MainScreen(modifier = modifier)
+    composable(Route.CHATTING) {
+        Screen2()
     }
 }

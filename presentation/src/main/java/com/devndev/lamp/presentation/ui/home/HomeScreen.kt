@@ -68,12 +68,14 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier) {
             LampButton(
                 isGradient = true,
                 buttonText = context.getString(R.string.make_lamp),
-                context.getString(R.string.guide_make_lamp)
+                guideButtonText = context.getString(R.string.guide_make_lamp),
+                onClick = {}
             )
             LampButton(
                 isGradient = false,
                 buttonText = context.getString(R.string.find_friend),
-                context.getString(R.string.guide_find_friend)
+                guideButtonText = context.getString(R.string.guide_find_friend),
+                onClick = {}
             )
         }
         Spacer(

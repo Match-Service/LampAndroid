@@ -1,9 +1,9 @@
-package com.devndev.lamp.presentation.ui.s3
+package com.devndev.lamp.presentation.ui.chatting
 
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun Screen3() {
-    Text("Screen3")
+fun Screen2() {
+    Text("Screen2")
 }

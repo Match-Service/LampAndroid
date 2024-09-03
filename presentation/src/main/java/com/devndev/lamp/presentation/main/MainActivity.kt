@@ -3,18 +3,21 @@ package com.devndev.lamp.presentation.main
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.devndev.lamp.presentation.ui.login.LoginScreen
+import com.devndev.lamp.presentation.main.navigation.mainNavGraph
+import com.devndev.lamp.presentation.main.navigation.navigateMain
+import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.login.LoginViewModel
-import com.devndev.lamp.presentation.ui.splsh.SplashScreen
+import com.devndev.lamp.presentation.ui.login.navigation.loginNavGraph
+import com.devndev.lamp.presentation.ui.login.navigation.navigateLogin
+import com.devndev.lamp.presentation.ui.splsh.navigaion.splashNavGraph
 import com.devndev.lamp.presentation.ui.theme.LampTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -43,29 +46,19 @@ fun Lamp(viewModel: LoginViewModel = hiltViewModel()) {
     LaunchedEffect(isLoading) {
         if (!isLoading) {
             if (isLoggedIn) {
-                navController.navigate("main") {
-                    popUpTo("login") { inclusive = true }
-                }
+                navController.navigateMain()
             } else {
-                navController.navigate("login") {
-                    popUpTo("main") { inclusive = true }
-                }
+                navController.navigateLogin()
             }
         }
     }
 
     NavHost(
         navController = navController,
-        startDestination = if (isLoading) "splash" else if (isLoggedIn) "main" else "login"
+        startDestination = if (isLoading) Route.SPLASH else if (isLoggedIn) Route.MAIN else Route.LOGIN
     ) {
-        composable("login") {
-            LoginScreen(navController = navController)
-        }
-        composable("main") {
-            MainScreen(modifier = Modifier)
-        }
-        composable("splash") {
-            SplashScreen()
-        }
+        splashNavGraph(padding = PaddingValues())
+        loginNavGraph(padding = PaddingValues())
+        mainNavGraph(padding = PaddingValues())
     }
 }
