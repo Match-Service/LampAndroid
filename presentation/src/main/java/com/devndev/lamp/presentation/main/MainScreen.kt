@@ -1,7 +1,5 @@
 package com.devndev.lamp.presentation.main
 
-import android.util.Log
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,6 +33,7 @@ import com.devndev.lamp.presentation.ui.home.navigaion.homeNavGraph
 import com.devndev.lamp.presentation.ui.home.navigaion.navigateHome
 import com.devndev.lamp.presentation.ui.mypage.navigation.myPageNavGraph
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateMyPage
+import com.devndev.lamp.presentation.ui.search.navigation.searchNavGraph
 import com.devndev.lamp.presentation.ui.theme.BackGroundColor
 import com.devndev.lamp.presentation.ui.theme.LightGray
 
@@ -42,13 +41,6 @@ import com.devndev.lamp.presentation.ui.theme.LightGray
 fun MainScreen(modifier: Modifier) {
     val navController = rememberNavController()
     val context = LocalContext.current
-
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route
-
-    BackHandler {
-        Log.d("llll", "back button clicked")
-    }
 
     Scaffold(
         containerColor = BackGroundColor,
@@ -58,9 +50,10 @@ fun MainScreen(modifier: Modifier) {
         }
     ) { innerPadding ->
         NavHost(navController, startDestination = Route.HOME) {
-            homeNavGraph(padding = innerPadding)
+            homeNavGraph(padding = innerPadding, navController = navController)
             chattingNavGraph(padding = innerPadding)
             myPageNavGraph(padding = innerPadding)
+            searchNavGraph(padding = innerPadding, navController = navController)
         }
     }
 }
