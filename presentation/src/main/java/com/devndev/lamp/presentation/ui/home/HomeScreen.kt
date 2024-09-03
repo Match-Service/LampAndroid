@@ -22,16 +22,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.devndev.lamp.domain.model.Item
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.search.navigation.navigateSearch
 import com.devndev.lamp.presentation.ui.theme.IncTypography
 import com.devndev.lamp.presentation.ui.theme.MainColor
 import com.devndev.lamp.presentation.ui.theme.Typography
 import kotlin.system.exitProcess
 
 @Composable
-fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier) {
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    modifier: Modifier,
+    navController: NavController
+) {
     val logTag = "HomeScreen"
     val context = LocalContext.current
     val items: List<Item> by viewModel.items.collectAsState()
@@ -103,7 +109,9 @@ fun HomeScreen(viewModel: HomeViewModel = hiltViewModel(), modifier: Modifier) {
                 isGradient = false,
                 buttonText = context.getString(R.string.find_friend),
                 guideButtonText = context.getString(R.string.guide_find_friend),
-                onClick = {}
+                onClick = {
+                    navController.navigateSearch()
+                }
             )
         }
         Spacer(

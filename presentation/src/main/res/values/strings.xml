@@ -8,4 +8,6 @@
     <string name="guide_find_friend">친구를 검색하고 램프를 찾아가세요</string>
     <string name="sir">님</string>
     <string name="back_button_end_message">뒤로 가기 버튼을 한번 더 클릭하면 앱이 종료됩니다.</string>
+    <string name="search_friend">친구 찾아가기</string>
+    <string name="guide_search_friend">닉네임을 검색해주세요</string>
 </resources>

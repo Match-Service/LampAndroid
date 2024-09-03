@@ -30,6 +30,7 @@ data class IncheonTypography(
 @Immutable
 data class PretendardTypography(
     val semiBold32: TextStyle,
+    val semiBold25: TextStyle,
     val normal12: TextStyle,
     val medium18: TextStyle
 )
@@ -46,6 +47,10 @@ val Typography = PretendardTypography(
     semiBold32 = pretendardTextStyle(
         fontWeight = FontWeight.SemiBold,
         fontSize = 32
+    ),
+    semiBold25 = pretendardTextStyle(
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 25
     ),
     normal12 = pretendardTextStyle(
         fontWeight = FontWeight.Normal,

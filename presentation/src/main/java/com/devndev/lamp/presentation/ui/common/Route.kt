@@ -7,4 +7,5 @@ object Route {
     const val CHATTING = "chatting"
     const val LOGIN = "login"
     const val MYPAGE = "mypage"
+    const val SEARCH = "search"
 }
