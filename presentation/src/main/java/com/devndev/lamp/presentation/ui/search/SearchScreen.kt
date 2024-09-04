@@ -2,18 +2,21 @@ package com.devndev.lamp.presentation.ui.search
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
@@ -39,23 +43,23 @@ fun SearchScreen(modifier: Modifier, navController: NavController) {
     var searchQuery by remember { mutableStateOf("") }
 
     Column(
-        modifier = modifier.fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
         Row(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            IconButton(onClick = {
-                navController.popBackStack(Route.HOME, false)
-            }) {
-                Icon(
-                    painterResource(id = R.drawable.back_arrow),
-                    contentDescription = "뒤로가기",
-                    tint = Color.White
-                )
-            }
+            Icon(
+                painterResource(id = R.drawable.back_arrow),
+                contentDescription = "뒤로가기",
+                tint = Color.White,
+                modifier = Modifier.clickable {
+                    navController.popBackStack(Route.HOME, false)
+                }
+            )
             Text(
                 text = context.getString(R.string.find_friend),
                 style = Typography.semiBold25,
@@ -66,15 +70,14 @@ fun SearchScreen(modifier: Modifier, navController: NavController) {
         }
         Row(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
                 .fillMaxWidth()
                 .background(Color.Black, shape = RoundedCornerShape(27.dp))
                 .border(
                     width = 1.dp,
-                    color = LightGray, // Only top border is applied
+                    color = LightGray,
                     shape = RoundedCornerShape(27.dp)
                 )
-                .padding(horizontal = 20.dp),
+                .padding(horizontal = 20.dp, vertical = 7.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -83,29 +86,29 @@ fun SearchScreen(modifier: Modifier, navController: NavController) {
                 contentDescription = "검색 아이콘",
                 tint = Color.White
             )
+            Spacer(modifier = Modifier.width(8.dp))
 
-            TextField(
+            BasicTextField(
                 value = searchQuery,
-                onValueChange = { query -> searchQuery = query },
-                placeholder = {
+                onValueChange = { newText -> searchQuery = newText },
+                textStyle = Typography.medium18.copy(color = Color.White),
+                singleLine = true,
+                cursorBrush = SolidColor(Color.White),
+                modifier = Modifier
+                    .weight(1f)
+            ) { innerTextField ->
+                if (searchQuery.isEmpty()) {
                     Text(
                         text = context.getString(R.string.guide_search_friend),
                         color = LightGray,
                         style = Typography.medium18
                     )
-                },
-                colors = TextFieldDefaults.colors(
-                    focusedContainerColor = Color.Transparent,
-                    unfocusedContainerColor = Color.Transparent,
-                    focusedIndicatorColor = Color.Transparent,
-                    unfocusedIndicatorColor = Color.Transparent,
-                    focusedTextColor = LightGray
-                ),
-                modifier = Modifier
-                    .weight(1f)
-            )
+                }
+                innerTextField()
+            }
 
             IconButton(
+                modifier = Modifier.size(10.dp),
                 onClick = {
                     searchQuery = ""
                 }
