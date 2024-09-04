@@ -10,4 +10,6 @@
     <string name="back_button_end_message">뒤로 가기 버튼을 한번 더 클릭하면 앱이 종료됩니다.</string>
     <string name="search_friend">친구 찾아가기</string>
     <string name="guide_search_friend">닉네임을 검색해주세요</string>
+    <string name="enter_lamp">램프 입장</string>
+    <string name="no_lamp">램프 없음</string>
 </resources>
