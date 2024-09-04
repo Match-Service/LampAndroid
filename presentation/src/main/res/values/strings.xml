@@ -12,4 +12,5 @@
     <string name="guide_search_friend">닉네임을 검색해주세요</string>
     <string name="enter_lamp">램프 입장</string>
     <string name="no_lamp">램프 없음</string>
+    <string name="search_make_lame_guide">친구가 생성한 램프가 없어요, 램프를 생성할까요?</string>
 </resources>

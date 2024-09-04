@@ -25,7 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.domain.model.Item
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.common.LampButtonWithIcon
 import com.devndev.lamp.presentation.ui.search.navigation.navigateSearch
 import com.devndev.lamp.presentation.ui.theme.IncTypography
 import com.devndev.lamp.presentation.ui.theme.MainColor
@@ -99,13 +99,13 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.weight(1f)
         ) {
-            LampButton(
+            LampButtonWithIcon(
                 isGradient = true,
                 buttonText = context.getString(R.string.make_lamp),
                 guideButtonText = context.getString(R.string.guide_make_lamp),
                 onClick = {}
             )
-            LampButton(
+            LampButtonWithIcon(
                 isGradient = false,
                 buttonText = context.getString(R.string.find_friend),
                 guideButtonText = context.getString(R.string.guide_find_friend),
