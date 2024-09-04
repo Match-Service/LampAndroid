@@ -41,12 +41,17 @@ import com.devndev.lamp.presentation.ui.theme.LightGray
 fun MainScreen(modifier: Modifier) {
     val navController = rememberNavController()
     val context = LocalContext.current
-
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
     Scaffold(
         containerColor = BackGroundColor,
         topBar = { LampTopBar() },
         bottomBar = {
-            LampBottomNavigation(navController = navController)
+            if (currentRoute != Route.SEARCH) {
+                LampBottomNavigation(navController = navController)
+            } else {
+                Spacer(modifier = Modifier.height(0.dp))
+            }
         }
     ) { innerPadding ->
         NavHost(navController, startDestination = Route.HOME) {

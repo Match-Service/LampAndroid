@@ -27,5 +27,5 @@ fun getMainColor(sex: String) {
 }
 
 val Gray = Color(0xFF373737)
-
 val LightGray = Color(0xFF707070)
+val Gray3 = Color(0xFFB7B7B7)
