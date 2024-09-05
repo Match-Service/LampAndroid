@@ -63,4 +63,3 @@ fun OptionButton(optionText: String, isSelected: Boolean, onSelect: () -> Unit) 
         Text(text = optionText, style = Typography.medium15)
     }
 }
-

@@ -16,6 +16,9 @@
     <string name="select_personnel">함께 램프를 켜고 싶은\n인원을 선택해 주세요</string>
     <string name="select_region">램프 인원과 함께하고 싶은\n지역을 선택해 주세요</string>
     <string name="select_mood">어떤 색의\n램프를 켜볼까요?</string>
+    <string name="lame_introduction">매력적인 이 램프의\n이름은 무엇인가요?</string>
+    <string name="input_lamp_name">램프 이름을 작성해주세요</string>
+    <string name="input_lamp_summary">램프에 대해 소개해주세요</string>
     <string name="next">다음</string>
     <string name="done">완료</string>
 </resources>
