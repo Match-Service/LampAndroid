@@ -11,14 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -36,7 +31,6 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LightGray
-import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
 fun LampCreationScreen(modifier: Modifier, navController: NavController) {
@@ -133,6 +127,13 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                     3 -> MoodScreen(selectedOption = selectedMood) {
                         selectedMood = it
                     }
+
+                    4 -> LampIntroductionScreen(
+                        lampName = lampName,
+                        lampSummary = lampSummary,
+                        onLampNameChange = { newLampName -> lampName = newLampName },
+                        onLampSummaryChange = { newLampSummary -> lampSummary = newLampSummary }
+                    )
                 }
             }
         }
@@ -150,7 +151,8 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
             enabled = when (currentStep) {
                 1 -> selectedPersonnel.isNotEmpty()
                 2 -> selectedRegion.isNotEmpty()
-                else -> selectedMood.isNotEmpty()
+                3 -> selectedMood.isNotEmpty()
+                else -> lampName.isNotEmpty()
             }
         )
     }
