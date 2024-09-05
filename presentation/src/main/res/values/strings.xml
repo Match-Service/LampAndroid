@@ -13,4 +13,7 @@
     <string name="enter_lamp">램프 입장</string>
     <string name="no_lamp">램프 없음</string>
     <string name="search_make_lame_guide">친구가 생성한 램프가 없어요, 램프를 생성할까요?</string>
+    <string name="select_personnel">함께 램프를 켜고 싶은\n인원을 선택해 주세요</string>
+    <string name="next">다음</string>
+    <string name="done">완료</string>
 </resources>

@@ -29,6 +29,7 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.chatting.navigation.chattingNavGraph
 import com.devndev.lamp.presentation.ui.chatting.navigation.navigateChatting
 import com.devndev.lamp.presentation.ui.common.Route
+import com.devndev.lamp.presentation.ui.creation.navigation.creationNavGraph
 import com.devndev.lamp.presentation.ui.home.navigaion.homeNavGraph
 import com.devndev.lamp.presentation.ui.home.navigaion.navigateHome
 import com.devndev.lamp.presentation.ui.mypage.navigation.myPageNavGraph
@@ -47,7 +48,7 @@ fun MainScreen(modifier: Modifier) {
         containerColor = BackGroundColor,
         topBar = { LampTopBar() },
         bottomBar = {
-            if (currentRoute != Route.SEARCH) {
+            if (currentRoute != Route.SEARCH && currentRoute != Route.CREATION) {
                 LampBottomNavigation(navController = navController)
             } else {
                 Spacer(modifier = Modifier.height(0.dp))
@@ -59,6 +60,7 @@ fun MainScreen(modifier: Modifier) {
             chattingNavGraph(padding = innerPadding)
             myPageNavGraph(padding = innerPadding)
             searchNavGraph(padding = innerPadding, navController = navController)
+            creationNavGraph(padding = innerPadding, navController = navController)
         }
     }
 }

@@ -158,7 +158,8 @@ fun BottomSpace() {
         LampButton(
             isGradient = true,
             buttonText = context.getString(R.string.make_lamp),
-            onClick = {}
+            onClick = {},
+            enabled = true
         )
     }
 }
