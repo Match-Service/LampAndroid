@@ -38,6 +38,7 @@ import com.devndev.lamp.domain.model.Item
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.Route
+import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.Typography
 
@@ -138,13 +139,13 @@ fun SearchScreen(
             SearchList(profileList = items)
         }
         if (showBottomSpace) {
-            BottomSpace()
+            BottomSpace(navController = navController)
         }
     }
 }
 
 @Composable
-fun BottomSpace() {
+fun BottomSpace(navController: NavController) {
     val context = LocalContext.current
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -158,7 +159,7 @@ fun BottomSpace() {
         LampButton(
             isGradient = true,
             buttonText = context.getString(R.string.make_lamp),
-            onClick = {},
+            onClick = { navController.navigateCreation() },
             enabled = true
         )
     }
