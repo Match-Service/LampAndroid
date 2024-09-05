@@ -14,6 +14,8 @@
     <string name="no_lamp">램프 없음</string>
     <string name="search_make_lame_guide">친구가 생성한 램프가 없어요, 램프를 생성할까요?</string>
     <string name="select_personnel">함께 램프를 켜고 싶은\n인원을 선택해 주세요</string>
+    <string name="select_region">램프 인원과 함께하고 싶은\n지역을 선택해 주세요</string>
+    <string name="select_mood">어떤 색의\n램프를 켜볼까요?</string>
     <string name="next">다음</string>
     <string name="done">완료</string>
 </resources>

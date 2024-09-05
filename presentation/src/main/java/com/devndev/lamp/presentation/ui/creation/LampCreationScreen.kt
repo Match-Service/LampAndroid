@@ -28,14 +28,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.theme.Gray
@@ -143,7 +139,7 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
 
         LampButton(
             isGradient = true,
-            buttonText = if (currentStep < 3) {
+            buttonText = if (currentStep < 4) {
                 context.getString(R.string.next)
             } else {
                 context.getString(
@@ -158,104 +154,4 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
             }
         )
     }
-}
-
-@Composable
-fun PersonnelScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
-    val context = LocalContext.current
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = LocalConfiguration.current.screenHeightDp.dp * 0.1f)
-    ) {
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = context.getString(R.string.select_personnel),
-                color = Color.White,
-                style = Typography.semiBold25,
-                lineHeight = 33.sp
-            )
-            Spacer(modifier = Modifier.height(24.dp))
-
-            val options = listOf("2:2", "3:3", "4:4", "5:5")
-
-            options.forEach { option ->
-                OptionButton(
-                    optionText = option,
-                    isSelected = selectedOption == option,
-                    onSelect = { onSelectOption(option) }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun RegionScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(top = LocalConfiguration.current.screenHeightDp.dp * 0.1f)
-    ) {
-        Column {
-            Text(text = "램프 인원과 함께하고 싶은 지역을 선택해 주세요")
-            Spacer(modifier = Modifier.height(24.dp))
-
-            // 선택 가능한 옵션 리스트
-            val options = listOf("서울", "경기도", "인천", "부산")
-
-            options.forEach { option ->
-                OptionButton(
-                    optionText = option,
-                    isSelected = selectedOption == option,
-                    onSelect = { onSelectOption(option) }
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
-    Column {
-        Text(text = "어떤 색의 램프를 켜볼까요?")
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // 선택 가능한 옵션 리스트
-        val options = listOf("따뜻한 분위기", "신나는 분위기", "차분한 분위기")
-
-        options.forEach { option ->
-            OptionButton(
-                optionText = option,
-                isSelected = selectedOption == option,
-                onSelect = { onSelectOption(option) }
-            )
-        }
-    }
-}
-
-@Composable
-fun OptionButton(optionText: String, isSelected: Boolean, onSelect: () -> Unit) {
-    Button(
-        onClick = onSelect,
-        colors = ButtonDefaults.buttonColors(
-            containerColor = if (isSelected) Color.White else Gray,
-            contentColor = if (isSelected) Color.Black else Color.White
-        ),
-        shape = RoundedCornerShape(30.dp),
-        modifier = Modifier
-            .width(200.dp)
-            .padding(bottom = 4.dp)
-    ) {
-        Text(text = optionText, style = Typography.medium15)
-    }
-}
-
-@Preview
-@Composable
-fun ABC() {
-    LampCreationScreen(modifier = Modifier, navController = rememberNavController())
 }
