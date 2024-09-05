@@ -83,4 +83,6 @@ dependencies {
     implementation(libs.google.login)
 
     implementation(libs.kakao.login)
+
+    implementation(libs.accompanist.pager)
 }

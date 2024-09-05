@@ -8,6 +8,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.devndev.lamp.presentation.main.MainScreen
 import com.devndev.lamp.presentation.ui.common.Route
+import com.devndev.lamp.presentation.ui.creation.MoodScreen
 
 fun NavController.navigateMain(navOptions: NavOptions? = null) {
     this.navigate(Route.MAIN, navOptions)
