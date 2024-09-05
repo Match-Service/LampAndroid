@@ -8,4 +8,5 @@ object Route {
     const val LOGIN = "login"
     const val MYPAGE = "mypage"
     const val SEARCH = "search"
+    const val CREATION = "creation"
 }

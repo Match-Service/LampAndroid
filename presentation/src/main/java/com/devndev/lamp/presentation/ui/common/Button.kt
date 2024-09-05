@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.theme.Gray
+import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.ManColor
 import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
@@ -36,7 +37,7 @@ fun LampButtonWithIcon(
     onClick: () -> Unit
 ) {
     val buttonColors = getButtonColor(isGradient = isGradient)
-    val buttonModifier = Modifier.buttonBackGround(isGradient = isGradient)
+    val buttonModifier = Modifier.buttonBackGround(isGradient = isGradient, true)
 
     Button(
         onClick = onClick,
@@ -70,23 +71,31 @@ fun LampButtonWithIcon(
 }
 
 @Composable
-fun LampButton(isGradient: Boolean, buttonText: String, onClick: () -> Unit, buttonWidth: Int = 0) {
+fun LampButton(
+    isGradient: Boolean,
+    buttonText: String,
+    onClick: () -> Unit,
+    buttonWidth: Int = 0,
+    enabled: Boolean
+) {
     val buttonColors = getButtonColor(isGradient = isGradient)
 
     val buttonModifier = if (buttonWidth == 0) {
-        Modifier.buttonBackGround(isGradient = isGradient).fillMaxWidth()
+        Modifier
+            .buttonBackGround(isGradient = isGradient, enabled = enabled)
+            .fillMaxWidth()
     } else {
-        Modifier.buttonBackGround(isGradient = isGradient)
+        Modifier.buttonBackGround(isGradient = isGradient, enabled = enabled)
     }
 
     Button(
         onClick = onClick,
         modifier = buttonModifier,
-        colors = buttonColors
+        colors = buttonColors,
+        enabled = enabled
     ) {
         Text(
             text = buttonText,
-            color = Color.White,
             style = Typography.medium18,
             textAlign = TextAlign.Center
         )
@@ -98,7 +107,9 @@ fun getButtonColor(isGradient: Boolean): ButtonColors {
     return if (isGradient) {
         ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
-            contentColor = Color.White
+            contentColor = Color.White,
+            disabledContentColor = LightGray,
+            disabledContainerColor = Gray
         )
     } else {
         ButtonDefaults.buttonColors(
@@ -109,17 +120,27 @@ fun getButtonColor(isGradient: Boolean): ButtonColors {
 }
 
 @Composable
-fun Modifier.buttonBackGround(isGradient: Boolean): Modifier {
+fun Modifier.buttonBackGround(isGradient: Boolean, enabled: Boolean): Modifier {
     return this.then(
-        if (isGradient) {
+        if (enabled) {
+            if (isGradient) {
+                Modifier.background(
+                    brush = Brush.horizontalGradient(
+                        colors = listOf(WomanColor, ManColor)
+                    ),
+                    shape = RoundedCornerShape(80.dp)
+                )
+            } else {
+                Modifier.background(
+                    color = Gray,
+                    shape = RoundedCornerShape(80.dp)
+                )
+            }
+        } else {
             Modifier.background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(WomanColor, ManColor)
-                ),
+                color = Gray,
                 shape = RoundedCornerShape(80.dp)
             )
-        } else {
-            Modifier.background(color = Gray, shape = RoundedCornerShape(80.dp))
         }
     )
 }

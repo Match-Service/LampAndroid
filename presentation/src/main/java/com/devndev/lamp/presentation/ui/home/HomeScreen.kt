@@ -26,6 +26,7 @@ import androidx.navigation.NavController
 import com.devndev.lamp.domain.model.Item
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButtonWithIcon
+import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.search.navigation.navigateSearch
 import com.devndev.lamp.presentation.ui.theme.IncTypography
 import com.devndev.lamp.presentation.ui.theme.MainColor
@@ -103,7 +104,9 @@ fun HomeScreen(
                 isGradient = true,
                 buttonText = context.getString(R.string.make_lamp),
                 guideButtonText = context.getString(R.string.guide_make_lamp),
-                onClick = {}
+                onClick = {
+                    navController.navigateCreation()
+                }
             )
             LampButtonWithIcon(
                 isGradient = false,
