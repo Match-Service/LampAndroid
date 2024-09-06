@@ -36,6 +36,7 @@ import com.devndev.lamp.presentation.ui.mypage.navigation.myPageNavGraph
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateMyPage
 import com.devndev.lamp.presentation.ui.search.navigation.searchNavGraph
 import com.devndev.lamp.presentation.ui.theme.BackGroundColor
+import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 
 @Composable
@@ -93,7 +94,7 @@ fun LampTopBar() {
 @Composable
 fun LampBottomNavigation(navController: NavController) {
     BottomNavigation(
-        backgroundColor = Color.Black,
+        backgroundColor = LampBlack,
         contentColor = Color.White,
         modifier = Modifier
             .height(70.dp)

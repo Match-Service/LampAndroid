@@ -10,8 +10,6 @@ val Purple40 = Color(0xFF6650a4)
 val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
-val BackGroundColor = Color.Black
-
 val ManColor = Color(0xFF16B9F7)
 val WomanColor = Color(0xFFE4313C)
 
@@ -26,13 +24,16 @@ fun getMainColor(sex: String) {
     }
 }
 
+val LampBlack = Color(0xFF191919)
 val Gray = Color(0xFF373737)
 val LightGray = Color(0xFF707070)
 val Gray3 = Color(0xFFB7B7B7)
-
+val BackGroundColor = LampBlack
 
 val MoodGray = Color(0xFF191919)
 val MoodBlack = Color(0xFFFFFFFF)
 val MoodRed = Color(0xFFE4313C)
 val MoodYellow = Color(0xFFFFA338)
-val MoodBlue = Color(0xFF3AC7FD)
+val MoodBlue = Color(
+    0xFF3AC7FD
+)

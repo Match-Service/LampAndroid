@@ -19,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.devndev.lamp.presentation.ui.theme.Gray
+import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
@@ -53,7 +54,7 @@ fun OptionButton(optionText: String, isSelected: Boolean, onSelect: () -> Unit) 
         onClick = onSelect,
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isSelected) Color.White else Gray,
-            contentColor = if (isSelected) Color.Black else Color.White
+            contentColor = if (isSelected) LampBlack else Color.White
         ),
         shape = RoundedCornerShape(30.dp),
         modifier = Modifier

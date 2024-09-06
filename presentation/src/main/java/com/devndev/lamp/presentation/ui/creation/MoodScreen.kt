@@ -92,9 +92,10 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
         25.sp
     )
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(Color(0xFF151515))
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF151515))
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -110,7 +111,6 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
                     textAlign = TextAlign.Center
                 )
             }
-
 
             // 중앙에 회전하는 원을 배치합니다.
             RotatingCircle(
@@ -154,12 +154,14 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
 
 @Composable
 fun RotatingCircle(rotationAngle: Float, shadowColor: Color, screenWidth: Dp, screenHeight: Dp) {
-    Box(contentAlignment = Alignment.Center,
+    Box(
+        contentAlignment = Alignment.Center,
         modifier = Modifier
             .size(screenWidth * 1.5f)
     ) {
-        Canvas(modifier = Modifier
-            .fillMaxSize()
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
         ) {
             drawRotatingCircle(rotationAngle, shadowColor, screenWidth, screenHeight)
         }
@@ -169,7 +171,12 @@ fun RotatingCircle(rotationAngle: Float, shadowColor: Color, screenWidth: Dp, sc
 /***
  * 회전하는 원 그리기
  */
-fun DrawScope.drawRotatingCircle(rotationAngle: Float, shadowColor: Color, screenWidth: Dp, screenHeight: Dp) {
+fun DrawScope.drawRotatingCircle(
+    rotationAngle: Float,
+    shadowColor: Color,
+    screenWidth: Dp,
+    screenHeight: Dp
+) {
     val radius = (screenWidth * 1.5f).toPx() / 2
     val centerOffset = Offset(x = size.width / 2, y = screenHeight.toPx())
 
@@ -199,7 +206,10 @@ fun DrawScope.drawRotatingCircle(rotationAngle: Float, shadowColor: Color, scree
                     centerOffset.y - radius, // top
                     centerOffset.x + radius, // right
                     centerOffset.y + radius, // bottom
-                    0f, 90f, true, paint
+                    0f,
+                    90f,
+                    true,
+                    paint
                 )
             }
 
