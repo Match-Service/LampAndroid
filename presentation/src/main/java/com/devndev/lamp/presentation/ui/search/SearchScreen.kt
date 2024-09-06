@@ -39,6 +39,7 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
+import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.Typography
 
@@ -87,7 +88,7 @@ fun SearchScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Black, shape = RoundedCornerShape(27.dp))
+                    .background(LampBlack, shape = RoundedCornerShape(27.dp))
                     .border(
                         width = 1.dp,
                         color = LightGray,
