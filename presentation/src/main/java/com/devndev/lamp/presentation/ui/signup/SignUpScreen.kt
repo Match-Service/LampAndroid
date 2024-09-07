@@ -35,7 +35,6 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButton
-import com.devndev.lamp.presentation.ui.creation.LampIntroductionScreen
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
@@ -177,12 +176,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                         selectedGender = it
                     }
 
-                    4 -> LampIntroductionScreen(
-                        lampName = lampName,
-                        lampSummary = lampSummary,
-                        onLampNameChange = { newLampName -> lampName = newLampName },
-                        onLampSummaryChange = { newLampSummary -> lampSummary = newLampSummary }
-                    )
+                    4 -> BirthScreen()
                 }
             }
         }

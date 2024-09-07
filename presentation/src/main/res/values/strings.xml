@@ -42,4 +42,7 @@
     <string name="input_gender">성별은\n무엇인가요?</string>
     <string name="man">남성</string>
     <string name="woman">여성</string>
+
+    <string name="input_birthday">생일은 언제인가요?</string>
+    <string name="birth_guide">프로필에 나이가 표시되며, 이후 변경이 불가해요</string>
 </resources>
