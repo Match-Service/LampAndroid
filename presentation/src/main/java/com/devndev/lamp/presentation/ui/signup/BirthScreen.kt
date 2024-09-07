@@ -1,6 +1,5 @@
 package com.devndev.lamp.presentation.ui.signup
 
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,21 +27,27 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
 import com.devndev.lamp.presentation.ui.theme.ManColor
 import com.devndev.lamp.presentation.ui.theme.Typography
+import com.devndev.lamp.presentation.ui.theme.WomanColor
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 
 @Composable
-fun BirthScreen() {
+fun BirthScreen(
+    isMan: Boolean,
+    selectedYear: String,
+    selectedMonth: String,
+    selectedDay: String,
+    onYearChange: (String) -> Unit,
+    onMonthChange: (String) -> Unit,
+    onDayChange: (String) -> Unit
+) {
     val context = LocalContext.current
     SelectionScreen(text = context.getString(R.string.input_birthday)) {
         Spacer(modifier = Modifier.height(10.dp))
@@ -56,37 +61,46 @@ fun BirthScreen() {
         val days = remember { (1..31).map { it.toString() + "일" } }
         Spacer(modifier = Modifier.height(30.dp))
         DatePicker(
+            isMan = isMan,
             years = years,
             months = months,
             days = days,
-            modifier = Modifier
+            selectedYear = selectedYear,
+            selectedMonth = selectedMonth,
+            selectedDay = selectedDay,
+            onYearChange = onYearChange,
+            onMonthChange = onMonthChange,
+            onDayChange = onDayChange
         )
     }
 }
 
 @Composable
 fun DatePicker(
+    isMan: Boolean,
     years: List<String>,
     months: List<String>,
     days: List<String>,
+    selectedYear: String,
+    selectedMonth: String,
+    selectedDay: String,
+    onYearChange: (String) -> Unit,
+    onMonthChange: (String) -> Unit,
+    onDayChange: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val yearPickerState = rememberPickerState()
     val monthPickerState = rememberPickerState()
     val dayPickerState = rememberPickerState()
 
-    val selectedYear = remember { mutableStateOf("") }
-    val selectedMonth = remember { mutableStateOf("") }
-    val selectedDay = remember { mutableStateOf("") }
-
     LaunchedEffect(yearPickerState.selectedItem) {
-        selectedYear.value = yearPickerState.selectedItem
+        onYearChange(yearPickerState.selectedItem)
     }
     LaunchedEffect(monthPickerState.selectedItem) {
-        selectedMonth.value = monthPickerState.selectedItem
+        onMonthChange(monthPickerState.selectedItem)
     }
     LaunchedEffect(dayPickerState.selectedItem) {
-        selectedDay.value = dayPickerState.selectedItem
+        onDayChange(dayPickerState.selectedItem)
     }
 
     Row(
@@ -96,26 +110,31 @@ fun DatePicker(
     ) {
         // Year
         Picker(
+            isMan = isMan,
             items = years,
             state = yearPickerState,
             visibleItemsCount = 5,
-            startIndex = years.indexOf("2000"),
+            startIndex = years.indexOf(selectedYear),
             textAlign = TextAlign.End
         )
 
         // Month
         Picker(
+            isMan = isMan,
             items = months,
             state = monthPickerState,
             visibleItemsCount = 5,
+            startIndex = months.indexOf(selectedMonth),
             textAlign = TextAlign.Center
         )
 
         // Day
         Picker(
+            isMan = isMan,
             items = days,
             state = dayPickerState,
             visibleItemsCount = 5,
+            startIndex = days.indexOf(selectedDay),
             textAlign = TextAlign.Start
         )
     }
@@ -123,6 +142,7 @@ fun DatePicker(
 
 @Composable
 fun Picker(
+    isMan: Boolean,
     items: List<String>,
     state: PickerState = rememberPickerState(),
     modifier: Modifier = Modifier,
@@ -172,16 +192,23 @@ fun Picker(
 
                 // Animate font size and color
                 val targetFontSize = when (itemIndex) {
-                    visibleItemsMiddle -> 20f
-                    in (visibleItemsMiddle - 1)..(visibleItemsMiddle + 1) -> 16f
-                    in (visibleItemsMiddle - 2)..(visibleItemsMiddle + 2) -> 14f
+                    visibleItemsMiddle -> 18f
+                    in (visibleItemsMiddle - 1)..(visibleItemsMiddle + 1) -> 15f
+                    in (visibleItemsMiddle - 2)..(visibleItemsMiddle + 2) -> 12f
                     else -> 12f
                 }
-//
-                val animatedFontSize by animateFloatAsState(targetValue = targetFontSize)
-                val animatedTextStyle = TextStyle(
-                    fontSize = animatedFontSize.sp,
-                    color = if (itemIndex == visibleItemsMiddle) ManColor else Color.LightGray
+
+                val animatedTextStyle = when (targetFontSize) {
+                    18f -> Typography.medium18
+                    15f -> Typography.medium15
+                    12f -> Typography.normal12
+                    else -> Typography.normal12
+                }.copy(
+                    color = if (itemIndex == visibleItemsMiddle) {
+                        if (isMan) ManColor else WomanColor
+                    } else {
+                        Color.LightGray
+                    }
                 )
 
                 Text(
@@ -189,7 +216,10 @@ fun Picker(
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = animatedTextStyle,
-                    modifier = Modifier.width(100.dp).height(30.dp).padding(vertical = 2.dp),
+                    modifier = Modifier
+                        .width(100.dp)
+                        .height(30.dp)
+                        .padding(vertical = 2.dp),
                     textAlign = textAlign
                 )
             }
@@ -203,9 +233,6 @@ private fun Modifier.fadingEdge(brush: Brush) = this
         drawContent()
         drawRect(brush = brush, blendMode = BlendMode.DstIn)
     }
-
-@Composable
-private fun pixelsToDp(pixels: Int) = with(LocalDensity.current) { pixels.toDp() }
 
 @Composable
 fun rememberPickerState() = remember { PickerState() }

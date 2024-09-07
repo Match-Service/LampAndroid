@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.ui.common.CreationScreen
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LightGray
@@ -97,9 +98,9 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
             LinearProgressIndicator(
                 progress = {
                     when (currentStep) {
-                        1 -> 0.25f
-                        2 -> 0.50f
-                        3 -> 0.75f
+                        CreationScreen.PERSONNEL -> 0.25f
+                        CreationScreen.REGION -> 0.50f
+                        CreationScreen.MOOD -> 0.75f
                         else -> 1f
                     }
                 },
@@ -116,19 +117,19 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                 contentAlignment = Alignment.Center
             ) {
                 when (currentStep) {
-                    1 -> PersonnelScreen(selectedOption = selectedPersonnel) {
+                    CreationScreen.PERSONNEL -> PersonnelScreen(selectedOption = selectedPersonnel) {
                         selectedPersonnel = it
                     }
 
-                    2 -> RegionScreen(selectedOption = selectedRegion) {
+                    CreationScreen.REGION -> RegionScreen(selectedOption = selectedRegion) {
                         selectedRegion = it
                     }
 
-                    3 -> MoodScreen(selectedOption = selectedMood) {
+                    CreationScreen.MOOD -> MoodScreen(selectedOption = selectedMood) {
                         selectedMood = it
                     }
 
-                    4 -> LampIntroductionScreen(
+                    CreationScreen.INTRODUCTION -> LampIntroductionScreen(
                         lampName = lampName,
                         lampSummary = lampSummary,
                         onLampNameChange = { newLampName -> lampName = newLampName },
@@ -149,9 +150,9 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
             },
             onClick = { currentStep++ },
             enabled = when (currentStep) {
-                1 -> selectedPersonnel.isNotEmpty()
-                2 -> selectedRegion.isNotEmpty()
-                3 -> selectedMood.isNotEmpty()
+                CreationScreen.PERSONNEL -> selectedPersonnel.isNotEmpty()
+                CreationScreen.REGION -> selectedRegion.isNotEmpty()
+                CreationScreen.MOOD -> selectedMood.isNotEmpty()
                 else -> lampName.isNotEmpty()
             }
         )
