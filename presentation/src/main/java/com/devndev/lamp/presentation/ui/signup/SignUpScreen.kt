@@ -36,7 +36,6 @@ import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.creation.LampIntroductionScreen
-import com.devndev.lamp.presentation.ui.creation.MoodScreen
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
@@ -49,6 +48,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
 
     var name by remember { mutableStateOf("") }
     var university by remember { mutableStateOf("") }
+    var selectedGender by remember { mutableStateOf("") }
     var isNameValid by remember { mutableStateOf(true) }
     var isDuplicateName by remember { mutableStateOf(false) }
 
@@ -61,8 +61,6 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
     }
 
     // 추후 삭제
-    var selectedRegion by remember { mutableStateOf("") }
-    var selectedMood by remember { mutableStateOf("") }
     var lampName by remember { mutableStateOf("") }
     var lampSummary by remember { mutableStateOf("") }
 
@@ -175,8 +173,8 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                         onUniversityChange = { newUniversity -> university = newUniversity }
                     )
 
-                    3 -> MoodScreen(selectedOption = selectedMood) {
-                        selectedMood = it
+                    3 -> GenderScreen(selectedOption = selectedGender) {
+                        selectedGender = it
                     }
 
                     4 -> LampIntroductionScreen(
@@ -236,7 +234,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                 enabled = when (currentStep) {
                     1 -> name.isNotEmpty()
                     2 -> university.isNotEmpty()
-                    3 -> selectedMood.isNotEmpty()
+                    3 -> selectedGender.isNotEmpty()
                     else -> lampName.isNotEmpty()
                 }
             )
