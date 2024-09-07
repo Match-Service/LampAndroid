@@ -26,4 +26,9 @@
     <string name="sign_in_email">이메일로 시작하기</string>
     <string name="have_account">이미 계정이 있다면?</string>
     <string name="login">로그인 하기</string>
+    <string name="signup_name">처음 오셨군요, 반가워요!\n닉네임을 만들어볼까요?</string>
+    <string name="input_name">닉네임을 입력하세요</string>
+    <string name="name_guide1">닉네임은 수정이 불가하니 정확하게 입력해주세요</string>
+    <string name="name_guide2">특수문자 제외 한글, 영어만 사용해주세요</string>
+    <string name="name_guide3">중복된 닉네임이에요</string>
 </resources>

@@ -29,14 +29,17 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.ui.signup.navigation.navigateSignup
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
 fun LoginScreen(
-    viewModel: LoginViewModel = hiltViewModel()
+    viewModel: LoginViewModel = hiltViewModel(),
+    navController: NavController
 ) {
     val context = LocalContext.current
 
@@ -102,7 +105,7 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                onClick = {},
+                onClick = { navController.navigateSignup() },
                 colors = buttonColor
             ) {
                 Text(text = context.getString(R.string.sign_in_email), style = Typography.medium18)

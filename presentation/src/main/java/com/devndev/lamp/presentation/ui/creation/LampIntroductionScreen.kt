@@ -30,6 +30,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.ui.common.SelectionScreen
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.Typography
