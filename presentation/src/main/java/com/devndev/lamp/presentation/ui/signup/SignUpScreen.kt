@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.signup
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.common.SignUpScreen
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
@@ -42,6 +44,7 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
 fun SignUpScreen(modifier: Modifier, navController: NavController) {
+    val logTag = "SignUpScreen"
     val context = LocalContext.current
     var currentStep by remember { mutableIntStateOf(1) }
 
@@ -51,6 +54,9 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
     var isNameValid by remember { mutableStateOf(true) }
     var isDuplicateName by remember { mutableStateOf(false) }
 
+    var birthYear by remember { mutableStateOf("2000") }
+    var birthMonth by remember { mutableStateOf("1") }
+    var birthDay by remember { mutableStateOf("1") }
     fun isKoreanAndEnglishOnly(name: String): Boolean {
         val regex = "^[a-zA-Z가-힣]+$".toRegex()
         if (name.isEmpty()) {
@@ -132,12 +138,12 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
             LinearProgressIndicator(
                 progress = {
                     when (currentStep) {
-                        1 -> 0.142f
-                        2 -> 0.248f
-                        3 -> 0.426f
-                        4 -> 0.568f
-                        5 -> 0.710f
-                        6 -> 0.852f
+                        SignUpScreen.NAME -> 0.142f
+                        SignUpScreen.UNIVERSITY -> 0.248f
+                        SignUpScreen.GENDER -> 0.426f
+                        SignUpScreen.BIRTH -> 0.568f
+                        SignUpScreen.INTRODUCTION -> 0.710f
+                        SignUpScreen.INSTAGRAM -> 0.852f
                         else -> 1f
                     }
                 },
@@ -154,7 +160,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                 contentAlignment = Alignment.Center
             ) {
                 when (currentStep) {
-                    1 -> NameScreen(
+                    SignUpScreen.NAME -> NameScreen(
                         name = name,
                         onNameChange = { newName ->
                             name = newName
@@ -167,16 +173,24 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                         isDuplicateName = isDuplicateName
                     )
 
-                    2 -> UniversityScreen(
+                    SignUpScreen.UNIVERSITY -> UniversityScreen(
                         university = university,
                         onUniversityChange = { newUniversity -> university = newUniversity }
                     )
 
-                    3 -> GenderScreen(selectedOption = selectedGender) {
+                    SignUpScreen.GENDER -> GenderScreen(selectedOption = selectedGender) {
                         selectedGender = it
                     }
 
-                    4 -> BirthScreen()
+                    SignUpScreen.BIRTH -> BirthScreen(
+                        isMan = selectedGender == context.getString(R.string.man),
+                        selectedYear = birthYear,
+                        selectedMonth = birthMonth,
+                        selectedDay = birthDay,
+                        onYearChange = { birthYear = it },
+                        onMonthChange = { birthMonth = it },
+                        onDayChange = { birthDay = it }
+                    )
                 }
             }
         }
@@ -185,7 +199,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (currentStep == 2) {
+            if (currentStep == SignUpScreen.UNIVERSITY) {
                 Text(
                     modifier = Modifier.clickable {
                         currentStep++
@@ -205,7 +219,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
             }
             LampButton(
                 isGradient = true,
-                buttonText = if (currentStep < 7) {
+                buttonText = if (currentStep < SignUpScreen.PROFILE) {
                     context.getString(R.string.next)
                 } else {
                     context.getString(
@@ -213,7 +227,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                     )
                 },
                 onClick = {
-                    if (currentStep == 1) {
+                    if (currentStep == SignUpScreen.NAME) {
                         isNameValid = isKoreanAndEnglishOnly(name)
                         if (isNameValid) {
                             isDuplicateName = (0..1).random() == 1
@@ -221,14 +235,18 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                                 currentStep++
                             }
                         }
+                    } else if (currentStep == SignUpScreen.BIRTH) {
+                        Log.d(logTag, "$birthYear $birthMonth $birthDay")
+                        currentStep++
                     } else {
                         currentStep++
                     }
                 },
                 enabled = when (currentStep) {
-                    1 -> name.isNotEmpty()
-                    2 -> university.isNotEmpty()
-                    3 -> selectedGender.isNotEmpty()
+                    SignUpScreen.NAME -> name.isNotEmpty()
+                    SignUpScreen.UNIVERSITY -> university.isNotEmpty()
+                    SignUpScreen.GENDER -> selectedGender.isNotEmpty()
+                    SignUpScreen.BIRTH -> true
                     else -> lampName.isNotEmpty()
                 }
             )
