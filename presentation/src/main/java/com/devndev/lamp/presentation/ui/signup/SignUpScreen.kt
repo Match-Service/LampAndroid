@@ -2,6 +2,7 @@ package com.devndev.lamp.presentation.ui.signup
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -26,16 +28,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.creation.LampIntroductionScreen
 import com.devndev.lamp.presentation.ui.creation.MoodScreen
-import com.devndev.lamp.presentation.ui.creation.RegionScreen
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
+import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
 fun SignUpScreen(modifier: Modifier, navController: NavController) {
@@ -43,6 +48,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
     var currentStep by remember { mutableIntStateOf(1) }
 
     var name by remember { mutableStateOf("") }
+    var university by remember { mutableStateOf("") }
     var isNameValid by remember { mutableStateOf(true) }
     var isDuplicateName by remember { mutableStateOf(false) }
 
@@ -164,9 +170,10 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                         isDuplicateName = isDuplicateName
                     )
 
-                    2 -> RegionScreen(selectedOption = selectedRegion) {
-                        selectedRegion = it
-                    }
+                    2 -> UniversityScreen(
+                        university = university,
+                        onUniversityChange = { newUniversity -> university = newUniversity }
+                    )
 
                     3 -> MoodScreen(selectedOption = selectedMood) {
                         selectedMood = it
@@ -182,35 +189,57 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
             }
         }
 
-        LampButton(
-            isGradient = true,
-            buttonText = if (currentStep < 7) {
-                context.getString(R.string.next)
-            } else {
-                context.getString(
-                    R.string.done
+        Column(
+            verticalArrangement = Arrangement.spacedBy(20.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            if (currentStep == 2) {
+                Text(
+                    modifier = Modifier.clickable {
+                        currentStep++
+                        university = ""
+                    },
+                    text = buildAnnotatedString {
+                        append(context.getString(R.string.skip))
+                        addStyle(
+                            style = SpanStyle(textDecoration = TextDecoration.Underline),
+                            start = 0,
+                            end = this.length
+                        )
+                    },
+                    color = Color.White,
+                    style = Typography.normal15
                 )
-            },
-            onClick = {
-                if (currentStep == 1) {
-                    isNameValid = isKoreanAndEnglishOnly(name)
-                    if (isNameValid) {
-                        // 중복 검사 임의로 랜덤하게 확인
-                        isDuplicateName = (0..1).random() == 1
-                        if (!isDuplicateName) {
-                            currentStep++
-                        }
-                    }
-                } else {
-                    currentStep++
-                }
-            },
-            enabled = when (currentStep) {
-                1 -> name.isNotEmpty()
-                2 -> selectedRegion.isNotEmpty()
-                3 -> selectedMood.isNotEmpty()
-                else -> lampName.isNotEmpty()
             }
-        )
+            LampButton(
+                isGradient = true,
+                buttonText = if (currentStep < 7) {
+                    context.getString(R.string.next)
+                } else {
+                    context.getString(
+                        R.string.done
+                    )
+                },
+                onClick = {
+                    if (currentStep == 1) {
+                        isNameValid = isKoreanAndEnglishOnly(name)
+                        if (isNameValid) {
+                            isDuplicateName = (0..1).random() == 1
+                            if (!isDuplicateName) {
+                                currentStep++
+                            }
+                        }
+                    } else {
+                        currentStep++
+                    }
+                },
+                enabled = when (currentStep) {
+                    1 -> name.isNotEmpty()
+                    2 -> university.isNotEmpty()
+                    3 -> selectedMood.isNotEmpty()
+                    else -> lampName.isNotEmpty()
+                }
+            )
+        }
     }
 }

@@ -31,4 +31,8 @@
     <string name="name_guide1">닉네임은 수정이 불가하니 정확하게 입력해주세요</string>
     <string name="name_guide2">특수문자 제외 한글, 영어만 사용해주세요</string>
     <string name="name_guide3">중복된 닉네임이에요</string>
+    <string name="signup_university">출산/재학 중인\n학교는 어디인가요?</string>
+    <string name="input_university">대학명을 입력하세요</string>
+    <string name="university_guide1">작성할 내용이 없다면 건너띄기를 눌러주세요</string>
+    <string name="skip">건너뛰기</string>
 </resources>
