@@ -17,6 +17,7 @@ import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.login.LoginViewModel
 import com.devndev.lamp.presentation.ui.login.navigation.loginNavGraph
 import com.devndev.lamp.presentation.ui.login.navigation.navigateLogin
+import com.devndev.lamp.presentation.ui.signup.navigation.signupNavGraph
 import com.devndev.lamp.presentation.ui.splsh.navigaion.splashNavGraph
 import com.devndev.lamp.presentation.ui.theme.LampTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -58,7 +59,8 @@ fun Lamp(viewModel: LoginViewModel = hiltViewModel()) {
         startDestination = if (isLoading) Route.SPLASH else if (isLoggedIn) Route.MAIN else Route.LOGIN
     ) {
         splashNavGraph(padding = PaddingValues())
-        loginNavGraph(padding = PaddingValues())
+        loginNavGraph(padding = PaddingValues(), navController = navController)
         mainNavGraph(padding = PaddingValues())
+        signupNavGraph(padding = PaddingValues(), navController = navController)
     }
 }

@@ -79,7 +79,7 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
-
+    implementation("androidx.compose.foundation:foundation:1.7.0")
     implementation(libs.google.login)
 
     implementation(libs.kakao.login)

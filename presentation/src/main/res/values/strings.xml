@@ -26,4 +26,23 @@
     <string name="sign_in_email">이메일로 시작하기</string>
     <string name="have_account">이미 계정이 있다면?</string>
     <string name="login">로그인 하기</string>
+    <string name="signup_name">처음 오셨군요, 반가워요!\n닉네임을 만들어볼까요?</string>
+
+    <string name="input_name">닉네임을 입력하세요</string>
+    <string name="name_guide1">닉네임은 수정이 불가하니 정확하게 입력해주세요</string>
+    <string name="name_guide2">특수문자 제외 한글, 영어만 사용해주세요</string>
+    <string name="name_guide3">중복된 닉네임이에요</string>
+
+    <string name="signup_university">출산/재학 중인\n학교는 어디인가요?</string>
+    <string name="input_university">대학명을 입력하세요</string>
+    <string name="university_guide1">작성할 내용이 없다면 건너띄기를 눌러주세요</string>
+
+    <string name="skip">건너뛰기</string>
+
+    <string name="input_gender">성별은\n무엇인가요?</string>
+    <string name="man">남성</string>
+    <string name="woman">여성</string>
+
+    <string name="input_birthday">생일은 언제인가요?</string>
+    <string name="birth_guide">프로필에 나이가 표시되며, 이후 변경이 불가해요</string>
 </resources>
