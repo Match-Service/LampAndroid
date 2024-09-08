@@ -149,6 +149,7 @@ fun SearchScreen(
 fun BottomSpace(navController: NavController) {
     val context = LocalContext.current
     Column(
+        modifier = Modifier.padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
