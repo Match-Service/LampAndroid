@@ -126,7 +126,8 @@ fun NameScreen(
                 }
             }
             Column(
-                modifier = Modifier.width(230.dp),
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
@@ -134,10 +135,7 @@ fun NameScreen(
                     style = Typography.normal12,
                     color = Color.White
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
+                Row() {
                     if (isDuplicateName) {
                         Text(
                             text = context.getString(R.string.name_guide3),
@@ -150,6 +148,7 @@ fun NameScreen(
                             style = Typography.normal12,
                             color = if (isValidName) Color.White else Color.Red
                         )
+                        Spacer(modifier = Modifier.width(15.dp))
                         Text(
                             text = "(${nameQuery.length}/6)",
                             style = Typography.normal12,

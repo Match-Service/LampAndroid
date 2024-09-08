@@ -196,6 +196,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
         }
 
         Column(
+            modifier = Modifier.padding(bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

@@ -138,23 +138,24 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                 }
             }
         }
-
-        LampButton(
-            isGradient = true,
-            buttonText = if (currentStep < 4) {
-                context.getString(R.string.next)
-            } else {
-                context.getString(
-                    R.string.done
-                )
-            },
-            onClick = { currentStep++ },
-            enabled = when (currentStep) {
-                CreationScreen.PERSONNEL -> selectedPersonnel.isNotEmpty()
-                CreationScreen.REGION -> selectedRegion.isNotEmpty()
-                CreationScreen.MOOD -> selectedMood.isNotEmpty()
-                else -> lampName.isNotEmpty()
-            }
-        )
+        Box(modifier = Modifier.padding(bottom = 20.dp)) {
+            LampButton(
+                isGradient = true,
+                buttonText = if (currentStep < 4) {
+                    context.getString(R.string.next)
+                } else {
+                    context.getString(
+                        R.string.done
+                    )
+                },
+                onClick = { currentStep++ },
+                enabled = when (currentStep) {
+                    CreationScreen.PERSONNEL -> selectedPersonnel.isNotEmpty()
+                    CreationScreen.REGION -> selectedRegion.isNotEmpty()
+                    CreationScreen.MOOD -> selectedMood.isNotEmpty()
+                    else -> lampName.isNotEmpty()
+                }
+            )
+        }
     }
 }
