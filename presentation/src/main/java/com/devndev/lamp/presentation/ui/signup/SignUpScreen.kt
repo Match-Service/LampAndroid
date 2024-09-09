@@ -57,6 +57,10 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
     var birthYear by remember { mutableStateOf("2000") }
     var birthMonth by remember { mutableStateOf("1") }
     var birthDay by remember { mutableStateOf("1") }
+
+    var selectedDrink by remember { mutableStateOf("") }
+    var selectedSmoke by remember { mutableStateOf("") }
+    var selectedExercise by remember { mutableStateOf("") }
     fun isKoreanAndEnglishOnly(name: String): Boolean {
         val regex = "^[a-zA-Z가-힣]+$".toRegex()
         if (name.isEmpty()) {
@@ -64,10 +68,6 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
         }
         return regex.matches(name)
     }
-
-    // 추후 삭제
-    var lampName by remember { mutableStateOf("") }
-    var lampSummary by remember { mutableStateOf("") }
 
     BackHandler(enabled = true) {
         if (currentStep > 1) {
@@ -142,7 +142,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                         SignUpScreen.UNIVERSITY -> 0.248f
                         SignUpScreen.GENDER -> 0.426f
                         SignUpScreen.BIRTH -> 0.568f
-                        SignUpScreen.INTRODUCTION -> 0.710f
+                        SignUpScreen.INFO -> 0.710f
                         SignUpScreen.INSTAGRAM -> 0.852f
                         else -> 1f
                     }
@@ -190,6 +190,18 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                         onYearChange = { birthYear = it },
                         onMonthChange = { birthMonth = it },
                         onDayChange = { birthDay = it }
+                    )
+
+                    SignUpScreen.INFO -> InfoScreen(
+                        selectedDrinkOption = selectedDrink,
+                        selectedSmokeOption = selectedSmoke,
+                        selectedExerciseOption = selectedExercise,
+                        onSelectDrinkOption = {
+                            selectedDrink = it
+                            Log.d(logTag, "selectedDrinkOption $selectedDrink")
+                        },
+                        onSelectSmokeOption = { selectedSmoke = it },
+                        onSelectExerciseOption = { selectedExercise = it }
                     )
                 }
             }
@@ -248,7 +260,8 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                     SignUpScreen.UNIVERSITY -> university.isNotEmpty()
                     SignUpScreen.GENDER -> selectedGender.isNotEmpty()
                     SignUpScreen.BIRTH -> true
-                    else -> lampName.isNotEmpty()
+                    SignUpScreen.INFO -> selectedDrink.isNotEmpty() && selectedSmoke.isNotEmpty() && selectedExercise.isNotEmpty()
+                    else -> false
                 }
             )
         }
