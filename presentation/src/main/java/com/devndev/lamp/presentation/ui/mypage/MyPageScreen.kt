@@ -6,18 +6,18 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.devndev.lamp.presentation.R
 import kotlin.system.exitProcess
 
 @Composable
-fun MyPageScreen(modifier: Modifier) {
+fun MyPageScreen(modifier: Modifier, viewModel: MyPageViewModel = hiltViewModel()) {
     val logTag = "MyPageScreen"
     val context = LocalContext.current
     val handler = remember { Handler(Looper.getMainLooper()) }
@@ -41,7 +41,9 @@ fun MyPageScreen(modifier: Modifier) {
             }, 2000)
         }
     }
-    Box(modifier = modifier.fillMaxSize()) {
-        Text("MyPageScreen", color = Color.White)
+    Box(modifier = modifier) {
+        Button(onClick = { viewModel.signOut() }) {
+            Text("임시 로그아웃")
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.devndev.lamp.presentation.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,6 +14,8 @@ import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,6 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -32,36 +36,64 @@ import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.creation.navigation.creationNavGraph
 import com.devndev.lamp.presentation.ui.home.navigaion.homeNavGraph
 import com.devndev.lamp.presentation.ui.home.navigaion.navigateHome
+import com.devndev.lamp.presentation.ui.login.AuthManager
+import com.devndev.lamp.presentation.ui.login.LoginViewModel
+import com.devndev.lamp.presentation.ui.login.navigation.loginNavGraph
 import com.devndev.lamp.presentation.ui.mypage.navigation.myPageNavGraph
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateMyPage
 import com.devndev.lamp.presentation.ui.search.navigation.searchNavGraph
+import com.devndev.lamp.presentation.ui.signup.navigation.signupNavGraph
+import com.devndev.lamp.presentation.ui.splsh.navigaion.splashNavGraph
 import com.devndev.lamp.presentation.ui.theme.BackGroundColor
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 
 @Composable
 fun MainScreen(modifier: Modifier) {
+    val loginViewModel: LoginViewModel = hiltViewModel()
     val navController = rememberNavController()
     val context = LocalContext.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    LaunchedEffect(Unit) {
+        loginViewModel.checkLoginStatus()
+    }
+
+    val isLoggedIn by AuthManager.isLoggedIn.collectAsState()
+    val isLoading by AuthManager.isLoading.collectAsState()
     Scaffold(
         containerColor = BackGroundColor,
-        topBar = { LampTopBar() },
+        topBar = {
+            if (currentRoute != Route.LOGIN) {
+                LampTopBar()
+            } else {
+                Spacer(modifier = Modifier.height(0.dp))
+            }
+        },
         bottomBar = {
-            if (currentRoute != Route.SEARCH && currentRoute != Route.CREATION) {
+            if (currentRoute != Route.SEARCH &&
+                currentRoute != Route.CREATION &&
+                currentRoute != Route.LOGIN
+            ) {
                 LampBottomNavigation(navController = navController)
             } else {
                 Spacer(modifier = Modifier.height(0.dp))
             }
         }
     ) { innerPadding ->
-        NavHost(navController, startDestination = Route.HOME) {
+        NavHost(
+            navController,
+            startDestination = if (isLoading) Route.SPLASH else if (isLoggedIn) Route.HOME else Route.LOGIN
+        ) {
             homeNavGraph(padding = innerPadding, navController = navController)
             chattingNavGraph(padding = innerPadding)
             myPageNavGraph(padding = innerPadding)
             searchNavGraph(padding = innerPadding, navController = navController)
             creationNavGraph(padding = innerPadding, navController = navController)
+            splashNavGraph(padding = PaddingValues())
+            loginNavGraph(padding = PaddingValues(), navController = navController)
+            signupNavGraph(padding = PaddingValues(), navController = navController)
         }
     }
 }

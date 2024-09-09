@@ -1,3 +1,4 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 import com.devndev.lamp.buildsrc.AppConfig
 
 plugins {
@@ -17,6 +18,17 @@ android {
 
         testInstrumentationRunner = AppConfig.testRunner
         consumerProguardFiles("consumer-rules.pro")
+
+        buildConfigField(
+            type = "String",
+            name = "GOOGLE_CLIENT_ID",
+            value = "\"${
+            gradleLocalProperties(
+                rootDir,
+                providers
+            ).getProperty("google_client_id")
+            }\""
+        )
     }
 
     buildTypes {
@@ -45,6 +57,7 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    implementation(libs.google.login)
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter)
