@@ -12,7 +12,7 @@ object SignUpScreen {
     const val UNIVERSITY = 2
     const val GENDER = 3
     const val BIRTH = 4
-    const val INTRODUCTION = 5
+    const val INFO = 5
     const val INSTAGRAM = 6
     const val PROFILE = 7
 }

@@ -65,7 +65,7 @@ fun MainScreen(modifier: Modifier) {
     Scaffold(
         containerColor = BackGroundColor,
         topBar = {
-            if (currentRoute != Route.LOGIN) {
+            if (currentRoute != Route.LOGIN && currentRoute != Route.SIGNUP) {
                 LampTopBar()
             } else {
                 Spacer(modifier = Modifier.height(0.dp))
@@ -74,7 +74,8 @@ fun MainScreen(modifier: Modifier) {
         bottomBar = {
             if (currentRoute != Route.SEARCH &&
                 currentRoute != Route.CREATION &&
-                currentRoute != Route.LOGIN
+                currentRoute != Route.LOGIN &&
+                currentRoute != Route.SIGNUP
             ) {
                 LampBottomNavigation(navController = navController)
             } else {

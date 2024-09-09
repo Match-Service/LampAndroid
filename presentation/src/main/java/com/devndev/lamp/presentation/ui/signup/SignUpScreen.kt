@@ -57,6 +57,15 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
     var birthYear by remember { mutableStateOf("2000") }
     var birthMonth by remember { mutableStateOf("1") }
     var birthDay by remember { mutableStateOf("1") }
+
+    var selectedDrink by remember { mutableStateOf("") }
+    var selectedSmoke by remember { mutableStateOf("") }
+    var selectedExercise by remember { mutableStateOf("") }
+
+    var instagramId by remember { mutableStateOf("") }
+    var isValidInstagramId by remember { mutableStateOf(false) }
+    var isAuthButtonClicked by remember { mutableStateOf(false) }
+
     fun isKoreanAndEnglishOnly(name: String): Boolean {
         val regex = "^[a-zA-Z가-힣]+$".toRegex()
         if (name.isEmpty()) {
@@ -64,10 +73,6 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
         }
         return regex.matches(name)
     }
-
-    // 추후 삭제
-    var lampName by remember { mutableStateOf("") }
-    var lampSummary by remember { mutableStateOf("") }
 
     BackHandler(enabled = true) {
         if (currentStep > 1) {
@@ -142,7 +147,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                         SignUpScreen.UNIVERSITY -> 0.248f
                         SignUpScreen.GENDER -> 0.426f
                         SignUpScreen.BIRTH -> 0.568f
-                        SignUpScreen.INTRODUCTION -> 0.710f
+                        SignUpScreen.INFO -> 0.710f
                         SignUpScreen.INSTAGRAM -> 0.852f
                         else -> 1f
                     }
@@ -191,6 +196,29 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                         onMonthChange = { birthMonth = it },
                         onDayChange = { birthDay = it }
                     )
+
+                    SignUpScreen.INFO -> InfoScreen(
+                        selectedDrinkOption = selectedDrink,
+                        selectedSmokeOption = selectedSmoke,
+                        selectedExerciseOption = selectedExercise,
+                        onSelectDrinkOption = {
+                            selectedDrink = it
+                            Log.d(logTag, "selectedDrinkOption $selectedDrink")
+                        },
+                        onSelectSmokeOption = { selectedSmoke = it },
+                        onSelectExerciseOption = { selectedExercise = it }
+                    )
+
+                    SignUpScreen.INSTAGRAM -> InstagramScreen(
+                        instagramID = instagramId,
+                        onInstagramIDChange = {
+                            instagramId = it
+                            isAuthButtonClicked = false
+                            isValidInstagramId = false
+                        },
+                        isValid = isValidInstagramId,
+                        isAuthButtonClicked = isAuthButtonClicked
+                    )
                 }
             }
         }
@@ -200,7 +228,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            if (currentStep == SignUpScreen.UNIVERSITY) {
+            if (currentStep == SignUpScreen.UNIVERSITY || currentStep == SignUpScreen.INSTAGRAM) {
                 Text(
                     modifier = Modifier.clickable {
                         currentStep++
@@ -218,15 +246,22 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                     style = Typography.normal15
                 )
             }
-            LampButton(
-                isGradient = true,
-                buttonText = if (currentStep < SignUpScreen.PROFILE) {
+            var buttonText = if (currentStep == SignUpScreen.INSTAGRAM) {
+                if (isValidInstagramId) {
                     context.getString(R.string.next)
                 } else {
-                    context.getString(
-                        R.string.done
-                    )
-                },
+                    context.getString(R.string.authentication)
+                }
+            } else if (currentStep < SignUpScreen.PROFILE) {
+                context.getString(R.string.next)
+            } else {
+                context.getString(
+                    R.string.done
+                )
+            }
+            LampButton(
+                isGradient = true,
+                buttonText = buttonText,
                 onClick = {
                     if (currentStep == SignUpScreen.NAME) {
                         isNameValid = isKoreanAndEnglishOnly(name)
@@ -239,6 +274,13 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                     } else if (currentStep == SignUpScreen.BIRTH) {
                         Log.d(logTag, "$birthYear $birthMonth $birthDay")
                         currentStep++
+                    } else if (currentStep == SignUpScreen.INSTAGRAM) {
+                        if (buttonText == context.getString(R.string.authentication)) {
+                            isValidInstagramId = (0..1).random() == 1
+                            isAuthButtonClicked = true
+                        } else {
+                            currentStep++
+                        }
                     } else {
                         currentStep++
                     }
@@ -248,7 +290,9 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                     SignUpScreen.UNIVERSITY -> university.isNotEmpty()
                     SignUpScreen.GENDER -> selectedGender.isNotEmpty()
                     SignUpScreen.BIRTH -> true
-                    else -> lampName.isNotEmpty()
+                    SignUpScreen.INFO -> selectedDrink.isNotEmpty() && selectedSmoke.isNotEmpty() && selectedExercise.isNotEmpty()
+                    SignUpScreen.INSTAGRAM -> instagramId.isNotEmpty()
+                    else -> false
                 }
             )
         }

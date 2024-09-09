@@ -45,4 +45,29 @@
 
     <string name="input_birthday">생일은 언제인가요?</string>
     <string name="birth_guide">프로필에 나이가 표시되며, 이후 변경이 불가해요</string>
+
+    <string name="input_info">회원님은\n어떤분인지 알려주세요</string>
+    <string name="drink">음주</string>
+    <string name="smoke">흡연</string>
+    <string name="exercise">운동</string>
+    <string name="drink_often">자주 마셔요</string>
+    <string name="drink_sometimes">가끔 마셔요</string>
+    <string name="drink_never">안 마셔요</string>
+    <string name="drink_stop">금주 중 이에요</string>
+
+    <string name="smoke_often">자주 펴요</string>
+    <string name="smoke_sometimes">가끔 펴요</string>
+    <string name="smoke_never">안 펴요</string>
+    <string name="smoke_stop">금연 중 이에요</string>
+
+    <string name="exercise_often">매일 해요</string>
+    <string name="exercise_sometimes">자주 해요</string>
+    <string name="exercise_never">가끔 해요</string>
+    <string name="exercise_stop">안 해요</string>
+
+    <string name="input_insta">인스타그램 계정 공유하고\n숨겨진 매력을 보여주세요</string>
+    <string name="guide_insta">인스타그램 계정을 입력하세요</string>
+    <string name="authentication">인증하기</string>
+    <string name="auth_failure">없는 계정입니다. 다시 입력해주세요</string>
+    <string name="auth_success">인증 완료</string>
 </resources>
