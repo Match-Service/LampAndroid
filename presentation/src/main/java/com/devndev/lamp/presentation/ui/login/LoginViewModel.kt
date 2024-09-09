@@ -5,37 +5,20 @@ import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devndev.lamp.presentation.BuildConfig
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class
-LoginViewModel @Inject constructor(@ApplicationContext private val context: Context) :
-    ViewModel() {
+class LoginViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val googleSignInClient: GoogleSignInClient
+) : ViewModel() {
     private val logTag = "LoginViewModel"
-
-    private val _isLoggedIn = MutableStateFlow(false)
-    val isLoggedIn: StateFlow<Boolean> get() = _isLoggedIn
-
-    private val _isLoading = MutableStateFlow(true)
-    val isLoading: StateFlow<Boolean> = _isLoading
-
-    private val googleSignInClient: GoogleSignInClient by lazy {
-        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestIdToken(BuildConfig.GOOGLE_CLIENT_ID)
-            .requestEmail()
-            .build()
-        GoogleSignIn.getClient(context, gso)
-    }
 
     fun getSignInIntent(): Intent {
         Log.d(logTag, "getSignInIntent()")
@@ -44,30 +27,23 @@ LoginViewModel @Inject constructor(@ApplicationContext private val context: Cont
 
     fun checkLoginStatus() {
         viewModelScope.launch {
-            _isLoading.value = true
+            AuthManager.updateLoadingStatus(true)
             val account = GoogleSignIn.getLastSignedInAccount(context)
-            _isLoggedIn.value = account != null
-            _isLoading.value = false
+            AuthManager.updateLoginStatus(account != null)
+            AuthManager.updateLoadingStatus(false)
         }
-        Log.d(logTag, "checkLoginStatus() status: ${_isLoggedIn.value}")
+        Log.d(logTag, "checkLoginStatus() status: ${AuthManager.isLoggedIn.value}")
     }
 
     fun signInWithGoogle(intentData: Intent?) {
         val task = GoogleSignIn.getSignedInAccountFromIntent(intentData)
         try {
             val account = task.getResult(ApiException::class.java)
-            _isLoggedIn.value = account != null
-            Log.d(logTag, "signInWithGoogle()")
+            AuthManager.updateLoginStatus(account != null)
+            Log.d(logTag, "signInWithGoogle() isLoggedIn ${AuthManager.isLoggedIn.value}")
         } catch (e: ApiException) {
-            _isLoggedIn.value = false
+            AuthManager.updateLoginStatus(false)
             Log.e(logTag, "signInResult:failed", e)
-        }
-    }
-
-    fun signOut() {
-        Log.d(logTag, "signOut()")
-        googleSignInClient.signOut().addOnCompleteListener {
-            _isLoggedIn.value = false
         }
     }
 
