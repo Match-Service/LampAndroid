@@ -79,10 +79,12 @@ dependencies {
     implementation(libs.navigation.compose)
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)
-    implementation("androidx.compose.foundation:foundation:1.7.0")
+    implementation(libs.androidx.compose.foundation)
     implementation(libs.google.login)
 
     implementation(libs.kakao.login)
 
     implementation(libs.accompanist.pager)
+
+    implementation("com.github.CanHub:Android-Image-Cropper:4.0.0")
 }

@@ -70,4 +70,8 @@
     <string name="authentication">인증하기</string>
     <string name="auth_failure">없는 계정입니다. 다시 입력해주세요</string>
     <string name="auth_success">인증 완료</string>
+
+    <string name="input_profile">프로필 입력하고\n회원님의 매력을 보여주세요</string>
+    <string name="guide_profile">본인 모습이 잘 나타난 사진을 최소 1장 등록해주세요</string>
+    <string name="start">시작하기</string>
 </resources>
