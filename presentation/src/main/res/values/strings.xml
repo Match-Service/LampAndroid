@@ -74,4 +74,8 @@
     <string name="input_profile">프로필 입력하고\n회원님의 매력을 보여주세요</string>
     <string name="guide_profile">본인 모습이 잘 나타난 사진을 최소 1장 등록해주세요</string>
     <string name="start">시작하기</string>
+
+    <string name="waiting_header">조금만 기다려주세요!</string>
+    <string name="waiting_guide">님의 수락을 기다리고 있어요</string>
+    <string name="cancel_waiting">입장 취소하기</string>
 </resources>

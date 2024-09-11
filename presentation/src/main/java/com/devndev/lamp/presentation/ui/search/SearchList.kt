@@ -1,6 +1,5 @@
 package com.devndev.lamp.presentation.ui.search
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -33,16 +32,16 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
-fun SearchList(profileList: List<Item>) {
+fun SearchList(profileList: List<Item>, onEnterButtonClick: (Item) -> Unit) {
     LazyColumn {
         items(profileList) { profile ->
-            SearchItem(profile = profile)
+            SearchItem(profile = profile, onEnterButtonClick = onEnterButtonClick)
         }
     }
 }
 
 @Composable
-fun SearchItem(profile: Item) {
+fun SearchItem(profile: Item, onEnterButtonClick: (Item) -> Unit) {
     val context = LocalContext.current
     Box(
         modifier = Modifier.fillMaxWidth(),
@@ -73,10 +72,12 @@ fun SearchItem(profile: Item) {
             val buttonColors: Color
             val textColor: Color
             var buttonText = ""
+            var onButtonClick = {}
             if (profile.isLampOn) {
                 buttonColors = WomanColor
                 textColor = Color.White
                 buttonText = context.getString(R.string.enter_lamp)
+                onButtonClick = { onEnterButtonClick(profile) }
             } else {
                 buttonColors = Gray
                 textColor = Gray3
@@ -93,7 +94,7 @@ fun SearchItem(profile: Item) {
 //            }
             SearchScreenButton(
                 text = buttonText,
-                onClick = { Log.d("/////", "llllllllll") },
+                onClick = onButtonClick,
                 backgroundColor = buttonColors,
                 textColor = textColor
             )
