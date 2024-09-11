@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
@@ -53,7 +54,9 @@ fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
                 guideButtonText = context.getString(R.string.guide_make_lamp),
                 onClick = {
                     navController.navigateCreation()
-                }
+                },
+                icon = painterResource(id = R.drawable.arrow),
+                enabled = true
             )
             LampButtonWithIcon(
                 isGradient = false,
@@ -61,7 +64,9 @@ fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
                 guideButtonText = context.getString(R.string.guide_find_friend),
                 onClick = {
                     navController.navigateSearch()
-                }
+                },
+                icon = painterResource(id = R.drawable.arrow),
+                enabled = true
             )
         }
         Spacer(
