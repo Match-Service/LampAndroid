@@ -78,4 +78,6 @@
     <string name="waiting_header">조금만 기다려주세요!</string>
     <string name="waiting_guide">님의 수락을 기다리고 있어요</string>
     <string name="cancel_waiting">입장 취소하기</string>
+
+    <string name="matching_header_invite">램프와 함께할\n친구들을 초대하세요</string>
 </resources>

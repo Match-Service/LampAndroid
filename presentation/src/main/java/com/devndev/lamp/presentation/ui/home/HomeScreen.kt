@@ -41,6 +41,7 @@ fun HomeScreen(
 
     val isWaiting by TempStatus.isWaiting.collectAsState()
     val profileName by TempStatus.profileName.collectAsState()
+    val isMatching by TempStatus.isMatching.collectAsState()
 
     BackHandler {
         Log.d(logTag, "back button clicked")
@@ -62,6 +63,8 @@ fun HomeScreen(
     }
     if (isWaiting) {
         WaitingHomeScreen(modifier = modifier, navController = navController)
+    } else if (isMatching) {
+        MatchingHomeScreen(modifier = modifier, navController = navController)
     } else {
         NormalHomeScreen(modifier = modifier, navController = navController)
     }
