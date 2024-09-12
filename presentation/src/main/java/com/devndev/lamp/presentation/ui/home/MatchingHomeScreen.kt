@@ -2,10 +2,12 @@ package com.devndev.lamp.presentation.ui.home
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +38,8 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 @Composable
 fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
     val context = LocalContext.current
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -47,17 +51,19 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
                 .height(100.dp)
                 .fillMaxWidth()
                 .background(LampBlack)
-                .align(Alignment.BottomCenter),
+                .align(Alignment.BottomCenter)
         )
 
         Column(
             modifier = modifier
-                .fillMaxSize()
-                .height(24.dp),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(25.dp)
         ) {
-            MatchingHomeTopBar()
+            MatchingHomeTopBar(
+                onExitIconClick = { TempStatus.updateIsMatching(false) },
+                onShareIconClick = {}
+            )
             Text(
                 text = context.getString(R.string.matching_header_invite),
                 color = Color.White,
@@ -65,11 +71,21 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
                 textAlign = TextAlign.Center
             )
         }
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            // 원의 최 상단 부분
+            Spacer(modifier = Modifier.height(((screenHeight / 7) * 5) - 250.dp))
+            Spacer(modifier = Modifier.height(70.dp))
+
+            Text(text = "임시 방 제목", color = Color.White, style = Typography.semiBold20)
+        }
     }
 }
 
 @Composable
-fun MatchingHomeTopBar() {
+fun MatchingHomeTopBar(onExitIconClick: () -> Unit, onShareIconClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -80,12 +96,18 @@ fun MatchingHomeTopBar() {
         Icon(
             painter = painterResource(id = R.drawable.exit_icon),
             contentDescription = null,
-            tint = Gray3
+            tint = Gray3,
+            modifier = Modifier.clickable {
+                onExitIconClick()
+            }
         )
         Icon(
             painter = painterResource(id = R.drawable.share_icon),
             contentDescription = null,
-            tint = Gray3
+            tint = Gray3,
+            modifier = Modifier.clickable {
+                onShareIconClick()
+            }
         )
     }
 }

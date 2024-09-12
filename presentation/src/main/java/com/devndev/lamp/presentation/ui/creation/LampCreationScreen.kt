@@ -30,6 +30,8 @@ import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.CreationScreen
 import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.home.TempStatus
+import com.devndev.lamp.presentation.ui.home.navigaion.navigateHome
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LightGray
 
@@ -148,11 +150,18 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                         R.string.done
                     )
                 },
-                onClick = { currentStep++ },
+                onClick = {
+                    if (currentStep < 4) {
+                        currentStep++
+                    } else {
+                        TempStatus.updateIsMatching(true)
+                        navController.navigateHome()
+                    }
+                },
                 enabled = when (currentStep) {
                     CreationScreen.PERSONNEL -> selectedPersonnel.isNotEmpty()
                     CreationScreen.REGION -> selectedRegion.isNotEmpty()
-                    CreationScreen.MOOD -> selectedMood.isNotEmpty()
+                    CreationScreen.MOOD -> true /* selectedMood.isNotEmpty() 분위기 화면 미구현으로 구현 완료 후 수정 필요 */
                     else -> lampName.isNotEmpty()
                 }
             )
