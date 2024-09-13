@@ -31,6 +31,7 @@ val Gray3 = Color(0xFFB7B7B7)
 val BackGroundColor = LampBlack
 
 val MoodGray = Color(0xFF191919)
+val MoodTextGray = Color(0xFFB7B7B7)
 val MoodBlack = Color(0xFFFFFFFF)
 val MoodRed = Color(0xFFE4313C)
 val MoodYellow = Color(0xFFFFA338)

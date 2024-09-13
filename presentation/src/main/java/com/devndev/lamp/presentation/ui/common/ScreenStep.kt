@@ -16,3 +16,10 @@ object SignUpScreen {
     const val INSTAGRAM = 6
     const val PROFILE = 7
 }
+
+object MoodScreen {
+    const val SELECT = 1
+    const val FUNNY = 2
+    const val CASUAL = 3
+    const val SERIOUS = 4
+}
