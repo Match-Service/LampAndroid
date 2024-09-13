@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.main.TempDB
 import com.devndev.lamp.presentation.ui.common.CreationScreen
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.home.TempStatus
@@ -40,11 +41,11 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
     val context = LocalContext.current
     var currentStep by remember { mutableIntStateOf(1) }
 
-    var selectedPersonnel by remember { mutableStateOf("") }
-    var selectedRegion by remember { mutableStateOf("") }
-    var selectedMood by remember { mutableStateOf("") }
-    var lampName by remember { mutableStateOf("") }
-    var lampSummary by remember { mutableStateOf("") }
+    var selectedPersonnel by remember { mutableStateOf(TempDB.personnel) }
+    var selectedRegion by remember { mutableStateOf(TempDB.region) }
+    var selectedMood by remember { mutableStateOf(TempDB.mood) }
+    var lampName by remember { mutableStateOf(TempDB.lampName) }
+    var lampSummary by remember { mutableStateOf(TempDB.lampSummary) }
 
     BackHandler(enabled = true) {
         if (currentStep > 1) {
@@ -154,6 +155,11 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                     if (currentStep < 4) {
                         currentStep++
                     } else {
+                        TempDB.personnel = selectedPersonnel
+                        TempDB.region = selectedRegion
+                        TempDB.mood = selectedMood
+                        TempDB.lampName = lampName
+                        TempDB.lampSummary = lampSummary
                         TempStatus.updateIsMatching(true)
                         navController.navigateHome()
                     }
