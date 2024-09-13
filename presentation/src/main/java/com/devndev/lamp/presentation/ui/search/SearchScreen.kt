@@ -39,6 +39,8 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
+import com.devndev.lamp.presentation.ui.home.TempStatus
+import com.devndev.lamp.presentation.ui.home.navigaion.navigateHome
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.Typography
@@ -59,11 +61,11 @@ fun SearchScreen(
         modifier = modifier
             .fillMaxSize()
             .padding(horizontal = 16.dp),
-        verticalArrangement = Arrangement.SpaceBetween // Ensure space between items
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
             verticalArrangement = Arrangement.spacedBy(18.dp),
-            modifier = Modifier.weight(1f) // Fill available space
+            modifier = Modifier.weight(1f)
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(20.dp),
@@ -137,7 +139,14 @@ fun SearchScreen(
                     )
                 }
             }
-            SearchList(profileList = items)
+            SearchList(
+                profileList = items,
+                onEnterButtonClick = { profile ->
+                    TempStatus.updateIsWaiting(true)
+                    TempStatus.updateProfileName(profile.name)
+                    navController.navigateHome()
+                }
+            )
         }
         if (showBottomSpace) {
             BottomSpace(navController = navController)

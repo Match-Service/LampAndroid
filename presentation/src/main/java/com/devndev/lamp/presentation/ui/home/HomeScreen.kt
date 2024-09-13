@@ -5,11 +5,8 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,9 +22,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.domain.model.Item
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.common.LampButtonWithIcon
-import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
-import com.devndev.lamp.presentation.ui.search.navigation.navigateSearch
 import com.devndev.lamp.presentation.ui.theme.IncTypography
 import com.devndev.lamp.presentation.ui.theme.MainColor
 import com.devndev.lamp.presentation.ui.theme.Typography
@@ -44,6 +38,10 @@ fun HomeScreen(
     val items: List<Item> by viewModel.items.collectAsState()
     val handler = remember { Handler(Looper.getMainLooper()) }
     var backPressedOnce = remember { false }
+
+    val isWaiting by TempStatus.isWaiting.collectAsState()
+    val profileName by TempStatus.profileName.collectAsState()
+    val isMatching by TempStatus.isMatching.collectAsState()
 
     BackHandler {
         Log.d(logTag, "back button clicked")
@@ -63,64 +61,39 @@ fun HomeScreen(
             }, 2000)
         }
     }
+    if (isWaiting) {
+        WaitingHomeScreen(modifier = modifier, navController = navController)
+    } else if (isMatching) {
+        MatchingHomeScreen(modifier = modifier, navController = navController)
+    } else {
+        NormalHomeScreen(modifier = modifier, navController = navController)
+    }
+}
 
+@Composable
+fun HomeTextArea(
+    nameText: String,
+    middleText: String,
+    bottomText: String
+) {
     Column(
-        modifier = modifier
-            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(
-            modifier = Modifier
-                .weight(0.3f)
-                .fillMaxWidth()
+        Text(
+            text = nameText,
+            color = MainColor,
+            style = IncTypography.normal42
         )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.weight(1f)
-        ) {
-            Text(
-                text = "북창동루쥬라 " + context.getString(R.string.sir),
-                color = MainColor,
-                style = IncTypography.normal42
-            )
-            Text(
-                text = context.getString(R.string.main_header),
-                color = Color.White,
-                style = Typography.semiBold32
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-            Text(
-                text = context.getString(R.string.meet_with_lamp),
-                color = Color.White,
-                style = Typography.normal12
-            )
-        }
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-            modifier = Modifier.weight(1f)
-        ) {
-            LampButtonWithIcon(
-                isGradient = true,
-                buttonText = context.getString(R.string.make_lamp),
-                guideButtonText = context.getString(R.string.guide_make_lamp),
-                onClick = {
-                    navController.navigateCreation()
-                }
-            )
-            LampButtonWithIcon(
-                isGradient = false,
-                buttonText = context.getString(R.string.find_friend),
-                guideButtonText = context.getString(R.string.guide_find_friend),
-                onClick = {
-                    navController.navigateSearch()
-                }
-            )
-        }
-        Spacer(
-            modifier = Modifier
-                .weight(0.3f)
-                .fillMaxWidth()
+        Text(
+            text = middleText,
+            color = Color.White,
+            style = Typography.semiBold32
+        )
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = bottomText,
+            color = Color.White,
+            style = Typography.normal12
         )
     }
 }

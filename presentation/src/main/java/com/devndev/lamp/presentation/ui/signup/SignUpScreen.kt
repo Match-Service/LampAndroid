@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.signup
 
+import android.graphics.Bitmap
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -65,6 +66,9 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
     var instagramId by remember { mutableStateOf("") }
     var isValidInstagramId by remember { mutableStateOf(false) }
     var isAuthButtonClicked by remember { mutableStateOf(false) }
+
+    var bitmaps by remember { mutableStateOf(List(6) { null as Bitmap? }) }
+    var profileIntro by remember { mutableStateOf("") }
 
     fun isKoreanAndEnglishOnly(name: String): Boolean {
         val regex = "^[a-zA-Z가-힣]+$".toRegex()
@@ -219,6 +223,15 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                         isValid = isValidInstagramId,
                         isAuthButtonClicked = isAuthButtonClicked
                     )
+
+                    SignUpScreen.PROFILE -> {
+                        ProfileScreen(
+                            profileIntro = profileIntro,
+                            bitmaps = bitmaps,
+                            onProfileIntroChange = { profileIntro = it },
+                            onBitmapsChange = { updatedBitmaps -> bitmaps = updatedBitmaps }
+                        )
+                    }
                 }
             }
         }
@@ -246,7 +259,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                     style = Typography.normal15
                 )
             }
-            var buttonText = if (currentStep == SignUpScreen.INSTAGRAM) {
+            val buttonText = if (currentStep == SignUpScreen.INSTAGRAM) {
                 if (isValidInstagramId) {
                     context.getString(R.string.next)
                 } else {
@@ -256,8 +269,13 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                 context.getString(R.string.next)
             } else {
                 context.getString(
-                    R.string.done
+                    R.string.start
                 )
+            }
+            val icon = if (currentStep == SignUpScreen.PROFILE) {
+                painterResource(id = R.drawable.app_logo)
+            } else {
+                null
             }
             LampButton(
                 isGradient = true,
@@ -292,8 +310,10 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                     SignUpScreen.BIRTH -> true
                     SignUpScreen.INFO -> selectedDrink.isNotEmpty() && selectedSmoke.isNotEmpty() && selectedExercise.isNotEmpty()
                     SignUpScreen.INSTAGRAM -> instagramId.isNotEmpty()
+                    SignUpScreen.PROFILE -> bitmaps[0] != null && profileIntro.isNotEmpty()
                     else -> false
-                }
+                },
+                icon = icon
             )
         }
     }

@@ -45,6 +45,7 @@ import com.devndev.lamp.presentation.ui.search.navigation.searchNavGraph
 import com.devndev.lamp.presentation.ui.signup.navigation.signupNavGraph
 import com.devndev.lamp.presentation.ui.splsh.navigaion.splashNavGraph
 import com.devndev.lamp.presentation.ui.theme.BackGroundColor
+import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 
@@ -112,13 +113,13 @@ fun LampTopBar() {
         Icon(
             painterResource(id = R.drawable.app_logo),
             contentDescription = "AppLogo",
-            tint = LightGray,
+            tint = Gray3,
             modifier = Modifier.height(24.dp)
         )
         Icon(
             painterResource(id = R.drawable.alarm_icon),
             contentDescription = "AlarmIcon",
-            tint = LightGray,
+            tint = Gray3,
             modifier = Modifier.size(24.dp)
         )
     }

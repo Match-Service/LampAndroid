@@ -44,7 +44,7 @@ fun UniversityScreen(
 ) {
     val context = LocalContext.current
 
-    SelectionScreen(text = context.getString(R.string.signup_name)) {
+    SelectionScreen(text = context.getString(R.string.signup_university)) {
         var nameQuery by remember { mutableStateOf(university) }
         Spacer(modifier = Modifier.height(24.dp))
 
