@@ -26,8 +26,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
@@ -42,8 +42,7 @@ fun LampIntroductionScreen(
     onLampNameChange: (String) -> Unit,
     onLampSummaryChange: (String) -> Unit
 ) {
-    val context = LocalContext.current
-    SelectionScreen(text = context.getString(R.string.lame_introduction)) {
+    SelectionScreen(text = stringResource(id = R.string.lame_introduction)) {
         var subjectQuery by remember { mutableStateOf(lampName) }
         var summaryQuery by remember { mutableStateOf(lampSummary) }
         val maxSubjectChar = 8
@@ -82,7 +81,7 @@ fun LampIntroductionScreen(
                 ) { innerTextField ->
                     if (subjectQuery.isEmpty()) {
                         Text(
-                            text = context.getString(R.string.input_lamp_name),
+                            text = stringResource(id = R.string.input_lamp_name),
                             color = LightGray,
                             style = Typography.medium18
                         )
@@ -130,7 +129,7 @@ fun LampIntroductionScreen(
                 ) { innerTextField ->
                     if (summaryQuery.isEmpty()) {
                         Text(
-                            text = context.getString(R.string.input_lamp_summary),
+                            text = stringResource(id = R.string.input_lamp_summary),
                             color = LightGray,
                             style = Typography.normal14
                         )

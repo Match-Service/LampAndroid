@@ -25,8 +25,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
@@ -42,9 +42,7 @@ fun UniversityScreen(
     university: String,
     onUniversityChange: (String) -> Unit
 ) {
-    val context = LocalContext.current
-
-    SelectionScreen(text = context.getString(R.string.signup_university)) {
+    SelectionScreen(text = stringResource(id = R.string.signup_university)) {
         var nameQuery by remember { mutableStateOf(university) }
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -81,7 +79,7 @@ fun UniversityScreen(
                 ) { innerTextField ->
                     if (nameQuery.isEmpty()) {
                         Text(
-                            text = context.getString(R.string.input_university),
+                            text = stringResource(id = R.string.input_university),
                             color = LightGray,
                             style = Typography.medium18
                         )
@@ -105,7 +103,7 @@ fun UniversityScreen(
 
             Text(
                 modifier = Modifier.width(230.dp),
-                text = context.getString(R.string.university_guide1),
+                text = stringResource(id = R.string.university_guide1),
                 style = Typography.normal12,
                 color = Color.White,
                 textAlign = TextAlign.Center

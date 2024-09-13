@@ -22,8 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
@@ -32,8 +32,6 @@ import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
 fun WaitingHomeScreen(modifier: Modifier, navController: NavController) {
-    val context = LocalContext.current
-
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val animationProgress by infiniteTransition.animateFloat(
         initialValue = 0.3f,
@@ -67,9 +65,9 @@ fun WaitingHomeScreen(modifier: Modifier, navController: NavController) {
                     .weight(1f)
             ) {
                 HomeTextArea(
-                    nameText = "북창동루쥬라 " + context.getString(R.string.sir),
-                    middleText = context.getString(R.string.waiting_header),
-                    bottomText = profileName + context.getString(R.string.waiting_guide)
+                    nameText = "북창동루쥬라 " + stringResource(id = R.string.sir),
+                    middleText = stringResource(id = R.string.waiting_header),
+                    bottomText = profileName + stringResource(id = R.string.waiting_guide)
                 )
             }
             Column(
@@ -80,7 +78,7 @@ fun WaitingHomeScreen(modifier: Modifier, navController: NavController) {
                 Spacer(modifier = Modifier.height(85.dp))
                 LampButtonWithIcon(
                     isGradient = false,
-                    buttonText = context.getString(R.string.cancel_waiting),
+                    buttonText = stringResource(id = R.string.cancel_waiting),
                     onClick = {},
                     icon = painterResource(id = R.drawable.x_button_big),
                     onIconClick = {

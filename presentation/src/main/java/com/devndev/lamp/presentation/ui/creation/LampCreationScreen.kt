@@ -23,8 +23,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
@@ -38,7 +38,6 @@ import com.devndev.lamp.presentation.ui.theme.LightGray
 
 @Composable
 fun LampCreationScreen(modifier: Modifier, navController: NavController) {
-    val context = LocalContext.current
     var currentStep by remember { mutableIntStateOf(1) }
 
     var selectedPersonnel by remember { mutableStateOf(TempDB.personnel) }
@@ -145,9 +144,9 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
             LampButton(
                 isGradient = true,
                 buttonText = if (currentStep < 4) {
-                    context.getString(R.string.next)
+                    stringResource(id = R.string.next)
                 } else {
-                    context.getString(
+                    stringResource(id = 
                         R.string.done
                     )
                 },

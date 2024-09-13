@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
@@ -192,7 +193,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                     }
 
                     SignUpScreen.BIRTH -> BirthScreen(
-                        isMan = selectedGender == context.getString(R.string.man),
+                        isMan = selectedGender == stringResource(id = R.string.man),
                         selectedYear = birthYear,
                         selectedMonth = birthMonth,
                         selectedDay = birthDay,
@@ -248,7 +249,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                         university = ""
                     },
                     text = buildAnnotatedString {
-                        append(context.getString(R.string.skip))
+                        append(stringResource(id = R.string.skip))
                         addStyle(
                             style = SpanStyle(textDecoration = TextDecoration.Underline),
                             start = 0,
@@ -261,14 +262,14 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
             }
             val buttonText = if (currentStep == SignUpScreen.INSTAGRAM) {
                 if (isValidInstagramId) {
-                    context.getString(R.string.next)
+                    stringResource(id = R.string.next)
                 } else {
-                    context.getString(R.string.authentication)
+                    stringResource(id = R.string.authentication)
                 }
             } else if (currentStep < SignUpScreen.PROFILE) {
-                context.getString(R.string.next)
+                stringResource(id = R.string.next)
             } else {
-                context.getString(
+                stringResource(id = 
                     R.string.start
                 )
             }

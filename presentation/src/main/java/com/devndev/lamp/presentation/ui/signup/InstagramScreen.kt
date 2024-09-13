@@ -27,8 +27,8 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
@@ -46,9 +46,7 @@ fun InstagramScreen(
     isValid: Boolean,
     isAuthButtonClicked: Boolean
 ) {
-    val context = LocalContext.current
-
-    SelectionScreen(text = context.getString(R.string.input_insta)) {
+    SelectionScreen(text = stringResource(id = R.string.input_insta)) {
         var nameQuery by remember { mutableStateOf(instagramID) }
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -107,7 +105,7 @@ fun InstagramScreen(
                 ) { innerTextField ->
                     if (nameQuery.isEmpty()) {
                         Text(
-                            text = context.getString(R.string.guide_insta),
+                            text = stringResource(id = R.string.guide_insta),
                             color = LightGray,
                             style = Typography.medium18
                         )
@@ -132,13 +130,13 @@ fun InstagramScreen(
             var guideTextColor = Color.White
             if (isAuthButtonClicked) {
                 if (isValid) {
-                    guideText = context.getString(R.string.auth_success)
+                    guideText = stringResource(id = R.string.auth_success)
                 } else {
-                    guideText = context.getString(R.string.auth_failure)
+                    guideText = stringResource(id = R.string.auth_failure)
                     guideTextColor = WomanColor
                 }
             } else {
-                guideText = context.getString(R.string.university_guide1)
+                guideText = stringResource(id = R.string.university_guide1)
             }
             Text(
                 modifier = Modifier.width(230.dp),

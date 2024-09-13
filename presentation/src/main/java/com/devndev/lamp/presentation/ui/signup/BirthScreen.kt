@@ -26,7 +26,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.CompositingStrategy
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -48,11 +48,10 @@ fun BirthScreen(
     onMonthChange: (String) -> Unit,
     onDayChange: (String) -> Unit
 ) {
-    val context = LocalContext.current
-    SelectionScreen(text = context.getString(R.string.input_birthday)) {
+    SelectionScreen(text = stringResource(id = R.string.input_birthday)) {
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = context.getString(R.string.birth_guide),
+            text = stringResource(id = R.string.birth_guide),
             color = Color.White,
             style = Typography.normal12
         )
