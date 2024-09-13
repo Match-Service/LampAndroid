@@ -2,10 +2,13 @@ package com.devndev.lamp.presentation.ui.creation
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
@@ -33,15 +36,21 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.MoodBlack
 import com.devndev.lamp.presentation.ui.theme.MoodBlue
 import com.devndev.lamp.presentation.ui.theme.MoodGray
 import com.devndev.lamp.presentation.ui.theme.MoodRed
+import com.devndev.lamp.presentation.ui.theme.MoodTextGray
 import com.devndev.lamp.presentation.ui.theme.MoodYellow
 import com.devndev.lamp.presentation.ui.theme.Typography
 import com.google.accompanist.pager.HorizontalPager
@@ -70,10 +79,10 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
 
     // 페이지별 문구 설정
     val pageTexts = listOf(
-        "옆으로 넘겨 분위기를\n선택해 주세요",
-        "신나는 분위기",
-        "캐주얼한 분위기",
-        "진지한 분위기"
+        stringResource(R.string.slide_select_mood),
+        stringResource(R.string.funny_mood),
+        stringResource(R.string.casual_mood),
+        stringResource(R.string.serious_mood)
     )
 
     // 페이지 컬러랑 불투명도 설정
@@ -83,7 +92,13 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
         MoodYellow.copy(alpha = 0.7f),
         MoodBlue.copy(alpha = 0.7f)
     )
-
+    // 페이지별 텍스트 컬러 설정
+    val textColors = listOf(
+        MoodTextGray,
+        MoodRed,
+        MoodYellow,
+        MoodBlue
+    )
     // 페이지별 텍스트 크기 설정
     val pageTextSizes = listOf(
         15.sp,
@@ -91,11 +106,18 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
         25.sp,
         25.sp
     )
+    val pageIcon = listOf(
+        painterResource(id = R.drawable.page_zero),
+        painterResource(id = R.drawable.page_first),
+        painterResource(id = R.drawable.page_second),
+        painterResource(id = R.drawable.page_third)
+    )
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF151515))
+            .background(color = LampBlack)
+            .padding(horizontal = 16.dp)
     ) {
         Box(modifier = Modifier.fillMaxSize()) {
             Column(
@@ -103,7 +125,7 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    modifier = Modifier.padding(top = LocalConfiguration.current.screenHeightDp.dp * 0.1f),
+                    modifier = Modifier.padding(top = 176.dp),
                     text = context.getString(R.string.select_mood),
                     color = Color.White,
                     style = Typography.semiBold25,
@@ -141,13 +163,52 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
                 ) {
                     Text(
                         text = pageTexts[page],
-                        color = pageColors[page],
+                        color = textColors[page],
                         fontSize = pageTextSizes[page],
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.offset(y = screenHeight - (screenWidth * 0.5f))
+                        modifier = Modifier.offset(y = screenHeight - 230.dp)
                     )
                 }
             }
+        }
+        Column (
+            modifier = Modifier
+                .fillMaxWidth()
+                .fillMaxWidth()
+                .padding(bottom = 140.dp)
+                .align(Alignment.BottomCenter)
+        ) {
+            val currentIcon = remember { derivedStateOf { pageIcon[pagerState.currentPage] } }
+            Image(
+                painter = currentIcon.value,
+                contentDescription = "페이지 아이콘",
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+            )
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .padding(bottom = 20.dp)
+                .align(Alignment.BottomCenter),
+            verticalArrangement = Arrangement.Bottom,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            LampButton(
+                isGradient = if (currentPage == 0) {
+                    false
+                } else {
+                    true
+                },
+                buttonText = context.getString(R.string.next),
+                onClick = { },
+                enabled = if (currentPage == 0) {
+                    false
+                } else {
+                    true
+                }
+            )
         }
     }
 }
@@ -177,8 +238,9 @@ fun DrawScope.drawRotatingCircle(
     screenWidth: Dp,
     screenHeight: Dp
 ) {
-    val radius = (screenWidth * 1.5f).toPx() / 2
-    val centerOffset = Offset(x = size.width / 2, y = screenHeight.toPx())
+//    val radius = (screenWidth * 1.5f).toPx() / 2
+    val radius = 300.dp.toPx()
+    val centerOffset = Offset(x = size.width / 2, y = screenHeight.toPx() - 30.dp.toPx())
 
     // 사분면 색상
     val colors = listOf(
@@ -190,7 +252,7 @@ fun DrawScope.drawRotatingCircle(
 
     // 드롭 쉐도우 효과를 적용합니다.
     val shadowOffset = 30f // X, Y 오프셋
-    val blurRadius = 100f // 블러 반경
+    val blurRadius = 300f // 블러 반경
 
     // 원을 4등분하여 각 사분면에 색상을 적용
     colors.forEachIndexed { index, color ->
@@ -230,4 +292,13 @@ fun DrawScope.drawRotatingCircle(
         radius = radius,
         center = centerOffset
     )
+}
+
+
+@Preview
+@Composable
+fun A() {
+    MoodScreen(selectedOption = "") {
+        
+    }
 }

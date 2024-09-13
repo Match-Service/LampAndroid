@@ -71,6 +71,12 @@
     <string name="auth_failure">없는 계정입니다. 다시 입력해주세요</string>
     <string name="auth_success">인증 완료</string>
 
+    <string name="slide_select_mood">옆으로 넘겨 분위기를\n선택해 주세요</string>
+    <string name="funny_mood">신나는 분위기</string>
+    <string name="casual_mood">캐주얼한 분위기</string>
+    <string name="serious_mood">진지한 분위기</string>
+
+
     <string name="input_profile">프로필 입력하고\n회원님의 매력을 보여주세요</string>
     <string name="guide_profile">본인 모습이 잘 나타난 사진을 최소 1장 등록해주세요</string>
     <string name="start">시작하기</string>
@@ -80,4 +86,5 @@
     <string name="cancel_waiting">입장 취소하기</string>
 
     <string name="matching_header_invite">램프와 함께할\n친구들을 초대하세요</string>
+
 </resources>
