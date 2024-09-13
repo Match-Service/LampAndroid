@@ -19,8 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
@@ -36,17 +36,15 @@ fun InfoScreen(
     onSelectSmokeOption: (String) -> Unit,
     onSelectExerciseOption: (String) -> Unit
 ) {
-    val context = LocalContext.current
-
-    SelectionScreen(text = context.getString(R.string.input_info)) {
+    SelectionScreen(text = stringResource(id = R.string.input_info)) {
         Spacer(modifier = Modifier.height(24.dp))
         RadioButtonGroup(
-            groupText = context.getString(R.string.drink),
+            groupText = stringResource(id = R.string.drink),
             options = listOf(
-                context.getString(R.string.drink_often),
-                context.getString(R.string.drink_sometimes),
-                context.getString(R.string.drink_never),
-                context.getString(R.string.drink_stop)
+                stringResource(id = R.string.drink_often),
+                stringResource(id = R.string.drink_sometimes),
+                stringResource(id = R.string.drink_never),
+                stringResource(id = R.string.drink_stop)
             ),
             selectedOption = selectedDrinkOption,
             onSelectOption = { selectedOption ->
@@ -55,12 +53,12 @@ fun InfoScreen(
         )
         Spacer(modifier = Modifier.height(15.dp))
         RadioButtonGroup(
-            groupText = context.getString(R.string.smoke),
+            groupText = stringResource(id = R.string.smoke),
             options = listOf(
-                context.getString(R.string.smoke_often),
-                context.getString(R.string.smoke_sometimes),
-                context.getString(R.string.smoke_never),
-                context.getString(R.string.smoke_stop)
+                stringResource(id = R.string.smoke_often),
+                stringResource(id = R.string.smoke_sometimes),
+                stringResource(id = R.string.smoke_never),
+                stringResource(id = R.string.smoke_stop)
             ),
             selectedOption = selectedSmokeOption,
             onSelectOption = { selectedOption ->
@@ -69,12 +67,12 @@ fun InfoScreen(
         )
         Spacer(modifier = Modifier.height(15.dp))
         RadioButtonGroup(
-            groupText = context.getString(R.string.exercise),
+            groupText = stringResource(id = R.string.exercise),
             options = listOf(
-                context.getString(R.string.exercise_often),
-                context.getString(R.string.exercise_sometimes),
-                context.getString(R.string.exercise_never),
-                context.getString(R.string.exercise_stop)
+                stringResource(id = R.string.exercise_often),
+                stringResource(id = R.string.exercise_sometimes),
+                stringResource(id = R.string.exercise_never),
+                stringResource(id = R.string.exercise_stop)
             ),
             selectedOption = selectedExerciseOption,
             onSelectOption = { selectedOption ->
@@ -96,8 +94,6 @@ fun RadioButtonGroup(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        val context = LocalContext.current
-
         Text(text = groupText, color = Color.White, style = Typography.medium18)
         val rows = options.chunked(2)
         rows.forEach { rowOptions ->
@@ -114,7 +110,7 @@ fun RadioButtonGroup(
                 }
             }
         }
-        if (groupText != context.getString(R.string.exercise)) {
+        if (groupText != stringResource(id = R.string.exercise)) {
             Divider(
                 color = Gray
             )

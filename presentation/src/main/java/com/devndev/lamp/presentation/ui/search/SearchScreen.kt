@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -51,7 +52,6 @@ fun SearchScreen(
     modifier: Modifier,
     navController: NavController
 ) {
-    val context = LocalContext.current
     var searchQuery by remember { mutableStateOf("") }
 
     val items: List<Item> by viewModel.items.collectAsState()
@@ -80,7 +80,7 @@ fun SearchScreen(
                     }
                 )
                 Text(
-                    text = context.getString(R.string.find_friend),
+                    text = stringResource(id = R.string.find_friend),
                     style = Typography.semiBold25,
                     fontSize = 25.sp,
                     color = Color.White,
@@ -118,7 +118,7 @@ fun SearchScreen(
                 ) { innerTextField ->
                     if (searchQuery.isEmpty()) {
                         Text(
-                            text = context.getString(R.string.guide_search_friend),
+                            text = stringResource(id = R.string.guide_search_friend),
                             color = LightGray,
                             style = Typography.medium18
                         )
@@ -156,20 +156,19 @@ fun SearchScreen(
 
 @Composable
 fun BottomSpace(navController: NavController) {
-    val context = LocalContext.current
     Column(
         modifier = Modifier.padding(20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = context.getString(R.string.search_make_lame_guide),
+            text = stringResource(id = R.string.search_make_lame_guide),
             color = Color.White,
             style = Typography.normal12
         )
         LampButton(
             isGradient = true,
-            buttonText = context.getString(R.string.make_lamp),
+            buttonText = stringResource(id = R.string.make_lamp),
             onClick = { navController.navigateCreation() },
             enabled = true
         )

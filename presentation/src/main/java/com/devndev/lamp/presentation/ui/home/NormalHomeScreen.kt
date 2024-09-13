@@ -9,8 +9,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
@@ -20,8 +20,6 @@ import com.devndev.lamp.presentation.ui.search.navigation.navigateSearch
 
 @Composable
 fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
-    val context = LocalContext.current
-
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -38,9 +36,9 @@ fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
                 .weight(1f)
         ) {
             HomeTextArea(
-                nameText = "북창동루쥬라 " + context.getString(R.string.sir),
-                middleText = context.getString(R.string.main_header),
-                bottomText = context.getString(R.string.meet_with_lamp)
+                nameText = "북창동루쥬라 " + stringResource(id = R.string.sir),
+                middleText = stringResource(id = R.string.main_header),
+                bottomText = stringResource(id = R.string.meet_with_lamp)
             )
         }
         Column(
@@ -50,8 +48,8 @@ fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
         ) {
             LampButtonWithIcon(
                 isGradient = true,
-                buttonText = context.getString(R.string.make_lamp),
-                guideButtonText = context.getString(R.string.guide_make_lamp),
+                buttonText = stringResource(id = R.string.make_lamp),
+                guideButtonText = stringResource(id = R.string.guide_make_lamp),
                 onClick = {
                     navController.navigateCreation()
                 },
@@ -60,8 +58,8 @@ fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
             )
             LampButtonWithIcon(
                 isGradient = false,
-                buttonText = context.getString(R.string.find_friend),
-                guideButtonText = context.getString(R.string.guide_find_friend),
+                buttonText = stringResource(id = R.string.find_friend),
+                guideButtonText = stringResource(id = R.string.guide_find_friend),
                 onClick = {
                     navController.navigateSearch()
                 },

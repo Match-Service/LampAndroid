@@ -28,8 +28,8 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
@@ -46,9 +46,7 @@ fun NameScreen(
     isValidName: Boolean,
     isDuplicateName: Boolean
 ) {
-    val context = LocalContext.current
-
-    SelectionScreen(text = context.getString(R.string.signup_name)) {
+    SelectionScreen(text = stringResource(id = R.string.signup_name)) {
         var nameQuery by remember { mutableStateOf(name) }
         val maxNameChar = 6
         Spacer(modifier = Modifier.height(24.dp))
@@ -104,7 +102,7 @@ fun NameScreen(
                 ) { innerTextField ->
                     if (nameQuery.isEmpty()) {
                         Text(
-                            text = context.getString(R.string.input_name),
+                            text = stringResource(id = R.string.input_name),
                             color = LightGray,
                             style = Typography.medium18
                         )
@@ -131,20 +129,20 @@ fun NameScreen(
                 verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
                 Text(
-                    text = context.getString(R.string.name_guide1),
+                    text = stringResource(id = R.string.name_guide1),
                     style = Typography.normal12,
                     color = Color.White
                 )
                 Row() {
                     if (isDuplicateName) {
                         Text(
-                            text = context.getString(R.string.name_guide3),
+                            text = stringResource(id = R.string.name_guide3),
                             style = Typography.normal12,
                             color = Color.Red
                         )
                     } else {
                         Text(
-                            text = context.getString(R.string.name_guide2),
+                            text = stringResource(id = R.string.name_guide2),
                             style = Typography.normal12,
                             color = if (isValidName) Color.White else Color.Red
                         )

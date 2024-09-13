@@ -21,8 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.domain.model.Item
 import com.devndev.lamp.presentation.R
@@ -42,7 +42,6 @@ fun SearchList(profileList: List<Item>, onEnterButtonClick: (Item) -> Unit) {
 
 @Composable
 fun SearchItem(profile: Item, onEnterButtonClick: (Item) -> Unit) {
-    val context = LocalContext.current
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
@@ -76,12 +75,12 @@ fun SearchItem(profile: Item, onEnterButtonClick: (Item) -> Unit) {
             if (profile.isLampOn) {
                 buttonColors = WomanColor
                 textColor = Color.White
-                buttonText = context.getString(R.string.enter_lamp)
+                buttonText = stringResource(id = R.string.enter_lamp)
                 onButtonClick = { onEnterButtonClick(profile) }
             } else {
                 buttonColors = Gray
                 textColor = Gray3
-                buttonText = context.getString(R.string.no_lamp)
+                buttonText = stringResource(id = R.string.no_lamp)
             }
             // 기본적으로 button 에 default padding 이 적용되어 있어서 버튼 크기 상이하여 커스텀 버튼 생성, 추후 방법 찾으면 수정 필요
 //            Button(

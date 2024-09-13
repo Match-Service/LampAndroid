@@ -126,7 +126,7 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
             ) {
                 Text(
                     modifier = Modifier.padding(top = 176.dp),
-                    text = context.getString(R.string.select_mood),
+                    text = stringResource(id = R.string.select_mood),
                     color = Color.White,
                     style = Typography.semiBold25,
                     lineHeight = 33.sp,
@@ -201,7 +201,7 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
                 } else {
                     true
                 },
-                buttonText = context.getString(R.string.next),
+                buttonText = stringResource(id = R.string.next),
                 onClick = { },
                 enabled = if (currentPage == 0) {
                     false

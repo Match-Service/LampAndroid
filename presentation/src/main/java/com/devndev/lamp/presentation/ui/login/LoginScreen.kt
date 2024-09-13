@@ -22,8 +22,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
@@ -41,8 +41,6 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    val context = LocalContext.current
-
     val signInLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
@@ -60,7 +58,7 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(LocalConfiguration.current.screenHeightDp.dp * 0.2f))
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = context.getString(R.string.login_header),
+                text = stringResource(id = R.string.login_header),
                 color = Color.White,
                 style = Typography.medium18
             )
@@ -96,7 +94,7 @@ fun LoginScreen(
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = context.getString(R.string.sign_in_google),
+                    text = stringResource(id = R.string.sign_in_google),
                     style = Typography.medium18
                 )
             }
@@ -108,18 +106,18 @@ fun LoginScreen(
                 onClick = { navController.navigateSignup() },
                 colors = buttonColor
             ) {
-                Text(text = context.getString(R.string.sign_in_email), style = Typography.medium18)
+                Text(text = stringResource(id = R.string.sign_in_email), style = Typography.medium18)
             }
             Spacer(modifier = Modifier.height(10.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 Text(
-                    text = context.getString(R.string.have_account),
+                    text = stringResource(id = R.string.have_account),
                     color = Color.White,
                     style = Typography.normal12
                 )
                 Text(
                     text = buildAnnotatedString {
-                        append(context.getString(R.string.login))
+                        append(stringResource(id = R.string.login))
                         addStyle(
                             style = SpanStyle(textDecoration = TextDecoration.Underline),
                             start = 0,

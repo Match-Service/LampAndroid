@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.canhub.cropper.CropImage.CancelledResult.uriContent
 import com.canhub.cropper.CropImageContract
@@ -98,10 +99,10 @@ fun ProfileScreen(
         }
     }
 
-    SelectionScreen(text = context.getString(R.string.input_profile)) {
+    SelectionScreen(text = stringResource(id = R.string.input_profile)) {
         Spacer(modifier = Modifier.height(15.dp))
         Text(
-            text = context.getString(R.string.guide_profile),
+            text = stringResource(id = R.string.guide_profile),
             color = Color.White,
             style = Typography.normal12
         )

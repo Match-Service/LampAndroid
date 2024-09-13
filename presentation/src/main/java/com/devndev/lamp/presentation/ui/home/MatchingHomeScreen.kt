@@ -51,7 +51,6 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
 fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
-    val context = LocalContext.current
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
     Box(
@@ -86,7 +85,7 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
                 onShareIconClick = {}
             )
             Text(
-                text = context.getString(R.string.matching_header_invite),
+                text = stringResource(id = R.string.matching_header_invite),
                 color = Color.White,
                 style = Typography.semiBold25.copy(lineHeight = 33.sp),
                 textAlign = TextAlign.Center
