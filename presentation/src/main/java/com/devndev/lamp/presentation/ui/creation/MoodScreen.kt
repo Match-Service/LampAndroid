@@ -171,7 +171,7 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
                 }
             }
         }
-        Column (
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxWidth()
@@ -294,11 +294,8 @@ fun DrawScope.drawRotatingCircle(
     )
 }
 
-
 @Preview
 @Composable
 fun A() {
-    MoodScreen(selectedOption = "") {
-        
-    }
+    MoodScreen(selectedOption = "") {}
 }
