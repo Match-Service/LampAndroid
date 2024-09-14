@@ -7,7 +7,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.devndev.lamp.presentation.ui.common.Route
-import com.devndev.lamp.presentation.ui.splsh.SplashScreen
 
 fun NavController.navigateSplash(navOptions: NavOptions? = null) {
     this.navigate(Route.SPLASH, navOptions)
@@ -18,6 +17,9 @@ fun NavGraphBuilder.splashNavGraph(
     modifier: Modifier = Modifier
 ) {
     composable(Route.SPLASH) {
-        SplashScreen()
+//        var showSplash by remember { mutableStateOf(true) }
+//        SplashScreen {
+//            showSplash = false // 애니메이션이 끝나면 메인 화면을 표시
+//        }
     }
 }
