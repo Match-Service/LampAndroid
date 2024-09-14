@@ -269,9 +269,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
             } else if (currentStep < SignUpScreen.PROFILE) {
                 stringResource(id = R.string.next)
             } else {
-                stringResource(id = 
-                    R.string.start
-                )
+                stringResource(id = R.string.start)
             }
             val icon = if (currentStep == SignUpScreen.PROFILE) {
                 painterResource(id = R.drawable.app_logo)

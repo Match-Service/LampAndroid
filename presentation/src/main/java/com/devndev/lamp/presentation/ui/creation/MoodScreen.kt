@@ -5,13 +5,10 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTransformGestures
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
@@ -39,12 +36,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.MoodBlack
 import com.devndev.lamp.presentation.ui.theme.MoodBlue
@@ -125,7 +120,7 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    modifier = Modifier.padding(top = 176.dp),
+                    modifier = Modifier.padding(top = 56.dp), // top padding 고정
                     text = stringResource(id = R.string.select_mood),
                     color = Color.White,
                     style = Typography.semiBold25,
@@ -155,18 +150,22 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
                         }
                     }
             ) { page ->
+                // 페이지가 바뀔 때 selectedOption 업데이트
+                LaunchedEffect(pagerState.currentPage) {
+                    onSelectOption(pagerState.currentPage.toString())
+                }
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(Color.Transparent),
-                    contentAlignment = Alignment.TopCenter
+                    contentAlignment = Alignment.BottomCenter
                 ) {
                     Text(
                         text = pageTexts[page],
                         color = textColors[page],
                         fontSize = pageTextSizes[page],
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.offset(y = screenHeight - 230.dp)
+                        modifier = Modifier.padding(bottom = 96.dp)
                     )
                 }
             }
@@ -175,7 +174,7 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .fillMaxWidth()
-                .padding(bottom = 140.dp)
+                .padding(bottom = 72.dp)
                 .align(Alignment.BottomCenter)
         ) {
             val currentIcon = remember { derivedStateOf { pageIcon[pagerState.currentPage] } }
@@ -184,30 +183,6 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
                 contentDescription = "페이지 아이콘",
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
-            )
-        }
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth()
-                .padding(bottom = 20.dp)
-                .align(Alignment.BottomCenter),
-            verticalArrangement = Arrangement.Bottom,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            LampButton(
-                isGradient = if (currentPage == 0) {
-                    false
-                } else {
-                    true
-                },
-                buttonText = stringResource(id = R.string.next),
-                onClick = { },
-                enabled = if (currentPage == 0) {
-                    false
-                } else {
-                    true
-                }
             )
         }
     }
@@ -240,7 +215,7 @@ fun DrawScope.drawRotatingCircle(
 ) {
 //    val radius = (screenWidth * 1.5f).toPx() / 2
     val radius = 300.dp.toPx()
-    val centerOffset = Offset(x = size.width / 2, y = screenHeight.toPx() - 30.dp.toPx())
+    val centerOffset = Offset(x = size.width / 2, y = screenHeight.toPx() - 142.dp.toPx())
 
     // 사분면 색상
     val colors = listOf(
@@ -292,10 +267,4 @@ fun DrawScope.drawRotatingCircle(
         radius = radius,
         center = centerOffset
     )
-}
-
-@Preview
-@Composable
-fun A() {
-    MoodScreen(selectedOption = "") {}
 }

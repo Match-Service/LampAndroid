@@ -146,9 +146,7 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                 buttonText = if (currentStep < 4) {
                     stringResource(id = R.string.next)
                 } else {
-                    stringResource(id = 
-                        R.string.done
-                    )
+                    stringResource(id = R.string.done)
                 },
                 onClick = {
                     if (currentStep < 4) {
@@ -166,7 +164,12 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                 enabled = when (currentStep) {
                     CreationScreen.PERSONNEL -> selectedPersonnel.isNotEmpty()
                     CreationScreen.REGION -> selectedRegion.isNotEmpty()
-                    CreationScreen.MOOD -> true /* selectedMood.isNotEmpty() 분위기 화면 미구현으로 구현 완료 후 수정 필요 */
+                    CreationScreen.MOOD -> {
+                        when (selectedMood) {
+                            "0" -> false
+                            else -> true
+                        }
+                    }
                     else -> lampName.isNotEmpty()
                 }
             )
