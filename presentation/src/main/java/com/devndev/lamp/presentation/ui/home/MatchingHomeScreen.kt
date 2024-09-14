@@ -45,7 +45,9 @@ import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.LampBlack
-import com.devndev.lamp.presentation.ui.theme.ManColor
+import com.devndev.lamp.presentation.ui.theme.MoodBlue
+import com.devndev.lamp.presentation.ui.theme.MoodRed
+import com.devndev.lamp.presentation.ui.theme.MoodYellow
 import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
@@ -243,7 +245,13 @@ fun MatchingHomeTopBar(onExitIconClick: () -> Unit, onShareIconClick: () -> Unit
 
 @Composable
 fun ShadowCircleBackground(mood: String = "") {
-    // todo mood에 따라 색상 변경
+    // mood에 따라 색상 변경
+    val shadowColor = when (TempDB.mood) {
+        "1" -> MoodRed.copy(alpha = 0.7f)
+        "2" -> MoodYellow.copy(alpha = 0.7f)
+        "3" -> MoodBlue.copy(alpha = 0.7f)
+        else -> MoodRed.copy(alpha = 0.7f)
+    }
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -251,7 +259,6 @@ fun ShadowCircleBackground(mood: String = "") {
     Canvas(modifier = Modifier.fillMaxSize()) {
         val size = size
         val shadowRadius = 50.dp.toPx()
-        val shadowColor = ManColor.copy(alpha = 0.7f)
         val center = Offset(size.width / 2, screenHeight.toPx() / 7 * 5)
         val radius = 250.dp.toPx()
         drawIntoCanvas { canvas ->
