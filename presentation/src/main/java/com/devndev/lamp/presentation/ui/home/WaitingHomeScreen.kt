@@ -3,10 +3,12 @@ package com.devndev.lamp.presentation.ui.home
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,14 +16,23 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -29,6 +40,7 @@ import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButtonWithIcon
 import com.devndev.lamp.presentation.ui.theme.WomanColor
+import kotlinx.coroutines.delay
 
 @Composable
 fun WaitingHomeScreen(modifier: Modifier, navController: NavController) {
@@ -48,7 +60,8 @@ fun WaitingHomeScreen(modifier: Modifier, navController: NavController) {
     Box(
         modifier = modifier.fillMaxSize()
     ) {
-        GradientBackground(animationProgress = animationProgress)
+        BreathingCircleAnimation()
+//        GradientBackground(animationProgress = animationProgress)
         Column(
             modifier = modifier
                 .fillMaxSize(),
@@ -112,5 +125,65 @@ fun GradientBackground(animationProgress: Float) {
             ),
             radius = radius
         )
+    }
+}
+
+@Composable
+fun BreathingCircleAnimation() {
+    val transitionDuration = 3000
+
+    var isEnlarged by remember { mutableStateOf(true) }
+
+    val animateAlpha by animateFloatAsState(
+        targetValue = if (isEnlarged) 0.5f else 0.1f,
+        animationSpec = tween(
+            durationMillis = transitionDuration,
+            delayMillis = 0,
+            easing = LinearEasing
+        )
+    )
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            isEnlarged = !isEnlarged
+            delay(transitionDuration.toLong())
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Transparent) // 배경색 투명
+    ) {
+        Canvas(
+            modifier = Modifier
+                .size(5.dp)
+                .background(Color.Transparent)
+                .align(Alignment.Center)
+        ) {
+            drawBreathingCircle(
+                blur = 250f,
+                alpha = animateAlpha,
+                center = center
+            )
+        }
+    }
+}
+
+fun DrawScope.drawBreathingCircle(blur: Float, alpha: Float, center: Offset) {
+    val radius = 150f
+
+    drawIntoCanvas { canvas ->
+        val paint = android.graphics.Paint().apply {
+            isAntiAlias = true
+            color = Color.Transparent.toArgb()
+            setShadowLayer(
+                blur,
+                0f,
+                0f,
+                WomanColor.copy(alpha = alpha + 0.5f).toArgb()
+            )
+        }
+        canvas.nativeCanvas.drawCircle(center.x, center.y, radius, paint)
     }
 }
