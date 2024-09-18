@@ -166,7 +166,7 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                     CreationScreen.REGION -> selectedRegion.isNotEmpty()
                     CreationScreen.MOOD -> {
                         when (selectedMood) {
-                            "0" -> false
+                            0 -> false
                             else -> true
                         }
                     }

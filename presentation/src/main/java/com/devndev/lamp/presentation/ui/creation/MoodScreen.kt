@@ -53,14 +53,14 @@ import com.google.accompanist.pager.rememberPagerState
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
+fun MoodScreen(selectedOption: Int, onSelectOption: (Int) -> Unit) {
     val context = LocalContext.current
 
     val configuration = LocalConfiguration.current
     val screenWidth = configuration.screenWidthDp.dp
     val screenHeight = configuration.screenHeightDp.dp
 
-    val pagerState = rememberPagerState()
+    val pagerState = rememberPagerState(initialPage = selectedOption)
 
     // 페이지를 스와이프할 때마다 회전 각도를 업데이트합니다.
     var rotationAngle by remember { mutableStateOf(0f) }
@@ -152,7 +152,7 @@ fun MoodScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
             ) { page ->
                 // 페이지가 바뀔 때 selectedOption 업데이트
                 LaunchedEffect(pagerState.currentPage) {
-                    onSelectOption(pagerState.currentPage.toString())
+                    onSelectOption(pagerState.currentPage)
                 }
                 Box(
                     modifier = Modifier
