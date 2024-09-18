@@ -79,7 +79,7 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
                     TempStatus.updateIsMatching(false)
                     TempDB.personnel = ""
                     TempDB.region = ""
-                    TempDB.mood = ""
+                    TempDB.mood = 0
                     TempDB.lampName = ""
                     TempDB.lampSummary = ""
                 },
@@ -121,7 +121,12 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
                         }
                     )
                 }
-
+                var mood = ""
+                when (TempDB.mood) {
+                    1 -> mood = stringResource(id = R.string.funny_mood)
+                    2 -> mood = stringResource(id = R.string.casual_mood)
+                    3 -> mood = stringResource(id = R.string.serious_mood)
+                }
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -134,7 +139,7 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
                         painter = painterResource(id = R.drawable.people_icon),
                         text = TempDB.personnel
                     )
-                    LampInfo(painter = painterResource(id = R.drawable.heart), text = "신나는 분위기")
+                    LampInfo(painter = painterResource(id = R.drawable.heart), text = mood)
                 }
 
                 Text(
@@ -244,12 +249,12 @@ fun MatchingHomeTopBar(onExitIconClick: () -> Unit, onShareIconClick: () -> Unit
 }
 
 @Composable
-fun ShadowCircleBackground(mood: String = "") {
+fun ShadowCircleBackground() {
     // mood에 따라 색상 변경
     val shadowColor = when (TempDB.mood) {
-        "1" -> MoodRed.copy(alpha = 0.7f)
-        "2" -> MoodYellow.copy(alpha = 0.7f)
-        "3" -> MoodBlue.copy(alpha = 0.7f)
+        1 -> MoodRed.copy(alpha = 0.7f)
+        2 -> MoodYellow.copy(alpha = 0.7f)
+        3 -> MoodBlue.copy(alpha = 0.7f)
         else -> MoodRed.copy(alpha = 0.7f)
     }
 
