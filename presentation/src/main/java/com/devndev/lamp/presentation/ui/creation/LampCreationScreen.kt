@@ -170,7 +170,7 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                             else -> true
                         }
                     }
-                    else -> lampName.isNotEmpty()
+                    else -> lampName.isNotEmpty() && lampSummary.isNotEmpty()
                 }
             )
         }
