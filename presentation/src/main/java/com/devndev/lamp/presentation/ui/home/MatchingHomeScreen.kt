@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.TempDB
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
+import com.devndev.lamp.presentation.ui.search.navigation.navigateInvite
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.LampBlack
@@ -157,7 +158,7 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
                 Spacer(modifier = Modifier.height(30.dp))
 
                 Button(
-                    onClick = {},
+                    onClick = { navController.navigateInvite() },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Gray,
                         contentColor = Color.White

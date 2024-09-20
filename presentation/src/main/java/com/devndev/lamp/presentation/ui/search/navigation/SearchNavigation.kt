@@ -8,6 +8,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.devndev.lamp.presentation.ui.common.Route
+import com.devndev.lamp.presentation.ui.search.InviteScreen
 import com.devndev.lamp.presentation.ui.search.SearchScreen
 
 fun NavController.navigateSearch(navOptions: NavOptions? = null) {
@@ -21,5 +22,19 @@ fun NavGraphBuilder.searchNavGraph(
 ) {
     composable(Route.SEARCH) {
         SearchScreen(modifier = modifier.padding(padding), navController = navController)
+    }
+}
+
+fun NavController.navigateInvite(navOptions: NavOptions? = null) {
+    this.navigate(Route.INVITE, navOptions)
+}
+
+fun NavGraphBuilder.inviteNavGraph(
+    padding: PaddingValues,
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
+    composable(Route.INVITE) {
+        InviteScreen(modifier = modifier.padding(padding), navController = navController)
     }
 }
