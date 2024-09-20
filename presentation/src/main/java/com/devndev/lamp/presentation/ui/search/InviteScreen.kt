@@ -168,7 +168,7 @@ fun InviteScreen(
 @Composable
 fun BottomSpaceForInvite(onClick: () -> Unit) {
     Column(
-        modifier = Modifier.padding(20.dp),
+        modifier = Modifier.padding(vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
