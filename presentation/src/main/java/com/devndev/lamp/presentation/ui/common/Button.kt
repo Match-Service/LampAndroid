@@ -98,8 +98,10 @@ fun LampButton(
         Modifier
             .buttonBackGround(isGradient = isGradient, enabled = enabled)
             .fillMaxWidth()
+            .height(48.dp)
     } else {
         Modifier.buttonBackGround(isGradient = isGradient, enabled = enabled)
+            .height(48.dp)
     }
 
     Button(
