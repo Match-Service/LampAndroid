@@ -10,4 +10,5 @@ object Route {
     const val SEARCH = "search"
     const val CREATION = "creation"
     const val SIGNUP = "signup"
+    const val INVITE = "invite"
 }

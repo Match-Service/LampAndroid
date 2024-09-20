@@ -41,6 +41,7 @@ import com.devndev.lamp.presentation.ui.login.LoginViewModel
 import com.devndev.lamp.presentation.ui.login.navigation.loginNavGraph
 import com.devndev.lamp.presentation.ui.mypage.navigation.myPageNavGraph
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateMyPage
+import com.devndev.lamp.presentation.ui.search.navigation.inviteNavGraph
 import com.devndev.lamp.presentation.ui.search.navigation.searchNavGraph
 import com.devndev.lamp.presentation.ui.signup.navigation.signupNavGraph
 import com.devndev.lamp.presentation.ui.splsh.navigaion.splashNavGraph
@@ -76,7 +77,8 @@ fun MainScreen(modifier: Modifier) {
             if (currentRoute != Route.SEARCH &&
                 currentRoute != Route.CREATION &&
                 currentRoute != Route.LOGIN &&
-                currentRoute != Route.SIGNUP
+                currentRoute != Route.SIGNUP &&
+                currentRoute != Route.INVITE
             ) {
                 LampBottomNavigation(navController = navController)
             } else {
@@ -92,6 +94,7 @@ fun MainScreen(modifier: Modifier) {
             chattingNavGraph(padding = innerPadding)
             myPageNavGraph(padding = innerPadding)
             searchNavGraph(padding = innerPadding, navController = navController)
+            inviteNavGraph(padding = innerPadding, navController = navController)
             creationNavGraph(padding = innerPadding, navController = navController)
             splashNavGraph(padding = PaddingValues())
             loginNavGraph(padding = PaddingValues(), navController = navController)
