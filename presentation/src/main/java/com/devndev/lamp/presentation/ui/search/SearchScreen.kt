@@ -156,7 +156,7 @@ fun SearchScreen(
 @Composable
 fun BottomSpace(navController: NavController) {
     Column(
-        modifier = Modifier.padding(20.dp),
+        modifier = Modifier.padding(vertical = 20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
