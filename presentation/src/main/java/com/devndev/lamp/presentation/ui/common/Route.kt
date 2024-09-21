@@ -11,4 +11,5 @@ object Route {
     const val CREATION = "creation"
     const val SIGNUP = "signup"
     const val INVITE = "invite"
+    const val NOTIFICATION = "notification"
 }

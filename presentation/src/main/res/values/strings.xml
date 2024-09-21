@@ -90,4 +90,12 @@
     <string name="invite_friend">친구 초대하기</string>
     <string name="invite">초대하기</string>
     <string name="recent_friend">최근 함께한 친구</string>
+
+    <string name="notification">알림</string>
+    <string name="invite_notification">초대 알림</string>
+    <string name="visit_notification">방문 알림</string>
+
+    <string name="accept_invite">램프 참여하기</string>
+    <string name="accept_visit">수락하기</string>
+    <string name="reject">거절하기</string>
 </resources>
