@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.main
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -41,6 +42,8 @@ import com.devndev.lamp.presentation.ui.login.LoginViewModel
 import com.devndev.lamp.presentation.ui.login.navigation.loginNavGraph
 import com.devndev.lamp.presentation.ui.mypage.navigation.myPageNavGraph
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateMyPage
+import com.devndev.lamp.presentation.ui.notification.navigation.navigateNotification
+import com.devndev.lamp.presentation.ui.notification.navigation.notificationNavGraph
 import com.devndev.lamp.presentation.ui.search.navigation.inviteNavGraph
 import com.devndev.lamp.presentation.ui.search.navigation.searchNavGraph
 import com.devndev.lamp.presentation.ui.signup.navigation.signupNavGraph
@@ -68,7 +71,7 @@ fun MainScreen(modifier: Modifier) {
         containerColor = BackGroundColor,
         topBar = {
             if (currentRoute != Route.LOGIN && currentRoute != Route.SIGNUP) {
-                LampTopBar()
+                LampTopBar(navController = navController)
             } else {
                 Spacer(modifier = Modifier.height(0.dp))
             }
@@ -78,7 +81,8 @@ fun MainScreen(modifier: Modifier) {
                 currentRoute != Route.CREATION &&
                 currentRoute != Route.LOGIN &&
                 currentRoute != Route.SIGNUP &&
-                currentRoute != Route.INVITE
+                currentRoute != Route.INVITE &&
+                currentRoute != Route.NOTIFICATION
             ) {
                 LampBottomNavigation(navController = navController)
             } else {
@@ -99,12 +103,13 @@ fun MainScreen(modifier: Modifier) {
             splashNavGraph(padding = PaddingValues())
             loginNavGraph(padding = PaddingValues(), navController = navController)
             signupNavGraph(padding = PaddingValues(), navController = navController)
+            notificationNavGraph(padding = innerPadding, navController = navController)
         }
     }
 }
 
 @Composable
-fun LampTopBar() {
+fun LampTopBar(navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -123,7 +128,9 @@ fun LampTopBar() {
             painterResource(id = R.drawable.alarm_icon),
             contentDescription = "AlarmIcon",
             tint = Gray3,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier
+                .size(24.dp)
+                .clickable { navController.navigateNotification() }
         )
     }
 }

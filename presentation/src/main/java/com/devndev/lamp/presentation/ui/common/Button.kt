@@ -21,6 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -90,7 +91,9 @@ fun LampButton(
     onClick: () -> Unit,
     buttonWidth: Int = 0,
     enabled: Boolean,
-    icon: Painter? = null
+    icon: Painter? = null,
+    textStyle: TextStyle = Typography.medium18,
+    height: Int = 48
 ) {
     val buttonColors = getButtonColor(isGradient = isGradient)
 
@@ -98,10 +101,10 @@ fun LampButton(
         Modifier
             .buttonBackGround(isGradient = isGradient, enabled = enabled)
             .fillMaxWidth()
-            .height(48.dp)
+            .height(height.dp)
     } else {
         Modifier.buttonBackGround(isGradient = isGradient, enabled = enabled)
-            .height(48.dp)
+            .height(height.dp)
     }
 
     Button(
@@ -123,7 +126,7 @@ fun LampButton(
             }
             Text(
                 text = buttonText,
-                style = Typography.medium18,
+                style = textStyle,
                 textAlign = TextAlign.Center
             )
         }
