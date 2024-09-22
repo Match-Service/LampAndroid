@@ -6,6 +6,7 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -41,7 +42,7 @@ fun MyPageScreen(modifier: Modifier, viewModel: MyPageViewModel = hiltViewModel(
             }, 2000)
         }
     }
-    Box(modifier = modifier) {
+    Box(modifier = modifier.fillMaxSize()) {
         Button(onClick = { viewModel.signOut() }) {
             Text("임시 로그아웃")
         }
