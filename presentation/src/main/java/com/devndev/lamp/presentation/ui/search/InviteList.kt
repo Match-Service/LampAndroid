@@ -3,6 +3,7 @@ package com.devndev.lamp.presentation.ui.search
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,10 +17,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,6 +35,7 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 @Composable
 fun InviteList(
     profileList: List<Item>,
+    selectedItems: List<Item>,
     onCheckedItemChanged: (Item, Boolean) -> Unit
 ) {
     Column(
@@ -52,13 +51,13 @@ fun InviteList(
         LazyColumn {
             items(profileList.size) { index ->
                 val profile = profileList[index]
-                var isSelected by remember { mutableStateOf(false) }
+
+                val isSelected = selectedItems.contains(profile)
 
                 InviteItem(
                     profile = profile,
                     selected = isSelected,
                     onCheckedChange = {
-                        isSelected = it
                         onCheckedItemChanged(profile, it)
                     }
                 )
@@ -82,7 +81,13 @@ fun InviteItem(profile: Item, selected: Boolean, onCheckedChange: (Boolean) -> U
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp),
+                .padding(vertical = 20.dp)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                ) {
+                    onCheckedChange(!selected)
+                },
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -98,7 +103,11 @@ fun InviteItem(profile: Item, selected: Boolean, onCheckedChange: (Boolean) -> U
                         .size(40.dp)
                         .clip(CircleShape)
                 )
-                NameSpace(profile = profile)
+                Text(
+                    text = profile.name,
+                    style = Typography.medium18,
+                    color = Color.White
+                )
             }
             InviteIcon(
                 selected = selected,

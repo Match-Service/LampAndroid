@@ -23,7 +23,7 @@ object NetworkModule {
         return object : ApiService {
             override suspend fun getItems(): List<Item> {
                 // 더미 데이터 반환
-                return listOf(Item("김수환", true, "멋쟁이 친구들"), Item("김수헌", false, null))
+                return listOf(Item("김수환", true, "멋쟁이 친구들"), Item("김수환무거북", false, null))
             }
         }
     }

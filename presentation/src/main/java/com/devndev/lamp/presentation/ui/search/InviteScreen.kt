@@ -1,6 +1,7 @@
 package com.devndev.lamp.presentation.ui.search
 
 import android.widget.Toast
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -39,6 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.domain.model.Item
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.ui.common.CircleProfile
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.theme.LampBlack
@@ -87,6 +89,28 @@ fun InviteScreen(
                     color = Color.White,
                     textAlign = TextAlign.Center
                 )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .animateContentSize()
+                    .padding(vertical = 10.dp)
+            ) {
+                Row(
+                    modifier = Modifier.animateContentSize(),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    selectedItems.forEach { item ->
+                        CircleProfile(
+                            profile = item,
+                            onDeleteButtonClick = {
+                                selectedItems.remove(item)
+                            },
+                            isCanDelete = true
+                        )
+                    }
+                }
             }
             Row(
                 modifier = Modifier
@@ -142,6 +166,7 @@ fun InviteScreen(
             }
             InviteList(
                 profileList = items,
+                selectedItems = selectedItems,
                 onCheckedItemChanged = { checkedItem, isSelected ->
                     if (isSelected) {
                         selectedItems.add(checkedItem)
