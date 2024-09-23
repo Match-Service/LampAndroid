@@ -98,4 +98,6 @@
     <string name="accept_invite">램프 참여하기</string>
     <string name="accept_visit">수락하기</string>
     <string name="reject">거절하기</string>
+
+    <string name="representative">대표</string>
 </resources>

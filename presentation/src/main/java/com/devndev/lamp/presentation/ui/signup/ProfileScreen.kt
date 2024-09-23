@@ -199,14 +199,34 @@ fun ProfileImage(
 //    onEdit: () -> Unit,
     isFirstImage: Boolean = false
 ) {
+    val gradientBrush = Brush.horizontalGradient(
+        colors = listOf(WomanColor, ManColor)
+    )
+
     val modifier = Modifier
         .size(95.dp)
-        .clip(RoundedCornerShape(8.dp))
+        .clip(RoundedCornerShape(4.dp))
         .background(Gray)
-        .border(width = 1.dp, color = Gray)
+        .then(
+            if (isFirstImage) {
+                Modifier.border(
+                    width = 1.dp,
+                    brush = gradientBrush,
+                    shape = RoundedCornerShape(4.dp)
+                )
+            } else {
+                Modifier.border(width = 1.dp, color = Gray)
+            }
+        )
         .clickable(onClick = onClick)
 
     Box(modifier = modifier) {
+        Icon(
+            modifier = Modifier.align(Alignment.Center),
+            painter = painterResource(id = R.drawable.image_icon),
+            contentDescription = null,
+            tint = Color.Unspecified
+        )
         if (bitmap != null) {
             Image(
                 bitmap = bitmap.asImageBitmap(),
@@ -261,15 +281,13 @@ fun MainProfileImage() {
     Box(
         modifier = Modifier
             .size(width = 41.dp, height = 26.dp)
-            .clip(RoundedCornerShape(20.dp))
+            .clip(RoundedCornerShape(topStart = 4.dp, bottomEnd = 4.dp))
             .background(
-                brush = Brush.linearGradient(
-                    colors = listOf(WomanColor, ManColor)
-                )
+                color = WomanColor
             )
     ) {
         Text(
-            text = "대표",
+            text = stringResource(id = R.string.representative),
             color = Color.White,
             modifier = Modifier.align(Alignment.Center),
             style = Typography.normal12
