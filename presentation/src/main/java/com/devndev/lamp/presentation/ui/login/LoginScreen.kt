@@ -4,6 +4,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,7 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.signup.navigation.navigateSignup
+import com.devndev.lamp.presentation.ui.registration.navigation.navigateRegistration
+import com.devndev.lamp.presentation.ui.signup.navigation.navigateSignUp
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.Typography
@@ -103,7 +105,7 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                onClick = { navController.navigateSignup() },
+                onClick = { navController.navigateSignUp() },
                 colors = buttonColor
             ) {
                 Text(text = stringResource(id = R.string.sign_in_email), style = Typography.medium18)
@@ -116,6 +118,9 @@ fun LoginScreen(
                     style = Typography.normal12
                 )
                 Text(
+                    modifier = Modifier.clickable {
+                        navController.navigateRegistration()
+                    },
                     text = buildAnnotatedString {
                         append(stringResource(id = R.string.login))
                         addStyle(

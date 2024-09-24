@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.signup
+package com.devndev.lamp.presentation.ui.registration
 
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder

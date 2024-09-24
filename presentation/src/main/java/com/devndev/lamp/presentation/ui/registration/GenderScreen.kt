@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.signup
+package com.devndev.lamp.presentation.ui.registration
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height

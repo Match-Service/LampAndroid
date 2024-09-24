@@ -35,13 +35,15 @@ fun SelectionScreen(
                 .verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = text,
-                color = Color.White,
-                style = Typography.semiBold25,
-                lineHeight = 33.sp,
-                textAlign = TextAlign.Center
-            )
+            if (text.isNotEmpty()) {
+                Text(
+                    text = text,
+                    color = Color.White,
+                    style = Typography.semiBold25,
+                    lineHeight = 33.sp,
+                    textAlign = TextAlign.Center
+                )
+            }
             content()
         }
     }

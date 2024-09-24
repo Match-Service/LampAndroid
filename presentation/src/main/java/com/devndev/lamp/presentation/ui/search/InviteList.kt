@@ -1,7 +1,6 @@
 package com.devndev.lamp.presentation.ui.search
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -28,7 +26,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.domain.model.Item
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.theme.Gray
+import com.devndev.lamp.presentation.ui.common.CheckButton
 import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.Typography
 
@@ -109,38 +107,10 @@ fun InviteItem(profile: Item, selected: Boolean, onCheckedChange: (Boolean) -> U
                     color = Color.White
                 )
             }
-            InviteIcon(
+            CheckButton(
+                size = 20,
                 selected = selected,
                 onClick = { onCheckedChange(!selected) }
-            )
-        }
-    }
-}
-
-@Composable
-fun InviteIcon(selected: Boolean, onClick: () -> Unit) {
-    val size = 20.dp
-    val borderColor = if (selected) Color.White else Gray
-    val innerColor = if (selected) Color.White else Color.Transparent
-    val iconColor = if (selected) Color.Black else Gray3
-
-    Box(
-        modifier = Modifier
-            .size(size)
-            .background(color = borderColor, shape = CircleShape)
-            .clickable(onClick = onClick)
-    ) {
-        Box(
-            modifier = Modifier
-                .size(size / 2)
-                .background(color = innerColor, shape = CircleShape)
-                .align(Alignment.Center)
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.radio_button_check),
-                contentDescription = "Check",
-                tint = iconColor,
-                modifier = Modifier.align(Alignment.Center)
             )
         }
     }
