@@ -44,9 +44,10 @@ import com.devndev.lamp.presentation.ui.mypage.navigation.myPageNavGraph
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateMyPage
 import com.devndev.lamp.presentation.ui.notification.navigation.navigateNotification
 import com.devndev.lamp.presentation.ui.notification.navigation.notificationNavGraph
+import com.devndev.lamp.presentation.ui.registration.navigation.registrationNavGraph
 import com.devndev.lamp.presentation.ui.search.navigation.inviteNavGraph
 import com.devndev.lamp.presentation.ui.search.navigation.searchNavGraph
-import com.devndev.lamp.presentation.ui.signup.navigation.signupNavGraph
+import com.devndev.lamp.presentation.ui.signup.navigation.signUpNavGraph
 import com.devndev.lamp.presentation.ui.splsh.navigaion.splashNavGraph
 import com.devndev.lamp.presentation.ui.theme.BackGroundColor
 import com.devndev.lamp.presentation.ui.theme.Gray3
@@ -70,8 +71,12 @@ fun MainScreen(modifier: Modifier) {
     Scaffold(
         containerColor = BackGroundColor,
         topBar = {
-            if (currentRoute != Route.LOGIN && currentRoute != Route.SIGNUP) {
-                LampTopBar(navController = navController)
+            if (currentRoute != Route.LOGIN && currentRoute != Route.REGISTRATION) {
+                if (currentRoute == Route.SIGNUP) {
+                    LampTopBar(navController = navController, isAlarmIconNeed = false)
+                } else {
+                    LampTopBar(navController = navController, isAlarmIconNeed = true)
+                }
             } else {
                 Spacer(modifier = Modifier.height(0.dp))
             }
@@ -80,9 +85,10 @@ fun MainScreen(modifier: Modifier) {
             if (currentRoute != Route.SEARCH &&
                 currentRoute != Route.CREATION &&
                 currentRoute != Route.LOGIN &&
-                currentRoute != Route.SIGNUP &&
+                currentRoute != Route.REGISTRATION &&
                 currentRoute != Route.INVITE &&
-                currentRoute != Route.NOTIFICATION
+                currentRoute != Route.NOTIFICATION &&
+                currentRoute != Route.SIGNUP
             ) {
                 LampBottomNavigation(navController = navController)
             } else {
@@ -102,14 +108,15 @@ fun MainScreen(modifier: Modifier) {
             creationNavGraph(padding = innerPadding, navController = navController)
             splashNavGraph(padding = PaddingValues())
             loginNavGraph(padding = PaddingValues(), navController = navController)
-            signupNavGraph(padding = PaddingValues(), navController = navController)
+            registrationNavGraph(padding = innerPadding, navController = navController)
             notificationNavGraph(padding = innerPadding, navController = navController)
+            signUpNavGraph(padding = innerPadding, navController = navController)
         }
     }
 }
 
 @Composable
-fun LampTopBar(navController: NavController) {
+fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -124,14 +131,16 @@ fun LampTopBar(navController: NavController) {
             tint = Gray3,
             modifier = Modifier.height(24.dp)
         )
-        Icon(
-            painterResource(id = R.drawable.alarm_icon),
-            contentDescription = "AlarmIcon",
-            tint = Gray3,
-            modifier = Modifier
-                .size(24.dp)
-                .clickable { navController.navigateNotification() }
-        )
+        if (isAlarmIconNeed) {
+            Icon(
+                painterResource(id = R.drawable.alarm_icon),
+                contentDescription = "AlarmIcon",
+                tint = Gray3,
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable { navController.navigateNotification() }
+            )
+        }
     }
 }
 

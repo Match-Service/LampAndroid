@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.signup
+package com.devndev.lamp.presentation.ui.registration
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -46,7 +46,7 @@ fun NameScreen(
     isValidName: Boolean,
     isDuplicateName: Boolean
 ) {
-    SelectionScreen(text = stringResource(id = R.string.signup_name)) {
+    SelectionScreen(text = stringResource(id = R.string.registration_name)) {
         var nameQuery by remember { mutableStateOf(name) }
         val maxNameChar = 6
         Spacer(modifier = Modifier.height(24.dp))

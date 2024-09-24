@@ -9,7 +9,8 @@ object Route {
     const val MYPAGE = "mypage"
     const val SEARCH = "search"
     const val CREATION = "creation"
-    const val SIGNUP = "signup"
+    const val REGISTRATION = "registration"
     const val INVITE = "invite"
     const val NOTIFICATION = "notification"
+    const val SIGNUP = "signup"
 }

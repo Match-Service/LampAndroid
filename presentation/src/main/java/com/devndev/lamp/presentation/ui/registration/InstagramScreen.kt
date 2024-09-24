@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.signup
+package com.devndev.lamp.presentation.ui.registration
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,6 +22,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
@@ -38,12 +40,14 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
-fun UniversityScreen(
-    university: String,
-    onUniversityChange: (String) -> Unit
+fun InstagramScreen(
+    instagramID: String,
+    onInstagramIDChange: (String) -> Unit,
+    isValid: Boolean,
+    isAuthButtonClicked: Boolean
 ) {
-    SelectionScreen(text = stringResource(id = R.string.signup_university)) {
-        var nameQuery by remember { mutableStateOf(university) }
+    SelectionScreen(text = stringResource(id = R.string.input_insta)) {
+        var nameQuery by remember { mutableStateOf(instagramID) }
         Spacer(modifier = Modifier.height(24.dp))
 
         val gradientBrush = Brush.linearGradient(
@@ -55,12 +59,34 @@ fun UniversityScreen(
         ) {
             Row(
                 modifier = Modifier
-                    .width(270.dp)
+                    .width(300.dp)
                     .background(LampBlack, shape = RoundedCornerShape(27.dp))
-                    .border(
-                        width = 1.dp,
-                        color = LightGray,
-                        shape = RoundedCornerShape(27.dp)
+                    .then(
+                        if (!isValid && isAuthButtonClicked) {
+                            Modifier.drawBehind {
+                                val strokeWidth = 1.dp.toPx()
+                                drawRoundRect(
+                                    brush = gradientBrush,
+                                    size = size,
+                                    cornerRadius = CornerRadius(27.dp.toPx(), 27.dp.toPx()),
+                                    style = androidx.compose.ui.graphics.drawscope.Stroke(
+                                        strokeWidth
+                                    )
+                                )
+                            }
+                        } else if (isValid) {
+                            Modifier.border(
+                                width = 1.dp,
+                                color = Color.White,
+                                shape = RoundedCornerShape(27.dp)
+                            )
+                        } else {
+                            Modifier.border(
+                                width = 1.dp,
+                                color = LightGray,
+                                shape = RoundedCornerShape(27.dp)
+                            )
+                        }
                     )
                     .padding(horizontal = 20.dp, vertical = 7.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -70,7 +96,7 @@ fun UniversityScreen(
                     value = nameQuery,
                     onValueChange = { newText ->
                         nameQuery = newText
-                        onUniversityChange(newText)
+                        onInstagramIDChange(newText)
                     },
                     textStyle = Typography.medium18.copy(color = Color.White),
                     singleLine = true,
@@ -79,7 +105,7 @@ fun UniversityScreen(
                 ) { innerTextField ->
                     if (nameQuery.isEmpty()) {
                         Text(
-                            text = stringResource(id = R.string.input_university),
+                            text = stringResource(id = R.string.guide_insta),
                             color = LightGray,
                             style = Typography.medium18
                         )
@@ -90,7 +116,7 @@ fun UniversityScreen(
                     modifier = Modifier.size(10.dp),
                     onClick = {
                         nameQuery = ""
-                        onUniversityChange(nameQuery)
+                        onInstagramIDChange(nameQuery)
                     }
                 ) {
                     Icon(
@@ -100,12 +126,23 @@ fun UniversityScreen(
                     )
                 }
             }
-
+            var guideText: String
+            var guideTextColor = Color.White
+            if (isAuthButtonClicked) {
+                if (isValid) {
+                    guideText = stringResource(id = R.string.auth_success)
+                } else {
+                    guideText = stringResource(id = R.string.auth_failure)
+                    guideTextColor = WomanColor
+                }
+            } else {
+                guideText = stringResource(id = R.string.university_guide1)
+            }
             Text(
                 modifier = Modifier.width(230.dp),
-                text = stringResource(id = R.string.university_guide1),
+                text = guideText,
                 style = Typography.normal12,
-                color = Color.White,
+                color = guideTextColor,
                 textAlign = TextAlign.Center
             )
         }
