@@ -2,11 +2,13 @@ package com.devndev.lamp.presentation.ui.signup
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -17,9 +19,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -32,6 +32,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
@@ -40,7 +43,6 @@ import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.ManColor
 import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
-import kotlinx.coroutines.delay
 import java.util.Locale
 
 @Composable
@@ -49,16 +51,16 @@ fun EmailScreen(
     onEmailChange: (String) -> Unit,
     certificationNumber: String,
     onCertificationNumberChange: (String) -> Unit,
-    isValidEmail: Boolean,
-    isValidCertificationNumber: Boolean,
-    isGetNumberButtonClick: Boolean,
-    isCertifyButtonClick: Boolean
+    emailStatus: Int,
+    totalSeconds: Int,
+    onResendButtonClick: () -> Unit
 ) {
     var emailQuery by remember { mutableStateOf(email) }
     var numberQuery by remember { mutableStateOf(certificationNumber) }
     val gradientBrush = Brush.linearGradient(
         colors = listOf(WomanColor, ManColor)
     )
+
     SelectionScreen(text = "") {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -112,7 +114,7 @@ fun EmailScreen(
                 }
             }
 
-            if (!isValidEmail && isGetNumberButtonClick) {
+            if (emailStatus == EmailStatus.INVALID_EMAIL) {
                 Spacer(modifier = Modifier.height(15.dp))
                 Text(
                     text = stringResource(id = R.string.invalid_email),
@@ -120,59 +122,68 @@ fun EmailScreen(
                     style = Typography.normal12
                 )
             }
-
-            if (isGetNumberButtonClick && isValidEmail) {
-                Spacer(modifier = Modifier.height(20.dp))
-                Row(
-                    modifier = Modifier
-                        .width(300.dp)
-                        .background(LampBlack, shape = RoundedCornerShape(27.dp))
-                        .then(
-                            if (!isValidCertificationNumber && isCertifyButtonClick) {
-                                Modifier.drawBehind {
-                                    val strokeWidth = 1.dp.toPx()
-                                    drawRoundRect(
-                                        brush = gradientBrush,
-                                        size = size,
-                                        cornerRadius = CornerRadius(27.dp.toPx(), 27.dp.toPx()),
-                                        style = androidx.compose.ui.graphics.drawscope.Stroke(
-                                            strokeWidth
+            if (emailStatus != EmailStatus.NONE && emailStatus != EmailStatus.INVALID_EMAIL) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Row(
+                        modifier = Modifier
+                            .width(300.dp)
+                            .background(LampBlack, shape = RoundedCornerShape(27.dp))
+                            .then(
+                                if (emailStatus != EmailStatus.NORMAL) {
+                                    Modifier.drawBehind {
+                                        val strokeWidth = 1.dp.toPx()
+                                        drawRoundRect(
+                                            brush = gradientBrush,
+                                            size = size,
+                                            cornerRadius = CornerRadius(27.dp.toPx(), 27.dp.toPx()),
+                                            style = androidx.compose.ui.graphics.drawscope.Stroke(
+                                                strokeWidth
+                                            )
                                         )
+                                    }
+                                } else {
+                                    Modifier.border(
+                                        width = 1.dp,
+                                        color = LightGray,
+                                        shape = RoundedCornerShape(27.dp)
                                     )
                                 }
-                            } else {
-                                Modifier.border(
-                                    width = 1.dp,
+                            )
+                            .padding(horizontal = 20.dp, vertical = 7.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        BasicTextField(
+                            value = numberQuery,
+                            onValueChange = { newText ->
+                                numberQuery = newText
+                                onCertificationNumberChange(newText)
+                            },
+                            textStyle = Typography.medium18.copy(color = Color.White),
+                            singleLine = true,
+                            cursorBrush = SolidColor(Color.White),
+                            modifier = Modifier
+                        ) { innerTextField ->
+                            if (numberQuery.isEmpty()) {
+                                Text(
+                                    text = stringResource(id = R.string.certification_number),
                                     color = LightGray,
-                                    shape = RoundedCornerShape(27.dp)
+                                    style = Typography.medium18
                                 )
                             }
-                        )
-                        .padding(horizontal = 20.dp, vertical = 7.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    BasicTextField(
-                        value = numberQuery,
-                        onValueChange = { newText ->
-                            numberQuery = newText
-                            onCertificationNumberChange(newText)
-                        },
-                        textStyle = Typography.medium18.copy(color = Color.White),
-                        singleLine = true,
-                        cursorBrush = SolidColor(Color.White),
-                        modifier = Modifier
-                    ) { innerTextField ->
-                        if (numberQuery.isEmpty()) {
-                            Text(
-                                text = stringResource(id = R.string.certification_number),
-                                color = LightGray,
-                                style = Typography.medium18
-                            )
+                            innerTextField()
                         }
-                        innerTextField()
+                        CountdownTimer(
+                            initialSeconds = totalSeconds
+                        )
                     }
-                    CountdownTimer()
+                    Spacer(modifier = Modifier.height(15.dp))
+                    EmailBottomArea(emailStatus = emailStatus, onResendClick = {
+                        onResendButtonClick()
+                    })
                 }
             }
         }
@@ -180,27 +191,93 @@ fun EmailScreen(
 }
 
 @Composable
-fun CountdownTimer(startMinutes: Int = 3, startSeconds: Int = 0) {
-    var totalSeconds by remember { mutableIntStateOf(startMinutes * 60 + startSeconds) }
-
-    var isRunning by remember { mutableStateOf(true) }
-
-    LaunchedEffect(isRunning) {
-        while (isRunning && totalSeconds > 0) {
-            delay(1000L)
-            totalSeconds--
+fun EmailBottomArea(emailStatus: Int, onResendClick: () -> Unit) {
+    when (emailStatus) {
+        EmailStatus.NORMAL -> {
+            Column(
+                modifier = Modifier.width(225.dp),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = stringResource(id = R.string.send_email_guide),
+                    color = Color.White,
+                    style = Typography.normal12
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.not_send_email),
+                        color = Color.White,
+                        style = Typography.normal12
+                    )
+                    ResendText(onClick = { onResendClick() })
+                }
+            }
         }
-        if (totalSeconds == 0) {
-            isRunning = false
+
+        EmailStatus.TIME_OUT -> {
+            Row(
+                modifier = Modifier.width(260.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = stringResource(id = R.string.timeout_certification_number),
+                    color = WomanColor,
+                    style = Typography.normal12
+                )
+                ResendText(onClick = { onResendClick() })
+            }
+        }
+
+        EmailStatus.INVALID_CERTIFICATION_NUMBER -> {
+            Row(
+                modifier = Modifier.width(260.dp),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(
+                    text = stringResource(id = R.string.invalid_certification_number),
+                    color = WomanColor,
+                    style = Typography.normal12
+                )
+                ResendText(onClick = { onResendClick() })
+            }
         }
     }
+}
 
-    val minutes = totalSeconds / 60
-    val seconds = totalSeconds % 60
+@Composable
+fun CountdownTimer(
+    initialSeconds: Int
+) {
+    val minutes = initialSeconds / 60
+    val seconds = initialSeconds % 60
 
     Text(
         text = String.format(Locale.US, "%02d:%02d", minutes, seconds),
         style = Typography.normal12,
         color = WomanColor
+    )
+}
+
+@Composable
+fun ResendText(onClick: () -> Unit) {
+    Text(
+        modifier = Modifier.clickable {
+            onClick()
+        },
+        text = buildAnnotatedString {
+            append(stringResource(id = R.string.resend_certification_number))
+            addStyle(
+                style = SpanStyle(textDecoration = TextDecoration.Underline),
+                start = 0,
+                end = this.length
+            )
+        },
+        color = Color.White,
+        style = Typography.normal12
     )
 }

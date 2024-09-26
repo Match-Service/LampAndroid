@@ -109,4 +109,9 @@
     <string name="sign_up">회원가입</string>
     <string name="certification_number">인증번호</string>
     <string name="invalid_email">이메일 형식이 잘못 되었어요</string>
+    <string name="send_email_guide">인증번호를 해당 이메일로 보내드렸어요</string>
+    <string name="not_send_email">인증번호를 받지 못했나요?</string>
+    <string name="resend_certification_number">다시받기</string>
+    <string name="invalid_certification_number">인증번호가 틀렸어요. 다시 입력해주세요</string>
+    <string name="timeout_certification_number">시간이 초과되었어요. 다시 입력해주세요</string>
 </resources>
