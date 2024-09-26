@@ -102,4 +102,11 @@
     <string name="representative">대표</string>
 
     <string name="consent">약관 및 개인정보 동의</string>
+    <string name="certify">인증하기</string>
+    <string name="join">가입하기</string>
+    <string name="get_certification_number">인증번호 받기</string>
+    <string name="input_email">이메일을 입력해주세요</string>
+    <string name="sign_up">회원가입</string>
+    <string name="certification_number">인증번호</string>
+    <string name="invalid_email">이메일 형식이 잘못 되었어요</string>
 </resources>
