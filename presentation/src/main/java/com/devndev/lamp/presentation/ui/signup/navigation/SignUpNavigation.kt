@@ -9,6 +9,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.signup.SignUpScreen
+import com.devndev.lamp.presentation.ui.signup.StartLampScreen
 
 fun NavController.navigateSignUp(navOptions: NavOptions? = null) {
     this.navigate(Route.SIGNUP, navOptions)
@@ -21,5 +22,17 @@ fun NavGraphBuilder.signUpNavGraph(
 ) {
     composable(Route.SIGNUP) {
         SignUpScreen(modifier = modifier.padding(padding), navController = navController)
+    }
+}
+
+fun NavController.navigateStartLamp(navOptions: NavOptions? = null) {
+    this.navigate(Route.START_LAMP, navOptions)
+}
+
+fun NavGraphBuilder.startLampNavGraph(
+    navController: NavController
+) {
+    composable(Route.START_LAMP) {
+        StartLampScreen(navController = navController)
     }
 }

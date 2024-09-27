@@ -114,4 +114,11 @@
     <string name="resend_certification_number">다시받기</string>
     <string name="invalid_certification_number">인증번호가 틀렸어요. 다시 입력해주세요</string>
     <string name="timeout_certification_number">시간이 초과되었어요. 다시 입력해주세요</string>
+
+    <string name="input_password">비밀번호를 입력해주세요</string>
+    <string name="input_confirm_password">비밀번호를 다시 입력해주세요</string>
+    <string name="guide_input_password">영문, 숫자 조합 8–16자리</string>
+    <string name="valid_password">올바른 비밀번호에요</string>
+    <string name="invalid_password">비밀번호가 틀렸어요</string>
+    <string name="sign_up_complete">가입 완료!\n빛나는 만남을 시작해볼까요?</string>
 </resources>

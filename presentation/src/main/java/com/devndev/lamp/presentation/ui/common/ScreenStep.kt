@@ -29,3 +29,19 @@ object MoodScreen {
     const val CASUAL = 3
     const val SERIOUS = 4
 }
+
+object EmailStatus {
+    const val NONE = 0
+    const val NORMAL = 1
+    const val INVALID_EMAIL = 2
+    const val INVALID_CERTIFICATION_NUMBER = 3
+    const val TIME_OUT = 4
+}
+
+object PasswordStatus {
+    const val NONE = 0
+    const val INVALID_PASSWORD = 1
+    const val CONFIRM_PASSWORD = 2
+    const val INVALID_CONFIRM_PASSWORD = 3
+    const val SUCCESS = 4
+}
