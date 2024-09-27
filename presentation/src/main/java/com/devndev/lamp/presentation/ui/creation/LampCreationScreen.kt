@@ -27,6 +27,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -61,15 +62,16 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
 
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
+            .fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
             modifier = Modifier.weight(1f)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -113,6 +115,7 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                 },
                 modifier = Modifier
                     .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
                     .height(4.dp),
                 color = LightGray,
                 trackColor = Gray
@@ -159,21 +162,30 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                             selectedRegion = it
                         }
 
-                        CreationScreen.MOOD -> MoodScreen(selectedOption = selectedMood) {
-                            selectedMood = it
-                        }
+                        CreationScreen.MOOD ->
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .clipToBounds()
+                            ) {
+                                MoodScreen(selectedOption = selectedMood) {
+                                    selectedMood = it
+                                }
+                            }
 
                         CreationScreen.INTRODUCTION -> LampIntroductionScreen(
                             lampName = lampName,
                             lampSummary = lampSummary,
                             onLampNameChange = { newLampName -> lampName = newLampName },
-                            onLampSummaryChange = { newLampSummary -> lampSummary = newLampSummary }
+                            onLampSummaryChange = { newLampSummary ->
+                                lampSummary = newLampSummary
+                            }
                         )
                     }
                 }
             }
         }
-        Box(modifier = Modifier.padding(bottom = 20.dp)) {
+        Box(modifier = Modifier.padding(bottom = 20.dp, start = 16.dp, end = 16.dp)) {
             LampButton(
                 isGradient = true,
                 buttonText = if (currentStep < 4) {
