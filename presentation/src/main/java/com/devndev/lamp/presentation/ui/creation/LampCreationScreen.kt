@@ -1,6 +1,11 @@
 package com.devndev.lamp.presentation.ui.creation
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -118,25 +123,53 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                when (currentStep) {
-                    CreationScreen.PERSONNEL -> PersonnelScreen(selectedOption = selectedPersonnel) {
-                        selectedPersonnel = it
-                    }
+                AnimatedContent(
+                    targetState = currentStep,
+                    transitionSpec = {
+                        if (targetState > initialState) {
+                            slideInHorizontally(
+                                initialOffsetX = { fullWidth -> fullWidth },
+                                animationSpec = tween(durationMillis = 300)
+                            ).togetherWith(
+                                slideOutHorizontally(
+                                    targetOffsetX = { fullWidth -> -fullWidth },
+                                    animationSpec = tween(durationMillis = 300)
+                                )
+                            )
+                        } else {
+                            slideInHorizontally(
+                                initialOffsetX = { fullWidth -> -fullWidth },
+                                animationSpec = tween(durationMillis = 300)
+                            ).togetherWith(
+                                slideOutHorizontally(
+                                    targetOffsetX = { fullWidth -> fullWidth },
+                                    animationSpec = tween(durationMillis = 300)
+                                )
+                            )
+                        }
+                    },
+                    label = ""
+                ) { step ->
+                    when (step) {
+                        CreationScreen.PERSONNEL -> PersonnelScreen(selectedOption = selectedPersonnel) {
+                            selectedPersonnel = it
+                        }
 
-                    CreationScreen.REGION -> RegionScreen(selectedOption = selectedRegion) {
-                        selectedRegion = it
-                    }
+                        CreationScreen.REGION -> RegionScreen(selectedOption = selectedRegion) {
+                            selectedRegion = it
+                        }
 
-                    CreationScreen.MOOD -> MoodScreen(selectedOption = selectedMood) {
-                        selectedMood = it
-                    }
+                        CreationScreen.MOOD -> MoodScreen(selectedOption = selectedMood) {
+                            selectedMood = it
+                        }
 
-                    CreationScreen.INTRODUCTION -> LampIntroductionScreen(
-                        lampName = lampName,
-                        lampSummary = lampSummary,
-                        onLampNameChange = { newLampName -> lampName = newLampName },
-                        onLampSummaryChange = { newLampSummary -> lampSummary = newLampSummary }
-                    )
+                        CreationScreen.INTRODUCTION -> LampIntroductionScreen(
+                            lampName = lampName,
+                            lampSummary = lampSummary,
+                            onLampNameChange = { newLampName -> lampName = newLampName },
+                            onLampSummaryChange = { newLampSummary -> lampSummary = newLampSummary }
+                        )
+                    }
                 }
             }
         }
@@ -170,6 +203,7 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                             else -> true
                         }
                     }
+
                     else -> lampName.isNotEmpty() && lampSummary.isNotEmpty()
                 }
             )

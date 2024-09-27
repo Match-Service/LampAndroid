@@ -3,6 +3,11 @@ package com.devndev.lamp.presentation.ui.registration
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -169,69 +174,97 @@ fun RegistrationScreen(modifier: Modifier, navController: NavController) {
                     .weight(1f),
                 contentAlignment = Alignment.Center
             ) {
-                when (currentStep) {
-                    RegistrationScreen.NAME -> NameScreen(
-                        name = name,
-                        onNameChange = { newName ->
-                            name = newName
-                            isNameValid = isKoreanAndEnglishOnly(newName)
-                            if (isDuplicateName) {
-                                isDuplicateName = false
-                            }
-                        },
-                        isValidName = isNameValid,
-                        isDuplicateName = isDuplicateName
-                    )
-
-                    RegistrationScreen.UNIVERSITY -> UniversityScreen(
-                        university = university,
-                        onUniversityChange = { newUniversity -> university = newUniversity }
-                    )
-
-                    RegistrationScreen.GENDER -> GenderScreen(selectedOption = selectedGender) {
-                        selectedGender = it
-                    }
-
-                    RegistrationScreen.BIRTH -> BirthScreen(
-                        isMan = selectedGender == stringResource(id = R.string.man),
-                        selectedYear = birthYear,
-                        selectedMonth = birthMonth,
-                        selectedDay = birthDay,
-                        onYearChange = { birthYear = it },
-                        onMonthChange = { birthMonth = it },
-                        onDayChange = { birthDay = it }
-                    )
-
-                    RegistrationScreen.INFO -> InfoScreen(
-                        selectedDrinkOption = selectedDrink,
-                        selectedSmokeOption = selectedSmoke,
-                        selectedExerciseOption = selectedExercise,
-                        onSelectDrinkOption = {
-                            selectedDrink = it
-                            Log.d(logTag, "selectedDrinkOption $selectedDrink")
-                        },
-                        onSelectSmokeOption = { selectedSmoke = it },
-                        onSelectExerciseOption = { selectedExercise = it }
-                    )
-
-                    RegistrationScreen.INSTAGRAM -> InstagramScreen(
-                        instagramID = instagramId,
-                        onInstagramIDChange = {
-                            instagramId = it
-                            isAuthButtonClicked = false
-                            isValidInstagramId = false
-                        },
-                        isValid = isValidInstagramId,
-                        isAuthButtonClicked = isAuthButtonClicked
-                    )
-
-                    RegistrationScreen.PROFILE -> {
-                        ProfileScreen(
-                            profileIntro = profileIntro,
-                            bitmaps = bitmaps,
-                            onProfileIntroChange = { profileIntro = it },
-                            onBitmapsChange = { updatedBitmaps -> bitmaps = updatedBitmaps }
+                AnimatedContent(
+                    targetState = currentStep,
+                    transitionSpec = {
+                        if (targetState > initialState) {
+                            slideInHorizontally(
+                                initialOffsetX = { fullWidth -> fullWidth },
+                                animationSpec = tween(durationMillis = 300)
+                            ).togetherWith(
+                                slideOutHorizontally(
+                                    targetOffsetX = { fullWidth -> -fullWidth },
+                                    animationSpec = tween(durationMillis = 300)
+                                )
+                            )
+                        } else {
+                            slideInHorizontally(
+                                initialOffsetX = { fullWidth -> -fullWidth },
+                                animationSpec = tween(durationMillis = 300)
+                            ).togetherWith(
+                                slideOutHorizontally(
+                                    targetOffsetX = { fullWidth -> fullWidth },
+                                    animationSpec = tween(durationMillis = 300)
+                                )
+                            )
+                        }
+                    },
+                    label = ""
+                ) { step ->
+                    when (step) {
+                        RegistrationScreen.NAME -> NameScreen(
+                            name = name,
+                            onNameChange = { newName ->
+                                name = newName
+                                isNameValid = isKoreanAndEnglishOnly(newName)
+                                if (isDuplicateName) {
+                                    isDuplicateName = false
+                                }
+                            },
+                            isValidName = isNameValid,
+                            isDuplicateName = isDuplicateName
                         )
+
+                        RegistrationScreen.UNIVERSITY -> UniversityScreen(
+                            university = university,
+                            onUniversityChange = { newUniversity -> university = newUniversity }
+                        )
+
+                        RegistrationScreen.GENDER -> GenderScreen(selectedOption = selectedGender) {
+                            selectedGender = it
+                        }
+
+                        RegistrationScreen.BIRTH -> BirthScreen(
+                            isMan = selectedGender == stringResource(id = R.string.man),
+                            selectedYear = birthYear,
+                            selectedMonth = birthMonth,
+                            selectedDay = birthDay,
+                            onYearChange = { birthYear = it },
+                            onMonthChange = { birthMonth = it },
+                            onDayChange = { birthDay = it }
+                        )
+
+                        RegistrationScreen.INFO -> InfoScreen(
+                            selectedDrinkOption = selectedDrink,
+                            selectedSmokeOption = selectedSmoke,
+                            selectedExerciseOption = selectedExercise,
+                            onSelectDrinkOption = {
+                                selectedDrink = it
+                                Log.d(logTag, "selectedDrinkOption $selectedDrink")
+                            },
+                            onSelectSmokeOption = { selectedSmoke = it },
+                            onSelectExerciseOption = { selectedExercise = it }
+                        )
+
+                        RegistrationScreen.INSTAGRAM -> InstagramScreen(
+                            instagramID = instagramId,
+                            onInstagramIDChange = {
+                                instagramId = it
+                                isAuthButtonClicked = false
+                                isValidInstagramId = false
+                            },
+                            isValid = isValidInstagramId,
+                            isAuthButtonClicked = isAuthButtonClicked
+                        )
+
+                        RegistrationScreen.PROFILE -> {
+                            ProfileScreen(
+                                profileIntro = profileIntro,
+                                bitmaps = bitmaps,
+                                onProfileIntroChange = { profileIntro = it },
+                                onBitmapsChange = { updatedBitmaps -> bitmaps = updatedBitmaps }
+                            )
+                        }
                     }
                 }
             }
