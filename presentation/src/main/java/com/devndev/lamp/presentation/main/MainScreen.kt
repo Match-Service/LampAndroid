@@ -48,6 +48,7 @@ import com.devndev.lamp.presentation.ui.registration.navigation.registrationNavG
 import com.devndev.lamp.presentation.ui.search.navigation.inviteNavGraph
 import com.devndev.lamp.presentation.ui.search.navigation.searchNavGraph
 import com.devndev.lamp.presentation.ui.signup.navigation.signUpNavGraph
+import com.devndev.lamp.presentation.ui.signup.navigation.startLampNavGraph
 import com.devndev.lamp.presentation.ui.splsh.navigaion.splashNavGraph
 import com.devndev.lamp.presentation.ui.theme.BackGroundColor
 import com.devndev.lamp.presentation.ui.theme.Gray3
@@ -71,7 +72,11 @@ fun MainScreen(modifier: Modifier) {
     Scaffold(
         containerColor = BackGroundColor,
         topBar = {
-            if (currentRoute != Route.LOGIN && currentRoute != Route.REGISTRATION) {
+            if (
+                currentRoute != Route.LOGIN &&
+                currentRoute != Route.REGISTRATION &&
+                currentRoute != Route.START_LAMP
+            ) {
                 if (currentRoute == Route.SIGNUP) {
                     LampTopBar(navController = navController, isAlarmIconNeed = false)
                 } else {
@@ -88,7 +93,8 @@ fun MainScreen(modifier: Modifier) {
                 currentRoute != Route.REGISTRATION &&
                 currentRoute != Route.INVITE &&
                 currentRoute != Route.NOTIFICATION &&
-                currentRoute != Route.SIGNUP
+                currentRoute != Route.SIGNUP &&
+                currentRoute != Route.START_LAMP
             ) {
                 LampBottomNavigation(navController = navController)
             } else {
@@ -111,6 +117,7 @@ fun MainScreen(modifier: Modifier) {
             registrationNavGraph(padding = innerPadding, navController = navController)
             notificationNavGraph(padding = innerPadding, navController = navController)
             signUpNavGraph(padding = innerPadding, navController = navController)
+            startLampNavGraph(navController = navController)
         }
     }
 }

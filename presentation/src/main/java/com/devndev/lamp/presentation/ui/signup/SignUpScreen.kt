@@ -35,9 +35,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.ui.common.EmailStatus
 import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.common.PasswordStatus
+import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.common.SignUpScreen
+import com.devndev.lamp.presentation.ui.signup.navigation.navigateStartLamp
 import com.devndev.lamp.presentation.ui.theme.Typography
 import kotlinx.coroutines.delay
 
@@ -60,6 +65,10 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
     var emailStatus by remember { mutableIntStateOf(EmailStatus.NONE) }
     var totalSeconds by remember { mutableIntStateOf(INITIAL_TIME) }
     var isTimerRunning by remember { mutableStateOf(false) }
+
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+    var passwordStatus by remember { mutableIntStateOf(PasswordStatus.NONE) }
 
     LaunchedEffect(totalSeconds == INITIAL_TIME) {
         if (emailStatus != EmailStatus.NONE && emailStatus != EmailStatus.INVALID_EMAIL) {
@@ -196,6 +205,32 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                                 totalSeconds = INITIAL_TIME
                             }
                         )
+
+                        SignUpScreen.PASSWORD -> PasswordScreen(
+                            password = password,
+                            onPasswordChange = {
+                                password = it
+                                if (isValidPassword(password)) {
+                                    passwordStatus = PasswordStatus.CONFIRM_PASSWORD
+                                } else {
+                                    if (password.isEmpty()) {
+                                        passwordStatus = PasswordStatus.NONE
+                                    } else {
+                                        passwordStatus = PasswordStatus.INVALID_PASSWORD
+                                    }
+                                }
+                            },
+                            confirmPassword = confirmPassword,
+                            onConfirmPasswordChange = {
+                                confirmPassword = it
+                                if (passwordStatus == PasswordStatus.CONFIRM_PASSWORD) {
+                                    if (password == confirmPassword) {
+                                        passwordStatus = PasswordStatus.SUCCESS
+                                    }
+                                }
+                            },
+                            passwordStatus = passwordStatus
+                        )
                     }
                 }
             }
@@ -217,7 +252,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                         }
 
                         else -> {
-                            ""
+                            stringResource(id = R.string.start)
                         }
                     },
                     onClick = {
@@ -246,7 +281,8 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                                                 logTag,
                                                 "emailStatus == INVALID_CERTIFICATION_NUMBER"
                                             )
-                                            emailStatus = EmailStatus.INVALID_CERTIFICATION_NUMBER
+                                            emailStatus =
+                                                EmailStatus.INVALID_CERTIFICATION_NUMBER
                                         }
                                     } else {
                                         Log.d(logTag, "emailStatus == TIME_OUT")
@@ -265,7 +301,8 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                                                 logTag,
                                                 "emailStatus == INVALID_CERTIFICATION_NUMBER"
                                             )
-                                            emailStatus = EmailStatus.INVALID_CERTIFICATION_NUMBER
+                                            emailStatus =
+                                                EmailStatus.INVALID_CERTIFICATION_NUMBER
                                         }
                                     } else {
                                         Log.d(logTag, "emailStatus == TIME_OUT")
@@ -273,11 +310,16 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                                     }
                                 }
                             }
+                        } else if (currentStep == SignUpScreen.PASSWORD && passwordStatus == PasswordStatus.SUCCESS) {
+                            val navOption = navOptions {
+                                popUpTo(Route.START_LAMP) { inclusive = true }
+                            }
+                            navController.navigateStartLamp(navOption)
                         } else {
                             currentStep++
                         }
                     },
-                    enabled = true
+                    enabled = !(currentStep == SignUpScreen.PASSWORD && passwordStatus != PasswordStatus.SUCCESS)
                 )
             }
         }
@@ -289,10 +331,6 @@ fun isValidEmail(email: String): Boolean {
     return email.matches(Regex(emailPattern))
 }
 
-object EmailStatus {
-    const val NONE = 0
-    const val NORMAL = 1
-    const val INVALID_EMAIL = 2
-    const val INVALID_CERTIFICATION_NUMBER = 3
-    const val TIME_OUT = 4
+fun isValidPassword(password: String): Boolean {
+    return password.matches(Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,16}$"))
 }
