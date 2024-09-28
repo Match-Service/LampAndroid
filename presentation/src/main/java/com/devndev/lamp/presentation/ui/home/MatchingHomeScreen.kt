@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
@@ -402,7 +403,7 @@ fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatchi
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF151515))
+            .background(LampBlack)
             .pointerInput(Unit) {
                 detectVerticalDragGestures(
                     onVerticalDrag = { change, dragAmount ->
@@ -421,7 +422,11 @@ fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatchi
 }
 
 @Composable
-fun ShadowCircleBackground(animatableOffset: Animatable<Float, AnimationVector1D>, animatableAlpha: Animatable<Float, AnimationVector1D>, animatableShadowRadius: Animatable<Float, AnimationVector1D>) {
+fun ShadowCircleBackground(
+    animatableOffset: Animatable<Float, AnimationVector1D>,
+    animatableAlpha: Animatable<Float, AnimationVector1D>,
+    animatableShadowRadius: Animatable<Float, AnimationVector1D>
+) {
     // mood에 따라 색상 변경
     val shadowColor = when (TempDB.mood) {
         1 -> MoodRed.copy(alpha = animatableAlpha.value)
@@ -455,6 +460,11 @@ fun ShadowCircleBackground(animatableOffset: Animatable<Float, AnimationVector1D
             color = LampBlack,
             radius = radius,
             center = center
+        )
+        drawRect(
+            color = LampBlack,
+            topLeft = Offset(center.x - radius, center.y),
+            size = Size(radius * 2, radius)
         )
     }
 }
