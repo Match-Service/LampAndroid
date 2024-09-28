@@ -39,6 +39,7 @@ fun PasswordScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             LampTextField(
+                width = 300,
                 isGradient = passwordStatus == PasswordStatus.INVALID_PASSWORD,
                 query = passwordQuery,
                 onQueryChange = {
@@ -75,6 +76,7 @@ fun PasswordScreen(
                     )
                     Spacer(modifier = Modifier.height(50.dp))
                     LampTextField(
+                        width = 300,
                         isGradient = false,
                         query = confirmPasswordQuery,
                         onQueryChange = {

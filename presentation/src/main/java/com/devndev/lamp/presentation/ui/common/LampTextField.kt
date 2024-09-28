@@ -3,7 +3,10 @@ package com.devndev.lamp.presentation.ui.common
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -32,6 +35,7 @@ import java.util.Locale
 
 @Composable
 fun LampTextField(
+    width: Int,
     isGradient: Boolean,
     query: String,
     onQueryChange: (String) -> Unit,
@@ -44,7 +48,13 @@ fun LampTextField(
     )
     Row(
         modifier = Modifier
-            .width(300.dp)
+            .then(
+                if (width == 0) {
+                    Modifier.fillMaxWidth()
+                } else {
+                    Modifier.width(width.dp)
+                }
+            )
             .background(LampBlack, shape = RoundedCornerShape(27.dp))
             .then(
                 if (isGradient) {
@@ -107,6 +117,51 @@ fun LampTextField(
             }
         } else {
             CountdownTimer(initialSeconds = timerSeconds)
+        }
+    }
+}
+
+@Composable
+fun LampBigTextField(
+    width: Int,
+    height: Int,
+    query: String,
+    onQueryChange: (String) -> Unit,
+    maxLength: Int = 100,
+    hintText: String
+) {
+    Box(
+        modifier = Modifier
+            .width(width.dp)
+            .height(height.dp)
+            .background(LampBlack, shape = RoundedCornerShape(20.dp))
+            .border(
+                width = 1.dp,
+                color = LightGray,
+                shape = RoundedCornerShape(27.dp)
+            )
+            .padding(horizontal = 20.dp, vertical = 14.dp)
+    ) {
+        BasicTextField(
+            value = query,
+            onValueChange = { newText ->
+                if (newText.length <= maxLength) {
+                    onQueryChange(newText)
+                }
+            },
+            textStyle = Typography.normal14.copy(color = Color.White),
+            cursorBrush = SolidColor(Color.White),
+            modifier = Modifier
+
+        ) { innerTextField ->
+            if (query.isEmpty()) {
+                Text(
+                    text = hintText,
+                    color = LightGray,
+                    style = Typography.normal14
+                )
+            }
+            innerTextField()
         }
     }
 }
