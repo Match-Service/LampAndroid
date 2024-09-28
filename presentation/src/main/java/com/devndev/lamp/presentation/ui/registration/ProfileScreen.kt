@@ -17,11 +17,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -35,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -47,10 +43,9 @@ import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.ui.common.LampBigTextField
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
 import com.devndev.lamp.presentation.ui.theme.Gray
-import com.devndev.lamp.presentation.ui.theme.LampBlack
-import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.ManColor
 import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
@@ -153,41 +148,17 @@ fun ProfileScreen(
             }
         }
         Spacer(modifier = Modifier.height(30.dp))
-        Box(
-            modifier = Modifier
-                .width(295.dp)
-                .height(120.dp)
-                .background(LampBlack, shape = RoundedCornerShape(20.dp))
-                .border(
-                    width = 1.dp,
-                    color = LightGray,
-                    shape = RoundedCornerShape(27.dp)
-                )
-                .padding(horizontal = 20.dp, vertical = 14.dp)
-        ) {
-            BasicTextField(
-                value = profileQuery,
-                onValueChange = { newText ->
-                    if (newText.length <= maxProfileChar) {
-                        profileQuery = newText
-                        onProfileIntroChange(newText)
-                    }
-                },
-                textStyle = Typography.normal14.copy(color = Color.White),
-                cursorBrush = SolidColor(Color.White),
-                modifier = Modifier
-
-            ) { innerTextField ->
-                if (profileQuery.isEmpty()) {
-                    Text(
-                        text = "자신에 대해 소개해주세요",
-                        color = LightGray,
-                        style = Typography.normal14
-                    )
-                }
-                innerTextField()
-            }
-        }
+        LampBigTextField(
+            width = 295,
+            height = 120,
+            query = profileQuery,
+            onQueryChange = {
+                profileQuery = it
+                onProfileIntroChange(it)
+            },
+            hintText = "자신에 대해 소개해주세요",
+            maxLength = maxProfileChar
+        )
     }
 }
 
