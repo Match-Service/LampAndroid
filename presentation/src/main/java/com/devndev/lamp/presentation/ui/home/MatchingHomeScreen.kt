@@ -1,10 +1,16 @@
 package com.devndev.lamp.presentation.ui.home
 
 import android.media.Image
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationVector1D
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,6 +28,11 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,8 +42,10 @@ import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -41,6 +54,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.TempDB
+import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.search.navigation.navigateInvite
 import com.devndev.lamp.presentation.ui.theme.Gray
@@ -50,17 +64,53 @@ import com.devndev.lamp.presentation.ui.theme.MoodBlue
 import com.devndev.lamp.presentation.ui.theme.MoodRed
 import com.devndev.lamp.presentation.ui.theme.MoodYellow
 import com.devndev.lamp.presentation.ui.theme.Typography
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 @Composable
 fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
+
+    // 아직 방에 유저를 초대할 수 없어 테스트용으로 작업(방의 참여 인원수 2명으로 임시 설정)
+    // TODO : 실제 방 참여 인원에 따라 매칭 시작 활성화 되도록 수정
+    var currentPersonnel = 2
+    val maxPersonnel = when (TempDB.personnel) {
+        "2:2" -> 2
+        "3:3" -> 3
+        "4:4" -> 4
+        "5:5" -> 5
+        else -> 2
+    }
+
+    var fullPersonnel by remember { mutableStateOf(currentPersonnel == maxPersonnel) }
+    var isMatching by remember { mutableStateOf(false) }
+    val inviteFriend = stringResource(id = R.string.invite_friend)
+    val startMatching = stringResource(id = R.string.start_matching)
+    val stopMatching = stringResource(id = R.string.stop_matching)
+
+    // fullPersonnel = false : 친구 초대하기 및 스와이프 인식x
+    // fullPersonnel = true : 매칭 시작하기 및 스와이프 인식o
+    val buttonText = remember(fullPersonnel, isMatching) {
+        if (!fullPersonnel) {
+            inviteFriend
+        } else {
+            if (!isMatching) {
+                startMatching
+            } else {
+                stopMatching
+            }
+        }
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(LampBlack)
     ) {
-        ShadowCircleBackground()
+        VerticalSwipeGesture(fullPersonnel, onSwipeUp = {
+            isMatching = true
+        }, isMatching)
         Box(
             modifier = Modifier
                 .height(100.dp)
@@ -157,19 +207,29 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
 
                 Spacer(modifier = Modifier.height(30.dp))
 
-                Button(
-                    onClick = { navController.navigateInvite() },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Gray,
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier.height(50.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.invite_friend),
-                        color = Color.White,
-                        style = Typography.medium18,
-                        modifier = Modifier.padding(horizontal = 12.dp)
+                if (!fullPersonnel) {
+                    Button(
+                        onClick = { navController.navigateInvite() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Gray,
+                            contentColor = Color.White
+                        ),
+                        modifier = Modifier.height(50.dp)
+                    ) {
+                        Text(
+                            text = buttonText,
+                            color = Color.White,
+                            style = Typography.medium18,
+                            modifier = Modifier.padding(horizontal = 12.dp)
+                        )
+                    }
+                } else {
+                    LampButton(
+                        isGradient = !isMatching,
+                        buttonWidth = 300,
+                        buttonText = buttonText,
+                        onClick = { isMatching = !isMatching },
+                        enabled = true
                     )
                 }
             }
@@ -249,14 +309,125 @@ fun MatchingHomeTopBar(onExitIconClick: () -> Unit, onShareIconClick: () -> Unit
     }
 }
 
+/***
+ * 화면 스와이프해서 매칭 시작하기
+ */
 @Composable
-fun ShadowCircleBackground() {
+fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatching: Boolean) {
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp.dp
+
+    val animatableOffset = remember { Animatable(0f) }
+    val animatableAlpha = remember { Animatable(1f) }
+    val animatableShadowRadius = remember { Animatable(250f) }
+
+    // dp -> px 변환을 미리 수행
+    val screenHeightPx = with(LocalDensity.current) { screenHeight.toPx() }
+
+    // 애니메이션 처리
+    LaunchedEffect(isMatching) {
+        if (isMatching) {
+            // 원이 위로 이동하며 서서히 사라짐
+            coroutineScope {
+                launch {
+                    animatableOffset.animateTo(
+                        targetValue = -screenHeightPx * 0.3f,
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                }
+                launch {
+                    animatableAlpha.animateTo(
+                        targetValue = 0f,
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                }
+                launch {
+                    animatableShadowRadius.animateTo(
+                        targetValue = 0f,
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                }
+            }
+
+            // 원이 아래에서부터 점점 선명해지며 돌아옴
+            animatableOffset.snapTo(screenHeightPx) // 원을 화면 아래로 이동
+            animatableAlpha.snapTo(0f) // alpha를 0으로 설정
+            animatableShadowRadius.snapTo(250f)
+
+            coroutineScope {
+                launch {
+                    animatableOffset.animateTo(
+                        targetValue = 0f,
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                }
+                launch {
+                    animatableAlpha.animateTo(
+                        targetValue = 1f,
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                }
+                launch {
+                    animatableShadowRadius.animateTo(
+                        targetValue = 250f, // 블러를 서서히 올림
+                        animationSpec = tween(durationMillis = 500)
+                    )
+                }
+            }
+
+            // 애니메이션 완료 후 무한 반복 애니메이션 시작
+            // shadowRadius 50~250까지 반복
+            coroutineScope {
+                launch {
+                    while (true) {
+                        animatableShadowRadius.animateTo(
+                            targetValue = 50f,
+                            animationSpec = infiniteRepeatable(
+                                animation = tween(durationMillis = 1000),
+                                repeatMode = RepeatMode.Reverse
+                            )
+                        )
+                    }
+                }
+            }
+
+            onSwipeUp()
+        } else {
+            animatableOffset.snapTo(0f)
+            animatableAlpha.snapTo(1f)
+            animatableShadowRadius.snapTo(250f)
+        }
+    }
+
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color(0xFF151515))
+            .pointerInput(Unit) {
+                detectVerticalDragGestures(
+                    onVerticalDrag = { change, dragAmount ->
+                        if (dragAmount < -10 && fullPersonnel) {
+                            // 스와이프 업 인식
+                            println("Swiped up")
+                            // 스와이프 상태를 업데이트
+                            onSwipeUp()
+                        }
+                    }
+                )
+            }
+    ) {
+        ShadowCircleBackground(animatableOffset, animatableAlpha, animatableShadowRadius)
+    }
+}
+
+@Composable
+fun ShadowCircleBackground(animatableOffset: Animatable<Float, AnimationVector1D>, animatableAlpha: Animatable<Float, AnimationVector1D>, animatableShadowRadius: Animatable<Float, AnimationVector1D>) {
     // mood에 따라 색상 변경
     val shadowColor = when (TempDB.mood) {
-        1 -> MoodRed.copy(alpha = 0.7f)
-        2 -> MoodYellow.copy(alpha = 0.7f)
-        3 -> MoodBlue.copy(alpha = 0.7f)
-        else -> MoodRed.copy(alpha = 0.7f)
+        1 -> MoodRed.copy(alpha = animatableAlpha.value)
+        2 -> MoodYellow.copy(alpha = animatableAlpha.value)
+        3 -> MoodBlue.copy(alpha = animatableAlpha.value)
+        else -> MoodRed.copy(alpha = animatableAlpha.value)
     }
 
     val configuration = LocalConfiguration.current
@@ -264,8 +435,8 @@ fun ShadowCircleBackground() {
 
     Canvas(modifier = Modifier.fillMaxSize()) {
         val size = size
-        val shadowRadius = 50.dp.toPx()
-        val center = Offset(size.width / 2, screenHeight.toPx() / 7 * 5)
+        val shadowRadius = animatableShadowRadius.value
+        val center = Offset(size.width / 2, screenHeight.toPx() / 7 * 5 + animatableOffset.value)
         val radius = 250.dp.toPx()
         drawIntoCanvas { canvas ->
             val paint = android.graphics.Paint().apply {
