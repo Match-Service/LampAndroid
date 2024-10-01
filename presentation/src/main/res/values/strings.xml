@@ -123,4 +123,7 @@
     <string name="valid_password">올바른 비밀번호에요</string>
     <string name="invalid_password">비밀번호가 틀렸어요</string>
     <string name="sign_up_complete">가입 완료!\n빛나는 만남을 시작해볼까요?</string>
+
+    <string name="empty_chatting">채팅 내역이 없어요</string>
+    <string name="guide_empty_chatting">램프를 만들고 채팅을 시작해보세요</string>
 </resources>
