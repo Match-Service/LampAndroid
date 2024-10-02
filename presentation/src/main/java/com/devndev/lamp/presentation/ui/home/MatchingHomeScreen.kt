@@ -319,8 +319,8 @@ fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatchi
     val screenHeight = configuration.screenHeightDp.dp
 
     val animatableOffset = remember { Animatable(0f) }
-    val animatableAlpha = remember { Animatable(1f) }
-    val animatableShadowRadius = remember { Animatable(250f) }
+    val animatableAlpha = remember { Animatable(0.7f) }
+    val animatableShadowRadius = remember { Animatable(150f) }
 
     // dp -> px 변환을 미리 수행
     val screenHeightPx = with(LocalDensity.current) { screenHeight.toPx() }
@@ -364,7 +364,7 @@ fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatchi
                 }
                 launch {
                     animatableAlpha.animateTo(
-                        targetValue = 1f,
+                        targetValue = 0.7f,
                         animationSpec = tween(durationMillis = 500)
                     )
                 }
@@ -395,8 +395,8 @@ fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatchi
             onSwipeUp()
         } else {
             animatableOffset.snapTo(0f)
-            animatableAlpha.snapTo(1f)
-            animatableShadowRadius.snapTo(250f)
+            animatableAlpha.snapTo(0.7f)
+            animatableShadowRadius.snapTo(150f)
         }
     }
 
@@ -437,12 +437,13 @@ fun ShadowCircleBackground(
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-
+    val screenWidth = configuration.screenWidthDp.dp
     Canvas(modifier = Modifier.fillMaxSize()) {
         val size = size
         val shadowRadius = animatableShadowRadius.value
-        val center = Offset(size.width / 2, screenHeight.toPx() / 7 * 5 + animatableOffset.value)
-        val radius = 250.dp.toPx()
+        val center = Offset(size.width / 2, screenHeight.toPx() / 8 * 6 + animatableOffset.value)
+
+        val radius = (screenWidth * (250f / 360f)).toPx()
         drawIntoCanvas { canvas ->
             val paint = android.graphics.Paint().apply {
                 isAntiAlias = true
