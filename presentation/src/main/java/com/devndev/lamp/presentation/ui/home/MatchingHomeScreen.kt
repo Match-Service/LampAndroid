@@ -50,9 +50,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.TempDB
 import com.devndev.lamp.presentation.ui.common.LampButton
@@ -468,4 +470,10 @@ fun ShadowCircleBackground(
             size = Size(radius * 2, radius)
         )
     }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun B() {
+    MatchingHomeScreen(modifier = Modifier, navController = rememberNavController())
 }
