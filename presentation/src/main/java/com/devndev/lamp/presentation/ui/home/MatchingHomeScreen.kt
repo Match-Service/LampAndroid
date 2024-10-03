@@ -37,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
@@ -320,8 +321,8 @@ fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatchi
     val screenHeight = configuration.screenHeightDp.dp
 
     val animatableOffset = remember { Animatable(0f) }
-    val animatableAlpha = remember { Animatable(1f) }
-    val animatableShadowRadius = remember { Animatable(250f) }
+    val animatableAlpha = remember { Animatable(0.7f) }
+    val animatableShadowRadius = remember { Animatable(150f) }
 
     // dp -> px 변환을 미리 수행
     val screenHeightPx = with(LocalDensity.current) { screenHeight.toPx() }
@@ -365,7 +366,7 @@ fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatchi
                 }
                 launch {
                     animatableAlpha.animateTo(
-                        targetValue = 1f,
+                        targetValue = 0.7f,
                         animationSpec = tween(durationMillis = 500)
                     )
                 }
@@ -396,15 +397,15 @@ fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatchi
             onSwipeUp()
         } else {
             animatableOffset.snapTo(0f)
-            animatableAlpha.snapTo(1f)
-            animatableShadowRadius.snapTo(250f)
+            animatableAlpha.snapTo(0.7f)
+            animatableShadowRadius.snapTo(150f)
         }
     }
 
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF151515))
+            .background(LampBlack)
             .pointerInput(Unit) {
                 detectVerticalDragGestures(
                     onVerticalDrag = { change, dragAmount ->
@@ -423,7 +424,11 @@ fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatchi
 }
 
 @Composable
-fun ShadowCircleBackground(animatableOffset: Animatable<Float, AnimationVector1D>, animatableAlpha: Animatable<Float, AnimationVector1D>, animatableShadowRadius: Animatable<Float, AnimationVector1D>) {
+fun ShadowCircleBackground(
+    animatableOffset: Animatable<Float, AnimationVector1D>,
+    animatableAlpha: Animatable<Float, AnimationVector1D>,
+    animatableShadowRadius: Animatable<Float, AnimationVector1D>
+) {
     // mood에 따라 색상 변경
     val shadowColor = when (TempDB.mood) {
         1 -> MoodRed.copy(alpha = animatableAlpha.value)
@@ -434,12 +439,13 @@ fun ShadowCircleBackground(animatableOffset: Animatable<Float, AnimationVector1D
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-
+    val screenWidth = configuration.screenWidthDp.dp
     Canvas(modifier = Modifier.fillMaxSize()) {
         val size = size
         val shadowRadius = animatableShadowRadius.value
-        val center = Offset(size.width / 2, screenHeight.toPx() / 7 * 5 + animatableOffset.value)
-        val radius = 250.dp.toPx()
+        val center = Offset(size.width / 2, screenHeight.toPx() / 8 * 6 + animatableOffset.value)
+
+        val radius = (screenWidth * (250f / 360f)).toPx()
         drawIntoCanvas { canvas ->
             val paint = android.graphics.Paint().apply {
                 isAntiAlias = true
@@ -457,6 +463,11 @@ fun ShadowCircleBackground(animatableOffset: Animatable<Float, AnimationVector1D
             color = LampBlack,
             radius = radius,
             center = center
+        )
+        drawRect(
+            color = LampBlack,
+            topLeft = Offset(center.x - radius, center.y),
+            size = Size(radius * 2, radius)
         )
     }
 }

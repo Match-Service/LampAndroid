@@ -54,6 +54,7 @@ fun EmailScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             LampTextField(
+                width = 300,
                 isGradient = false,
                 query = emailQuery,
                 onQueryChange = {
@@ -78,6 +79,7 @@ fun EmailScreen(
             ) {
                 Spacer(modifier = Modifier.height(20.dp))
                 LampTextField(
+                    width = 300,
                     isGradient = emailStatus != EmailStatus.NORMAL,
                     query = numberQuery,
                     onQueryChange = {
