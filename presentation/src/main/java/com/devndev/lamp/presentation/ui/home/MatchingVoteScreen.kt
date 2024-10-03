@@ -1,5 +1,7 @@
 package com.devndev.lamp.presentation.ui.home
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.RadialGradient
 import android.media.Image
 import android.util.Log
@@ -19,6 +21,9 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -29,6 +34,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -46,10 +52,12 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -64,11 +72,15 @@ import com.devndev.lamp.presentation.ui.theme.MoodBlue
 import com.devndev.lamp.presentation.ui.theme.MoodRed
 import com.devndev.lamp.presentation.ui.theme.MoodYellow
 import com.devndev.lamp.presentation.ui.theme.Typography
+import kotlinx.coroutines.delay
+import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MatchingFindScreen(modifier: Modifier, navController: NavController?) {
+fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
     val configuration = LocalConfiguration.current
+    val context = LocalContext.current
+    val bottomNaviBarHeight = getNavigationBarHeight(context)
     val screenHeight = configuration.screenHeightDp.dp
     // Get the current density
     val density = LocalDensity.current
@@ -76,41 +88,41 @@ fun MatchingFindScreen(modifier: Modifier, navController: NavController?) {
     val screenHeightPx = with(density) { screenHeight.toPx() }
     val listState = rememberLazyListState()
 
-    var headerSectionHeight by remember { mutableStateOf(0) }
+    var headerSectionHeight by remember { mutableStateOf(0.dp) }
     var spacerHeight by remember { mutableStateOf(0.dp) }
-    var moodInfoSectionHeight by remember { mutableStateOf(0) }
-    var secondSectionHeight by remember { mutableStateOf(0) }
+    var moodInfoSectionHeight by remember { mutableStateOf(0.dp) }
+    var secondSectionHeight by remember { mutableStateOf(0.dp) }
     var bottomSectionHeight by remember { mutableStateOf(0) }
-    var sumHeight by remember { mutableStateOf(0.dp) }
 
-    var sumScrollOffset by remember { mutableStateOf(0) }
+    var itemIndex = remember { mutableStateOf(0) }
+    var yOffset = remember { mutableStateOf(0f) }
+    var yOffsetHigh = remember { mutableStateOf(0f) }
+    var prevYOffset = remember { mutableStateOf(0f) }
+    var curYOffset = remember { mutableStateOf(0f) }
     // stickyHeader가 최상단에 위치했는지 여부를 저장하는 상태
     val isStickyHeaderAtTop = remember { mutableStateOf(false) }
-
-    // 스크롤된 오프셋 값을 기억합니다.
-    val scrollOffset = listState.firstVisibleItemScrollOffset
-    if (listState.firstVisibleItemIndex == 0) {
-        sumScrollOffset = scrollOffset
-    }
 
     // Track scroll offset
     LaunchedEffect(listState) {
         snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
             .collect { (index, scrollOffset) ->
-                // 현재 스크롤된 양을 화면 높이로 나누어 index 계산
-//                val totalScrolled = index * screenHeightPx + scrollOffset
-//                val newIndex = (totalScrolled / screenHeightPx).toInt()
-                val newIndex = (((scrollOffset - moodInfoSectionHeight) * 2) / screenHeightPx).toInt()
-                Log.d("1111", "index:$index ${((scrollOffset - moodInfoSectionHeight) * 2)}")
-
+                if (index > 0) {
+                    curYOffset.value = scrollOffset.toFloat()
+                    yOffset.value += curYOffset.value - prevYOffset.value
+                    prevYOffset.value = curYOffset.value
+                    itemIndex.value = index
+                } else {
+                    yOffset.value = scrollOffset.toFloat()
+                    itemIndex.value = index
+                }
                 // Update the sticky header visibility based on scroll distance
-                isStickyHeaderAtTop.value = index > 0 && newIndex > 0
+                isStickyHeaderAtTop.value = index > 1
             }
     }
 
     // Spacer 높이를 동적으로 계산
-    LaunchedEffect(headerSectionHeight, moodInfoSectionHeight) {
-        spacerHeight = (screenHeight - (headerSectionHeight + moodInfoSectionHeight + bottomSectionHeight).dp)
+    LaunchedEffect(secondSectionHeight) {
+        spacerHeight = (screenHeight - (headerSectionHeight + moodInfoSectionHeight + secondSectionHeight + 70.dp))
     }
 
     Box(
@@ -122,13 +134,14 @@ fun MatchingFindScreen(modifier: Modifier, navController: NavController?) {
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            ShadowCircleBackground(sumScrollOffset)
+            ShadowCircleBackground(itemIndex, yOffset, yOffsetHigh)
         }
 
         LazyColumn(
             state = listState,
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
+                .wrapContentHeight()
                 .zIndex(1f)
         ) {
             // Header Section
@@ -141,6 +154,7 @@ fun MatchingFindScreen(modifier: Modifier, navController: NavController?) {
 
             item {
                 Spacer(modifier = Modifier.height(spacerHeight))
+                Log.d("spacerHeight", "$spacerHeight")
             }
 
             // Sticky Header with Mood and Info
@@ -158,9 +172,9 @@ fun MatchingFindScreen(modifier: Modifier, navController: NavController?) {
             // Second Section
             item {
                 SecondSection(
+                    bottomNaviBarHeight,
                     onHeightChange = { height -> secondSectionHeight = height }
                 )
-                Spacer(modifier = Modifier.height(70.dp))
             }
 
             // Additional items to create scrollable area
@@ -188,25 +202,29 @@ fun MatchingFindScreen(modifier: Modifier, navController: NavController?) {
 
 // 헤더 섹션
 @Composable
-fun HeaderSection(modifier: Modifier, onHeightChange: (Int) -> Unit) {
+fun HeaderSection(modifier: Modifier, onHeightChange: (Dp) -> Unit) {
+    val density = LocalDensity.current
     Column(
         modifier = modifier
             .fillMaxWidth()
             .onGloballyPositioned { coordinates ->
-                onHeightChange(coordinates.size.height)
+                val headerSectionHeightDp = with(density) {
+                    coordinates.size.height.toDp()
+                }
+                onHeightChange(headerSectionHeightDp)
             },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(25.dp)
     ) {
         Text(
-            text = stringResource(id = R.string.matching_header_find),
+            text = "인연의 불빛을 발견했어요",
             color = Color.White,
             style = Typography.semiBold25.copy(lineHeight = 33.sp),
             fontSize = 25.sp,
             textAlign = TextAlign.Center
         )
         Text(
-            text = stringResource(id = R.string.matching_sub_header_find),
+            text = "상대의 램프를 확인 해보세요",
             color = Color.White,
             style = Typography.semiBold25.copy(lineHeight = 16.sp),
             fontSize = 12.sp,
@@ -217,14 +235,17 @@ fun HeaderSection(modifier: Modifier, onHeightChange: (Int) -> Unit) {
 
 // 무드 및 정보 섹션
 @Composable
-fun MoodInfoSection(onHeightChange: (Int) -> Unit) {
+fun MoodInfoSection(onHeightChange: (Dp) -> Unit) {
+    val density = LocalDensity.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 10.dp)
             .zIndex(2f)
             .onGloballyPositioned { coordinates ->
-                onHeightChange(coordinates.size.height)
+                val moodInfoHeightDp = with(density) {
+                    coordinates.size.height.toDp()
+                }
+                onHeightChange(moodInfoHeightDp)
             },
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -249,26 +270,33 @@ fun MoodInfoSection(onHeightChange: (Int) -> Unit) {
             OtherLampInfo(painter = painterResource(id = R.drawable.people_icon), text = TempDB.personnel)
             OtherLampInfo(painter = painterResource(id = R.drawable.heart), text = mood)
         }
+        Spacer(modifier = Modifier.height(10.dp))
     }
 }
 
 // 두 번째 섹션
 @Composable
-fun SecondSection(onHeightChange: (Int) -> Unit) {
+fun SecondSection(bottomNaviBarHeight: Int, onHeightChange: (Dp) -> Unit) {
+    val density = LocalDensity.current
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 40.dp)
+            .wrapContentHeight()
             .zIndex(1f)
             .onGloballyPositioned { coordinates ->
-                onHeightChange(coordinates.size.height)
+                val secondSectionHeightDp = with(density) {
+                    coordinates.size.height.toDp()
+                }
+                onHeightChange(secondSectionHeightDp)
             },
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         Text(
             text = TempDB.lampSummary,
-            modifier = Modifier.width(270.dp),
+            modifier = Modifier
+                .width(270.dp)
+                .wrapContentHeight(),
             maxLines = 3,
             style = Typography.normal9,
             color = Color.White,
@@ -276,22 +304,46 @@ fun SecondSection(onHeightChange: (Int) -> Unit) {
         )
         Spacer(modifier = Modifier.height(6.dp))
         OtherProfileInfo(null, "닉네임입니다")
-        // TODO : 스크롤 화살표 이미지
+        Spacer(modifier = Modifier.height(58.dp))
+        Icon(
+            painter = painterResource(id = R.drawable.scroll_arrow),
+            contentDescription = "Check",
+            tint = Color.White,
+            modifier = Modifier
+                .fillMaxSize()
+        )
         Text(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 58.dp, bottom = 70.dp),
-            text = "스크롤",
+                .wrapContentWidth(),
+            text = "스크롤하여 상대의 프로필을 확인하세요",
             style = Typography.normal12,
             color = Color.White,
             textAlign = TextAlign.Center
         )
+        Spacer(modifier = Modifier.height((145 + bottomNaviBarHeight).dp))
     }
 }
 
 // 바닥 섹션
+@SuppressLint("DefaultLocale")
 @Composable
 fun BottomSection(onHeightChange: (Int) -> Unit) {
+    // 초기 시간을 3시간(03:00:00)으로 설정
+    var totalSeconds by remember { mutableStateOf(3 * 60 * 60) }
+
+    // 1초마다 시간을 줄이는 타이머
+    LaunchedEffect(key1 = totalSeconds) {
+        if (totalSeconds > 0) {
+            delay(1000L)
+            totalSeconds -= 1
+        }
+    }
+
+    // 시, 분, 초로 변환
+    val hours = TimeUnit.SECONDS.toHours(totalSeconds.toLong()).toInt()
+    val minutes = (TimeUnit.SECONDS.toMinutes(totalSeconds.toLong()) % 60).toInt()
+    val seconds = (totalSeconds % 60)
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -312,7 +364,7 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
         ) {
             Text(
                 modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
-                text = "매칭 완료까지 02:59:30 남았어요",
+                text = "매칭 완료까지 ${String.format("%02d:%02d:%02d", hours, minutes, seconds)} 남았어요",
                 style = Typography.normal12,
                 fontSize = 12.sp,
                 color = Color.White,
@@ -326,7 +378,8 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
             ) {
                 Button(
                     modifier = Modifier
-                        .weight(1f),
+                        .weight(1f)
+                        .wrapContentHeight(),
                     onClick = { /*TODO*/ },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LightGray,
@@ -335,7 +388,7 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
                 ) {
                     Column(
                         modifier = Modifier
-                            .padding(12.dp),
+                            .wrapContentSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
@@ -346,18 +399,31 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
                             color = Color.White,
                             textAlign = TextAlign.Center
                         )
-                        Text(
-                            text = "9명 투표",
-                            style = Typography.normal12,
-                            fontSize = 9.sp,
-                            color = Color.White,
-                            textAlign = TextAlign.Center
-                        )
+                        Row(
+                            modifier = Modifier
+                                .wrapContentSize(),
+                            horizontalArrangement = Arrangement.spacedBy(3.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.vote),
+                                contentDescription = "Vote",
+                                tint = Color.White
+                            )
+                            Text(
+                                text = "9명 투표",
+                                style = Typography.normal12,
+                                fontSize = 9.sp,
+                                color = Color.White,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
                 Button(
                     modifier = Modifier
-                        .weight(1f),
+                        .weight(1f)
+                        .wrapContentHeight(),
                     onClick = { /*TODO*/ },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LightGray,
@@ -366,7 +432,7 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
                 ) {
                     Column(
                         modifier = Modifier
-                            .padding(12.dp),
+                            .wrapContentSize(),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
@@ -377,13 +443,25 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
                             color = Color.White,
                             textAlign = TextAlign.Center
                         )
-                        Text(
-                            text = "9명 투표",
-                            style = Typography.normal12,
-                            fontSize = 9.sp,
-                            color = Color.White,
-                            textAlign = TextAlign.Center
-                        )
+                        Row(
+                            modifier = Modifier
+                                .wrapContentSize(),
+                            horizontalArrangement = Arrangement.spacedBy(3.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.vote),
+                                contentDescription = "Vote",
+                                tint = Color.White
+                            )
+                            Text(
+                                text = "9명 투표",
+                                style = Typography.normal12,
+                                fontSize = 9.sp,
+                                color = Color.White,
+                                textAlign = TextAlign.Center
+                            )
+                        }
                     }
                 }
             }
@@ -436,7 +514,7 @@ fun OtherProfileInfo(
 }
 
 @Composable
-fun ShadowCircleBackground(scrollOffset: Int) {
+fun ShadowCircleBackground(itemIndex: MutableState<Int>, yOffset: MutableState<Float>, yOffsetHigh: MutableState<Float>) {
     // mood에 따라 색상 변경
     val shadowColor = when (TempDB.mood) {
         1 -> MoodRed.copy(alpha = 0.4f)
@@ -449,14 +527,19 @@ fun ShadowCircleBackground(scrollOffset: Int) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
-    // 원이 상단에서 고정되게 함
-    // TODO : scrollOffset 기준 절대값이라 로직 수정 필요
-    val yOffset = if (scrollOffset > 1500) -1500 else -scrollOffset
+    // 스크롤 오프셋이 stickyHeader 가 넘기 전까지는 스크롤 업데이트
+    val adjustedOffset = if (itemIndex.value > 1) {
+        yOffsetHigh.value
+    } else {
+        yOffsetHigh.value = yOffset.value
+        yOffset.value
+    }
+    Log.d("adjustOffset", "$adjustedOffset")
 
     Canvas(
         modifier = Modifier
             .fillMaxSize()
-            .offset { IntOffset(0, yOffset) }
+            .offset { IntOffset(0, -adjustedOffset.toInt()) }
     ) {
         val size = size
         val shadowRadius = 50.dp.toPx()
@@ -487,5 +570,16 @@ fun ShadowCircleBackground(scrollOffset: Int) {
             }
             canvas.nativeCanvas.drawCircle(center.x, center.y, radius, paint)
         }
+    }
+}
+
+@SuppressLint("DiscouragedApi", "InternalInsetResource")
+fun getNavigationBarHeight(context: Context): Int {
+    val resources = context.resources
+    val resourceId = resources.getIdentifier("navigation_bar_height", "dimen", "android")
+    return if (resourceId > 0) {
+        resources.getDimensionPixelSize(resourceId)
+    } else {
+        0
     }
 }
