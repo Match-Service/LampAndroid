@@ -54,6 +54,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
 
     var currentStep by remember { mutableIntStateOf(1) }
 
+    var isAllConsent by remember { mutableStateOf(false) }
     var isFirstEssentialConsent by remember { mutableStateOf(false) }
     var isSecondEssentialConsent by remember { mutableStateOf(false) }
     var isThirdEssentialConsent by remember { mutableStateOf(false) }
@@ -183,7 +184,36 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                 ) { step ->
                     when (step) {
                         SignUpScreen.CONSENT -> {
-                            ConsentScreen()
+                            ConsentScreen(
+                                isAllConsent = isAllConsent,
+                                isFirstEssentialConsent = isFirstEssentialConsent,
+                                isSecondEssentialConsent = isSecondEssentialConsent,
+                                isThirdEssentialConsent = isThirdEssentialConsent,
+                                isOptionalConsent = isOptionalConsent,
+                                onAllConsentChange = {
+                                    isAllConsent = it
+                                    isFirstEssentialConsent = it
+                                    isSecondEssentialConsent = it
+                                    isThirdEssentialConsent = it
+                                    isOptionalConsent = it
+                                },
+                                onFirstEssentialConsentChange = {
+                                    isFirstEssentialConsent = it
+                                    if (!it) isAllConsent = false
+                                },
+                                onSecondEssentialConsentChange = {
+                                    isSecondEssentialConsent = it
+                                    if (!it) isAllConsent = false
+                                },
+                                onThirdEssentialConsentChange = {
+                                    isThirdEssentialConsent = it
+                                    if (!it) isAllConsent = false
+                                },
+                                onOptionalConsentChange = {
+                                    isOptionalConsent = it
+                                    if (!it) isAllConsent = false
+                                }
+                            )
                             isValidCertificationNumber = false
                         }
 

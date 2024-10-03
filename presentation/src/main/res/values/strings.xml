@@ -126,4 +126,12 @@
 
     <string name="empty_chatting">채팅 내역이 없어요</string>
     <string name="guide_empty_chatting">램프를 만들고 채팅을 시작해보세요</string>
+
+    <string name="consent_all">전체 동의</string>
+    <string name="first_essential_consent">(필수) 만 18세 이상입니다.</string>
+    <string name="second_essential_consent">(필수) 개인정보 수집 및 이용 동의</string>
+    <string name="third_essential_consent">(필수) 서비스 이용약관 동의</string>
+    <string name="optional_consent">(선택) 혜택/이벤트 정보 수신 동의</string>
+
+    <string name="see_consent">보기</string>
 </resources>
