@@ -10,7 +10,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,6 +24,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.CheckButton
+import com.devndev.lamp.presentation.ui.common.OneButtonPopup
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
 import com.devndev.lamp.presentation.ui.theme.Typography
 
@@ -37,6 +41,12 @@ fun ConsentScreen(
     onThirdEssentialConsentChange: (Boolean) -> Unit,
     onOptionalConsentChange: (Boolean) -> Unit
 ) {
+    var isPopupShow by remember { mutableStateOf(false) }
+
+    if (isPopupShow) {
+        OneButtonPopup(onDismissRequest = { isPopupShow = false })
+    }
+
     SelectionScreen(text = "") {
         Column(
             modifier = Modifier.width(300.dp),
@@ -63,19 +73,19 @@ fun ConsentScreen(
                     text = stringResource(id = R.string.second_essential_consent),
                     isConsent = isSecondEssentialConsent,
                     onConsentChange = { onSecondEssentialConsentChange(it) },
-                    onSeeButtonClick = { /*todo 팝업 표시*/ }
+                    onSeeButtonClick = { isPopupShow = true }
                 )
                 ConsentItemWithButton(
                     text = stringResource(id = R.string.third_essential_consent),
                     isConsent = isThirdEssentialConsent,
                     onConsentChange = { onThirdEssentialConsentChange(it) },
-                    onSeeButtonClick = { /*todo 팝업 표시*/ }
+                    onSeeButtonClick = { isPopupShow = true }
                 )
                 ConsentItemWithButton(
                     text = stringResource(id = R.string.optional_consent),
                     isConsent = isOptionalConsent,
                     onConsentChange = { onOptionalConsentChange(it) },
-                    onSeeButtonClick = { /*todo 팝업 표시*/ }
+                    onSeeButtonClick = { isPopupShow = true }
                 )
             }
         }
