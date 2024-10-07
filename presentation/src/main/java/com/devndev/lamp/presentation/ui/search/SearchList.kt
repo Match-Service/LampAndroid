@@ -21,10 +21,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.devndev.lamp.domain.model.Item
+import coil.compose.rememberAsyncImagePainter
+import com.devndev.lamp.domain.model.UserDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.Gray3
@@ -32,7 +32,7 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
-fun SearchList(profileList: List<Item>, onEnterButtonClick: (Item) -> Unit) {
+fun SearchList(profileList: List<UserDomainModel>, onEnterButtonClick: (UserDomainModel) -> Unit) {
     LazyColumn {
         items(profileList) { profile ->
             SearchItem(profile = profile, onEnterButtonClick = onEnterButtonClick)
@@ -41,7 +41,7 @@ fun SearchList(profileList: List<Item>, onEnterButtonClick: (Item) -> Unit) {
 }
 
 @Composable
-fun SearchItem(profile: Item, onEnterButtonClick: (Item) -> Unit) {
+fun SearchItem(profile: UserDomainModel, onEnterButtonClick: (UserDomainModel) -> Unit) {
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
@@ -58,8 +58,8 @@ fun SearchItem(profile: Item, onEnterButtonClick: (Item) -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.testimage),
-                    contentDescription = "testimage",
+                    painter = rememberAsyncImagePainter(profile.thumbnail),
+                    contentDescription = "thumbnail",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(40.dp)
@@ -72,7 +72,7 @@ fun SearchItem(profile: Item, onEnterButtonClick: (Item) -> Unit) {
             val textColor: Color
             var buttonText = ""
             var onButtonClick = {}
-            if (profile.isLampOn) {
+            if (profile.lampId != null) {
                 buttonColors = WomanColor
                 textColor = Color.White
                 buttonText = stringResource(id = R.string.enter_lamp)
@@ -102,8 +102,8 @@ fun SearchItem(profile: Item, onEnterButtonClick: (Item) -> Unit) {
 }
 
 @Composable
-fun NameSpace(profile: Item) {
-    if (profile.isLampOn) {
+fun NameSpace(profile: UserDomainModel) {
+    if (profile.lampId != null) {
         Column() {
             Text(
                 text = profile.name,
@@ -111,7 +111,7 @@ fun NameSpace(profile: Item) {
                 color = Color.White
             )
             Text(
-                text = profile.roomName ?: "",
+                text = profile.lampId.toString() ?: "",
                 style = Typography.normal12,
                 color = Gray3
             )

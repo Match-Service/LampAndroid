@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,7 +26,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.devndev.lamp.domain.model.Item
+import coil.compose.rememberAsyncImagePainter
+import com.devndev.lamp.domain.model.UserDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.CheckButton
 import com.devndev.lamp.presentation.ui.theme.Gray3
@@ -32,23 +35,19 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
 fun InviteList(
-    profileList: List<Item>,
-    selectedItems: List<Item>,
-    onCheckedItemChanged: (Item, Boolean) -> Unit
+    searchUserList: List<UserDomainModel>,
+    recentUserList: List<UserDomainModel>,
+    selectedItems: List<UserDomainModel>,
+    onCheckedItemChanged: (UserDomainModel, Boolean) -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
     ) {
-        Text(
-            text = stringResource(id = R.string.recent_friend),
-            style = Typography.normal12,
-            color = Gray3
-        )
         LazyColumn {
-            items(profileList.size) { index ->
-                val profile = profileList[index]
+            items(searchUserList.size) { index ->
+                val profile = searchUserList[index]
 
                 val isSelected = selectedItems.contains(profile)
 
@@ -59,7 +58,36 @@ fun InviteList(
                         onCheckedItemChanged(profile, it)
                     }
                 )
-                if (index < profileList.size - 1) {
+                if (index < searchUserList.size - 1) {
+                    HorizontalDivider(
+                        color = Gray3.copy(alpha = 0.3f),
+                        thickness = 0.5.dp
+                    )
+                }
+            }
+        }
+        if (recentUserList.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(30.dp))
+            Text(
+                text = stringResource(id = R.string.recent_friend),
+                style = Typography.normal12,
+                color = Gray3
+            )
+        }
+        LazyColumn {
+            items(recentUserList.size) { index ->
+                val profile = recentUserList[index]
+
+                val isSelected = selectedItems.contains(profile)
+
+                InviteItem(
+                    profile = profile,
+                    selected = isSelected,
+                    onCheckedChange = {
+                        onCheckedItemChanged(profile, it)
+                    }
+                )
+                if (index < recentUserList.size - 1) {
                     HorizontalDivider(
                         color = Gray3.copy(alpha = 0.3f),
                         thickness = 0.5.dp
@@ -71,7 +99,12 @@ fun InviteList(
 }
 
 @Composable
-fun InviteItem(profile: Item, selected: Boolean, onCheckedChange: (Boolean) -> Unit) {
+fun InviteItem(profile: UserDomainModel, selected: Boolean, onCheckedChange: (Boolean) -> Unit) {
+    val thumbnail = if (profile.thumbnail == "") {
+        painterResource(id = R.drawable.testimage)
+    } else {
+        rememberAsyncImagePainter(model = profile.thumbnail)
+    }
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
@@ -94,8 +127,8 @@ fun InviteItem(profile: Item, selected: Boolean, onCheckedChange: (Boolean) -> U
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.testimage),
-                    contentDescription = "testimage",
+                    painter = thumbnail,
+                    contentDescription = "thumbnail",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(40.dp)
