@@ -18,13 +18,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.devndev.lamp.domain.model.Item
+import coil.compose.rememberAsyncImagePainter
+import com.devndev.lamp.domain.model.UserDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
-fun CircleProfile(profile: Item, onDeleteButtonClick: () -> Unit, isCanDelete: Boolean) {
+fun CircleProfile(profile: UserDomainModel, onDeleteButtonClick: () -> Unit, isCanDelete: Boolean) {
+    val thumbnail = if (profile.thumbnail == "") {
+        painterResource(id = R.drawable.testimage)
+    } else {
+        rememberAsyncImagePainter(model = profile.thumbnail)
+    }
     Box(
         modifier = Modifier.wrapContentSize(),
         contentAlignment = Alignment.Center
@@ -34,8 +40,8 @@ fun CircleProfile(profile: Item, onDeleteButtonClick: () -> Unit, isCanDelete: B
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Image(
-                painter = painterResource(id = R.drawable.testimage),
-                contentDescription = "testimage",
+                painter = thumbnail,
+                contentDescription = "thunmnail",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(40.dp)

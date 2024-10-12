@@ -25,6 +25,10 @@ retrofit = "2.9.0"
 kakaoLogin = "2.20.1"
 googleLogin = "20.1.0"
 
+moshi = "1.14.0"
+
+coil = "2.4.0"
+
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -59,10 +63,15 @@ coroutine-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-c
 coroutine-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutine" }
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+retrofit-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
+
+moshi-kotlin = { group = "com.squareup.moshi", name = "moshi-kotlin", version.ref = "moshi" }
+moshi-code-gen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 
 kakao-login = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoLogin" }
 google-login = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "googleLogin" }
+
+coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

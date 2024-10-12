@@ -12,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.devndev.lamp.domain.model.Item
+import com.devndev.lamp.domain.model.UserDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.CircleProfile
 import com.devndev.lamp.presentation.ui.common.LampButton
@@ -45,10 +45,19 @@ fun InviteScreen(
 ) {
     var searchQuery by remember { mutableStateOf("") }
 
-    val selectedItems = remember { mutableStateListOf<Item>() }
+    val selectedItems = remember { mutableStateListOf<UserDomainModel>() }
 
-    val items: List<Item> by viewModel.items.collectAsState()
+    val tempRecentUser = listOf(
+        UserDomainModel(id = 999, name = "김수환무", thumbnail = "", lampId = null),
+        UserDomainModel(id = 998, name = "Super", thumbnail = "", lampId = 9)
+    )
+
+    val users by remember { mutableStateOf(viewModel.users) }
     val showBottomButton = selectedItems.isNotEmpty()
+
+    LaunchedEffect(Unit) {
+        viewModel.resetUsers()
+    }
 
     Column(
         modifier = modifier
@@ -109,11 +118,16 @@ fun InviteScreen(
                 onQueryChange = {
                     searchQuery = it
                 },
-                hintText = stringResource(id = R.string.guide_search_friend)
+                hintText = stringResource(id = R.string.guide_search_friend),
+                isSearchMode = true,
+                onSearchKeyEvent = {
+                    viewModel.searchUsers(searchQuery)
+                }
             )
 
             InviteList(
-                profileList = items,
+                searchUserList = users,
+                recentUserList = tempRecentUser,
                 selectedItems = selectedItems,
                 onCheckedItemChanged = { checkedItem, isSelected ->
                     if (isSelected) {

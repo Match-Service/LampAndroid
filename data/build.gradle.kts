@@ -60,7 +60,10 @@ dependencies {
     implementation(libs.google.login)
 
     implementation(libs.retrofit)
-    implementation(libs.retrofit.converter)
+    implementation(libs.retrofit.moshi)
+
+    implementation(libs.moshi.kotlin)
+    ksp(libs.moshi.code.gen)
 
     implementation(libs.hilt)
     kapt(libs.hilt.compiler)

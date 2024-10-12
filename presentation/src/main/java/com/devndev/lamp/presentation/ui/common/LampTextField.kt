@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -23,7 +25,9 @@ import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.theme.LampBlack
@@ -41,11 +45,14 @@ fun LampTextField(
     onQueryChange: (String) -> Unit,
     maxLength: Int = 100,
     hintText: String,
-    timerSeconds: Int = 0
+    timerSeconds: Int = 0,
+    isSearchMode: Boolean = false,
+    onSearchKeyEvent: () -> Unit = {}
 ) {
     val gradientBrush = Brush.linearGradient(
         colors = listOf(WomanColor, ManColor)
     )
+    val keyboardController = LocalSoftwareKeyboardController.current
     Row(
         modifier = Modifier
             .then(
@@ -91,7 +98,14 @@ fun LampTextField(
             textStyle = Typography.medium18.copy(color = Color.White),
             singleLine = true,
             cursorBrush = SolidColor(Color.White),
-            modifier = Modifier
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = if (isSearchMode) ImeAction.Search else ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(onSearch = {
+                onSearchKeyEvent()
+                keyboardController?.hide()
+            })
+
         ) { innerTextField ->
             if (query.isEmpty()) {
                 Text(

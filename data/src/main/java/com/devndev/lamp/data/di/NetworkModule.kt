@@ -2,7 +2,9 @@ package com.devndev.lamp.data.di
 
 import android.content.Context
 import com.devndev.lamp.data.BuildConfig
-import com.devndev.lamp.data.api.ApiService
+import com.devndev.lamp.data.di.qualifier.DefaultRetrofit
+import com.devndev.lamp.data.service.ApiService
+import com.devndev.lamp.data.service.UserService
 import com.devndev.lamp.domain.model.Item
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -12,11 +14,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.create
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object NetworkModule {
+internal class NetworkModule {
     @Provides
     @Singleton
     fun provideApiService(): ApiService {
@@ -36,5 +41,25 @@ object NetworkModule {
             .requestEmail()
             .build()
         return GoogleSignIn.getClient(context, gso)
+    }
+
+    @DefaultRetrofit
+    @Provides
+    @Singleton
+    fun provideDefaultRetrofit(): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(MoshiConverterFactory.create())
+            .build()
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserService(
+        @DefaultRetrofit retrofit: Retrofit
+    ): UserService = retrofit.create()
+
+    companion object {
+        private const val BASE_URL = "http://13.125.174.56:3000/"
     }
 }

@@ -1,6 +1,6 @@
 package com.devndev.lamp.data.datsource
 
-import com.devndev.lamp.data.api.ApiService
+import com.devndev.lamp.data.service.ApiService
 import com.devndev.lamp.domain.model.Item
 import javax.inject.Inject
 

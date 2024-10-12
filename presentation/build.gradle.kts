@@ -86,5 +86,7 @@ dependencies {
 
     implementation(libs.accompanist.pager)
 
+    implementation(libs.coil.compose)
+
     implementation("com.github.CanHub:Android-Image-Cropper:4.0.0")
 }
