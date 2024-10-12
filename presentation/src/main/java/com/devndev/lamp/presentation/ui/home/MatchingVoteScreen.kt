@@ -9,11 +9,13 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +27,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,13 +47,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
@@ -66,12 +72,14 @@ import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.TempDB
 import com.devndev.lamp.presentation.ui.theme.Gray
+import com.devndev.lamp.presentation.ui.theme.IncTypography
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.MoodBlue
 import com.devndev.lamp.presentation.ui.theme.MoodRed
 import com.devndev.lamp.presentation.ui.theme.MoodYellow
 import com.devndev.lamp.presentation.ui.theme.Typography
+import com.devndev.lamp.presentation.ui.theme.WomanColor
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
 
@@ -102,6 +110,14 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
     // stickyHeader가 최상단에 위치했는지 여부를 저장하는 상태
     val isStickyHeaderAtTop = remember { mutableStateOf(false) }
 
+    // profile
+    val profiles = listOf(
+        listOf("Profile1", 3, 28, "한국대학교", null, "글자수100글자수100글자수100"),
+        listOf("Profile2", 2, 27, "한국대학교", listOf(80, 70, 100, 10), "글자수100글자수100글자수100글자수100글자수100글자수100"),
+        listOf("Profile3", 3, 26, "한국대학교", listOf(50, 50, 50, 50), "글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100"),
+        listOf("Profile4", 1, 25, "한국대학교", listOf(100, 100, 100, 100), "글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100")
+    )
+
     // Track scroll offset
     LaunchedEffect(listState) {
         snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
@@ -122,7 +138,7 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
 
     // Spacer 높이를 동적으로 계산
     LaunchedEffect(secondSectionHeight) {
-        spacerHeight = (screenHeight - (headerSectionHeight + moodInfoSectionHeight + secondSectionHeight + 70.dp))
+        spacerHeight = (screenHeight - (headerSectionHeight + moodInfoSectionHeight + secondSectionHeight + 70.dp + bottomNaviBarHeight.dp))
     }
 
     Box(
@@ -172,24 +188,38 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
             // Second Section
             item {
                 SecondSection(
-                    bottomNaviBarHeight,
                     onHeightChange = { height -> secondSectionHeight = height }
                 )
             }
 
             // Additional items to create scrollable area
-            items(5) { index -> // Adjust the item count to ensure scrolling
-                Text(
-                    text = "상대방${index + 1}",
+            items(profiles.size) { index -> // Adjust the item count to ensure scrolling
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(200.dp)
+                        .wrapContentHeight()
                         .background(Color.Black)
-                        .padding(16.dp)
-                        .zIndex(1f),
-                    color = Color.White
-                )
+                        .padding(start = 30.dp, end = 30.dp)
+                ) {
+                    ProfileTop(profiles, index)
+                    Spacer(modifier = Modifier.height(20.dp))
+                    ProfileAttractive(profiles, index)
+                    ProfileDescription(profiles, index)
+                }
+//                if(index == profiles.size - 1) {
+//                    Spacer(modifier = Modifier.height(219.dp))
+//                }
             }
+            item {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Black)
+                ) {
+                    Spacer(modifier = Modifier.height(219.dp))
+                }
+            }
+
         }
 
         BottomSection(
@@ -197,6 +227,228 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
                 bottomSectionHeight = height
             }
         )
+    }
+}
+
+// 프로필 상단부분
+@Composable
+fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
+    LazyRow(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 25.dp, bottom = 10.dp),
+        horizontalArrangement = Arrangement.spacedBy(5.dp)
+    ) {
+        items(profiles[index][1] as Int) {
+            Image(
+                painter = painterResource(id = R.drawable.testimage),
+                contentDescription = "testimage",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(120.dp)
+                    .clip(RectangleShape)
+            )
+        }
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "${profiles[index][0]} " + stringResource(id = R.string.sir),
+            color = Color.White,
+            style = IncTypography.normal42.copy(lineHeight = 40.sp),
+            fontSize = 30.sp,
+            textAlign = TextAlign.Center
+        )
+        Image(
+            modifier = Modifier
+                .size(23.dp)
+                .clickable { /*TODO : 인스타 계정으로 이동하도록 구현 필요*/ },
+            painter = painterResource(id = R.drawable.instagram_icon),
+            contentDescription = "Instagram Icon"
+        )
+    }
+    Row(
+        modifier = Modifier
+            .fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "${profiles[index][2]}" + stringResource(id = R.string.age) + ", " + "${profiles[index][3]}",
+            color = Color.White,
+            style = Typography.semiBold25.copy(lineHeight = 20.sp),
+            fontSize = 15.sp,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+// 프로필 설명
+@Composable
+fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
+    Text(
+        text = "${profiles[index][5]}",
+        color = Color.White,
+        style = Typography.semiBold25.copy(lineHeight = 16.sp),
+        fontSize = 12.sp,
+        textAlign = TextAlign.Start,
+        maxLines = 3
+    )
+}
+
+// 프로필 매력도
+@Composable
+fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
+    // MutableState to hold the button's width
+    var buttonWidth by remember { mutableStateOf(0) }
+    var isDropdownExpanded by remember { mutableStateOf(false) }
+    val attractive = profiles[index][4] as? List<Int>
+    attractive?.let {
+        val attractiveAvg = attractive.sum() / attractive.size
+        // Create a gradient brush
+        val gradientBrush = when {
+            attractiveAvg == 0 -> {
+                // If attractiveness is 0, the color is fully gray
+                Brush.horizontalGradient(
+                    colors = listOf(Gray, Gray)
+                )
+            }
+            attractiveAvg < 100 && attractiveAvg > 0 -> {
+                // If attractiveness is between 1 and 99, create a red-to-gray gradient
+                val redWidth = buttonWidth * (attractiveAvg / 100f) // Calculate the ratio for red (0.0 to 1.0)
+                Brush.horizontalGradient(
+                    colors = listOf(WomanColor, Gray),
+                    startX = redWidth - 50f,
+                    endX = redWidth + 50f // Use the calculated redWidth for the gradient
+                )
+            }
+            else -> {
+                // If attractiveness is 100, the color is fully red
+                Brush.horizontalGradient(
+                    colors = listOf(WomanColor, WomanColor)
+                )
+            }
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Button(
+                onClick = { isDropdownExpanded = !isDropdownExpanded },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(30.dp)
+                    .onSizeChanged { size ->
+                        buttonWidth = size.width // Capture the button width
+                    }
+                    .clip(RoundedCornerShape(27.dp))
+                    .background(gradientBrush)
+                    .padding(0.dp),
+                colors = ButtonDefaults.buttonColors(Color.Transparent)
+            ) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.heart),
+                        contentDescription = "Heart",
+                        tint = Color.White
+                    )
+                    Spacer(modifier = Modifier.width(5.dp))
+                    Text(
+                        text = "${stringResource(id = R.string.attractiveness)} $attractiveAvg",
+                        color = Color.White,
+                        style = Typography.semiBold25.copy(lineHeight = 20.sp),
+                        fontSize = 15.sp,
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Icon(
+                        painter = if(isDropdownExpanded) painterResource(id = R.drawable.reduce_icon) else painterResource(id = R.drawable.expand_icon),
+                        contentDescription = "Expand",
+                        tint = Color.White
+                    )
+                }
+            }
+
+            // Conditionally show the Row based on the state
+            if (isDropdownExpanded) {
+                Spacer(modifier = Modifier.height(10.dp)) // Space between button and dropdown
+                // The Row that gets shown/hidden
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    ProgressBar(attractive)
+                }
+            }
+            else {
+                Spacer(modifier = Modifier.height(8.dp)) // Space between button and dropdown
+            }
+        }
+    }
+}
+
+@Composable
+fun ProgressBar(attractive: List<Int>) {
+    for(i in attractive.indices) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
+        ) {
+            Text(
+                modifier = Modifier
+                    .width(36.dp),
+                text = when(i) {
+                    0 -> stringResource(id = R.string.personality)
+                    1 -> stringResource(id = R.string.voice)
+                    2 -> stringResource(id = R.string.fashion)
+                    3 -> stringResource(id = R.string.conversation)
+                    else -> stringResource(id = R.string.personality)
+                },
+                color = Color.White,
+                style = Typography.semiBold25.copy(lineHeight = 16.sp),
+                fontSize = 12.sp,
+                textAlign = TextAlign.Start
+            )
+
+            // Ensure the value is between 0 and 100
+            val percentage = attractive[i].coerceIn(0, 100) / 100f
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(6.dp) // Set the desired height for the progress bar
+                    .background(Gray, RoundedCornerShape(40.dp)) // Gray background bar
+                    .clip(RoundedCornerShape(40.dp)) // Rounded corners for the gray bar
+            ) {
+                // Red bar representing the value
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight() // Match height of the gray bar
+                        .fillMaxWidth(percentage) // Width based on percentage
+                        .background(WomanColor, RoundedCornerShape(40.dp)) // Red bar for the filled portion
+                )
+            }
+            // 매력도 사이 간격
+            if(i < attractive.size - 1) {
+                Spacer(modifier = Modifier.height(5.dp))
+            }
+            else {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        }
     }
 }
 
@@ -276,7 +528,7 @@ fun MoodInfoSection(onHeightChange: (Dp) -> Unit) {
 
 // 두 번째 섹션
 @Composable
-fun SecondSection(bottomNaviBarHeight: Int, onHeightChange: (Dp) -> Unit) {
+fun SecondSection(onHeightChange: (Dp) -> Unit) {
     val density = LocalDensity.current
     Column(
         modifier = Modifier
@@ -320,7 +572,7 @@ fun SecondSection(bottomNaviBarHeight: Int, onHeightChange: (Dp) -> Unit) {
             color = Color.White,
             textAlign = TextAlign.Center
         )
-        Spacer(modifier = Modifier.height((145 + bottomNaviBarHeight).dp))
+        Spacer(modifier = Modifier.height(145.dp))
     }
 }
 

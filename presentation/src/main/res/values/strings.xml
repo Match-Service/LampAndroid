@@ -7,6 +7,7 @@
     <string name="find_friend">친구 찾아가기</string>
     <string name="guide_find_friend">친구를 검색하고 램프를 찾아가세요</string>
     <string name="sir">님</string>
+    <string name="age">세</string>
     <string name="back_button_end_message">뒤로 가기 버튼을 한번 더 클릭하면 앱이 종료됩니다.</string>
     <string name="search_friend">친구 찾아가기</string>
     <string name="guide_search_friend">닉네임을 검색해주세요</string>
@@ -137,4 +138,10 @@
     <string name="optional_consent">(선택) 혜택/이벤트 정보 수신 동의</string>
 
     <string name="see_consent">보기</string>
+
+    <string name="attractiveness">매력도</string>
+    <string name="personality">성격</string>
+    <string name="voice">목소리</string>
+    <string name="fashion">패션</string>
+    <string name="conversation">대화</string>
 </resources>
