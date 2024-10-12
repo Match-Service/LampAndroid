@@ -23,6 +23,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -31,7 +32,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -45,6 +45,7 @@ import com.canhub.cropper.CropImageOptions
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampBigTextField
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
+import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.ManColor
 import com.devndev.lamp.presentation.ui.theme.Typography
@@ -59,7 +60,10 @@ fun ProfileScreen(
 ) {
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
-    var imageIndex by remember { mutableStateOf(-1) }
+    var imageIndex by remember { mutableIntStateOf(-1) }
+
+    var isShowDeletePopup by remember { mutableStateOf(false) }
+    var deleteIndex by remember { mutableIntStateOf(-1) }
 
     var profileQuery by remember { mutableStateOf(profileIntro) }
     val maxProfileChar = 100
@@ -94,6 +98,28 @@ fun ProfileScreen(
         }
     }
 
+    if (isShowDeletePopup) {
+        TwoButtonPopup(
+            onStartButtonClick = {
+                isShowDeletePopup = false
+            },
+            onEndButtonClick = {
+                val updatedBitmap = bitmaps.toMutableList().apply {
+                    this[deleteIndex] = null
+
+                    if (deleteIndex > 0) {
+                        for (i in deleteIndex + 1 until size) {
+                            this[i - 1] = this[i]
+                        }
+                        this[size - 1] = null
+                    }
+                }
+                onBitmapsChange(updatedBitmap)
+                isShowDeletePopup = false
+            }
+        )
+    }
+
     SelectionScreen(text = stringResource(id = R.string.input_profile)) {
         Spacer(modifier = Modifier.height(15.dp))
         Text(
@@ -126,20 +152,9 @@ fun ProfileScreen(
                                 )
                             },
                             onDelete = {
-                                val updatedBitmaps = bitmaps.toMutableList().apply {
-                                    this[index] = null
-                                }
-                                onBitmapsChange(updatedBitmaps)
+                                deleteIndex = index
+                                isShowDeletePopup = true
                             },
-//                            onEdit = {
-//                                imageIndex = index
-//                                imageCropLauncher.launch(
-//                                    CropImageContractOptions(
-//                                        imageUri,
-//                                        CropImageOptions()
-//                                    )
-//                                )
-//                            },
                             isFirstImage = (index == 0)
                         )
                     }
@@ -167,7 +182,6 @@ fun ProfileImage(
     bitmap: Bitmap?,
     onClick: () -> Unit,
     onDelete: () -> Unit,
-//    onEdit: () -> Unit,
     isFirstImage: Boolean = false
 ) {
     val gradientBrush = Brush.horizontalGradient(
@@ -214,7 +228,7 @@ fun ProfileImage(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
                     .size(24.dp)
-                    .background(Color.Gray.copy(alpha = 0.5f), RectangleShape)
+                    .background(color = Color.Transparent)
                     .clickable(onClick = onDelete)
             ) {
                 Icon(
@@ -224,21 +238,6 @@ fun ProfileImage(
                     modifier = Modifier.size(20.dp)
                 )
             }
-
-//            Box(
-//                modifier = Modifier
-//                    .align(Alignment.BottomStart)
-//                    .size(24.dp)
-//                    .background(Color.Gray.copy(alpha = 0.5f), RectangleShape)
-//                    .clickable(onClick = onEdit)
-//            ) {
-//                Icon(
-//                    painter = painterResource(id = R.drawable.baseline_edit_24),
-//                    contentDescription = null,
-//                    tint = Color.White,
-//                    modifier = Modifier.size(20.dp)
-//                )
-//            }
         } else {
             if (isFirstImage) {
                 MainProfileImage()
