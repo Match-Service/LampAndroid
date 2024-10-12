@@ -138,4 +138,15 @@
     <string name="optional_consent">(선택) 혜택/이벤트 정보 수신 동의</string>
 
     <string name="see_consent">보기</string>
+
+    <string name="close">닫기</string>
+    <string name="no">아니오</string>
+    <string name="yes">예</string>
+    <string name="delete_profile_image">사진을 삭제하시겠습니까?</string>
+
+    <string name="attractiveness">매력도</string>
+    <string name="personality">성격</string>
+    <string name="voice">목소리</string>
+    <string name="fashion">패션</string>
+    <string name="conversation">대화</string>
 </resources>
