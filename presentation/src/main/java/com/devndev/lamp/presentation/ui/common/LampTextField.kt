@@ -47,8 +47,14 @@ fun LampTextField(
     hintText: String,
     timerSeconds: Int = 0,
     isSearchMode: Boolean = false,
-    onSearchKeyEvent: () -> Unit = {}
+    onSearchKeyEvent: () -> Unit = {},
+    radius: Int = 0
 ) {
+    val cornerRadius = if (radius == 0) {
+        27
+    } else {
+        radius
+    }
     val gradientBrush = Brush.linearGradient(
         colors = listOf(WomanColor, ManColor)
     )
@@ -62,7 +68,7 @@ fun LampTextField(
                     Modifier.width(width.dp)
                 }
             )
-            .background(LampBlack, shape = RoundedCornerShape(27.dp))
+            .background(LampBlack, shape = RoundedCornerShape(cornerRadius.dp))
             .then(
                 if (isGradient) {
                     Modifier.drawBehind {
@@ -70,7 +76,10 @@ fun LampTextField(
                         drawRoundRect(
                             brush = gradientBrush,
                             size = size,
-                            cornerRadius = CornerRadius(27.dp.toPx(), 27.dp.toPx()),
+                            cornerRadius = CornerRadius(
+                                cornerRadius.dp.toPx(),
+                                cornerRadius.dp.toPx()
+                            ),
                             style = androidx.compose.ui.graphics.drawscope.Stroke(
                                 strokeWidth
                             )
@@ -80,7 +89,7 @@ fun LampTextField(
                     Modifier.border(
                         width = 1.dp,
                         color = LightGray,
-                        shape = RoundedCornerShape(27.dp)
+                        shape = RoundedCornerShape(cornerRadius.dp)
                     )
                 }
             )
@@ -148,11 +157,11 @@ fun LampBigTextField(
         modifier = Modifier
             .width(width.dp)
             .height(height.dp)
-            .background(LampBlack, shape = RoundedCornerShape(20.dp))
+            .background(LampBlack, shape = RoundedCornerShape(15.dp))
             .border(
                 width = 1.dp,
                 color = LightGray,
-                shape = RoundedCornerShape(27.dp)
+                shape = RoundedCornerShape(15.dp)
             )
             .padding(horizontal = 20.dp, vertical = 14.dp)
     ) {
