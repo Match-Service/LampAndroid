@@ -1,6 +1,7 @@
 package com.devndev.lamp.presentation.main
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,7 +22,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -59,17 +61,21 @@ import com.devndev.lamp.presentation.ui.theme.LightGray
 fun MainScreen(modifier: Modifier) {
     val loginViewModel: LoginViewModel = hiltViewModel()
     val navController = rememberNavController()
-    val context = LocalContext.current
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     LaunchedEffect(Unit) {
         loginViewModel.checkLoginStatus()
     }
-
+    val keyboardController = LocalSoftwareKeyboardController.current
     val isLoggedIn by AuthManager.isLoggedIn.collectAsState()
     val isLoading by AuthManager.isLoading.collectAsState()
     Scaffold(
+        modifier = modifier.pointerInput(Unit) {
+            detectTapGestures(onTap = {
+                keyboardController?.hide()
+            })
+        },
         containerColor = BackGroundColor,
         topBar = {
             if (
