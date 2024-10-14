@@ -11,14 +11,17 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.BottomNavigation
-import androidx.compose.material.BottomNavigationItem
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -31,19 +34,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.chatting.navigation.chattingNavGraph
-import com.devndev.lamp.presentation.ui.chatting.navigation.navigateChatting
+import com.devndev.lamp.presentation.main.navigation.mainNavGraph
+import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.creation.navigation.creationNavGraph
-import com.devndev.lamp.presentation.ui.home.navigaion.homeNavGraph
-import com.devndev.lamp.presentation.ui.home.navigaion.navigateHome
 import com.devndev.lamp.presentation.ui.login.AuthManager
 import com.devndev.lamp.presentation.ui.login.LoginViewModel
 import com.devndev.lamp.presentation.ui.login.navigation.loginNavGraph
-import com.devndev.lamp.presentation.ui.mypage.navigation.myPageNavGraph
-import com.devndev.lamp.presentation.ui.mypage.navigation.navigateMyPage
 import com.devndev.lamp.presentation.ui.notification.navigation.navigateNotification
 import com.devndev.lamp.presentation.ui.notification.navigation.notificationNavGraph
 import com.devndev.lamp.presentation.ui.registration.navigation.registrationNavGraph
@@ -56,6 +54,7 @@ import com.devndev.lamp.presentation.ui.theme.BackGroundColor
 import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
+import kotlinx.coroutines.launch
 
 @Composable
 fun MainScreen(modifier: Modifier) {
@@ -63,6 +62,8 @@ fun MainScreen(modifier: Modifier) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val pagerState = rememberPagerState { 3 }
 
     LaunchedEffect(Unit) {
         loginViewModel.checkLoginStatus()
@@ -102,7 +103,7 @@ fun MainScreen(modifier: Modifier) {
                 currentRoute != Route.SIGNUP &&
                 currentRoute != Route.START_LAMP
             ) {
-                LampBottomNavigation(navController = navController)
+                LampBottomNavigation(pagerState)
             } else {
                 Spacer(modifier = Modifier.height(0.dp))
             }
@@ -110,11 +111,13 @@ fun MainScreen(modifier: Modifier) {
     ) { innerPadding ->
         NavHost(
             navController,
-            startDestination = if (isLoading) Route.SPLASH else if (isLoggedIn) Route.HOME else Route.LOGIN
+            startDestination = if (isLoading) Route.SPLASH else if (isLoggedIn) Route.MAIN else Route.LOGIN
         ) {
-            homeNavGraph(padding = innerPadding, navController = navController)
-            chattingNavGraph(padding = innerPadding)
-            myPageNavGraph(padding = innerPadding)
+            mainNavGraph(
+                padding = innerPadding,
+                navController = navController,
+                pagerState = pagerState
+            )
             searchNavGraph(padding = innerPadding, navController = navController)
             inviteNavGraph(padding = innerPadding, navController = navController)
             creationNavGraph(padding = innerPadding, navController = navController)
@@ -158,84 +161,73 @@ fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean) {
 }
 
 @Composable
-fun LampBottomNavigation(navController: NavController) {
-    BottomNavigation(
-        backgroundColor = LampBlack,
+fun LampBottomNavigation(pagerState: PagerState) {
+    val coroutineScope = rememberCoroutineScope()
+
+    NavigationBar(
+        containerColor = LampBlack,
         contentColor = Color.White,
-        modifier = Modifier
-            .height(70.dp)
+        modifier = Modifier.height(70.dp)
     ) {
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute = navBackStackEntry?.destination?.route
-        val homeNavOptions = navOptions {
-            launchSingleTop = true
-            popUpTo(Route.HOME) { inclusive = true }
-        }
-
-        val chattingNavOptions = navOptions {
-            launchSingleTop = true
-            popUpTo(Route.CHATTING) { inclusive = true }
-        }
-
-        val myPageNavOptions = navOptions {
-            launchSingleTop = true
-            popUpTo(Route.MYPAGE) { inclusive = true }
-        }
-
-        BottomNavigationItem(
+        NavigationBarItem(
             icon = {
                 Column {
                     Icon(
                         painter = painterResource(id = R.drawable.home),
                         contentDescription = Route.HOME,
-                        tint = if (currentRoute == Route.HOME) Color.White else LightGray,
-                        modifier = Modifier
-                            .size(24.dp)
+                        tint = if (pagerState.currentPage == MainScreenPage.HOME) Color.White else LightGray,
+                        modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                 }
             },
-            selected = currentRoute == Route.HOME,
+            selected = false,
             onClick = {
-                navController.navigateHome(homeNavOptions)
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(MainScreenPage.HOME)
+                }
             },
             modifier = Modifier.padding(top = 15.dp, bottom = 20.dp)
         )
-        BottomNavigationItem(
+
+        NavigationBarItem(
             icon = {
                 Column {
                     Icon(
                         painter = painterResource(id = R.drawable.chatting),
                         contentDescription = Route.CHATTING,
-                        tint = if (currentRoute == Route.CHATTING) Color.White else LightGray,
-                        modifier = Modifier
-                            .size(24.dp)
+                        tint = if (pagerState.currentPage == MainScreenPage.CHATTING) Color.White else LightGray,
+                        modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                 }
             },
-            selected = currentRoute == Route.CHATTING,
+            selected = false,
             onClick = {
-                navController.navigateChatting(chattingNavOptions)
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(MainScreenPage.CHATTING)
+                }
             },
             modifier = Modifier.padding(top = 15.dp, bottom = 20.dp)
         )
-        BottomNavigationItem(
+
+        NavigationBarItem(
             icon = {
                 Column {
                     Icon(
                         painter = painterResource(id = R.drawable.mypage),
                         contentDescription = Route.MYPAGE,
-                        tint = if (currentRoute == Route.MYPAGE) Color.White else LightGray,
-                        modifier = Modifier
-                            .size(24.dp)
+                        tint = if (pagerState.currentPage == MainScreenPage.MY_PAGE) Color.White else LightGray,
+                        modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.height(5.dp))
                 }
             },
-            selected = currentRoute == Route.MYPAGE,
+            selected = false,
             onClick = {
-                navController.navigateMyPage(myPageNavOptions)
+                coroutineScope.launch {
+                    pagerState.animateScrollToPage(MainScreenPage.MY_PAGE)
+                }
             },
             modifier = Modifier.padding(top = 15.dp, bottom = 20.dp)
         )

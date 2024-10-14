@@ -45,3 +45,9 @@ object PasswordStatus {
     const val INVALID_CONFIRM_PASSWORD = 3
     const val SUCCESS = 4
 }
+
+object MainScreenPage {
+    const val HOME = 0
+    const val CHATTING = 1
+    const val MY_PAGE = 2
+}
