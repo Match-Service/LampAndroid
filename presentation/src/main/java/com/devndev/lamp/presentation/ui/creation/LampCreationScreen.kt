@@ -35,10 +35,11 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.TempDB
+import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.CreationScreen
 import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.home.TempStatus
-import com.devndev.lamp.presentation.ui.home.navigaion.navigateHome
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LightGray
 
@@ -203,7 +204,7 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                         TempDB.lampName = lampName
                         TempDB.lampSummary = lampSummary
                         TempStatus.updateIsMatching(true)
-                        navController.navigateHome()
+                        navController.navigateMain(MainScreenPage.HOME)
                     }
                 },
                 enabled = when (currentStep) {

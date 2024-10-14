@@ -10,7 +10,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.compose.rememberNavController
 import com.devndev.lamp.presentation.ui.login.LoginViewModel
 import com.devndev.lamp.presentation.ui.splsh.SplashScreen
 import com.devndev.lamp.presentation.ui.theme.LampTheme
@@ -31,8 +30,6 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun Lamp(viewModel: LoginViewModel) {
-    val navController = rememberNavController()
-//    MainScreen(modifier = Modifier)
     var showSplash by remember { mutableStateOf(true) }
     if (showSplash) {
         SplashScreen {

@@ -37,7 +37,6 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.CircleProfile
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampTextField
-import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
@@ -81,7 +80,7 @@ fun InviteScreen(
                     contentDescription = "뒤로가기",
                     tint = Color.White,
                     modifier = Modifier.clickable {
-                        navController.popBackStack(Route.HOME, false)
+                        navController.popBackStack()
                     }
                 )
                 Text(
