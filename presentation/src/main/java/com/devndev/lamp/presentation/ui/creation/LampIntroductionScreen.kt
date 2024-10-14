@@ -46,7 +46,8 @@ fun LampIntroductionScreen(
                     onLampNameChange(it)
                 },
                 hintText = stringResource(id = R.string.input_lamp_name),
-                maxLength = maxSubjectChar
+                maxLength = maxSubjectChar,
+                radius = 15
             )
 
             LampBigTextField(

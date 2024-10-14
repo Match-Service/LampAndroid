@@ -59,7 +59,7 @@ val Typography = PretendardTypography(
     ),
     semiBold20 = pretendardTextStyle(
         fontWeight = FontWeight.SemiBold,
-        fontSize = 25
+        fontSize = 20
     ),
     normal12 = pretendardTextStyle(
         fontWeight = FontWeight.Normal,
