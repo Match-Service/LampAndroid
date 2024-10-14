@@ -2,6 +2,8 @@ package com.devndev.lamp.presentation.ui.search
 
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +22,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -90,27 +93,37 @@ fun InviteScreen(
                 )
             }
 
+            var rowVisible by remember { mutableStateOf(false) }
+
+            LaunchedEffect(selectedItems.size) {
+                rowVisible = selectedItems.isNotEmpty()
+            }
+
+            val alpha by animateFloatAsState(
+                targetValue = if (rowVisible) 1f else 0f,
+                animationSpec = tween(durationMillis = 600),
+                label = ""
+            )
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .animateContentSize()
                     .padding(vertical = 10.dp)
+                    .animateContentSize(animationSpec = tween(durationMillis = 400))
+                    .alpha(alpha),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Row(
-                    modifier = Modifier.animateContentSize(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    selectedItems.forEach { item ->
-                        CircleProfile(
-                            profile = item,
-                            onDeleteButtonClick = {
-                                selectedItems.remove(item)
-                            },
-                            isCanDelete = true
-                        )
-                    }
+                selectedItems.forEach { item ->
+                    CircleProfile(
+                        profile = item,
+                        onDeleteButtonClick = {
+                            selectedItems.remove(item)
+                        },
+                        isCanDelete = true
+                    )
                 }
             }
+
             LampTextField(
                 width = 0,
                 isGradient = false,
