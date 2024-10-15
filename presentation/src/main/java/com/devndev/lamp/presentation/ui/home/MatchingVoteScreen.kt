@@ -51,7 +51,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.painter.Painter
@@ -207,7 +206,7 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
                                     val strokeWidth = 1.dp.toPx()
                                     val y = size.height - strokeWidth / 2
                                     drawLine(
-                                        color = Color.Gray,
+                                        color = Gray,
                                         start = Offset(0f, y),
                                         end = Offset(size.width, y),
                                         strokeWidth = strokeWidth
@@ -256,7 +255,7 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)
-                    .clip(RectangleShape)
+                    .clip(RoundedCornerShape(4.dp))
             )
         }
     }
@@ -289,7 +288,7 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
         Text(
             text = "${profiles[index][2]}" + stringResource(id = R.string.age) + ", " + "${profiles[index][3]}",
             color = Color.White,
-            style = Typography.semiBold25.copy(lineHeight = 20.sp),
+            style = Typography.medium15.copy(lineHeight = 20.sp),
             fontSize = 15.sp,
             textAlign = TextAlign.Center
         )
@@ -344,12 +343,13 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
                     }
                     .clip(RoundedCornerShape(27.dp))
                     .background(gradientBrush)
-                    .padding(start = 20.dp, end = 20.dp),
+                    .padding(horizontal = 0.dp, vertical = 0.dp),
                 colors = ButtonDefaults.buttonColors(Color.Transparent)
             ) {
                 Row(
                     modifier = Modifier
-                        .fillMaxSize(),
+                        .fillMaxSize()
+                        .padding(start = 20.dp, end = 20.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
@@ -359,12 +359,13 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
                         tint = Color.White,
                         modifier = Modifier
                             .size(14.dp)
+                            .padding(0.dp)
                     )
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
                         text = "${stringResource(id = R.string.attractiveness)} $attractiveAvg",
                         color = Color.White,
-                        style = Typography.semiBold25.copy(lineHeight = 20.sp),
+                        style = Typography.medium15.copy(lineHeight = 20.sp),
                         fontSize = 15.sp,
                         textAlign = TextAlign.Center
                     )
@@ -375,6 +376,7 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
                         tint = Color.White,
                         modifier = Modifier
                             .size(10.dp)
+                            .padding(0.dp)
                     )
                 }
             }
@@ -386,7 +388,7 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp),
+                        .padding(bottom = 8.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -404,7 +406,8 @@ fun ProgressBar(attractive: List<Int>) {
     for (i in attractive.indices) {
         Row(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .height(16.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.Center
         ) {
@@ -419,7 +422,7 @@ fun ProgressBar(attractive: List<Int>) {
                     else -> stringResource(id = R.string.personality)
                 },
                 color = Color.White,
-                style = Typography.semiBold25.copy(lineHeight = 16.sp),
+                style = Typography.normal12.copy(lineHeight = 16.sp),
                 fontSize = 12.sp,
                 textAlign = TextAlign.Start
             )
@@ -442,12 +445,12 @@ fun ProgressBar(attractive: List<Int>) {
                         .background(WomanColor, RoundedCornerShape(40.dp)) // Red bar for the filled portion
                 )
             }
-            // 매력도 사이 간격
-            if (i < attractive.size - 1) {
-                Spacer(modifier = Modifier.height(5.dp))
-            } else {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
+        }
+        // 매력도 사이 간격
+        if (i < attractive.size - 1) {
+            Spacer(modifier = Modifier.height(5.dp))
+        } else {
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
@@ -458,7 +461,7 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
     Text(
         text = "${profiles[index][5]}",
         color = Color.White,
-        style = Typography.semiBold25.copy(lineHeight = 16.sp),
+        style = Typography.normal12.copy(lineHeight = 16.sp),
         fontSize = 12.sp,
         textAlign = TextAlign.Start,
         maxLines = 3
@@ -504,7 +507,7 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
                     else -> "" // nothing
                 },
                 color = Gray3,
-                style = Typography.semiBold25.copy(lineHeight = 12.sp),
+                style = Typography.medium15.copy(lineHeight = 12.sp),
                 fontSize = 10.sp,
                 textAlign = TextAlign.Center
             )
