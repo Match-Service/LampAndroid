@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.home.navigaion
+package com.devndev.lamp.presentation.ui.home.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding

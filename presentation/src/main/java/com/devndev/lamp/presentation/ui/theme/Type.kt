@@ -37,7 +37,8 @@ data class PretendardTypography(
     val normal15: TextStyle,
     val normal9: TextStyle,
     val medium18: TextStyle,
-    val medium15: TextStyle
+    val medium15: TextStyle,
+    val medium12: TextStyle
 )
 
 val IncTypography = IncheonTypography(
@@ -84,6 +85,10 @@ val Typography = PretendardTypography(
     medium15 = pretendardTextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 15
+    ),
+    medium12 = pretendardTextStyle(
+        fontWeight = FontWeight.Medium,
+        fontSize = 12
     )
 //    bodyLarge = TextStyle(
 //        fontFamily = FontFamily.Default,

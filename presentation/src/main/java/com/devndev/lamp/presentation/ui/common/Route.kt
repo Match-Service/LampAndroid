@@ -14,4 +14,5 @@ object Route {
     const val NOTIFICATION = "notification"
     const val SIGNUP = "signup"
     const val START_LAMP = "start_lamp"
+    const val REVIEW = "review"
 }

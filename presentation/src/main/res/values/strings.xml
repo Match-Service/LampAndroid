@@ -28,6 +28,7 @@
     <string name="have_account">이미 계정이 있다면?</string>
     <string name="login">로그인 하기</string>
     <string name="registration_name">처음 오셨군요, 반가워요!\n닉네임을 만들어볼까요?</string>
+    <string name="review_name">램프와\n만남은 어땠나요?</string>
 
     <string name="input_name">닉네임을 입력하세요</string>
     <string name="name_guide1">닉네임은 수정이 불가하니 정확하게 입력해주세요</string>

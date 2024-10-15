@@ -17,6 +17,11 @@ object RegistrationScreen {
     const val PROFILE = 7
 }
 
+object ReviewScreen {
+    const val LAMP = 1
+    const val PERSONAL = 2
+}
+
 object SignUpScreen {
     const val CONSENT = 1
     const val EMAIL = 2
