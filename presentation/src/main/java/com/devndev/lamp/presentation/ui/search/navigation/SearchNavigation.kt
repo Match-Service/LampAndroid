@@ -1,5 +1,7 @@
 package com.devndev.lamp.presentation.ui.search.navigation
 
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
@@ -20,7 +22,11 @@ fun NavGraphBuilder.searchNavGraph(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-    composable(Route.SEARCH) {
+    composable(
+        Route.SEARCH,
+        enterTransition = { slideInVertically(initialOffsetY = { it }) },
+        exitTransition = { slideOutVertically(targetOffsetY = { it }) }
+    ) {
         SearchScreen(modifier = modifier.padding(padding), navController = navController)
     }
 }
@@ -34,7 +40,11 @@ fun NavGraphBuilder.inviteNavGraph(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-    composable(Route.INVITE) {
+    composable(
+        Route.INVITE,
+        enterTransition = { slideInVertically(initialOffsetY = { it }) },
+        exitTransition = { slideOutVertically(targetOffsetY = { it }) }
+    ) {
         InviteScreen(modifier = modifier.padding(padding), navController = navController)
     }
 }

@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -37,6 +38,7 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.CircleProfile
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampTextField
+import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
@@ -64,6 +66,7 @@ fun InviteScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(LampBlack)
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {

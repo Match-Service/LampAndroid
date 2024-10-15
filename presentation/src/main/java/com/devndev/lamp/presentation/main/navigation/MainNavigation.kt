@@ -23,7 +23,7 @@ fun NavGraphBuilder.mainNavGraph(
     navController: NavController
 ) {
     navigation(startDestination = "${Route.MAIN}/0", route = Route.MAIN) {
-        composable("${Route.MAIN}/{page}") { backStackEntry ->
+        composable(route = "${Route.MAIN}/{page}") { backStackEntry ->
             val page = backStackEntry.arguments?.getString("page")?.toIntOrNull() ?: 0
             MainPagerScreen(pagerState, modifier.padding(padding), navController, initialPage = page)
         }

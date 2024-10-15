@@ -1,5 +1,7 @@
 package com.devndev.lamp.presentation.ui.registration.navigation
 
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
@@ -18,7 +20,11 @@ fun NavGraphBuilder.registrationNavGraph(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-    composable(Route.REGISTRATION) {
+    composable(
+        Route.REGISTRATION,
+        enterTransition = { slideInVertically(initialOffsetY = { it }) },
+        exitTransition = { slideOutVertically(targetOffsetY = { it }) }
+    ) {
         RegistrationScreen(modifier = modifier, navController = navController)
     }
 }

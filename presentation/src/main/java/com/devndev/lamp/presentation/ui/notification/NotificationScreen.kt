@@ -55,6 +55,7 @@ fun NotificationScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(LampBlack)
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
