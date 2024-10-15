@@ -1,5 +1,7 @@
 package com.devndev.lamp.presentation.ui.signup.navigation
 
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
@@ -20,7 +22,11 @@ fun NavGraphBuilder.signUpNavGraph(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-    composable(Route.SIGNUP) {
+    composable(
+        Route.SIGNUP,
+        enterTransition = { slideInVertically(initialOffsetY = { it }) },
+        exitTransition = { slideOutVertically(targetOffsetY = { it }) }
+    ) {
         SignUpScreen(modifier = modifier.padding(padding), navController = navController)
     }
 }

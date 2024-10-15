@@ -1,7 +1,5 @@
 package com.devndev.lamp.presentation.ui.notification.navigation
 
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,8 +23,8 @@ fun NavGraphBuilder.notificationNavGraph(
 ) {
     composable(
         Route.NOTIFICATION,
-        enterTransition = { slideInHorizontally(initialOffsetX = { it }) + fadeIn() },
-        exitTransition = { slideOutHorizontally(targetOffsetX = { it }) + fadeOut() }
+        enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
+        exitTransition = { slideOutHorizontally(targetOffsetX = { it }) }
     ) {
         NotificationScreen(modifier = modifier.padding(padding), navController)
     }

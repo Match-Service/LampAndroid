@@ -36,6 +36,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -110,6 +111,7 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
         modifier = Modifier
             .fillMaxSize()
             .background(LampBlack)
+            .clipToBounds()
     ) {
         VerticalSwipeGesture(fullPersonnel, onSwipeUp = {
             isMatching = true

@@ -88,5 +88,5 @@ dependencies {
 
     implementation(libs.coil.compose)
 
-    implementation("com.github.CanHub:Android-Image-Cropper:4.0.0")
+    implementation(libs.android.image.cropper)
 }

@@ -7,6 +7,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,6 +44,7 @@ import com.devndev.lamp.presentation.ui.common.PasswordStatus
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.common.SignUpScreen
 import com.devndev.lamp.presentation.ui.signup.navigation.navigateStartLamp
+import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.Typography
 import kotlinx.coroutines.delay
 
@@ -99,6 +101,7 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(LampBlack)
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {

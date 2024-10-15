@@ -2,6 +2,9 @@ package com.devndev.lamp.presentation.ui.search
 
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -34,7 +38,7 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.CircleProfile
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampTextField
-import com.devndev.lamp.presentation.ui.common.Route
+import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
@@ -62,6 +66,7 @@ fun InviteScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(LampBlack)
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -78,7 +83,7 @@ fun InviteScreen(
                     contentDescription = "뒤로가기",
                     tint = Color.White,
                     modifier = Modifier.clickable {
-                        navController.popBackStack(Route.HOME, false)
+                        navController.popBackStack()
                     }
                 )
                 Text(
@@ -90,27 +95,37 @@ fun InviteScreen(
                 )
             }
 
+            var rowVisible by remember { mutableStateOf(false) }
+
+            LaunchedEffect(selectedItems.size) {
+                rowVisible = selectedItems.isNotEmpty()
+            }
+
+            val alpha by animateFloatAsState(
+                targetValue = if (rowVisible) 1f else 0f,
+                animationSpec = tween(durationMillis = 600),
+                label = ""
+            )
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .animateContentSize()
                     .padding(vertical = 10.dp)
+                    .animateContentSize(animationSpec = tween(durationMillis = 400))
+                    .alpha(alpha),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Row(
-                    modifier = Modifier.animateContentSize(),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    selectedItems.forEach { item ->
-                        CircleProfile(
-                            profile = item,
-                            onDeleteButtonClick = {
-                                selectedItems.remove(item)
-                            },
-                            isCanDelete = true
-                        )
-                    }
+                selectedItems.forEach { item ->
+                    CircleProfile(
+                        profile = item,
+                        onDeleteButtonClick = {
+                            selectedItems.remove(item)
+                        },
+                        isCanDelete = true
+                    )
                 }
             }
+
             LampTextField(
                 width = 0,
                 isGradient = false,

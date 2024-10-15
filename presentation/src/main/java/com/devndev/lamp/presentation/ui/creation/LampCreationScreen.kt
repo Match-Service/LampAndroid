@@ -6,6 +6,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,11 +36,13 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.TempDB
+import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.CreationScreen
 import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.home.TempStatus
-import com.devndev.lamp.presentation.ui.home.navigaion.navigateHome
 import com.devndev.lamp.presentation.ui.theme.Gray
+import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 
 @Composable
@@ -62,7 +65,8 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
 
     Column(
         modifier = modifier
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(LampBlack),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
@@ -203,7 +207,7 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                         TempDB.lampName = lampName
                         TempDB.lampSummary = lampSummary
                         TempStatus.updateIsMatching(true)
-                        navController.navigateHome()
+                        navController.navigateMain(MainScreenPage.HOME)
                     }
                 },
                 enabled = when (currentStep) {

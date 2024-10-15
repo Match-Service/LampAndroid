@@ -54,7 +54,10 @@ fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
                     navController.navigateCreation()
                 },
                 icon = painterResource(id = R.drawable.arrow),
-                enabled = true
+                enabled = true,
+                onIconClick = {
+                    navController.navigateCreation()
+                }
             )
             LampButtonWithIcon(
                 isGradient = false,
@@ -64,7 +67,10 @@ fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
                     navController.navigateSearch()
                 },
                 icon = painterResource(id = R.drawable.arrow),
-                enabled = true
+                enabled = true,
+                onIconClick = {
+                    navController.navigateSearch()
+                }
             )
         }
         Spacer(

@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.search
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -25,12 +26,13 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampTextField
-import com.devndev.lamp.presentation.ui.common.Route
+import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.home.TempStatus
-import com.devndev.lamp.presentation.ui.home.navigaion.navigateHome
+import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
@@ -52,6 +54,7 @@ fun SearchScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .background(LampBlack)
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
@@ -68,7 +71,7 @@ fun SearchScreen(
                     contentDescription = "뒤로가기",
                     tint = Color.White,
                     modifier = Modifier.clickable {
-                        navController.popBackStack(Route.HOME, false)
+                        navController.popBackStack()
                     }
                 )
                 Text(
@@ -96,7 +99,7 @@ fun SearchScreen(
                 onEnterButtonClick = { profile ->
                     TempStatus.updateIsWaiting(true)
                     TempStatus.updateProfileName(profile.name)
-                    navController.navigateHome()
+                    navController.navigateMain(MainScreenPage.HOME)
                 }
             )
         }
