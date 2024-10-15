@@ -1,5 +1,7 @@
 package com.devndev.lamp.presentation.ui.creation.navigation
 
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.Modifier
@@ -19,7 +21,11 @@ fun NavGraphBuilder.creationNavGraph(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-    composable(Route.CREATION) {
+    composable(
+        Route.CREATION,
+        enterTransition = { slideInVertically(initialOffsetY = { it }) },
+        exitTransition = { slideOutVertically(targetOffsetY = { it }) }
+    ) {
         LampCreationScreen(modifier = modifier.padding(padding), navController = navController)
     }
 }

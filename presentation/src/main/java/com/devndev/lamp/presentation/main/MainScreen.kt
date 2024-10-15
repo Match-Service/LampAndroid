@@ -71,6 +71,7 @@ fun MainScreen(modifier: Modifier) {
     val keyboardController = LocalSoftwareKeyboardController.current
     val isLoggedIn by AuthManager.isLoggedIn.collectAsState()
     val isLoading by AuthManager.isLoading.collectAsState()
+
     Scaffold(
         modifier = modifier.pointerInput(Unit) {
             detectTapGestures(onTap = {
