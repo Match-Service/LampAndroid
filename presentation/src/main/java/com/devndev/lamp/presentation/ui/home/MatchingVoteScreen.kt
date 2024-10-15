@@ -51,7 +51,6 @@ import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.painter.Painter
@@ -256,7 +255,7 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)
-                    .clip(RectangleShape)
+                    .clip(RoundedCornerShape(4.dp))
             )
         }
     }
