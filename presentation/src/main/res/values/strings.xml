@@ -87,6 +87,8 @@
     <string name="cancel_waiting">입장 취소하기</string>
 
     <string name="matching_header_invite">램프와 함께할\n친구들을 초대하세요</string>
+    <string name="matching_header_start_matching">모든 준비가 완료 되었다면\n램프를 시작해보세요</string>
+    <string name="matching_header_while_invite">빛나는 만남을 찾아\n램프를 비춰보고 있어요</string>
     <string name="matching_header_find">인연의 불빛을 발견했어요</string>
     <string name="matching_sub_header_find">상대의 램프를 확인 해보세요</string>
     <string name="scroll_to_check_profile">스크롤하여 상대의 프로필을 확인하세요</string>

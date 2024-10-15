@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.home
 
+import android.annotation.SuppressLint
 import android.media.Image
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
@@ -71,6 +72,7 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
+@SuppressLint("RememberReturnType")
 @Composable
 fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
     val configuration = LocalConfiguration.current
@@ -89,19 +91,26 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
 
     var fullPersonnel by remember { mutableStateOf(currentPersonnel == maxPersonnel) }
     var isMatching by remember { mutableStateOf(false) }
+    var lampTitle by remember { mutableStateOf("") }
     val inviteFriend = stringResource(id = R.string.invite_friend)
     val startMatching = stringResource(id = R.string.start_matching)
     val stopMatching = stringResource(id = R.string.stop_matching)
+    val pleaseInviteFriend = stringResource(id = R.string.matching_header_invite)
+    val pleaseStartMatching = stringResource(id = R.string.matching_header_start_matching)
+    val whileMatching = stringResource(id = R.string.matching_header_while_invite)
 
     // fullPersonnel = false : 친구 초대하기 및 스와이프 인식x
     // fullPersonnel = true : 매칭 시작하기 및 스와이프 인식o
     val buttonText = remember(fullPersonnel, isMatching) {
         if (!fullPersonnel) {
+            lampTitle = pleaseInviteFriend
             inviteFriend
         } else {
             if (!isMatching) {
+                lampTitle = pleaseStartMatching
                 startMatching
             } else {
+                lampTitle = whileMatching
                 stopMatching
             }
         }
@@ -142,7 +151,7 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
                 onShareIconClick = {}
             )
             Text(
-                text = stringResource(id = R.string.matching_header_invite),
+                text = lampTitle,
                 color = Color.White,
                 style = Typography.semiBold25.copy(lineHeight = 33.sp),
                 textAlign = TextAlign.Center
