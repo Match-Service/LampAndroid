@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -82,7 +81,6 @@ import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.MoodBlue
 import com.devndev.lamp.presentation.ui.theme.MoodRed
 import com.devndev.lamp.presentation.ui.theme.MoodYellow
-import com.devndev.lamp.presentation.ui.theme.PretendardTypography
 import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
 import kotlinx.coroutines.delay
@@ -362,7 +360,7 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
                         tint = Color.White,
                         modifier = Modifier
                             .size(14.dp)
-                            .padding(0.dp),
+                            .padding(0.dp)
                     )
                     Spacer(modifier = Modifier.width(5.dp))
                     Text(
@@ -370,7 +368,7 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
                         color = Color.White,
                         style = Typography.medium15.copy(lineHeight = 20.sp),
                         fontSize = 15.sp,
-                        textAlign = TextAlign.Center,
+                        textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.weight(1f))
                     Icon(
