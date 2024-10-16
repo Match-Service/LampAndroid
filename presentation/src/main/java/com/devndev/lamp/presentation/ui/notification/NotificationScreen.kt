@@ -1,6 +1,13 @@
 package com.devndev.lamp.presentation.ui.notification
 
-import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -152,7 +159,6 @@ fun NotificationSection(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .animateContentSize()
             .padding(8.dp)
     ) {
         Row(
@@ -180,14 +186,24 @@ fun NotificationSection(
                 tint = Color.White
             )
         }
-        if (isExpanded) {
-            notifications.forEachIndexed { index, notificationData ->
-                NotificationItem(notificationData = notificationData, type = type)
-                if (index < notifications.size - 1) {
-                    HorizontalDivider(
-                        color = Gray3.copy(alpha = 0.3f),
-                        thickness = 0.5.dp
-                    )
+        AnimatedVisibility(
+            visible = isExpanded,
+            enter = slideInVertically(animationSpec = tween(300)) +
+                expandVertically(expandFrom = Alignment.Top) +
+                fadeIn(initialAlpha = 0.3f),
+            exit = slideOutVertically(animationSpec = tween(500)) +
+                shrinkVertically() +
+                fadeOut()
+        ) {
+            Column {
+                notifications.forEachIndexed { index, notificationData ->
+                    NotificationItem(notificationData = notificationData, type = type)
+                    if (index < notifications.size - 1) {
+                        HorizontalDivider(
+                            color = Gray3.copy(alpha = 0.3f),
+                            thickness = 0.5.dp
+                        )
+                    }
                 }
             }
         }
