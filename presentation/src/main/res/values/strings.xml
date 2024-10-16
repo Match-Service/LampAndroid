@@ -151,4 +151,21 @@
     <string name="voice">목소리</string>
     <string name="fashion">패션</string>
     <string name="conversation">대화</string>
+
+    <string name="no_attractive">아직 이성에게 받은 평가가 없어요</string>
+    <string name="push_alarm">푸시 알림</string>
+    <string name="invite_lamp_alarm">램프 초대</string>
+    <string name="guide_invite_lamp_alarm">새 램프 초대가 왔을 때 알람을 받습니다</string>
+    <string name="visit_lamp_alarm">램프 방문</string>
+    <string name="guide_visit_lamp_alarm">친구의 램프 방문 허가 요청이 왔을 때 알람을 받습니다</string>
+    <string name="match_alarm">새 매칭</string>
+    <string name="guide_match_alarm">새 매칭이 생겼을 때 알람을 받습니다</string>
+    <string name="badge_alarm">배지</string>
+    <string name="guide_badge_alarm">이성이 나에게 배지를 보냈을 때 알람을 받습니다</string>
+    <string name="message_alarm">메세지</string>
+    <string name="guide_message_alarm">새 메세지가 왔을 때 알람을 받습니다</string>
+    <string name="ask_question">문의하기</string>
+    <string name="help_and_support">도움말 및 고객 지원</string>
+    <string name="delete_account">회원 탈퇴</string>
+    <string name="logout">로그아웃</string>
 </resources>

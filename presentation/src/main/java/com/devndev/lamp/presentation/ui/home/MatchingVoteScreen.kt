@@ -402,14 +402,14 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
 }
 
 @Composable
-fun ProgressBar(attractive: List<Int>) {
+fun ProgressBar(attractive: List<Int>, barColor: Color = WomanColor) {
     for (i in attractive.indices) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(16.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.Center
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
                 modifier = Modifier
@@ -442,7 +442,7 @@ fun ProgressBar(attractive: List<Int>) {
                     modifier = Modifier
                         .fillMaxHeight() // Match height of the gray bar
                         .fillMaxWidth(percentage) // Width based on percentage
-                        .background(WomanColor, RoundedCornerShape(40.dp)) // Red bar for the filled portion
+                        .background(barColor, RoundedCornerShape(40.dp))
                 )
             }
         }

@@ -24,7 +24,8 @@ internal val pretendard = FontFamily(
 
 @Immutable
 data class IncheonTypography(
-    val normal42: TextStyle
+    val normal42: TextStyle,
+    val normal30: TextStyle
 )
 
 @Immutable
@@ -37,13 +38,18 @@ data class PretendardTypography(
     val normal15: TextStyle,
     val normal9: TextStyle,
     val medium18: TextStyle,
-    val medium15: TextStyle
+    val medium15: TextStyle,
+    val medium10: TextStyle
 )
 
 val IncTypography = IncheonTypography(
     normal42 = incheonTextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 42
+    ),
+    normal30 = incheonTextStyle(
+        fontWeight = FontWeight.Normal,
+        fontSize = 30
     )
 )
 
@@ -84,6 +90,10 @@ val Typography = PretendardTypography(
     medium15 = pretendardTextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 15
+    ),
+    medium10 = pretendardTextStyle(
+        fontWeight = FontWeight.Medium,
+        fontSize = 10
     )
 //    bodyLarge = TextStyle(
 //        fontFamily = FontFamily.Default,
