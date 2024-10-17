@@ -29,7 +29,7 @@ fun UniversityScreen(
 ) {
     SelectionScreen(text = stringResource(id = R.string.registration_university)) {
         var universityQuery by remember { mutableStateOf(university) }
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         Column(
             verticalArrangement = Arrangement.spacedBy(15.dp),

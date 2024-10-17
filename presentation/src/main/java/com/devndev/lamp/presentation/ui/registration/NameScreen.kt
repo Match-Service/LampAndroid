@@ -33,7 +33,7 @@ fun NameScreen(
     SelectionScreen(text = stringResource(id = R.string.registration_name)) {
         var nameQuery by remember { mutableStateOf(name) }
         val maxNameChar = 6
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         Column(
             verticalArrangement = Arrangement.spacedBy(15.dp),

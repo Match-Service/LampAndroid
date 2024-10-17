@@ -7,10 +7,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Divider
 import androidx.compose.material3.Icon
@@ -37,7 +37,7 @@ fun InfoScreen(
     onSelectExerciseOption: (String) -> Unit
 ) {
     SelectionScreen(text = stringResource(id = R.string.input_info)) {
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(40.dp))
         RadioButtonGroup(
             groupText = stringResource(id = R.string.drink),
             options = listOf(
@@ -79,6 +79,7 @@ fun InfoScreen(
                 onSelectExerciseOption(selectedOption)
             }
         )
+        Spacer(modifier = Modifier.height(20.dp))
     }
 }
 
@@ -90,15 +91,15 @@ fun RadioButtonGroup(
     onSelectOption: (String) -> Unit
 ) {
     Column(
-        modifier = Modifier.width(300.dp),
+        modifier = Modifier.widthIn(max = 280.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(15.dp)
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Text(text = groupText, color = Color.White, style = Typography.medium18)
         val rows = options.chunked(2)
         rows.forEach { rowOptions ->
             Row(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.widthIn(max = 280.dp)
             ) {
                 rowOptions.forEach { option ->
                     RadioButtonWithLabel(

@@ -23,7 +23,7 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 fun GenderScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
     val options = listOf("남성", "여성")
     SelectionScreen(text = stringResource(id = R.string.input_gender)) {
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         options.forEach { option ->
             val isSelected = selectedOption == option
             Button(

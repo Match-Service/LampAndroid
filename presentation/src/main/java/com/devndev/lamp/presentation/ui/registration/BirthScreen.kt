@@ -58,7 +58,7 @@ fun BirthScreen(
         val years = remember { (1900..2024).map { it.toString() + "년" } }
         val months = remember { (1..12).map { it.toString() + "월" } }
         val days = remember { (1..31).map { it.toString() + "일" } }
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(40.dp))
         DatePicker(
             isMan = isMan,
             years = years,
@@ -103,17 +103,18 @@ fun DatePicker(
     }
 
     Row(
-        horizontalArrangement = Arrangement.Center,
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
+        Spacer(modifier = Modifier.width(20.dp))
         // Year
         Picker(
             isMan = isMan,
             items = years,
             state = yearPickerState,
             visibleItemsCount = 5,
-            startIndex = years.indexOf(selectedYear),
+            startIndex = 100,
             textAlign = TextAlign.End
         )
 
@@ -123,7 +124,7 @@ fun DatePicker(
             items = months,
             state = monthPickerState,
             visibleItemsCount = 5,
-            startIndex = months.indexOf(selectedMonth),
+            startIndex = 0,
             textAlign = TextAlign.Center
         )
 
@@ -133,7 +134,7 @@ fun DatePicker(
             items = days,
             state = dayPickerState,
             visibleItemsCount = 5,
-            startIndex = days.indexOf(selectedDay),
+            startIndex = 0,
             textAlign = TextAlign.Start
         )
     }
@@ -180,8 +181,9 @@ fun Picker(
             state = listState,
             flingBehavior = flingBehavior,
             horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
-                .height(30.dp * visibleItemsCount)
+                .height(30.dp * visibleItemsCount + 20.dp)
                 .fadingEdge(fadingEdgeGradient)
         ) {
             items(listScrollCount) { index ->
@@ -191,15 +193,15 @@ fun Picker(
 
                 // Animate font size and color
                 val targetFontSize = when (itemIndex) {
-                    visibleItemsMiddle -> 18f
-                    in (visibleItemsMiddle - 1)..(visibleItemsMiddle + 1) -> 15f
+                    visibleItemsMiddle -> 25f
+                    in (visibleItemsMiddle - 1)..(visibleItemsMiddle + 1) -> 18f
                     in (visibleItemsMiddle - 2)..(visibleItemsMiddle + 2) -> 12f
                     else -> 12f
                 }
 
                 val animatedTextStyle = when (targetFontSize) {
+                    25f -> Typography.semiBold25
                     18f -> Typography.medium18
-                    15f -> Typography.medium15
                     12f -> Typography.normal12
                     else -> Typography.normal12
                 }.copy(
