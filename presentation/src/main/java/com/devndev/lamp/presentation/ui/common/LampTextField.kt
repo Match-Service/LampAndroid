@@ -2,6 +2,7 @@ package com.devndev.lamp.presentation.ui.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -15,7 +16,6 @@ import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -126,18 +126,16 @@ fun LampTextField(
             innerTextField()
         }
         if (timerSeconds == 0) {
-            IconButton(
-                modifier = Modifier.size(10.dp),
-                onClick = {
-                    onQueryChange("")
-                }
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.x_button),
-                    contentDescription = "검색 지우기",
-                    tint = LightGray
-                )
-            }
+            Icon(
+                modifier = Modifier
+                    .size(12.dp)
+                    .clickable {
+                        onQueryChange("")
+                    },
+                painter = painterResource(id = R.drawable.x_button),
+                contentDescription = "검색 지우기",
+                tint = Color.White
+            )
         } else {
             CountdownTimer(initialSeconds = timerSeconds)
         }
