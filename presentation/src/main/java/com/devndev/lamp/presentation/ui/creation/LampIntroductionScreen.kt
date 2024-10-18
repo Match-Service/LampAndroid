@@ -31,7 +31,7 @@ fun LampIntroductionScreen(
         var summaryQuery by remember { mutableStateOf(lampSummary) }
         val maxSubjectChar = 8
         val maxSummaryChar = 100
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(30.dp))
         Column(
             modifier = Modifier.fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,

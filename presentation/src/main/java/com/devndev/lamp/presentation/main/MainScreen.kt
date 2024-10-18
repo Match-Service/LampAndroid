@@ -83,7 +83,8 @@ fun MainScreen(modifier: Modifier) {
             if (
                 currentRoute != Route.LOGIN &&
                 currentRoute != Route.REGISTRATION &&
-                currentRoute != Route.START_LAMP
+                currentRoute != Route.START_LAMP &&
+                currentRoute != Route.CREATION
             ) {
                 if (currentRoute == Route.SIGNUP) {
                     LampTopBar(navController = navController, isAlarmIconNeed = false)
