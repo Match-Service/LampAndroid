@@ -57,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.TempDB
 import com.devndev.lamp.presentation.ui.common.LampButton
@@ -77,6 +78,10 @@ import kotlinx.coroutines.launch
 fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
+
+    val navOption = navOptions {
+        launchSingleTop = true
+    }
 
     // 아직 방에 유저를 초대할 수 없어 테스트용으로 작업(방의 참여 인원수 2명으로 임시 설정)
     // TODO : 실제 방 참여 인원에 따라 매칭 시작 활성화 되도록 수정
@@ -182,7 +187,7 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
                         contentDescription = null,
                         tint = Color.White,
                         modifier = Modifier.clickable {
-                            navController.navigateCreation()
+                            navController.navigateCreation(navOption)
                         }
                     )
                 }
@@ -223,7 +228,7 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
 
                 if (!fullPersonnel) {
                     Button(
-                        onClick = { navController.navigateInvite() },
+                        onClick = { navController.navigateInvite(navOption) },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Gray,
                             contentColor = Color.White
