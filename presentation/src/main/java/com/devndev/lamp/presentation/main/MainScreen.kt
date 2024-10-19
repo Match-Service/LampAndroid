@@ -135,6 +135,7 @@ fun MainScreen(modifier: Modifier) {
 
 @Composable
 fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean) {
+    val currentRoute = navController.currentBackStackEntry?.destination?.route
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -156,7 +157,13 @@ fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean) {
                 tint = Gray3,
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { navController.navigateNotification() }
+                    .clickable {
+                        if (currentRoute != Route.NOTIFICATION) {
+                            navController.navigateNotification()
+                        } else {
+                            navController.popBackStack()
+                        }
+                    }
             )
         }
     }
