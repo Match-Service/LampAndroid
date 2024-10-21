@@ -15,7 +15,7 @@ fun PersonnelScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
     SelectionScreen(
         text = stringResource(id = R.string.select_personnel)
     ) {
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         options.forEach { option ->
             OptionButton(

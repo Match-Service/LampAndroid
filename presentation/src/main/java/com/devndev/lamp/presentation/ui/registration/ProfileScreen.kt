@@ -121,7 +121,7 @@ fun ProfileScreen(
     }
 
     SelectionScreen(text = stringResource(id = R.string.input_profile)) {
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = stringResource(id = R.string.guide_profile),
             color = Color.White,

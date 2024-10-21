@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -54,18 +53,20 @@ fun ConsentScreen(
         ) {
             ConsentItem(
                 text = stringResource(id = R.string.consent_all),
-                size = 18,
+                size = 20,
                 isConsent = isAllConsent,
-                onConsentChange = { onAllConsentChange(it) }
+                onConsentChange = {
+                    onAllConsentChange(it)
+                }
             )
 
             Column(
-                modifier = Modifier.padding(start = 18.dp),
+                modifier = Modifier.fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(7.dp)
             ) {
                 ConsentItem(
                     text = stringResource(id = R.string.first_essential_consent),
-                    size = 14,
+                    size = 18,
                     isConsent = isFirstEssentialConsent,
                     onConsentChange = { onFirstEssentialConsentChange(it) }
                 )
@@ -109,10 +110,10 @@ fun ConsentItem(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        val textStyle = if (size == 18) {
-            Typography.medium18
+        val textStyle = if (size == 20) {
+            Typography.semiBold20
         } else {
-            Typography.normal14
+            Typography.medium18
         }
 
         CheckButton(size = size, selected = isConsent, onClick = { onConsentChange(!isConsent) })
@@ -133,11 +134,12 @@ fun ConsentItemWithButton(
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
     ) {
         ConsentItem(
             text = text,
-            size = 14,
+            size = 18,
             isConsent = isConsent,
             onConsentChange = { onConsentChange(it) }
         )

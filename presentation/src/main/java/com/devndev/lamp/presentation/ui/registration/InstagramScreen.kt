@@ -32,7 +32,7 @@ fun InstagramScreen(
 ) {
     SelectionScreen(text = stringResource(id = R.string.input_insta)) {
         var idQuery by remember { mutableStateOf(instagramID) }
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(30.dp))
 
         Column(
             verticalArrangement = Arrangement.spacedBy(15.dp),

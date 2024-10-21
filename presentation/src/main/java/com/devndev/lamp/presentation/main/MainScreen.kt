@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Icon
@@ -51,7 +52,6 @@ import com.devndev.lamp.presentation.ui.signup.navigation.signUpNavGraph
 import com.devndev.lamp.presentation.ui.signup.navigation.startLampNavGraph
 import com.devndev.lamp.presentation.ui.splsh.navigaion.splashNavGraph
 import com.devndev.lamp.presentation.ui.theme.BackGroundColor
-import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 import kotlinx.coroutines.launch
@@ -83,7 +83,8 @@ fun MainScreen(modifier: Modifier) {
             if (
                 currentRoute != Route.LOGIN &&
                 currentRoute != Route.REGISTRATION &&
-                currentRoute != Route.START_LAMP
+                currentRoute != Route.START_LAMP &&
+                currentRoute != Route.CREATION
             ) {
                 if (currentRoute == Route.SIGNUP) {
                     LampTopBar(navController = navController, isAlarmIconNeed = false)
@@ -134,6 +135,12 @@ fun MainScreen(modifier: Modifier) {
 
 @Composable
 fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean) {
+    val currentRoute = navController.currentBackStackEntry?.destination?.route
+    val alarmIcon = if (currentRoute == Route.NOTIFICATION) {
+        painterResource(id = R.drawable.alarm_icon_on)
+    } else {
+        painterResource(id = R.drawable.alarm_icon)
+    }
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -145,17 +152,23 @@ fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean) {
         Icon(
             painterResource(id = R.drawable.app_logo),
             contentDescription = "AppLogo",
-            tint = Gray3,
-            modifier = Modifier.height(24.dp)
+            tint = LightGray,
+            modifier = Modifier.height(30.dp).width(72.dp)
         )
         if (isAlarmIconNeed) {
             Icon(
-                painterResource(id = R.drawable.alarm_icon),
+                alarmIcon,
                 contentDescription = "AlarmIcon",
-                tint = Gray3,
+                tint = Color.Unspecified,
                 modifier = Modifier
                     .size(24.dp)
-                    .clickable { navController.navigateNotification() }
+                    .clickable {
+                        if (currentRoute != Route.NOTIFICATION) {
+                            navController.navigateNotification()
+                        } else {
+                            navController.popBackStack()
+                        }
+                    }
             )
         }
     }

@@ -13,6 +13,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButtonWithIcon
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
@@ -46,17 +47,20 @@ fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.weight(1f)
         ) {
+            val navOption = navOptions {
+                launchSingleTop = true
+            }
             LampButtonWithIcon(
                 isGradient = true,
                 buttonText = stringResource(id = R.string.make_lamp),
                 guideButtonText = stringResource(id = R.string.guide_make_lamp),
                 onClick = {
-                    navController.navigateCreation()
+                    navController.navigateCreation(navOption)
                 },
                 icon = painterResource(id = R.drawable.arrow),
                 enabled = true,
                 onIconClick = {
-                    navController.navigateCreation()
+                    navController.navigateCreation(navOption)
                 }
             )
             LampButtonWithIcon(
@@ -64,12 +68,12 @@ fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
                 buttonText = stringResource(id = R.string.find_friend),
                 guideButtonText = stringResource(id = R.string.guide_find_friend),
                 onClick = {
-                    navController.navigateSearch()
+                    navController.navigateSearch(navOption)
                 },
                 icon = painterResource(id = R.drawable.arrow),
                 enabled = true,
                 onIconClick = {
-                    navController.navigateSearch()
+                    navController.navigateSearch(navOption)
                 }
             )
         }
