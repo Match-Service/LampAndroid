@@ -5,6 +5,15 @@ import android.content.Context
 import android.graphics.RadialGradient
 import android.media.Image
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -34,6 +43,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -46,12 +56,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
@@ -64,20 +78,24 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.TempDB
+import com.devndev.lamp.presentation.ui.notification.NotificationItem
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.IncTypography
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.MoodBlue
+import com.devndev.lamp.presentation.ui.theme.MoodGray
 import com.devndev.lamp.presentation.ui.theme.MoodRed
 import com.devndev.lamp.presentation.ui.theme.MoodYellow
 import com.devndev.lamp.presentation.ui.theme.Typography
@@ -187,9 +205,67 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
 
             // Second Section
             item {
-                SecondSection(
-                    onHeightChange = { height -> secondSectionHeight = height }
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    Canvas(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        val fillColor = Color(0xFF191919)
+                        val shadowColor = Color(0xFF151515)
+                        val shadowRadius = 80.dp.toPx()
+                        val center = Offset(size.width / 2, (headerSectionHeight + moodInfoSectionHeight + secondSectionHeight + 80f.toDp()).toPx())
+                        val radius = 400.dp.toPx()
+                        drawIntoCanvas { canvas ->
+                            val paint = android.graphics.Paint().apply {
+                                isAntiAlias = true
+                                shader = RadialGradient(
+                                    center.x,
+                                    center.y,
+                                    radius,
+                                    intArrayOf(
+                                        shadowColor.toArgb(),
+                                        fillColor.toArgb(),
+                                        android.graphics.Color.TRANSPARENT
+                                    ),
+                                    floatArrayOf(0.3f, 0.6f, 1f), // 색상 위치 (그라데이션 진행도)
+                                    android.graphics.Shader.TileMode.CLAMP // 그라데이션 방식
+                                )
+                                setShadowLayer(
+                                    shadowRadius,
+                                    0f,
+                                    -shadowRadius,
+                                    shadowColor.toArgb()
+                                )
+                                style = android.graphics.Paint.Style.FILL
+                            }
+                            canvas.nativeCanvas.drawCircle(center.x, center.y, radius, paint)
+                        }
+
+//                        val centerOffset = Offset(size.width / 2, (headerSectionHeight + moodInfoSectionHeight + secondSectionHeight + 170f.toDp()).toPx())
+//
+//                        // 검은색 원 그리기
+//                        drawIntoCanvas { canvas ->
+//                            val paint = Paint().asFrameworkPaint().apply {
+//                                isAntiAlias = true
+//                                setShadowLayer(80.dp.toPx(), 0f, 0f, Color(0xFF131313).toArgb()) // 블러 80 적용
+//                            }
+//                            canvas.nativeCanvas.drawCircle(
+//                                centerOffset.x,  // 중심 X
+//                                centerOffset.y,  // 중심 Y
+//                                400.dp.toPx(),          // 반지름
+//                                paint            // Paint 객체로 블러와 색상 설정
+//                            )
+//                        }
+                    }
+
+                    SecondSection(
+                        onHeightChange = { height -> secondSectionHeight = height }
+                    )
+                }
             }
 
             // Additional items to create scrollable area
@@ -381,10 +457,12 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
                 }
             }
 
-            // Conditionally show the Row based on the state
-            if (isDropdownExpanded) {
-                Spacer(modifier = Modifier.height(10.dp)) // Space between button and dropdown
-                // The Row that gets shown/hidden
+            // 드롭다운 애니메이션 추가
+            AnimatedVisibility(
+                visible = isDropdownExpanded,
+                enter = expandVertically(animationSpec = tween(durationMillis = 300)),
+                exit = shrinkVertically(animationSpec = tween(durationMillis = 300))
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -392,11 +470,30 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
+                    Spacer(modifier = Modifier.height(10.dp)) // Space between button and dropdown
                     ProgressBar(attractive)
                 }
-            } else {
-                Spacer(modifier = Modifier.height(8.dp)) // Space between button and dropdown
             }
+            if (!isDropdownExpanded) {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+//            // Conditionally show the Row based on the state
+//            if (isDropdownExpanded) {
+//                Spacer(modifier = Modifier.height(10.dp)) // Space between button and dropdown
+//                // The Row that gets shown/hidden
+//                Column(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(bottom = 8.dp),
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    verticalArrangement = Arrangement.Center
+//                ) {
+//                    ProgressBar(attractive)
+//                }
+//            } else {
+//                Spacer(modifier = Modifier.height(8.dp)) // Space between button and dropdown
+//            }
         }
     }
 }
@@ -575,6 +672,7 @@ fun MoodInfoSection(onHeightChange: (Dp) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = "1",
             color = Color.White,
@@ -907,4 +1005,11 @@ fun getNavigationBarHeight(context: Context): Int {
     } else {
         0
     }
+}
+
+
+@Preview
+@Composable
+fun A() {
+    MatchingVoteScreen(modifier = Modifier, navController = rememberNavController())
 }
