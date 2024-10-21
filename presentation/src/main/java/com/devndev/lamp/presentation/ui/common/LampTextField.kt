@@ -18,6 +18,10 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -28,6 +32,8 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.theme.LampBlack
@@ -48,6 +54,7 @@ fun LampTextField(
     timerSeconds: Int = 0,
     isSearchMode: Boolean = false,
     onSearchKeyEvent: () -> Unit = {},
+    isPasswordMode: Boolean = false,
     radius: Int = 0
 ) {
     val cornerRadius = if (radius == 0) {
@@ -59,6 +66,8 @@ fun LampTextField(
         colors = listOf(WomanColor, ManColor)
     )
     val keyboardController = LocalSoftwareKeyboardController.current
+    var isPasswordShow by remember { mutableStateOf(false) }
+
     Row(
         modifier = Modifier
             .then(
@@ -107,6 +116,11 @@ fun LampTextField(
             textStyle = Typography.medium18.copy(color = Color.White),
             singleLine = true,
             cursorBrush = SolidColor(Color.White),
+            visualTransformation = if (isPasswordMode) {
+                if (isPasswordShow) VisualTransformation.None else PasswordVisualTransformation('*')
+            } else {
+                VisualTransformation.None
+            },
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = if (isSearchMode) ImeAction.Search else ImeAction.Done
             ),
@@ -114,7 +128,6 @@ fun LampTextField(
                 onSearchKeyEvent()
                 keyboardController?.hide()
             })
-
         ) { innerTextField ->
             if (query.isEmpty()) {
                 Text(
@@ -125,19 +138,37 @@ fun LampTextField(
             }
             innerTextField()
         }
-        if (timerSeconds == 0) {
-            Icon(
-                modifier = Modifier
-                    .size(12.dp)
-                    .clickable {
-                        onQueryChange("")
-                    },
-                painter = painterResource(id = R.drawable.x_button),
-                contentDescription = "검색 지우기",
-                tint = Color.White
-            )
+        if (isPasswordMode) {
+            if (isPasswordShow) {
+                Icon(
+                    modifier = Modifier.clickable { isPasswordShow = false },
+                    painter = painterResource(id = R.drawable.hide_textfield_icon),
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            } else {
+                Icon(
+                    modifier = Modifier.clickable { isPasswordShow = true },
+                    painter = painterResource(id = R.drawable.show_textfield_icon),
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
         } else {
-            CountdownTimer(initialSeconds = timerSeconds)
+            if (timerSeconds == 0) {
+                Icon(
+                    modifier = Modifier
+                        .size(12.dp)
+                        .clickable {
+                            onQueryChange("")
+                        },
+                    painter = painterResource(id = R.drawable.x_button),
+                    contentDescription = "검색 지우기",
+                    tint = Color.White
+                )
+            } else {
+                CountdownTimer(initialSeconds = timerSeconds)
+            }
         }
     }
 }

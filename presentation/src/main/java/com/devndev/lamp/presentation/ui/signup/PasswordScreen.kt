@@ -47,7 +47,8 @@ fun PasswordScreen(
                     onPasswordChange(it)
                 },
                 maxLength = 16,
-                hintText = stringResource(id = R.string.input_password)
+                hintText = stringResource(id = R.string.input_password),
+                isPasswordMode = true
             )
 
             when (passwordStatus) {
@@ -84,7 +85,8 @@ fun PasswordScreen(
                             onConfirmPasswordChange(it)
                         },
                         maxLength = 16,
-                        hintText = stringResource(id = R.string.input_confirm_password)
+                        hintText = stringResource(id = R.string.input_confirm_password),
+                        isPasswordMode = true
                     )
                     if (passwordStatus == PasswordStatus.SUCCESS) {
                         Spacer(modifier = Modifier.height(15.dp))
