@@ -43,6 +43,7 @@ import com.devndev.lamp.presentation.ui.creation.navigation.creationNavGraph
 import com.devndev.lamp.presentation.ui.login.AuthManager
 import com.devndev.lamp.presentation.ui.login.LoginViewModel
 import com.devndev.lamp.presentation.ui.login.navigation.loginNavGraph
+import com.devndev.lamp.presentation.ui.mypage.navigation.profileEditNavGraph
 import com.devndev.lamp.presentation.ui.notification.navigation.navigateNotification
 import com.devndev.lamp.presentation.ui.notification.navigation.notificationNavGraph
 import com.devndev.lamp.presentation.ui.registration.navigation.registrationNavGraph
@@ -103,7 +104,8 @@ fun MainScreen(modifier: Modifier) {
                 currentRoute != Route.INVITE &&
                 currentRoute != Route.NOTIFICATION &&
                 currentRoute != Route.SIGNUP &&
-                currentRoute != Route.START_LAMP
+                currentRoute != Route.START_LAMP &&
+                currentRoute != Route.PROFILE_EDIT
             ) {
                 LampBottomNavigation(pagerState)
             } else {
@@ -129,6 +131,7 @@ fun MainScreen(modifier: Modifier) {
             notificationNavGraph(padding = innerPadding, navController = navController)
             signUpNavGraph(padding = innerPadding, navController = navController)
             startLampNavGraph(navController = navController)
+            profileEditNavGraph(padding = innerPadding, navController = navController)
         }
     }
 }

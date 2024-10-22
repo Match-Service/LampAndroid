@@ -109,7 +109,8 @@ fun LampButton(
             .fillMaxWidth()
             .height(height.dp)
     } else {
-        Modifier.buttonBackGround(isGradient = isGradient, enabled = enabled)
+        Modifier
+            .buttonBackGround(isGradient = isGradient, enabled = enabled)
             .height(height.dp)
     }
 
@@ -208,6 +209,36 @@ fun CheckButton(size: Int, selected: Boolean, onClick: () -> Unit) {
                 tint = iconColor,
                 modifier = Modifier.align(Alignment.Center)
             )
+        }
+    }
+}
+
+@Composable
+fun CustomRadioButton(radioSize: Int, selected: Boolean, onClick: () -> Unit) {
+    val size = radioSize.dp
+    val borderColor = if (selected) Color.White else Gray
+    val innerColor = if (selected) Color.White else Color.Transparent
+
+    Box(
+        modifier = Modifier
+            .size(size)
+            .background(color = borderColor, shape = CircleShape)
+            .clickable(onClick = onClick)
+    ) {
+        if (selected) {
+            Box(
+                modifier = Modifier
+                    .size(size / 2)
+                    .background(color = innerColor, shape = CircleShape)
+                    .align(Alignment.Center)
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.radio_button_check),
+                    contentDescription = "Check",
+                    tint = Color.Black, // Color of the check icon
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
         }
     }
 }

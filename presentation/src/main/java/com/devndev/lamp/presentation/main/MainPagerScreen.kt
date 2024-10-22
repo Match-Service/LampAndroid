@@ -34,7 +34,7 @@ fun MainPagerScreen(
             }
 
             MainScreenPage.MY_PAGE -> {
-                MyPageScreen(modifier = modifier)
+                MyPageScreen(modifier = modifier, navController = navController)
             }
         }
     }

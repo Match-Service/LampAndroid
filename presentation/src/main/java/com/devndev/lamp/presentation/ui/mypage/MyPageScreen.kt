@@ -48,8 +48,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.home.ProgressBar
+import com.devndev.lamp.presentation.ui.mypage.navigation.navigateProfileEdit
 import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.IncTypography
 import com.devndev.lamp.presentation.ui.theme.LampBlack
@@ -60,7 +63,11 @@ import com.devndev.lamp.presentation.ui.theme.WomanColor
 import kotlin.system.exitProcess
 
 @Composable
-fun MyPageScreen(modifier: Modifier, viewModel: MyPageViewModel = hiltViewModel()) {
+fun MyPageScreen(
+    modifier: Modifier,
+    viewModel: MyPageViewModel = hiltViewModel(),
+    navController: NavController
+) {
     val logTag = "MyPageScreen"
     val context = LocalContext.current
     val handler = remember { Handler(Looper.getMainLooper()) }
@@ -108,7 +115,7 @@ fun MyPageScreen(modifier: Modifier, viewModel: MyPageViewModel = hiltViewModel(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
-            UserInfoSection()
+            UserInfoSection(navController = navController)
             Spacer(modifier = Modifier.height(30.dp))
             Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
                 AttractiveSection(
@@ -125,9 +132,19 @@ fun MyPageScreen(modifier: Modifier, viewModel: MyPageViewModel = hiltViewModel(
 }
 
 @Composable
-fun UserInfoSection() {
+fun UserInfoSection(navController: NavController) {
+    val navOption = navOptions {
+        launchSingleTop = true
+    }
     Row(
-        modifier = Modifier.width(300.dp),
+        modifier = Modifier
+            .width(300.dp)
+            .clickable(
+                indication = null,
+                interactionSource = remember { MutableInteractionSource() }
+            ) {
+                navController.navigateProfileEdit(navOption)
+            },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
