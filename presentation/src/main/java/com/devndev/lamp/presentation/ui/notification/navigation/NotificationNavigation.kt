@@ -1,6 +1,5 @@
 package com.devndev.lamp.presentation.ui.notification.navigation
 
-import android.os.Bundle
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.PaddingValues
@@ -25,12 +24,12 @@ fun NavGraphBuilder.notificationNavGraph(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
     navController: NavController,
-    pagerState: PagerState,
+    pagerState: PagerState
 ) {
     composable(
         "${Route.NOTIFICATION}?isFromMain={isFromMain}",
         arguments = listOf(
-            navArgument("isFromMain") { type = NavType.BoolType },
+            navArgument("isFromMain") { type = NavType.BoolType }
         ),
         enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
         exitTransition = { slideOutHorizontally(targetOffsetX = { it }) }

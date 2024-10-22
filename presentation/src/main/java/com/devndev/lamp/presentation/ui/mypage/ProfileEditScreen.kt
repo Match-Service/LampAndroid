@@ -344,12 +344,8 @@ fun InfoSection(
         }
         AnimatedVisibility(
             visible = isExpanded,
-            enter = slideInVertically(animationSpec = tween(300)) +
-                    expandVertically(expandFrom = Alignment.Top) +
-                    fadeIn(initialAlpha = 0.3f),
-            exit = slideOutVertically(animationSpec = tween(500)) +
-                    shrinkVertically() +
-                    fadeOut()
+            enter = slideInVertically(animationSpec = tween(300)) + expandVertically(expandFrom = Alignment.Top) + fadeIn(initialAlpha = 0.3f),
+            exit = slideOutVertically(animationSpec = tween(500)) + shrinkVertically() + fadeOut()
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
