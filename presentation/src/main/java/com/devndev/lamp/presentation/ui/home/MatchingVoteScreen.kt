@@ -195,8 +195,7 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    /*
-                    Canvas(
+                    /*Canvas(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
@@ -230,8 +229,7 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
                             }
                             canvas.nativeCanvas.drawCircle(center.x, center.y, radius, paint)
                         }
-                    }
-                    */
+                    }*/
 
                     SecondSection(
                         onHeightChange = { height -> secondSectionHeight = height }
