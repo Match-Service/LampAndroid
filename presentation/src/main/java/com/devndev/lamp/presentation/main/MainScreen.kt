@@ -1,6 +1,5 @@
 package com.devndev.lamp.presentation.main
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -129,11 +128,7 @@ fun MainScreen(modifier: Modifier) {
             splashNavGraph(padding = PaddingValues())
             loginNavGraph(padding = PaddingValues(), navController = navController)
             registrationNavGraph(padding = innerPadding, navController = navController)
-            notificationNavGraph(
-                padding = innerPadding,
-                navController = navController,
-                pagerState = pagerState
-            )
+            notificationNavGraph(padding = innerPadding, navController = navController)
             signUpNavGraph(padding = innerPadding, navController = navController)
             startLampNavGraph(navController = navController)
             profileEditNavGraph(padding = innerPadding, navController = navController)
@@ -144,13 +139,11 @@ fun MainScreen(modifier: Modifier) {
 @Composable
 fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean) {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
-    val alarmIcon = if (currentRoute?.startsWith(Route.NOTIFICATION) == true) {
+    val alarmIcon = if (currentRoute == Route.NOTIFICATION) {
         painterResource(id = R.drawable.alarm_icon_on)
     } else {
         painterResource(id = R.drawable.alarm_icon)
     }
-
-    val isFromMain = currentRoute?.startsWith(Route.MAIN) == true
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -163,9 +156,7 @@ fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean) {
             painterResource(id = R.drawable.app_logo),
             contentDescription = "AppLogo",
             tint = LightGray,
-            modifier = Modifier
-                .height(30.dp)
-                .width(72.dp)
+            modifier = Modifier.height(30.dp).width(72.dp)
         )
         if (isAlarmIconNeed) {
             Icon(
@@ -175,8 +166,8 @@ fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean) {
                 modifier = Modifier
                     .size(24.dp)
                     .clickable {
-                        if (currentRoute?.startsWith(Route.NOTIFICATION) == false) {
-                            navController.navigateNotification(isFromMain = isFromMain)
+                        if (currentRoute != Route.NOTIFICATION) {
+                            navController.navigateNotification()
                         } else {
                             navController.popBackStack()
                         }
