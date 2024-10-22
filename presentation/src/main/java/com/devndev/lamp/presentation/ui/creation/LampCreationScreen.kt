@@ -60,7 +60,7 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
         if (currentStep > 1) {
             currentStep--
         } else {
-            navController.popBackStack()
+            navController.navigateMain(MainScreenPage.HOME)
         }
     }
 
@@ -104,7 +104,7 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                         if (currentStep > 1) {
                             currentStep--
                         } else {
-                            navController.popBackStack()
+                            navController.navigateMain(MainScreenPage.HOME)
                         }
                     },
                     painter = painterResource(id = R.drawable.back_arrow),
