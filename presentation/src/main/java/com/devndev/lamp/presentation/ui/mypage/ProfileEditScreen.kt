@@ -5,7 +5,6 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
-import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -72,10 +71,6 @@ fun ProfileEditScreen(
     profileEditViewModel: ProfileEditViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    BackHandler {
-        navController.navigateMain(MainScreenPage.MY_PAGE)
-    }
-
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var imageIndex by remember { mutableIntStateOf(-1) }
@@ -345,11 +340,11 @@ fun InfoSection(
         AnimatedVisibility(
             visible = isExpanded,
             enter = slideInVertically(animationSpec = tween(300)) +
-                    expandVertically(expandFrom = Alignment.Top) +
-                    fadeIn(initialAlpha = 0.3f),
+                expandVertically(expandFrom = Alignment.Top) +
+                fadeIn(initialAlpha = 0.3f),
             exit = slideOutVertically(animationSpec = tween(500)) +
-                    shrinkVertically() +
-                    fadeOut()
+                shrinkVertically() +
+                fadeOut()
         ) {
             Column(
                 modifier = Modifier.fillMaxWidth(),
