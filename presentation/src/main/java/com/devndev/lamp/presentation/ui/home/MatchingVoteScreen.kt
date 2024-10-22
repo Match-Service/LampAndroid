@@ -174,7 +174,6 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
 
             item {
                 Spacer(modifier = Modifier.height(spacerHeight))
-                Log.d("spacerHeight", "$spacerHeight")
             }
 
             // Sticky Header with Mood and Info
@@ -196,6 +195,7 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
+                    /*
                     Canvas(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -230,23 +230,8 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
                             }
                             canvas.nativeCanvas.drawCircle(center.x, center.y, radius, paint)
                         }
-
-//                        val centerOffset = Offset(size.width / 2, (headerSectionHeight + moodInfoSectionHeight + secondSectionHeight + 170f.toDp()).toPx())
-//
-//                        // 검은색 원 그리기
-//                        drawIntoCanvas { canvas ->
-//                            val paint = Paint().asFrameworkPaint().apply {
-//                                isAntiAlias = true
-//                                setShadowLayer(80.dp.toPx(), 0f, 0f, Color(0xFF131313).toArgb()) // 블러 80 적용
-//                            }
-//                            canvas.nativeCanvas.drawCircle(
-//                                centerOffset.x,  // 중심 X
-//                                centerOffset.y,  // 중심 Y
-//                                400.dp.toPx(),          // 반지름
-//                                paint            // Paint 객체로 블러와 색상 설정
-//                            )
-//                        }
                     }
+                    */
 
                     SecondSection(
                         onHeightChange = { height -> secondSectionHeight = height }
