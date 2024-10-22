@@ -5,6 +5,10 @@ import android.content.Context
 import android.graphics.RadialGradient
 import android.media.Image
 import android.util.Log
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
@@ -170,7 +174,6 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
 
             item {
                 Spacer(modifier = Modifier.height(spacerHeight))
-                Log.d("spacerHeight", "$spacerHeight")
             }
 
             // Sticky Header with Mood and Info
@@ -187,9 +190,51 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
 
             // Second Section
             item {
-                SecondSection(
-                    onHeightChange = { height -> secondSectionHeight = height }
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                ) {
+                    /*Canvas(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        val fillColor = Color(0xFF191919)
+                        val shadowColor = Color(0xFF151515)
+                        val shadowRadius = 80.dp.toPx()
+                        val center = Offset(size.width / 2, (headerSectionHeight + moodInfoSectionHeight + secondSectionHeight + 80f.toDp()).toPx())
+                        val radius = 400.dp.toPx()
+                        drawIntoCanvas { canvas ->
+                            val paint = android.graphics.Paint().apply {
+                                isAntiAlias = true
+                                shader = RadialGradient(
+                                    center.x,
+                                    center.y,
+                                    radius,
+                                    intArrayOf(
+                                        shadowColor.toArgb(),
+                                        fillColor.toArgb(),
+                                        android.graphics.Color.TRANSPARENT
+                                    ),
+                                    floatArrayOf(0.3f, 0.6f, 1f), // 색상 위치 (그라데이션 진행도)
+                                    android.graphics.Shader.TileMode.CLAMP // 그라데이션 방식
+                                )
+                                setShadowLayer(
+                                    shadowRadius,
+                                    0f,
+                                    -shadowRadius,
+                                    shadowColor.toArgb()
+                                )
+                                style = android.graphics.Paint.Style.FILL
+                            }
+                            canvas.nativeCanvas.drawCircle(center.x, center.y, radius, paint)
+                        }
+                    }*/
+
+                    SecondSection(
+                        onHeightChange = { height -> secondSectionHeight = height }
+                    )
+                }
             }
 
             // Additional items to create scrollable area
@@ -381,10 +426,12 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
                 }
             }
 
-            // Conditionally show the Row based on the state
-            if (isDropdownExpanded) {
-                Spacer(modifier = Modifier.height(10.dp)) // Space between button and dropdown
-                // The Row that gets shown/hidden
+            // 드롭다운 애니메이션 추가
+            AnimatedVisibility(
+                visible = isDropdownExpanded,
+                enter = expandVertically(animationSpec = tween(durationMillis = 300)),
+                exit = shrinkVertically(animationSpec = tween(durationMillis = 300))
+            ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -392,11 +439,30 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
+                    Spacer(modifier = Modifier.height(10.dp)) // Space between button and dropdown
                     ProgressBar(attractive)
                 }
-            } else {
-                Spacer(modifier = Modifier.height(8.dp)) // Space between button and dropdown
             }
+            if (!isDropdownExpanded) {
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+
+//            // Conditionally show the Row based on the state
+//            if (isDropdownExpanded) {
+//                Spacer(modifier = Modifier.height(10.dp)) // Space between button and dropdown
+//                // The Row that gets shown/hidden
+//                Column(
+//                    modifier = Modifier
+//                        .fillMaxWidth()
+//                        .padding(bottom = 8.dp),
+//                    horizontalAlignment = Alignment.CenterHorizontally,
+//                    verticalArrangement = Arrangement.Center
+//                ) {
+//                    ProgressBar(attractive)
+//                }
+//            } else {
+//                Spacer(modifier = Modifier.height(8.dp)) // Space between button and dropdown
+//            }
         }
     }
 }
@@ -575,6 +641,7 @@ fun MoodInfoSection(onHeightChange: (Dp) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = "1",
             color = Color.White,

@@ -1,6 +1,5 @@
 package com.devndev.lamp.presentation.main
 
-import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
