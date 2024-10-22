@@ -1,6 +1,7 @@
 package com.devndev.lamp.presentation.ui.search
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
@@ -35,9 +36,11 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.domain.model.UserDomainModel
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.CircleProfile
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampTextField
+import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.Typography
 
@@ -47,6 +50,10 @@ fun InviteScreen(
     modifier: Modifier,
     navController: NavController
 ) {
+    BackHandler {
+        navController.navigateMain(MainScreenPage.HOME)
+    }
+
     var searchQuery by remember { mutableStateOf("") }
 
     val selectedItems = remember { mutableStateListOf<UserDomainModel>() }
@@ -83,7 +90,7 @@ fun InviteScreen(
                     contentDescription = "뒤로가기",
                     tint = Color.White,
                     modifier = Modifier.clickable {
-                        navController.popBackStack()
+                        navController.navigateMain(MainScreenPage.HOME)
                     }
                 )
                 Text(

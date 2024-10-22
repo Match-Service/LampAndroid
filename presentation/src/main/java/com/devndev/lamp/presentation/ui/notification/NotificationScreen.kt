@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.notification
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandVertically
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -44,6 +46,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.Gray3
@@ -55,8 +58,17 @@ import com.devndev.lamp.presentation.ui.theme.WomanColor
 @Composable
 fun NotificationScreen(
     modifier: Modifier,
-    navController: NavController
+    navController: NavController,
+    pagerState: PagerState,
+    isFromMain: Boolean
 ) {
+    BackHandler {
+        if (isFromMain) {
+            navController.navigateMain(pagerState.currentPage)
+        } else {
+            navController.popBackStack()
+        }
+    }
     var isInvitationExpanded by remember { mutableStateOf(false) }
     var isVisitExpanded by remember { mutableStateOf(false) }
     Column(
@@ -79,7 +91,11 @@ fun NotificationScreen(
                     contentDescription = "뒤로가기",
                     tint = Color.White,
                     modifier = Modifier.clickable {
-                        navController.popBackStack()
+                        if (isFromMain) {
+                            navController.navigateMain(pagerState.currentPage)
+                        } else {
+                            navController.popBackStack()
+                        }
                     }
                 )
                 Text(
@@ -189,11 +205,11 @@ fun NotificationSection(
         AnimatedVisibility(
             visible = isExpanded,
             enter = slideInVertically(animationSpec = tween(300)) +
-                expandVertically(expandFrom = Alignment.Top) +
-                fadeIn(initialAlpha = 0.3f),
+                    expandVertically(expandFrom = Alignment.Top) +
+                    fadeIn(initialAlpha = 0.3f),
             exit = slideOutVertically(animationSpec = tween(500)) +
-                shrinkVertically() +
-                fadeOut()
+                    shrinkVertically() +
+                    fadeOut()
         ) {
             Column {
                 notifications.forEachIndexed { index, notificationData ->
