@@ -77,7 +77,7 @@ fun LampTextField(
                     Modifier.width(width.dp)
                 }
             )
-            .background(LampBlack, shape = RoundedCornerShape(cornerRadius.dp))
+            .background(Color.Transparent, shape = RoundedCornerShape(cornerRadius.dp))
             .then(
                 if (isGradient) {
                     Modifier.drawBehind {
