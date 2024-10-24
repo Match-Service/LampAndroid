@@ -13,15 +13,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.devndev.lamp.presentation.R
@@ -144,4 +150,67 @@ fun TwoButtonPopup(onStartButtonClick: () -> Unit, onEndButtonClick: () -> Unit)
             }
         }
     }
+}
+
+@Composable
+fun EditPopup(
+    text: String,
+    queryString: String,
+    onXButtonClick: () -> Unit
+) {
+    var query by remember { mutableStateOf(queryString) }
+    Dialog(onDismissRequest = {}) {
+        Column(
+            modifier = Modifier
+                .width(300.dp)
+                .background(Color.Transparent),
+            verticalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .clickable {
+                            onXButtonClick()
+                        },
+                    painter = painterResource(id = R.drawable.x_button_big),
+                    contentDescription = null,
+                    tint = Color.White
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Gray, shape = RoundedCornerShape(15.dp))
+                    .padding(vertical = 40.dp, horizontal = 20.dp),
+                verticalArrangement = Arrangement.spacedBy(17.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = text,
+                    textAlign = TextAlign.Center,
+                    color = Color.White
+                )
+                LampTextField(
+                    width = 270,
+                    isGradient = false,
+                    query = query,
+                    onQueryChange = {
+                        query = it
+                    },
+                    hintText = ""
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun PopupPreview() {
+    EditPopup("출신/재학 중인 학교를\n수정하시겠어요?", "한국대학교", {})
 }

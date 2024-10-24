@@ -59,6 +59,7 @@ import com.canhub.cropper.CropImageOptions
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.CustomRadioButton
+import com.devndev.lamp.presentation.ui.common.EditPopup
 import com.devndev.lamp.presentation.ui.common.LampBigTextField
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.ProfileImage
@@ -93,6 +94,28 @@ fun ProfileEditScreen(
     var selectedExercise by remember { mutableStateOf(context.getString(R.string.exercise_sometimes)) }
     var isExerciseExpanded by remember { mutableStateOf(false) }
 
+    var isShowEditUniversityPopup by remember { mutableStateOf(false) }
+    var isShowEditInstagramPopup by remember { mutableStateOf(false) }
+
+    if (isShowEditUniversityPopup) {
+        EditPopup(
+            text = stringResource(id = R.string.edit_university),
+            queryString = "한국대학교",
+            onXButtonClick = {
+                isShowEditUniversityPopup = false
+            }
+        )
+    }
+
+    if (isShowEditInstagramPopup) {
+        EditPopup(
+            text = stringResource(id = R.string.edit_instagram),
+            queryString = "instagram_ID",
+            onXButtonClick = {
+                isShowEditInstagramPopup = false
+            }
+        )
+    }
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
         if (result.isSuccessful) {
             val uri = result.uriContent
@@ -243,6 +266,9 @@ fun ProfileEditScreen(
                             color = LightGray,
                             shape = RoundedCornerShape(15.dp)
                         )
+                        .clickable {
+                            isShowEditUniversityPopup = true
+                        }
                         .padding(horizontal = 20.dp, vertical = 10.dp)
                 ) {
                     Text(text = "한국대학교", color = Color.White, style = Typography.medium18)
@@ -255,6 +281,9 @@ fun ProfileEditScreen(
                             color = LightGray,
                             shape = RoundedCornerShape(15.dp)
                         )
+                        .clickable {
+                            isShowEditInstagramPopup = true
+                        }
                         .padding(horizontal = 20.dp, vertical = 10.dp)
                 ) {
                     Text(text = "instagram_ID", color = Color.White, style = Typography.medium18)
@@ -344,7 +373,9 @@ fun InfoSection(
         }
         AnimatedVisibility(
             visible = isExpanded,
-            enter = slideInVertically(animationSpec = tween(300)) + expandVertically(expandFrom = Alignment.Top) + fadeIn(initialAlpha = 0.3f),
+            enter = slideInVertically(animationSpec = tween(300)) + expandVertically(expandFrom = Alignment.Top) + fadeIn(
+                initialAlpha = 0.3f
+            ),
             exit = slideOutVertically(animationSpec = tween(500)) + shrinkVertically() + fadeOut()
         ) {
             Column(

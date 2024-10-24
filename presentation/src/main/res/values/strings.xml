@@ -172,4 +172,7 @@
 
     <string name="edit_profile">프로필 수정</string>
     <string name="introduce_profile_hint">자신에 대해 소개해주세요</string>
+
+    <string name="edit_university">"출신/재학 중인 학교를\n수정하시겠어요?</string>
+    <string name="edit_instagram">인스타그램 계정을\n수정하시겠어요?</string>
 </resources>
