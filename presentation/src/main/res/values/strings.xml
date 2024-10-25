@@ -175,4 +175,8 @@
 
     <string name="edit_university">"출신/재학 중인 학교를\n수정하시겠어요?</string>
     <string name="edit_instagram">인스타그램 계정을\n수정하시겠어요?</string>
+
+    <string name="chat_evaluation">, 그날의 만남은 어땠나요?\n매력적인 이성에게 배지를 붙여주고 마음을 전달해보세요</string>
+    <string name="lamp_on">램프 켜짐</string>
+    <string name="chat_created">대화방이 생성되었어요!</string>
 </resources>
