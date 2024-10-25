@@ -6,12 +6,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -34,7 +34,7 @@ fun ChattingScreen(modifier: Modifier) {
     val context = LocalContext.current
     val handler = remember { Handler(Looper.getMainLooper()) }
     var backPressedOnce = remember { false }
-    var isChattingExist = false
+    var isChattingExist = true
     BackHandler {
         Log.d(logTag, "back button clicked")
         if (backPressedOnce) {
@@ -53,41 +53,63 @@ fun ChattingScreen(modifier: Modifier) {
             }, 2000)
         }
     }
-    Box(
+    LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .padding(bottom = 20.dp),
-        contentAlignment = Alignment.TopCenter
+            .padding(horizontal = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (isChattingExist) {
-            // todo chatting이 존재할 경우 화면
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.SpaceBetween,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Spacer(modifier = Modifier.weight(1.5f))
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(25.dp)
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.empty_chatting),
-                        color = ManColor,
-                        style = IncTypography.normal42
-                    )
-                    Text(
-                        text = stringResource(id = R.string.guide_empty_chatting),
-                        color = Color.White,
-                        style = Typography.normal12
-                    )
-                }
-                Spacer(modifier = Modifier.weight(3f))
+        item {
+            if (isChattingExist) {
+                ChatScreen()
+            } else {
+                EmptyChatScreen()
             }
         }
+    }
+}
+
+@Composable
+fun EmptyChatScreen() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.SpaceBetween,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Spacer(modifier = Modifier.weight(1.5f))
+        Column(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(25.dp)
+        ) {
+            Text(
+                text = stringResource(id = R.string.empty_chatting),
+                color = ManColor,
+                style = IncTypography.normal42
+            )
+            Text(
+                text = stringResource(id = R.string.guide_empty_chatting),
+                color = Color.White,
+                style = Typography.normal12
+            )
+        }
+        Spacer(modifier = Modifier.weight(3f))
+    }
+}
+
+@Composable
+fun ChatScreen() {
+    Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
+        Evaluation()
+        Chat()
+        Chat()
+        Chat()
+        Chat()
+        Chat()
+        Chat()
+        Chat()
+        Chat()
     }
 }
