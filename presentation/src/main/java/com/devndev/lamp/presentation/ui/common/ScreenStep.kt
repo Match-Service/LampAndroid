@@ -56,3 +56,10 @@ object MainScreenPage {
     const val CHATTING = 1
     const val MY_PAGE = 2
 }
+
+object InstagramAuth {
+    const val NONE = 0
+    const val BEFORE_AUTH = 1
+    const val AUTH_SUCCESS = 2
+    const val AUTH_FAIL = 3
+}
