@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -27,13 +29,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.Typography
+import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
 fun OneButtonPopup(onDismissRequest: () -> Unit) {
@@ -156,61 +159,95 @@ fun TwoButtonPopup(onStartButtonClick: () -> Unit, onEndButtonClick: () -> Unit)
 fun EditPopup(
     text: String,
     queryString: String,
-    onXButtonClick: () -> Unit
+    onXButtonClick: () -> Unit,
+    onEditButtonClick: (String) -> Unit,
+    instagramAuthStep: Int = InstagramAuth.NONE,
+    onInstagramQueryChange: (Int) -> Unit = {}
 ) {
     var query by remember { mutableStateOf(queryString) }
-    Dialog(onDismissRequest = {}) {
+    Dialog(onDismissRequest = {}, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Column(
             modifier = Modifier
-                .width(300.dp)
-                .background(Color.Transparent),
-            verticalArrangement = Arrangement.spacedBy(6.dp)
+                .fillMaxSize()
+                .padding(vertical = 20.dp, horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(10.dp)
-            ) {
-                Icon(
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .clickable {
-                            onXButtonClick()
-                        },
-                    painter = painterResource(id = R.drawable.x_button_big),
-                    contentDescription = null,
-                    tint = Color.White
-                )
-            }
+            Spacer(modifier = Modifier.weight(0.5f))
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Gray, shape = RoundedCornerShape(15.dp))
-                    .padding(vertical = 40.dp, horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(17.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .width(300.dp)
+                    .background(Color.Transparent),
+                verticalArrangement = Arrangement.spacedBy(6.dp)
             ) {
-                Text(
-                    text = text,
-                    textAlign = TextAlign.Center,
-                    color = Color.White
-                )
-                LampTextField(
-                    width = 270,
-                    isGradient = false,
-                    query = query,
-                    onQueryChange = {
-                        query = it
-                    },
-                    hintText = ""
-                )
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(10.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .clickable {
+                                onXButtonClick()
+                            },
+                        painter = painterResource(id = R.drawable.x_button_big),
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Gray, shape = RoundedCornerShape(15.dp))
+                        .padding(vertical = 40.dp, horizontal = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(17.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        text = text,
+                        textAlign = TextAlign.Center,
+                        color = Color.White
+                    )
+                    LampTextField(
+                        width = 270,
+                        isGradient = false,
+                        query = query,
+                        onQueryChange = {
+                            query = it
+                            if (instagramAuthStep == InstagramAuth.AUTH_SUCCESS) {
+                                onInstagramQueryChange(InstagramAuth.BEFORE_AUTH)
+                            }
+                        },
+                        hintText = ""
+                    )
+                    if (instagramAuthStep == InstagramAuth.AUTH_SUCCESS) {
+                        Text(
+                            text = stringResource(id = R.string.auth_success),
+                            color = Color.White,
+                            style = Typography.normal12
+                        )
+                    } else if (instagramAuthStep == InstagramAuth.AUTH_FAIL) {
+                        Text(
+                            text = stringResource(id = R.string.auth_failure),
+                            color = WomanColor,
+                            style = Typography.normal12
+                        )
+                    }
+                }
             }
+            Spacer(modifier = Modifier.weight(1f))
+            val buttonText =
+                if (instagramAuthStep == InstagramAuth.BEFORE_AUTH || instagramAuthStep == InstagramAuth.AUTH_FAIL) {
+                    stringResource(id = R.string.authentication)
+                } else {
+                    stringResource(id = R.string.edit)
+                }
+            LampButton(
+                isGradient = true,
+                buttonText = buttonText,
+                onClick = { onEditButtonClick(query) },
+                enabled = true
+            )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PopupPreview() {
-    EditPopup("출신/재학 중인 학교를\n수정하시겠어요?", "한국대학교", {})
 }

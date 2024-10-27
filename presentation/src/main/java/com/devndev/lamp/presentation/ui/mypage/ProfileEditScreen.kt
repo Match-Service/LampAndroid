@@ -60,6 +60,7 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.CustomRadioButton
 import com.devndev.lamp.presentation.ui.common.EditPopup
+import com.devndev.lamp.presentation.ui.common.InstagramAuth
 import com.devndev.lamp.presentation.ui.common.LampBigTextField
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.ProfileImage
@@ -97,11 +98,20 @@ fun ProfileEditScreen(
     var isShowEditUniversityPopup by remember { mutableStateOf(false) }
     var isShowEditInstagramPopup by remember { mutableStateOf(false) }
 
+    var university by remember { mutableStateOf("한국대학교") }
+
+    var instagram by remember { mutableStateOf("instagram_ID") }
+    var instagramAuthStep by remember { mutableIntStateOf(InstagramAuth.BEFORE_AUTH) }
+
     if (isShowEditUniversityPopup) {
         EditPopup(
             text = stringResource(id = R.string.edit_university),
-            queryString = "한국대학교",
+            queryString = university,
             onXButtonClick = {
+                isShowEditUniversityPopup = false
+            },
+            onEditButtonClick = {
+                university = it
                 isShowEditUniversityPopup = false
             }
         )
@@ -110,10 +120,27 @@ fun ProfileEditScreen(
     if (isShowEditInstagramPopup) {
         EditPopup(
             text = stringResource(id = R.string.edit_instagram),
-            queryString = "instagram_ID",
+            queryString = instagram,
             onXButtonClick = {
                 isShowEditInstagramPopup = false
-            }
+                instagramAuthStep = InstagramAuth.BEFORE_AUTH
+            },
+            onEditButtonClick = {
+                if (instagramAuthStep == InstagramAuth.BEFORE_AUTH || instagramAuthStep == InstagramAuth.AUTH_FAIL) {
+                    val isAuthSuccess = (0..1).random() == 1 // 추후 인증 절차로 수정
+                    if (isAuthSuccess) {
+                        instagramAuthStep = InstagramAuth.AUTH_SUCCESS
+                    } else {
+                        instagramAuthStep = InstagramAuth.AUTH_FAIL
+                    }
+                } else if (instagramAuthStep == InstagramAuth.AUTH_SUCCESS) {
+                    instagram = it
+                    isShowEditInstagramPopup = false
+                    instagramAuthStep = InstagramAuth.BEFORE_AUTH
+                }
+            },
+            instagramAuthStep = instagramAuthStep,
+            onInstagramQueryChange = { instagramAuthStep = it }
         )
     }
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
@@ -271,7 +298,7 @@ fun ProfileEditScreen(
                         }
                         .padding(horizontal = 20.dp, vertical = 10.dp)
                 ) {
-                    Text(text = "한국대학교", color = Color.White, style = Typography.medium18)
+                    Text(text = university, color = Color.White, style = Typography.medium18)
                 }
                 Box(
                     modifier = Modifier
@@ -286,7 +313,7 @@ fun ProfileEditScreen(
                         }
                         .padding(horizontal = 20.dp, vertical = 10.dp)
                 ) {
-                    Text(text = "instagram_ID", color = Color.White, style = Typography.medium18)
+                    Text(text = instagram, color = Color.White, style = Typography.medium18)
                 }
             }
         }
