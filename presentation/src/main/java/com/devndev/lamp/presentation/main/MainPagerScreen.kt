@@ -8,8 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.ui.chatting.ChattingScreen
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
-import com.devndev.lamp.presentation.ui.home.HomeScreen
 import com.devndev.lamp.presentation.ui.mypage.MyPageScreen
+import com.devndev.lamp.presentation.ui.review.ReviewScreen
 
 @Composable
 fun MainPagerScreen(
@@ -26,7 +26,8 @@ fun MainPagerScreen(
     ) { page ->
         when (page) {
             MainScreenPage.HOME -> {
-                HomeScreen(modifier = modifier, navController = navController)
+//                HomeScreen(modifier = modifier, navController = navController)
+                ReviewScreen(modifier = modifier, navController = navController)
             }
 
             MainScreenPage.CHATTING -> {
