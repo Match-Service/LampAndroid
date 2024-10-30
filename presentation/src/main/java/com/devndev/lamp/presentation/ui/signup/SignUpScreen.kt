@@ -41,6 +41,7 @@ import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.PasswordStatus
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.common.SignUpScreen
+import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.signup.navigation.navigateStartLamp
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.Typography
@@ -106,48 +107,26 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.back_arrow),
-                        contentDescription = "뒤로가기",
-                        tint = Color.White,
-                        modifier = Modifier.clickable {
-                            if (currentStep > 1) {
-                                currentStep--
-                            } else {
-                                navController.popBackStack()
-                            }
-                        }
-                    )
-                    val stepText = when (currentStep) {
-                        SignUpScreen.CONSENT -> stringResource(id = R.string.consent)
-                        else -> {
-                            stringResource(id = R.string.sign_up)
-                        }
-                    }
-                    Text(
-                        text = stepText,
-                        style = Typography.semiBold25,
-                        fontSize = 25.sp,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
+            val stepText = when (currentStep) {
+                SignUpScreen.CONSENT -> stringResource(id = R.string.consent)
+                else -> {
+                    stringResource(id = R.string.sign_up)
                 }
-                Icon(
-                    painter = painterResource(id = R.drawable.x_button_big),
-                    contentDescription = "나가기",
-                    tint = Color.White,
-                    modifier = Modifier.clickable { navController.popBackStack() }
-                )
             }
+            TopNavigationBar(
+                text = stepText,
+                onBackButtonClick = {
+                    if (currentStep > 1) {
+                        currentStep--
+                    } else {
+                        navController.popBackStack()
+                    }
+                },
+                onXButtonClick = {
+                    navController.popBackStack()
+                }
+            )
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

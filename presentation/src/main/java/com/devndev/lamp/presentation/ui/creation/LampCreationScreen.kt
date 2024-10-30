@@ -7,18 +7,15 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,8 +27,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -41,6 +36,7 @@ import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.CreationScreen
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
+import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.home.TempStatus
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
@@ -92,35 +88,21 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                 trackColor = Gray
             )
             Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Icon(
-                    modifier = Modifier.clickable {
-                        if (currentStep > 1) {
-                            currentStep--
-                        } else {
-                            navController.navigateMain(MainScreenPage.HOME)
-                        }
-                    },
-                    painter = painterResource(id = R.drawable.back_arrow),
-                    contentDescription = "뒤로가기",
-                    tint = Color.White
-                )
+            TopNavigationBar(
+                text = "",
+                horizontalPadding = 16,
+                onBackButtonClick = {
+                    if (currentStep > 1) {
+                        currentStep--
+                    } else {
+                        navController.navigateMain(MainScreenPage.HOME)
+                    }
+                },
+                onXButtonClick = {
+                    navController.navigateMain(MainScreenPage.HOME)
+                }
+            )
 
-                Icon(
-                    modifier = Modifier.clickable {
-                        navController.popBackStack()
-                    },
-                    painter = painterResource(id = R.drawable.x_button_big),
-                    contentDescription = "나가기",
-                    tint = Color.White
-                )
-            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
