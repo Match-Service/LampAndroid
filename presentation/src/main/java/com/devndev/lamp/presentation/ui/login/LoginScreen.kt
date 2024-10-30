@@ -106,10 +106,18 @@ fun LoginScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(48.dp),
-                onClick = { navController.navigateSignUp() },
+                onClick = {
+                    val navOption = navOptions {
+                        launchSingleTop = true
+                    }
+                    navController.navigateSignUp(navOption)
+                },
                 colors = buttonColor
             ) {
-                Text(text = stringResource(id = R.string.sign_in_email), style = Typography.medium18)
+                Text(
+                    text = stringResource(id = R.string.sign_in_email),
+                    style = Typography.medium18
+                )
             }
             Spacer(modifier = Modifier.height(10.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
