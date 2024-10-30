@@ -31,8 +31,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.registration.navigation.navigateRegistration
+import com.devndev.lamp.presentation.ui.login.navigation.navigateEmailLogin
 import com.devndev.lamp.presentation.ui.signup.navigation.navigateSignUp
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
@@ -119,7 +120,10 @@ fun LoginScreen(
                 )
                 Text(
                     modifier = Modifier.clickable {
-                        navController.navigateRegistration()
+                        val navOption = navOptions {
+                            launchSingleTop = true
+                        }
+                        navController.navigateEmailLogin(navOption)
                     },
                     text = buildAnnotatedString {
                         append(stringResource(id = R.string.login))
