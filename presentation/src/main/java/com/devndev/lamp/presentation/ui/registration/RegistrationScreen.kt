@@ -13,14 +13,12 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,6 +42,7 @@ import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.RegistrationScreen
+import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
@@ -123,33 +122,18 @@ fun RegistrationScreen(modifier: Modifier, navController: NavController) {
                 trackColor = Gray
             )
             Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Icon(
-                    modifier = Modifier.clickable {
-                        if (currentStep > 1) {
-                            currentStep--
-                        } else {
-                            navController.popBackStack()
-                        }
-                    },
-                    painter = painterResource(id = R.drawable.back_arrow),
-                    contentDescription = "뒤로가기",
-                    tint = Color.White
-                )
-
-                Icon(
-                    modifier = Modifier.clickable {
+            TopNavigationBar(
+                text = "",
+                onBackButtonClick = {
+                    if (currentStep > 1) {
+                        currentStep--
+                    } else {
                         navController.popBackStack()
-                    },
-                    painter = painterResource(id = R.drawable.x_button_big),
-                    contentDescription = "나가기",
-                    tint = Color.White
-                )
-            }
+                    }
+                },
+                onXButtonClick = { navController.popBackStack() }
+            )
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

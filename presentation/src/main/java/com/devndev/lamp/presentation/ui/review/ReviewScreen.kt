@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.ReviewScreen
+import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
@@ -77,39 +78,18 @@ fun ReviewScreen(modifier: Modifier, navController: NavController) {
                 trackColor = Gray
             )
             Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                IconButton(
-                    onClick = {
-                        if (currentStep > 1) {
-                            currentStep--
-                        } else {
-                            navController.popBackStack()
-                        }
-                    },
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.back_arrow),
-                        contentDescription = "뒤로가기",
-                        tint = Color.White
-                    )
-                }
+            TopNavigationBar(
+                text = "",
+                onBackButtonClick = {
+                    if (currentStep > 1) {
+                        currentStep--
+                    } else {
+                        navController.popBackStack()
+                    }
+                },
+                onXButtonClick = { navController.popBackStack() }
+            )
 
-                IconButton(
-                    onClick = { navController.popBackStack() },
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.x_button_big),
-                        contentDescription = "나가기",
-                        tint = Color.White
-                    )
-                }
-            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
