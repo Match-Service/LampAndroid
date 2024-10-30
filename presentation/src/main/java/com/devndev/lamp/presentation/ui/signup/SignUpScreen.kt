@@ -327,7 +327,13 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                             currentStep++
                         }
                     },
-                    enabled = !(currentStep == SignUpScreen.PASSWORD && passwordStatus != PasswordStatus.SUCCESS)
+                    enabled = when (currentStep) {
+                        SignUpScreen.PASSWORD -> passwordStatus == PasswordStatus.SUCCESS
+                        SignUpScreen.CONSENT -> {
+                            isFirstEssentialConsent && isSecondEssentialConsent && isThirdEssentialConsent
+                        }
+                        else -> true
+                    }
                 )
             }
         }
