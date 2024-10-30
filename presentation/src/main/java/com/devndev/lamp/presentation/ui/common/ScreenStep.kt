@@ -63,3 +63,9 @@ object InstagramAuth {
     const val AUTH_SUCCESS = 2
     const val AUTH_FAIL = 3
 }
+
+object EmailLoginStatus {
+    const val NONE = 0
+    const val INVALID_EMAIL = 1
+    const val INVALID_PASSWORD = 2
+}

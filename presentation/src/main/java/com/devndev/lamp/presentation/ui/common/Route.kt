@@ -6,6 +6,7 @@ object Route {
     const val HOME = "home"
     const val CHATTING = "chatting"
     const val LOGIN = "login"
+    const val EMAIL_LOGIN = "email_login"
     const val MYPAGE = "mypage"
     const val SEARCH = "search"
     const val CREATION = "creation"

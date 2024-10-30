@@ -254,7 +254,7 @@ fun RegistrationScreen(modifier: Modifier, navController: NavController) {
 
         Column(
             modifier = Modifier.padding(bottom = 20.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp),
+            verticalArrangement = Arrangement.spacedBy(15.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             if (currentStep == RegistrationScreen.UNIVERSITY || currentStep == RegistrationScreen.INSTAGRAM) {
