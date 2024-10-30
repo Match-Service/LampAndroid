@@ -57,7 +57,6 @@ fun SearchScreen(
             verticalArrangement = Arrangement.spacedBy(18.dp),
             modifier = Modifier.weight(1f)
         ) {
-
             TopNavigationBar(
                 text = stringResource(id = R.string.find_friend),
                 isNeedXButton = false,
