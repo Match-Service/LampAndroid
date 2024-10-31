@@ -1,5 +1,7 @@
 package com.devndev.lamp.presentation.ui.creation
 
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
@@ -17,12 +19,18 @@ fun RegionScreen(selectedOption: String, onSelectOption: (String) -> Unit) {
     ) {
         Spacer(modifier = Modifier.height(30.dp))
 
-        options.forEach { option ->
-            OptionButton(
-                optionText = option,
-                isSelected = selectedOption == option,
-                onSelect = { onSelectOption(option) }
-            )
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            options.forEach { option ->
+                OptionButton(
+                    optionText = option,
+                    isSelected = selectedOption == option,
+                    onSelect = { onSelectOption(option) },
+                    width = 200,
+                    height = 32
+                )
+            }
         }
     }
 }
