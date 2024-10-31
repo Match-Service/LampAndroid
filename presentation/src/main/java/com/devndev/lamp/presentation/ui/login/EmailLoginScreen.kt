@@ -25,12 +25,14 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.EmailLoginStatus
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampTextField
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
+import com.devndev.lamp.presentation.ui.login.navigation.navigateForgotPassword
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
@@ -102,6 +104,10 @@ fun EmailLoginScreen(modifier: Modifier, navController: NavController) {
         ) {
             Text(
                 modifier = Modifier.clickable {
+                    val navOption = navOptions {
+                        launchSingleTop = true
+                    }
+                    navController.navigateForgotPassword(navOption)
                 },
                 text = buildAnnotatedString {
                     append(stringResource(id = R.string.forgot_password))

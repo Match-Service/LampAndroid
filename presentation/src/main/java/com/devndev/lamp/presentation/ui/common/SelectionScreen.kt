@@ -19,6 +19,7 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 @Composable
 fun SelectionScreen(
     text: String,
+    space: Int = 65,
     content: @Composable () -> Unit
 ) {
     val scrollState = rememberScrollState()
@@ -29,7 +30,7 @@ fun SelectionScreen(
             .verticalScroll(scrollState),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(65.dp))
+        Spacer(modifier = Modifier.height(space.dp))
         if (text.isNotEmpty()) {
             Text(
                 text = text,

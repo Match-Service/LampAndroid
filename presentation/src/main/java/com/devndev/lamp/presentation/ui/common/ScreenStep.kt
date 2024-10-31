@@ -69,3 +69,9 @@ object EmailLoginStatus {
     const val INVALID_EMAIL = 1
     const val INVALID_PASSWORD = 2
 }
+
+object ForgotPasswordScreen {
+    const val INFO_INPUT = 0
+    const val AUTH = 1
+    const val CHANGE_PASSWORD = 2
+}

@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.creation
 
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -15,18 +16,28 @@ import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
-fun OptionButton(optionText: String, isSelected: Boolean, onSelect: () -> Unit) {
+fun OptionButton(
+    optionText: String,
+    isSelected: Boolean,
+    onSelect: () -> Unit,
+    width: Int,
+    height: Int
+) {
     Button(
+        modifier = Modifier
+            .width(width.dp)
+            .height(height.dp),
         onClick = onSelect,
         colors = ButtonDefaults.buttonColors(
             containerColor = if (isSelected) Color.White else Gray,
             contentColor = if (isSelected) LampBlack else Color.White
         ),
-        shape = RoundedCornerShape(30.dp),
-        modifier = Modifier
-            .width(200.dp)
-            .padding(bottom = 4.dp)
+        shape = RoundedCornerShape(40.dp)
     ) {
-        Text(text = optionText, style = Typography.medium15)
+        Text(
+            modifier = Modifier.padding(horizontal = 30.dp),
+            text = optionText,
+            style = Typography.medium15
+        )
     }
 }

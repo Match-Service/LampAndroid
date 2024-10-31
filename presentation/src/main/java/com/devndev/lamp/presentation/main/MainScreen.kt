@@ -43,6 +43,7 @@ import com.devndev.lamp.presentation.ui.creation.navigation.creationNavGraph
 import com.devndev.lamp.presentation.ui.login.AuthManager
 import com.devndev.lamp.presentation.ui.login.LoginViewModel
 import com.devndev.lamp.presentation.ui.login.navigation.emailLoginNavGraph
+import com.devndev.lamp.presentation.ui.login.navigation.forgotPasswordNavGraph
 import com.devndev.lamp.presentation.ui.login.navigation.loginNavGraph
 import com.devndev.lamp.presentation.ui.mypage.navigation.profileEditNavGraph
 import com.devndev.lamp.presentation.ui.notification.navigation.navigateNotification
@@ -88,7 +89,11 @@ fun MainScreen(modifier: Modifier) {
                 currentRoute != Route.START_LAMP &&
                 currentRoute != Route.CREATION
             ) {
-                if (currentRoute == Route.SIGNUP || currentRoute == Route.EMAIL_LOGIN) {
+                if (
+                    currentRoute == Route.SIGNUP ||
+                    currentRoute == Route.EMAIL_LOGIN ||
+                    currentRoute == Route.FORGOT_PASSWORD
+                ) {
                     LampTopBar(navController = navController, isAlarmIconNeed = false)
                 } else {
                     LampTopBar(navController = navController, isAlarmIconNeed = true)
@@ -107,7 +112,8 @@ fun MainScreen(modifier: Modifier) {
                 currentRoute != Route.SIGNUP &&
                 currentRoute != Route.START_LAMP &&
                 currentRoute != Route.PROFILE_EDIT &&
-                currentRoute != Route.EMAIL_LOGIN
+                currentRoute != Route.EMAIL_LOGIN &&
+                currentRoute != Route.FORGOT_PASSWORD
             ) {
                 LampBottomNavigation(pagerState)
             } else {
@@ -139,6 +145,7 @@ fun MainScreen(modifier: Modifier) {
             startLampNavGraph(navController = navController)
             profileEditNavGraph(padding = innerPadding, navController = navController)
             emailLoginNavGraph(padding = innerPadding, navController = navController)
+            forgotPasswordNavGraph(padding = innerPadding, navController = navController)
         }
     }
 }
