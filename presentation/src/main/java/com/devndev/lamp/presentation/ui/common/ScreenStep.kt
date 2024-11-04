@@ -18,8 +18,8 @@ object RegistrationScreen {
 }
 
 object ReviewScreen {
-    const val LAMP = 1
-    const val PERSONAL = 2
+    const val LAMP = 0
+    const val PERSONAL = 1
 }
 
 object SignUpScreen {

@@ -45,7 +45,7 @@ import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
 fun ReviewScreen(modifier: Modifier, navController: NavController) {
-    var currentStep by remember { mutableIntStateOf(1) }
+    var currentStep by remember { mutableIntStateOf(0) }
 
     Column(
         modifier = modifier
@@ -120,8 +120,7 @@ fun ReviewScreen(modifier: Modifier, navController: NavController) {
                 ) { step ->
                     when (step) {
                         ReviewScreen.LAMP -> LampReviewScreen()
-                        // 아직 화면 안만듬
-                        // ReviewScreen.PERSONAL -> PersonalReviewScreen()
+                        ReviewScreen.PERSONAL -> PersonalReviewScreen(currentStep)
                     }
                 }
             }
@@ -152,7 +151,13 @@ fun ReviewScreen(modifier: Modifier, navController: NavController) {
                     )
                 }
                 Button(
-                    onClick = {},
+                    onClick = {
+                        if (currentStep == ReviewScreen.LAMP) {
+                            currentStep = ReviewScreen.PERSONAL
+                        } else if (currentStep == ReviewScreen.PERSONAL) {
+                            currentStep++
+                        }
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp)
