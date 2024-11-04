@@ -6,6 +6,7 @@ object Route {
     const val HOME = "home"
     const val CHATTING = "chatting"
     const val LOGIN = "login"
+    const val EMAIL_LOGIN = "email_login"
     const val MYPAGE = "mypage"
     const val SEARCH = "search"
     const val CREATION = "creation"
@@ -16,4 +17,5 @@ object Route {
     const val START_LAMP = "start_lamp"
     const val REVIEW = "review"
     const val PROFILE_EDIT = "profile_edit"
+    const val FORGOT_PASSWORD = "forgot_password"
 }

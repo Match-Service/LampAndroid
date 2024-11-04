@@ -41,13 +41,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.LampBlack
@@ -82,30 +81,17 @@ fun NotificationScreen(
             verticalArrangement = Arrangement.spacedBy(18.dp),
             modifier = Modifier.weight(1f)
         ) {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painterResource(id = R.drawable.back_arrow),
-                    contentDescription = "뒤로가기",
-                    tint = Color.White,
-                    modifier = Modifier.clickable {
-                        if (isFromMain) {
-                            navController.navigateMain(pagerState.currentPage)
-                        } else {
-                            navController.popBackStack()
-                        }
+            TopNavigationBar(
+                text = stringResource(id = R.string.notification),
+                isNeedXButton = false,
+                onBackButtonClick = {
+                    if (isFromMain) {
+                        navController.navigateMain(pagerState.currentPage)
+                    } else {
+                        navController.popBackStack()
                     }
-                )
-                Text(
-                    text = stringResource(id = R.string.notification),
-                    style = Typography.semiBold25,
-                    fontSize = 25.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-            }
+                }
+            )
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -204,7 +190,9 @@ fun NotificationSection(
         }
         AnimatedVisibility(
             visible = isExpanded,
-            enter = slideInVertically(animationSpec = tween(300)) + expandVertically(expandFrom = Alignment.Top) + fadeIn(initialAlpha = 0.3f),
+            enter = slideInVertically(animationSpec = tween(300)) + expandVertically(expandFrom = Alignment.Top) + fadeIn(
+                initialAlpha = 0.3f
+            ),
             exit = slideOutVertically(animationSpec = tween(500)) + shrinkVertically() + fadeOut()
         ) {
             Column {

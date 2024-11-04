@@ -47,9 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.canhub.cropper.CropImage.CancelledResult.uriContent
@@ -64,6 +62,7 @@ import com.devndev.lamp.presentation.ui.common.InstagramAuth
 import com.devndev.lamp.presentation.ui.common.LampBigTextField
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.ProfileImage
+import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.Typography
@@ -180,27 +179,12 @@ fun ProfileEditScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
-            Row(
-                modifier = Modifier.fillMaxSize(),
-                horizontalArrangement = Arrangement.spacedBy(20.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painterResource(id = R.drawable.back_arrow),
-                    contentDescription = "뒤로가기",
-                    tint = Color.White,
-                    modifier = Modifier.clickable {
-                        navController.navigateMain(MainScreenPage.MY_PAGE)
-                    }
-                )
-                Text(
-                    text = stringResource(id = R.string.edit_profile),
-                    style = Typography.semiBold25,
-                    fontSize = 25.sp,
-                    color = Color.White,
-                    textAlign = TextAlign.Center
-                )
-            }
+            TopNavigationBar(
+                text = stringResource(id = R.string.edit_profile),
+                isNeedXButton = false,
+                onBackButtonClick = { navController.navigateMain(MainScreenPage.MY_PAGE) }
+            )
+
             Spacer(modifier = Modifier.height(32.dp))
             Column(
                 modifier = Modifier.width(300.dp),

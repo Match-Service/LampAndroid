@@ -15,12 +15,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,13 +30,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.ReviewScreen
+import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
@@ -77,39 +73,18 @@ fun ReviewScreen(modifier: Modifier, navController: NavController) {
                 trackColor = Gray
             )
             Spacer(modifier = Modifier.height(20.dp))
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                IconButton(
-                    onClick = {
-                        if (currentStep > 1) {
-                            currentStep--
-                        } else {
-                            navController.popBackStack()
-                        }
-                    },
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.back_arrow),
-                        contentDescription = "뒤로가기",
-                        tint = Color.White
-                    )
-                }
+            TopNavigationBar(
+                text = "",
+                onBackButtonClick = {
+                    if (currentStep > 1) {
+                        currentStep--
+                    } else {
+                        navController.popBackStack()
+                    }
+                },
+                onXButtonClick = { navController.popBackStack() }
+            )
 
-                IconButton(
-                    onClick = { navController.popBackStack() },
-                    modifier = Modifier.size(24.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.x_button_big),
-                        contentDescription = "나가기",
-                        tint = Color.White
-                    )
-                }
-            }
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

@@ -10,37 +10,22 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.devndev.lamp.presentation.ui.common.Route
-import com.devndev.lamp.presentation.ui.login.EmailLoginScreen
-import com.devndev.lamp.presentation.ui.login.LoginScreen
+import com.devndev.lamp.presentation.ui.login.ForgotPasswordScreen
 
-fun NavController.navigateLogin(navOptions: NavOptions? = null) {
-    this.navigate(Route.LOGIN, navOptions)
+fun NavController.navigateForgotPassword(navOptions: NavOptions? = null) {
+    this.navigate(Route.FORGOT_PASSWORD, navOptions)
 }
 
-fun NavGraphBuilder.loginNavGraph(
-    padding: PaddingValues,
-    modifier: Modifier = Modifier,
-    navController: NavController
-) {
-    composable(Route.LOGIN) {
-        LoginScreen(navController = navController)
-    }
-}
-
-fun NavController.navigateEmailLogin(navOptions: NavOptions? = null) {
-    this.navigate(Route.EMAIL_LOGIN, navOptions)
-}
-
-fun NavGraphBuilder.emailLoginNavGraph(
+fun NavGraphBuilder.forgotPasswordNavGraph(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
     composable(
-        Route.EMAIL_LOGIN,
+        Route.FORGOT_PASSWORD,
         enterTransition = { slideInVertically(initialOffsetY = { it }) },
         exitTransition = { slideOutVertically(targetOffsetY = { it }) }
     ) {
-        EmailLoginScreen(modifier = modifier.padding(padding), navController = navController)
+        ForgotPasswordScreen(modifier = modifier.padding(padding), navController = navController)
     }
 }

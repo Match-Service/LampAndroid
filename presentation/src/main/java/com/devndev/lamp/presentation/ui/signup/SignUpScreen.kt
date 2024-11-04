@@ -8,18 +8,12 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -29,12 +23,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
@@ -43,9 +33,9 @@ import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.PasswordStatus
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.common.SignUpScreen
+import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.signup.navigation.navigateStartLamp
 import com.devndev.lamp.presentation.ui.theme.LampBlack
-import com.devndev.lamp.presentation.ui.theme.Typography
 import kotlinx.coroutines.delay
 
 private const val INITIAL_TIME = 180
@@ -108,49 +98,25 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
         Column(
             modifier = Modifier.weight(1f)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(20.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painterResource(id = R.drawable.back_arrow),
-                        contentDescription = "뒤로가기",
-                        tint = Color.White,
-                        modifier = Modifier.clickable {
-                            if (currentStep > 1) {
-                                currentStep--
-                            } else {
-                                navController.popBackStack()
-                            }
-                        }
-                    )
-                    val stepText = when (currentStep) {
-                        SignUpScreen.CONSENT -> stringResource(id = R.string.consent)
-                        else -> {
-                            stringResource(id = R.string.sign_up)
-                        }
-                    }
-                    Text(
-                        text = stepText,
-                        style = Typography.semiBold25,
-                        fontSize = 25.sp,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
+            val stepText = when (currentStep) {
+                SignUpScreen.CONSENT -> stringResource(id = R.string.consent)
+                else -> {
+                    stringResource(id = R.string.sign_up)
                 }
-                Icon(
-                    painter = painterResource(id = R.drawable.x_button_big),
-                    contentDescription = "나가기",
-                    tint = Color.White,
-                    modifier = Modifier.clickable { navController.popBackStack() }
-                )
             }
-            Spacer(modifier = Modifier.height(24.dp))
+            TopNavigationBar(
+                text = stepText,
+                onBackButtonClick = {
+                    if (currentStep > 1) {
+                        currentStep--
+                    } else {
+                        navController.popBackStack()
+                    }
+                },
+                onXButtonClick = {
+                    navController.popBackStack()
+                }
+            )
 
             Box(
                 modifier = Modifier
@@ -352,7 +318,13 @@ fun SignUpScreen(modifier: Modifier, navController: NavController) {
                             currentStep++
                         }
                     },
-                    enabled = !(currentStep == SignUpScreen.PASSWORD && passwordStatus != PasswordStatus.SUCCESS)
+                    enabled = when (currentStep) {
+                        SignUpScreen.PASSWORD -> passwordStatus == PasswordStatus.SUCCESS
+                        SignUpScreen.CONSENT -> {
+                            isFirstEssentialConsent && isSecondEssentialConsent && isThirdEssentialConsent
+                        }
+                        else -> true
+                    }
                 )
             }
         }
