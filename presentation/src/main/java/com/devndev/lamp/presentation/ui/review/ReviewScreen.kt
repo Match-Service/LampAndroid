@@ -46,6 +46,7 @@ import com.devndev.lamp.presentation.ui.theme.WomanColor
 @Composable
 fun ReviewScreen(modifier: Modifier, navController: NavController) {
     var currentStep by remember { mutableIntStateOf(0) }
+    var personalStep by remember { mutableIntStateOf(1) }
 
     Column(
         modifier = modifier
@@ -120,7 +121,7 @@ fun ReviewScreen(modifier: Modifier, navController: NavController) {
                 ) { step ->
                     when (step) {
                         ReviewScreen.LAMP -> LampReviewScreen()
-                        ReviewScreen.PERSONAL -> PersonalReviewScreen(currentStep)
+                        ReviewScreen.PERSONAL -> PersonalReviewScreen(personalStep)
                     }
                 }
             }
@@ -155,7 +156,7 @@ fun ReviewScreen(modifier: Modifier, navController: NavController) {
                         if (currentStep == ReviewScreen.LAMP) {
                             currentStep = ReviewScreen.PERSONAL
                         } else if (currentStep == ReviewScreen.PERSONAL) {
-                            currentStep++
+                            personalStep++
                         }
                     },
                     modifier = Modifier
@@ -170,7 +171,11 @@ fun ReviewScreen(modifier: Modifier, navController: NavController) {
                     colors = ButtonDefaults.buttonColors(Color.Transparent)
                 ) {
                     Text(
-                        text = "기록하기",
+                        text = if (currentStep == ReviewScreen.LAMP) {
+                            "기록하기"
+                        } else {
+                            "매력 평가하기"
+                        },
                         style = Typography.medium18
                     )
                 }
