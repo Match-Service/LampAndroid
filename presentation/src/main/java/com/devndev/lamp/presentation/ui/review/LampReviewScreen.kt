@@ -1,5 +1,9 @@
 package com.devndev.lamp.presentation.ui.review
 
+import android.annotation.SuppressLint
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -13,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
@@ -32,16 +37,17 @@ import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.common.SelectionScreen
 import com.devndev.lamp.presentation.ui.theme.Gray
-import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun LampReviewScreen() {
     // 현재 프로그레스 상태를 저장할 상태 변수
@@ -49,30 +55,47 @@ fun LampReviewScreen() {
     val tmpLampName = "이쁜2들"
     val tmpLampDate = "7월 6일"
 
-    SelectionScreen(text = "$tmpLampName ${stringResource(id = R.string.review_name)}") {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
             // circle animation
             BreathingCircleAnimation(progress)
 
-            // 리뷰 slider
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(start = 30.dp, end = 30.dp),
-                verticalArrangement = Arrangement.Bottom,
+                    .padding(horizontal = 30.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                Spacer(modifier = Modifier.height(73.dp))
+                Text(
+                    text = "$tmpLampName ${stringResource(id = R.string.review_name)}",
+                    color = Color.White,
+                    style = Typography.semiBold25,
+                    lineHeight = 33.sp,
+                    textAlign = TextAlign.Center
+                )
+                // 리뷰 slider
                 Spacer(modifier = Modifier.height(7.dp))
                 Text(
                     text = "$tmpLampDate, 즐거웠던 만큼 밝기를 올려주세요",
                     style = Typography.medium12,
                     color = Color.White
                 )
+                Column(
+                    modifier = Modifier.wrapContentSize()
+                ) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
                 ReviewProgressBar(progress) { newValue ->
                     progress = newValue
                 }
+                Spacer(modifier = Modifier.height(73.dp))
             }
         }
     }
@@ -83,7 +106,9 @@ fun LampReviewScreen() {
 fun ReviewProgressBar(progress: Float, onProgressChange: (Float) -> Unit) {
     Column(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
             modifier = Modifier.fillMaxWidth()
@@ -140,19 +165,13 @@ fun ReviewProgressBar(progress: Float, onProgressChange: (Float) -> Unit) {
                 )
             )
         }
-
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 5.dp, end = 5.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "25",
-                color = Gray3,
-                style = Typography.normal12
-            )
             Text(
                 text = when (progress) {
                     25f -> "아쉬웠어요"
@@ -164,20 +183,27 @@ fun ReviewProgressBar(progress: Float, onProgressChange: (Float) -> Unit) {
                 color = Color.White,
                 style = Typography.medium15
             )
-            Text(
-                text = "100",
-                color = Gray3,
-                style = Typography.normal12
-            )
         }
     }
 }
 
-/***
- * 매칭 중일때 숨쉬는 듯한 화면 구현
- */
 @Composable
 fun BreathingCircleAnimation(progress: Float) {
+    val animatedBlur by animateFloatAsState(
+        targetValue = when {
+            progress == 25f -> 50f
+            progress == 100f -> 300f
+            else -> {
+                50f + (progress - 25f) * (300f - 50f) / (100f - 25f)
+            }
+        },
+        animationSpec = tween(
+            durationMillis = 300,
+            delayMillis = 0,
+            easing = LinearEasing
+        )
+    )
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -189,15 +215,8 @@ fun BreathingCircleAnimation(progress: Float) {
                 .background(Color.Transparent)
                 .align(Alignment.Center)
         ) {
-            val blur = when {
-                progress == 25f -> 50f
-                progress == 100f -> 300f
-                else -> {
-                    50f + (progress - 25f) * (300f - 50f) / (100f - 25f)
-                }
-            }
             drawBreathingCircle(
-                blur = blur,
+                blur = animatedBlur,
                 alpha = 1f,
                 center = center
             )

@@ -39,7 +39,6 @@ import androidx.compose.ui.zIndex
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
 import com.devndev.lamp.presentation.ui.theme.Gray
-import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
@@ -56,7 +55,7 @@ fun PersonalReviewScreen(step: Int) {
         listOf("Profile4", 25, "한국대학교")
     )
 
-    if (step < tmpProfile.size) {
+    if (step <= tmpProfile.size) {
         Log.d("1", step.toString())
         SelectionScreen(text = "${tmpProfile[step - 1][0]}${stringResource(id = R.string.personal_review_title)}") {
             Box(
@@ -207,16 +206,10 @@ fun PersonalReviewProgressBar(title: String, isBorder: Boolean, progress: Float,
 
         Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 5.dp, end = 5.dp),
+                .fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = "25",
-                color = Gray3,
-                style = Typography.normal12
-            )
             Text(
                 text = when (progress) {
                     25f -> "아쉬웠어요"
@@ -227,11 +220,6 @@ fun PersonalReviewProgressBar(title: String, isBorder: Boolean, progress: Float,
                 },
                 color = Color.White,
                 style = Typography.medium15
-            )
-            Text(
-                text = "100",
-                color = Gray3,
-                style = Typography.normal12
             )
         }
         Spacer(modifier = Modifier.height(25.dp))

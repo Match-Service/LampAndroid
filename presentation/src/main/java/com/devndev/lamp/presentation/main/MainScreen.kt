@@ -49,6 +49,7 @@ import com.devndev.lamp.presentation.ui.mypage.navigation.profileEditNavGraph
 import com.devndev.lamp.presentation.ui.notification.navigation.navigateNotification
 import com.devndev.lamp.presentation.ui.notification.navigation.notificationNavGraph
 import com.devndev.lamp.presentation.ui.registration.navigation.registrationNavGraph
+import com.devndev.lamp.presentation.ui.review.navigation.reviewNavGraph
 import com.devndev.lamp.presentation.ui.search.navigation.inviteNavGraph
 import com.devndev.lamp.presentation.ui.search.navigation.searchNavGraph
 import com.devndev.lamp.presentation.ui.signup.navigation.signUpNavGraph
@@ -146,6 +147,7 @@ fun MainScreen(modifier: Modifier) {
             profileEditNavGraph(padding = innerPadding, navController = navController)
             emailLoginNavGraph(padding = innerPadding, navController = navController)
             forgotPasswordNavGraph(padding = innerPadding, navController = navController)
+            reviewNavGraph(padding = innerPadding, navController = navController)
         }
     }
 }
