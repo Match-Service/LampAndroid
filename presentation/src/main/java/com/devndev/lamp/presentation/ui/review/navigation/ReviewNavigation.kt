@@ -19,7 +19,9 @@ fun NavGraphBuilder.reviewNavGraph(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-    composable(Route.REVIEW) {
+    composable(
+        Route.REVIEW
+    ) {
         ReviewScreen(modifier = modifier.padding(padding), navController = navController)
     }
 }

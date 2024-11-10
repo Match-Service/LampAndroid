@@ -17,7 +17,7 @@ import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButtonWithIcon
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
-import com.devndev.lamp.presentation.ui.search.navigation.navigateSearch
+import com.devndev.lamp.presentation.ui.review.navigation.navigateReview
 
 @Composable
 fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
@@ -68,12 +68,14 @@ fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
                 buttonText = stringResource(id = R.string.find_friend),
                 guideButtonText = stringResource(id = R.string.guide_find_friend),
                 onClick = {
-                    navController.navigateSearch(navOption)
+//                    navController.navigateSearch(navOption)
+                    navController.navigateReview(navOption)
                 },
                 icon = painterResource(id = R.drawable.arrow),
                 enabled = true,
                 onIconClick = {
-                    navController.navigateSearch(navOption)
+//                    navController.navigateSearch(navOption)
+                    navController.navigateReview(navOption)
                 }
             )
         }

@@ -30,10 +30,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.devndev.lamp.presentation.main.navigation.navigateMain
+import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.ReviewScreen
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.theme.Gray
@@ -44,9 +44,20 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
-fun ReviewScreen(modifier: Modifier, navController: NavController) {
+fun ReviewScreen(
+    modifier: Modifier,
+    navController: NavController
+) {
     var currentStep by remember { mutableIntStateOf(0) }
     var personalStep by remember { mutableIntStateOf(1) }
+    val tmpProfile = listOf(
+        listOf("닉네임입니다", 28, "한국대학교"),
+        listOf("Profile2", 27, "한국대학교"),
+        listOf("Profile3", 26, "한국대학교"),
+        listOf("Profile4", 25, "한국대학교")
+    )
+    val tmpProfileSize = tmpProfile.size
+    val indicatorSize = 1f / (tmpProfileSize + 1)
 
     Column(
         modifier = modifier
@@ -62,8 +73,16 @@ fun ReviewScreen(modifier: Modifier, navController: NavController) {
             LinearProgressIndicator(
                 progress = {
                     when (currentStep) {
-                        ReviewScreen.LAMP -> 0.333f
-                        ReviewScreen.PERSONAL -> 0.666f
+                        ReviewScreen.LAMP -> indicatorSize
+                        ReviewScreen.PERSONAL -> {
+                            when (personalStep) {
+                                1 -> indicatorSize * 2f
+                                2 -> indicatorSize * 3f
+                                3 -> indicatorSize * 4f
+                                4 -> indicatorSize * 5f
+                                else -> 1f
+                            }
+                        }
                         else -> 1f
                     }
                 },
@@ -138,7 +157,17 @@ fun ReviewScreen(modifier: Modifier, navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Button(
-                    onClick = {},
+                    onClick = {
+                        if (currentStep == ReviewScreen.LAMP) {
+                            currentStep = ReviewScreen.PERSONAL
+                        } else if (currentStep == ReviewScreen.PERSONAL) {
+                            if (personalStep == tmpProfileSize) {
+                                navController.navigateMain(MainScreenPage.HOME)
+                            } else {
+                                personalStep++
+                            }
+                        }
+                    },
                     modifier = Modifier
                         .weight(1f)
                         .height(48.dp)
@@ -156,7 +185,11 @@ fun ReviewScreen(modifier: Modifier, navController: NavController) {
                         if (currentStep == ReviewScreen.LAMP) {
                             currentStep = ReviewScreen.PERSONAL
                         } else if (currentStep == ReviewScreen.PERSONAL) {
-                            personalStep++
+                            if (personalStep == tmpProfileSize) {
+                                navController.navigateMain(MainScreenPage.HOME)
+                            } else {
+                                personalStep++
+                            }
                         }
                     },
                     modifier = Modifier
@@ -179,21 +212,7 @@ fun ReviewScreen(modifier: Modifier, navController: NavController) {
                         style = Typography.medium18
                     )
                 }
-
-//                LampButton(
-//                    isGradient = true,
-//                    buttonText = "",
-//                    onClick = {
-//                    },
-//                    enabled = false
-//                )
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun A() {
-    ReviewScreen(modifier = Modifier, navController = rememberNavController())
 }
