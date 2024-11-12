@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.review
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.slideInHorizontally
@@ -50,6 +51,17 @@ fun ReviewScreen(
 ) {
     var currentStep by remember { mutableIntStateOf(0) }
     var personalStep by remember { mutableIntStateOf(1) }
+    BackHandler {
+        if (currentStep == 0) {
+            navController.popBackStack()
+        } else {
+            if (personalStep == 1) {
+                currentStep--
+            } else {
+                personalStep--
+            }
+        }
+    }
     val tmpProfile = listOf(
         listOf("닉네임입니다", 28, "한국대학교"),
         listOf("Profile2", 27, "한국대학교"),
@@ -96,10 +108,14 @@ fun ReviewScreen(
             TopNavigationBar(
                 text = "",
                 onBackButtonClick = {
-                    if (currentStep > 1) {
-                        currentStep--
-                    } else {
+                    if (currentStep == 0) {
                         navController.popBackStack()
+                    } else {
+                        if (personalStep == 1) {
+                            currentStep--
+                        } else {
+                            personalStep--
+                        }
                     }
                 },
                 onXButtonClick = { navController.popBackStack() }
