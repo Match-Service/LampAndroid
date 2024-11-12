@@ -1,16 +1,17 @@
 package com.devndev.lamp.presentation.ui.review
 
-import android.util.Log
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -34,6 +35,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.devndev.lamp.presentation.R
@@ -56,7 +58,6 @@ fun PersonalReviewScreen(step: Int) {
     )
 
     if (step <= tmpProfile.size) {
-        Log.d("1", step.toString())
         SelectionScreen(text = "${tmpProfile[step - 1][0]}${stringResource(id = R.string.personal_review_title)}") {
             Box(
                 modifier = Modifier.fillMaxSize()
@@ -148,10 +149,36 @@ fun PersonalReviewProgressBar(title: String, isBorder: Boolean, progress: Float,
             color = Color.White,
             textAlign = TextAlign.Center
         )
-        Box(
+        BoxWithConstraints(
             modifier = Modifier.fillMaxWidth()
         ) {
-            // Draw dividers
+            // 슬라이더
+            Slider(
+                value = progress,
+                onValueChange = { newValue ->
+                    onProgressChange(
+                        when {
+                            newValue < 38 -> 25f
+                            newValue < 63 -> 50f
+                            newValue < 88 -> 75f
+                            else -> 100f
+                        }
+                    )
+                },
+                valueRange = 25f..100f,
+                steps = 0,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .zIndex(0f),
+                thumb = {},
+                colors = SliderDefaults.colors(
+                    thumbColor = Color.White,
+                    activeTrackColor = Color.White,
+                    inactiveTrackColor = Gray
+                )
+            )
+
+            // 구분선 그리기
             Canvas(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -172,35 +199,18 @@ fun PersonalReviewProgressBar(title: String, isBorder: Boolean, progress: Float,
                 }
             }
 
-            // 슬라이더
-            Slider(
-                value = progress,
-                onValueChange = { newValue ->
-                    onProgressChange(
-                        when {
-                            newValue < 38 -> 25f
-                            newValue < 63 -> 50f
-                            newValue < 88 -> 75f
-                            else -> 100f
-                        }
-                    )
-                },
-                valueRange = 25f..100f,
-                steps = 0,
+            // thumb(하트) 따로 그리기
+            Image(
+                painter = painterResource(id = R.drawable.heart),
+                contentDescription = null,
                 modifier = Modifier
-                    .fillMaxSize(),
-                thumb = {
-                    Image(
-                        painter = painterResource(id = R.drawable.heart),
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp)
-                    )
-                },
-                colors = SliderDefaults.colors(
-                    thumbColor = Color.White,
-                    activeTrackColor = Color.White,
-                    inactiveTrackColor = Gray
-                )
+                    .size(24.dp)
+                    .align(Alignment.CenterStart)
+                    .offset {
+                        val offsetX = ((progress - 25f) / (100f - 25f) * (constraints.maxWidth - 24.dp.toPx())).toInt()
+                        IntOffset(offsetX, 0)
+                    }
+                    .zIndex(3f)
             )
         }
 
