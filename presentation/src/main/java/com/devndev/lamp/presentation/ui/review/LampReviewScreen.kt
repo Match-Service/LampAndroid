@@ -91,11 +91,11 @@ fun LampReviewScreen() {
                     modifier = Modifier.wrapContentSize()
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
+                    ReviewProgressBar(progress) { newValue ->
+                        progress = newValue
+                    }
+                    Spacer(modifier = Modifier.height(73.dp))
                 }
-                ReviewProgressBar(progress) { newValue ->
-                    progress = newValue
-                }
-                Spacer(modifier = Modifier.height(73.dp))
             }
         }
     }
@@ -150,7 +150,7 @@ fun ReviewProgressBar(progress: Float, onProgressChange: (Float) -> Unit) {
                 valueRange = 25f..100f,
                 steps = 0,
                 modifier = Modifier
-                    .fillMaxSize(),
+                    .fillMaxWidth(),
                 thumb = {
                     Image(
                         painter = painterResource(id = R.drawable.heart),
@@ -240,12 +240,6 @@ fun DrawScope.drawBreathingCircle(blur: Float, alpha: Float, center: Offset) {
         }
         canvas.nativeCanvas.drawCircle(center.x, center.y, radius + blur, paint)
     }
-
-    drawCircle(
-        color = WomanColor.copy(alpha = alpha),
-        radius = radius,
-        center = center
-    )
 }
 
 @Preview
