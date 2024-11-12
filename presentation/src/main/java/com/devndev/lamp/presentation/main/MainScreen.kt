@@ -88,7 +88,8 @@ fun MainScreen(modifier: Modifier) {
                 currentRoute != Route.LOGIN &&
                 currentRoute != Route.REGISTRATION &&
                 currentRoute != Route.START_LAMP &&
-                currentRoute != Route.CREATION
+                currentRoute != Route.CREATION &&
+                currentRoute != Route.REVIEW
             ) {
                 if (
                     currentRoute == Route.SIGNUP ||
@@ -114,7 +115,8 @@ fun MainScreen(modifier: Modifier) {
                 currentRoute != Route.START_LAMP &&
                 currentRoute != Route.PROFILE_EDIT &&
                 currentRoute != Route.EMAIL_LOGIN &&
-                currentRoute != Route.FORGOT_PASSWORD
+                currentRoute != Route.FORGOT_PASSWORD &&
+                currentRoute != Route.REVIEW
             ) {
                 LampBottomNavigation(pagerState)
             } else {
