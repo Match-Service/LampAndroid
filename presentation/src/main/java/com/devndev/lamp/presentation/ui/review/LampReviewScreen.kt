@@ -240,12 +240,6 @@ fun DrawScope.drawBreathingCircle(blur: Float, alpha: Float, center: Offset) {
         }
         canvas.nativeCanvas.drawCircle(center.x, center.y, radius + blur, paint)
     }
-
-    drawCircle(
-        color = WomanColor.copy(alpha = alpha),
-        radius = radius,
-        center = center
-    )
 }
 
 @Preview
