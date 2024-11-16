@@ -1,5 +1,13 @@
 package com.devndev.lamp.presentation.ui.review
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.SizeTransform
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +51,7 @@ import com.devndev.lamp.presentation.ui.common.SelectionScreen
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.Typography
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PersonalReviewScreen(step: Int) {
     // 현재 프로그레스 상태를 저장할 상태 변수
@@ -50,6 +59,7 @@ fun PersonalReviewScreen(step: Int) {
     var voiceProgress by remember { mutableStateOf(25f) }
     var fashionProgress by remember { mutableStateOf(25f) }
     var conversationProgress by remember { mutableStateOf(25f) }
+    var previousStep by remember { mutableStateOf(step) }
     val tmpProfile = listOf(
         listOf("닉네임입니다", 28, "한국대학교"),
         listOf("Profile2", 27, "한국대학교"),
@@ -58,54 +68,70 @@ fun PersonalReviewScreen(step: Int) {
     )
 
     if (step <= tmpProfile.size) {
-        SelectionScreen(text = "${tmpProfile[step - 1][0]}${stringResource(id = R.string.personal_review_title)}") {
-            Box(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                // 리뷰 slider
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 30.dp, end = 30.dp),
-                    verticalArrangement = Arrangement.Bottom,
-                    horizontalAlignment = Alignment.CenterHorizontally
+        AnimatedContent(
+            targetState = step,
+            transitionSpec = {
+                if (targetState > previousStep) {
+                    (slideInHorizontally(initialOffsetX = { it }) + fadeIn()).togetherWith(
+                        slideOutHorizontally(targetOffsetX = { -it }) + fadeOut()
+                    )
+                } else {
+                    (slideInHorizontally(initialOffsetX = { -it }) + fadeIn()).togetherWith(
+                        slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
+                    )
+                }.using(SizeTransform(clip = false))
+            }
+        ) { currentStep ->
+            previousStep = currentStep
+            SelectionScreen(text = "${tmpProfile[currentStep - 1][0]}${stringResource(id = R.string.personal_review_title)}") {
+                Box(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Spacer(modifier = Modifier.height(7.dp))
-                    Text(
-                        text = "${tmpProfile[step - 1][0]}${stringResource(id = R.string.personal_review_subtitle)}",
-                        style = Typography.medium12,
-                        color = Color.White
-                    )
-                    Spacer(modifier = Modifier.height(40.dp))
-                    Image(
-                        painter = painterResource(id = R.drawable.testimage),
-                        contentDescription = "testimage",
-                        contentScale = ContentScale.Crop,
+                    // 리뷰 slider
+                    Column(
                         modifier = Modifier
-                            .size(150.dp)
-                            .clip(RoundedCornerShape(4.dp))
-                    )
-                    Spacer(modifier = Modifier.height(5.dp))
-                    Text(
-                        text = "${tmpProfile[step - 1][1]}${stringResource(id = R.string.age)}, ${tmpProfile[step - 1][2]}",
-                        style = Typography.medium15,
-                        color = Color.White
-                    )
-                    Spacer(modifier = Modifier.height(25.dp))
+                            .fillMaxSize()
+                            .padding(start = 30.dp, end = 30.dp),
+                        verticalArrangement = Arrangement.Bottom,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(7.dp))
+                        Text(
+                            text = "${tmpProfile[currentStep - 1][0]}${stringResource(id = R.string.personal_review_subtitle)}",
+                            style = Typography.medium12,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.height(40.dp))
+                        Image(
+                            painter = painterResource(id = R.drawable.testimage),
+                            contentDescription = "testimage",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(150.dp)
+                                .clip(RoundedCornerShape(4.dp))
+                        )
+                        Spacer(modifier = Modifier.height(5.dp))
+                        Text(
+                            text = "${tmpProfile[currentStep - 1][1]}${stringResource(id = R.string.age)}, ${tmpProfile[currentStep - 1][2]}",
+                            style = Typography.medium15,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.height(25.dp))
 
-                    PersonalReviewProgressBar("성격은 어땠나요?", true, personalityProgress) { newValue ->
-                        personalityProgress = newValue
+                        PersonalReviewProgressBar("성격은 어땠나요?", true, personalityProgress) { newValue ->
+                            personalityProgress = newValue
+                        }
+                        PersonalReviewProgressBar("목소리는 어땠나요?", true, voiceProgress) { newValue ->
+                            voiceProgress = newValue
+                        }
+                        PersonalReviewProgressBar("패션 센스는 어땠나요?", true, fashionProgress) { newValue ->
+                            fashionProgress = newValue
+                        }
+                        PersonalReviewProgressBar("대화는 어땠나요?", false, conversationProgress) { newValue ->
+                            conversationProgress = newValue
+                        }
+                        Spacer(modifier = Modifier.height(102.dp))
                     }
-                    PersonalReviewProgressBar("목소리는 어땠나요?", true, voiceProgress) { newValue ->
-                        voiceProgress = newValue
-                    }
-                    PersonalReviewProgressBar("패션 센스는 어땠나요?", true, fashionProgress) { newValue ->
-                        fashionProgress = newValue
-                    }
-                    PersonalReviewProgressBar("대화는 어땠나요?", false, conversationProgress) { newValue ->
-                        conversationProgress = newValue
-                    }
-                    Spacer(modifier = Modifier.height(102.dp))
                 }
             }
         }
@@ -207,7 +233,8 @@ fun PersonalReviewProgressBar(title: String, isBorder: Boolean, progress: Float,
                     .size(24.dp)
                     .align(Alignment.CenterStart)
                     .offset {
-                        val offsetX = ((progress - 25f) / (100f - 25f) * (constraints.maxWidth - 24.dp.toPx())).toInt()
+                        val offsetX =
+                            ((progress - 25f) / (100f - 25f) * (constraints.maxWidth - 24.dp.toPx())).toInt()
                         IntOffset(offsetX, 0)
                     }
                     .zIndex(3f)
