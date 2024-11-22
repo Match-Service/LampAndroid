@@ -1,5 +1,7 @@
 package com.devndev.lamp.data.di
 
+import com.devndev.lamp.data.datsource.GoogleTokenDataSource
+import com.devndev.lamp.data.datsource.GoogleTokenDataSourceImpl
 import com.devndev.lamp.data.datsource.ItemDataSource
 import com.devndev.lamp.data.datsource.ItemDataSourceImpl
 import com.devndev.lamp.data.datsource.UserDataSource
@@ -20,4 +22,8 @@ interface DataSourceModule {
     @Singleton
     @Binds
     fun bindUserDataSource(userDataSourceImpl: UserDataSourceImpl): UserDataSource
+
+    @Singleton
+    @Binds
+    fun bindGoogleTokenDataSource(googleTokenDataSourceImpl: GoogleTokenDataSourceImpl): GoogleTokenDataSource
 }

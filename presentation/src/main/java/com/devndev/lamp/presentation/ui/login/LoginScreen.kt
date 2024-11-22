@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.login
 
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -19,6 +20,8 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,7 +36,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.ui.common.AccountStatus
 import com.devndev.lamp.presentation.ui.login.navigation.navigateEmailLogin
+import com.devndev.lamp.presentation.ui.registration.navigation.navigateRegistration
 import com.devndev.lamp.presentation.ui.signup.navigation.navigateSignUp
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
@@ -44,10 +49,23 @@ fun LoginScreen(
     viewModel: LoginViewModel = hiltViewModel(),
     navController: NavController
 ) {
+    val accountStatus by AuthManager.accountStatus
+    val logTag = "LoginScreen"
     val signInLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
         viewModel.signInWithGoogle(result.data)
+        Log.d(logTag, "accountStatus == $accountStatus")
+    }
+
+    LaunchedEffect(accountStatus) {
+        if (accountStatus == AccountStatus.NEW_ACCOUNT) {
+            // 신규 계정이므로 회원가입 화면으로 네비게이션
+            Log.d(logTag, "new account")
+            navController.navigateRegistration()
+        } else if (accountStatus == AccountStatus.SIGNED_IN_ACCOUNT) {
+            Log.d(logTag, "signed in account")
+        }
     }
 
     Column(
