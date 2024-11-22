@@ -4,6 +4,7 @@ import android.content.Context
 import com.devndev.lamp.data.BuildConfig
 import com.devndev.lamp.data.di.qualifier.DefaultRetrofit
 import com.devndev.lamp.data.service.ApiService
+import com.devndev.lamp.data.service.LoginService
 import com.devndev.lamp.data.service.UserService
 import com.devndev.lamp.domain.model.Item
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -59,7 +60,13 @@ internal class NetworkModule {
         @DefaultRetrofit retrofit: Retrofit
     ): UserService = retrofit.create()
 
+    @Singleton
+    @Provides
+    fun provideLoginService(
+        @DefaultRetrofit retrofit: Retrofit
+    ): LoginService = retrofit.create()
+
     companion object {
-        private const val BASE_URL = "http://13.125.174.56:3000/"
+        private const val BASE_URL = "http://43.203.193.10/"
     }
 }

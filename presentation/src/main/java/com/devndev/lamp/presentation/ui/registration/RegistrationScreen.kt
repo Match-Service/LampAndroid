@@ -38,18 +38,26 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.ui.common.AccountStatus
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.RegistrationScreen
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
+import com.devndev.lamp.presentation.ui.login.AuthManager
+import com.devndev.lamp.presentation.ui.login.LoginViewModel
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
-fun RegistrationScreen(modifier: Modifier, navController: NavController) {
+fun RegistrationScreen(
+    loginViewModel: LoginViewModel = hiltViewModel(),
+    modifier: Modifier,
+    navController: NavController
+) {
     val logTag = "RegistrationScreen"
     val context = LocalContext.current
     var currentStep by remember { mutableIntStateOf(1) }
@@ -87,6 +95,8 @@ fun RegistrationScreen(modifier: Modifier, navController: NavController) {
         if (currentStep > 1) {
             currentStep--
         } else {
+            AuthManager.updateAccountStatus(AccountStatus.NONE)
+            loginViewModel.signOut()
             navController.popBackStack()
         }
     }
@@ -128,10 +138,16 @@ fun RegistrationScreen(modifier: Modifier, navController: NavController) {
                     if (currentStep > 1) {
                         currentStep--
                     } else {
+                        AuthManager.updateAccountStatus(AccountStatus.NONE)
+                        loginViewModel.signOut()
                         navController.popBackStack()
                     }
                 },
-                onXButtonClick = { navController.popBackStack() }
+                onXButtonClick = {
+                    AuthManager.updateAccountStatus(AccountStatus.NONE)
+                    loginViewModel.signOut()
+                    navController.popBackStack()
+                }
             )
 
             Box(

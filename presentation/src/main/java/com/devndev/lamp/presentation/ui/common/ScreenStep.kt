@@ -75,3 +75,9 @@ object ForgotPasswordScreen {
     const val AUTH = 1
     const val CHANGE_PASSWORD = 2
 }
+
+object AccountStatus {
+    const val NONE = 0
+    const val NEW_ACCOUNT = 1
+    const val SIGNED_IN_ACCOUNT = 2
+}

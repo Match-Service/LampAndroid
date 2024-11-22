@@ -5,6 +5,9 @@ import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devndev.lamp.domain.model.GoogleTokenParam
+import com.devndev.lamp.domain.usecase.GoogleAuthUseCase
+import com.devndev.lamp.presentation.ui.common.AccountStatus
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
@@ -16,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val googleSignInClient: GoogleSignInClient
+    private val googleSignInClient: GoogleSignInClient,
+    private val googleAuthUseCase: GoogleAuthUseCase
 ) : ViewModel() {
     private val logTag = "LoginViewModel"
 
@@ -29,6 +33,7 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             AuthManager.updateLoadingStatus(true)
             val account = GoogleSignIn.getLastSignedInAccount(context)
+
             AuthManager.updateLoginStatus(account != null)
             AuthManager.updateLoadingStatus(false)
         }
@@ -36,14 +41,43 @@ class LoginViewModel @Inject constructor(
     }
 
     fun signInWithGoogle(intentData: Intent?) {
+        Log.d(logTag, "signInWithGoogle")
         val task = GoogleSignIn.getSignedInAccountFromIntent(intentData)
         try {
             val account = task.getResult(ApiException::class.java)
-            AuthManager.updateLoginStatus(account != null)
-            Log.d(logTag, "signInWithGoogle() isLoggedIn ${AuthManager.isLoggedIn.value}")
+            val idToken = account?.idToken
+            authenticateWithGoogle(idToken.toString())
+            //    AuthManager.updateLoginStatus(account != null)
+            //    Log.d(logTag, "signInWithGoogle() isLoggedIn ${AuthManager.isLoggedIn.value}")
         } catch (e: ApiException) {
             AuthManager.updateLoginStatus(false)
             Log.e(logTag, "signInResult:failed", e)
+        }
+    }
+
+    private fun authenticateWithGoogle(idToken: String) {
+        viewModelScope.launch {
+            try {
+                val googleTokenParam = GoogleTokenParam(idToken = idToken)
+                val tokenResult = googleAuthUseCase(googleTokenParam)
+                Log.d(logTag, "Google Token Result: ${tokenResult.token}")
+                Log.d(logTag, "Signup Token: ${tokenResult.signupToken}")
+                if (tokenResult.token == null && tokenResult.signupToken != null) {
+                    AuthManager.updateAccountStatus(AccountStatus.NEW_ACCOUNT)
+                } else if (tokenResult.token != null && tokenResult.signupToken == null) {
+                    AuthManager.updateAccountStatus(AccountStatus.SIGNED_IN_ACCOUNT)
+                }
+            } catch (e: Exception) {
+                Log.d(logTag, e.message.toString())
+            }
+        }
+    }
+
+    fun signOut() {
+        Log.d(logTag, "signOut()")
+        googleSignInClient.signOut().addOnCompleteListener {
+            AuthManager.updateLoginStatus(false)
+            Log.d(logTag, "signOut() isLoggedIn ${AuthManager.isLoggedIn.value}")
         }
     }
 
