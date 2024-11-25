@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface UserService {
-    @GET("api/v1/users")
+    @GET("api/v1/user/find")
     suspend fun searchUser(
         @Query("name") name: String
     ): List<UserResponseDto>
