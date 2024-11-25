@@ -6,7 +6,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.GoogleTokenParam
+import com.devndev.lamp.domain.usecase.CheckIsNeedSignOutUseCase
 import com.devndev.lamp.domain.usecase.GoogleAuthUseCase
+import com.devndev.lamp.domain.usecase.SaveIsNeedSignOutUseCase
 import com.devndev.lamp.presentation.ui.common.AccountStatus
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -20,7 +22,9 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val googleSignInClient: GoogleSignInClient,
-    private val googleAuthUseCase: GoogleAuthUseCase
+    private val googleAuthUseCase: GoogleAuthUseCase,
+    private val checkIsNeedSignOutUseCase: CheckIsNeedSignOutUseCase,
+    private val saveIsNeedSignOutUseCase: SaveIsNeedSignOutUseCase
 ) : ViewModel() {
     private val logTag = "LoginViewModel"
 
@@ -31,11 +35,19 @@ class LoginViewModel @Inject constructor(
 
     fun checkLoginStatus() {
         viewModelScope.launch {
-            AuthManager.updateLoadingStatus(true)
-            val account = GoogleSignIn.getLastSignedInAccount(context)
+            if (checkIsNeedSignOutUseCase()) {
+                signOut()
+                saveIsNeedSignOutUseCase(false)
+                AuthManager.updateLoadingStatus(true)
+                AuthManager.updateLoginStatus(false)
+                AuthManager.updateLoadingStatus(false)
+            } else {
+                AuthManager.updateLoadingStatus(true)
+                val account = GoogleSignIn.getLastSignedInAccount(context)
 
-            AuthManager.updateLoginStatus(account != null)
-            AuthManager.updateLoadingStatus(false)
+                AuthManager.updateLoginStatus(account != null)
+                AuthManager.updateLoadingStatus(false)
+            }
         }
         Log.d(logTag, "checkLoginStatus() status: ${AuthManager.isLoggedIn.value}")
     }

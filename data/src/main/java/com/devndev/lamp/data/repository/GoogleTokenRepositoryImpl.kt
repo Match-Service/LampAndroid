@@ -1,6 +1,7 @@
 package com.devndev.lamp.data.repository
 
 import com.devndev.lamp.data.datsource.GoogleTokenDataSource
+import com.devndev.lamp.data.datsource.LocalDataSource
 import com.devndev.lamp.data.dto.request.GoogleTokenRequest
 import com.devndev.lamp.data.dto.response.GoogleTokenResponse
 import com.devndev.lamp.data.dto.response.toDomainModel
@@ -10,7 +11,8 @@ import com.devndev.lamp.domain.repository.GoogleTokenRepository
 import javax.inject.Inject
 
 class GoogleTokenRepositoryImpl @Inject constructor(
-    private val googleTokenDataSource: GoogleTokenDataSource
+    private val googleTokenDataSource: GoogleTokenDataSource,
+    private val localDataSource: LocalDataSource
 ) : GoogleTokenRepository {
     override suspend fun getGoogleAuth(googleTokenParam: GoogleTokenParam): GoogleTokenDomainModel {
         // GoogleTokenRequest로 변환
@@ -20,5 +22,13 @@ class GoogleTokenRepositoryImpl @Inject constructor(
         val googleTokenResponse: GoogleTokenResponse = googleTokenDataSource.getGoogleAuth(googleTokenRequest)
 
         return googleTokenResponse.toDomainModel()
+    }
+
+    override fun getIsNeedSignOut(): Boolean {
+        return localDataSource.getIsNeedSignOut()
+    }
+
+    override fun saveIsNeedSignOut(isNeedSignOut: Boolean) {
+        localDataSource.saveIsNeedSignOut(isNeedSignOut)
     }
 }

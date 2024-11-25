@@ -91,13 +91,15 @@ fun RegistrationScreen(
         return regex.matches(name)
     }
 
+    registrationViewModel.saveIsNeedSignOut(true)
+
     BackHandler(enabled = true) {
         if (currentStep > 1) {
             registrationViewModel.updateCurrentStep(currentStep - 1)
-//            currentStep--
         } else {
             AuthManager.updateAccountStatus(AccountStatus.NONE)
             loginViewModel.signOut()
+            registrationViewModel.saveIsNeedSignOut(false)
             navController.popBackStack()
         }
     }
@@ -141,12 +143,14 @@ fun RegistrationScreen(
                     } else {
                         AuthManager.updateAccountStatus(AccountStatus.NONE)
                         loginViewModel.signOut()
+                        registrationViewModel.saveIsNeedSignOut(false)
                         navController.popBackStack()
                     }
                 },
                 onXButtonClick = {
                     AuthManager.updateAccountStatus(AccountStatus.NONE)
                     loginViewModel.signOut()
+                    registrationViewModel.saveIsNeedSignOut(false)
                     navController.popBackStack()
                 }
             )
