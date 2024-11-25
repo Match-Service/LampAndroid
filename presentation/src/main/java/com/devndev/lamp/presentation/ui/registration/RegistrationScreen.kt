@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -55,6 +56,7 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 @Composable
 fun RegistrationScreen(
     loginViewModel: LoginViewModel = hiltViewModel(),
+    registrationViewModel: RegistrationViewModel = hiltViewModel(),
     modifier: Modifier,
     navController: NavController
 ) {
@@ -66,7 +68,7 @@ fun RegistrationScreen(
     var university by remember { mutableStateOf("") }
     var selectedGender by remember { mutableStateOf("") }
     var isNameValid by remember { mutableStateOf(true) }
-    var isDuplicateName by remember { mutableStateOf(false) }
+    val isDuplicateName by registrationViewModel.isDuplicateName.collectAsState()
 
     var birthYear by remember { mutableStateOf("2000") }
     var birthMonth by remember { mutableStateOf("1") }
@@ -189,12 +191,12 @@ fun RegistrationScreen(
                             onNameChange = { newName ->
                                 name = newName
                                 isNameValid = isKoreanAndEnglishOnly(newName)
-                                if (isDuplicateName) {
-                                    isDuplicateName = false
+                                if (isDuplicateName!!) {
+                                    registrationViewModel.updateIsDuplicateName(false)
                                 }
                             },
                             isValidName = isNameValid,
-                            isDuplicateName = isDuplicateName
+                            isDuplicateName = isDuplicateName!!
                         )
 
                         RegistrationScreen.UNIVERSITY -> UniversityScreen(
@@ -298,8 +300,9 @@ fun RegistrationScreen(
                     if (currentStep == RegistrationScreen.NAME) {
                         isNameValid = isKoreanAndEnglishOnly(name)
                         if (isNameValid) {
-                            isDuplicateName = (0..1).random() == 1
-                            if (!isDuplicateName) {
+                            registrationViewModel.checkIsDuplicateName(name)
+
+                            if (!isDuplicateName!!) {
                                 currentStep++
                             }
                         }
