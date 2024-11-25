@@ -17,8 +17,16 @@ class RegistrationViewModel @Inject constructor(
 ) : ViewModel() {
     private val logTag = "RegistrationViewModel"
 
+    private val _currentStep = MutableStateFlow(1)
+    val currentStep: StateFlow<Int> = _currentStep
+
+    fun updateCurrentStep(step: Int) {
+        _currentStep.value = step
+        Log.d(logTag, "updateCurrentStep: $currentStep")
+    }
+
     private val _isDuplicateName = MutableStateFlow(false)
-    val isDuplicateName: StateFlow<Boolean?> = _isDuplicateName
+    val isDuplicateName: StateFlow<Boolean> = _isDuplicateName
 
     fun updateIsDuplicateName(isDuplicate: Boolean) {
         _isDuplicateName.value = isDuplicate
@@ -28,9 +36,11 @@ class RegistrationViewModel @Inject constructor(
     fun checkIsDuplicateName(name: String) {
         viewModelScope.launch {
             val response = validateNameUseCase(ValidateNameParam(name))
+            Log.d(logTag, "checkIsDuplicateName code: ${response.code()}")
             if (response.code() == 200) {
                 Log.d(logTag, "checkIsDuplicateName: false")
                 _isDuplicateName.value = false
+                _currentStep.value = currentStep.value + 1
             } else {
                 Log.d(logTag, "checkIsDuplicateName: true")
                 _isDuplicateName.value = true
