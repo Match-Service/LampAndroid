@@ -24,7 +24,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -62,8 +61,7 @@ fun RegistrationScreen(
 ) {
     val logTag = "RegistrationScreen"
     val context = LocalContext.current
-    var currentStep by remember { mutableIntStateOf(1) }
-
+    val currentStep by registrationViewModel.currentStep.collectAsState()
     var name by remember { mutableStateOf("") }
     var university by remember { mutableStateOf("") }
     var selectedGender by remember { mutableStateOf("") }
@@ -95,7 +93,8 @@ fun RegistrationScreen(
 
     BackHandler(enabled = true) {
         if (currentStep > 1) {
-            currentStep--
+            registrationViewModel.updateCurrentStep(currentStep - 1)
+//            currentStep--
         } else {
             AuthManager.updateAccountStatus(AccountStatus.NONE)
             loginViewModel.signOut()
@@ -138,7 +137,7 @@ fun RegistrationScreen(
                 text = "",
                 onBackButtonClick = {
                     if (currentStep > 1) {
-                        currentStep--
+                        registrationViewModel.updateCurrentStep(currentStep - 1)
                     } else {
                         AuthManager.updateAccountStatus(AccountStatus.NONE)
                         loginViewModel.signOut()
@@ -191,12 +190,12 @@ fun RegistrationScreen(
                             onNameChange = { newName ->
                                 name = newName
                                 isNameValid = isKoreanAndEnglishOnly(newName)
-                                if (isDuplicateName!!) {
+                                if (isDuplicateName) {
                                     registrationViewModel.updateIsDuplicateName(false)
                                 }
                             },
                             isValidName = isNameValid,
-                            isDuplicateName = isDuplicateName!!
+                            isDuplicateName = isDuplicateName
                         )
 
                         RegistrationScreen.UNIVERSITY -> UniversityScreen(
@@ -262,7 +261,7 @@ fun RegistrationScreen(
             if (currentStep == RegistrationScreen.UNIVERSITY || currentStep == RegistrationScreen.INSTAGRAM) {
                 Text(
                     modifier = Modifier.clickable {
-                        currentStep++
+                        registrationViewModel.updateCurrentStep(currentStep + 1)
                         university = ""
                     },
                     text = buildAnnotatedString {
@@ -301,23 +300,19 @@ fun RegistrationScreen(
                         isNameValid = isKoreanAndEnglishOnly(name)
                         if (isNameValid) {
                             registrationViewModel.checkIsDuplicateName(name)
-
-                            if (!isDuplicateName!!) {
-                                currentStep++
-                            }
                         }
                     } else if (currentStep == RegistrationScreen.BIRTH) {
                         Log.d(logTag, "$birthYear $birthMonth $birthDay")
-                        currentStep++
+                        registrationViewModel.updateCurrentStep(currentStep + 1)
                     } else if (currentStep == RegistrationScreen.INSTAGRAM) {
                         if (buttonText == context.getString(R.string.authentication)) {
                             isValidInstagramId = (0..1).random() == 1
                             isAuthButtonClicked = true
                         } else {
-                            currentStep++
+                            registrationViewModel.updateCurrentStep(currentStep + 1)
                         }
                     } else {
-                        currentStep++
+                        registrationViewModel.updateCurrentStep(currentStep + 1)
                     }
                 },
                 enabled = when (currentStep) {
