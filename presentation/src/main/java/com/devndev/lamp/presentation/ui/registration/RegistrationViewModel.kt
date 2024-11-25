@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.ValidateNameParam
+import com.devndev.lamp.domain.usecase.CheckIsNeedSignOutUseCase
+import com.devndev.lamp.domain.usecase.SaveIsNeedSignOutUseCase
 import com.devndev.lamp.domain.usecase.ValidateNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +15,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
-    private val validateNameUseCase: ValidateNameUseCase
+    private val validateNameUseCase: ValidateNameUseCase,
+    private val checkIsNeedSignOutUseCase: CheckIsNeedSignOutUseCase,
+    private val saveIsNeedSignOutUseCase: SaveIsNeedSignOutUseCase
 ) : ViewModel() {
     private val logTag = "RegistrationViewModel"
 
@@ -46,5 +50,13 @@ class RegistrationViewModel @Inject constructor(
                 _isDuplicateName.value = true
             }
         }
+    }
+
+    fun checkIsNeedSignOut(): Boolean {
+        return checkIsNeedSignOutUseCase()
+    }
+
+    fun saveIsNeedSignOut(isNeedSignOut: Boolean) {
+        saveIsNeedSignOutUseCase(isNeedSignOut)
     }
 }

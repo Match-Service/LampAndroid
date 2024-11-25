@@ -5,4 +5,6 @@ import com.devndev.lamp.domain.model.GoogleTokenParam
 
 interface GoogleTokenRepository {
     suspend fun getGoogleAuth(googleTokenParam: GoogleTokenParam): GoogleTokenDomainModel
+    fun getIsNeedSignOut(): Boolean
+    fun saveIsNeedSignOut(isNeedSignOut: Boolean)
 }

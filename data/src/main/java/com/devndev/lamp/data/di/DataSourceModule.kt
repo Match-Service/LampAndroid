@@ -4,6 +4,8 @@ import com.devndev.lamp.data.datsource.GoogleTokenDataSource
 import com.devndev.lamp.data.datsource.GoogleTokenDataSourceImpl
 import com.devndev.lamp.data.datsource.ItemDataSource
 import com.devndev.lamp.data.datsource.ItemDataSourceImpl
+import com.devndev.lamp.data.datsource.LocalDataSource
+import com.devndev.lamp.data.datsource.LocalDataSourceImpl
 import com.devndev.lamp.data.datsource.SignUpDataSource
 import com.devndev.lamp.data.datsource.SignUpDataSourceImpl
 import com.devndev.lamp.data.datsource.UserDataSource
@@ -19,7 +21,7 @@ import javax.inject.Singleton
 interface DataSourceModule {
     @Singleton
     @Binds
-    fun bindLocalDataSource(itemDataSourceImpl: ItemDataSourceImpl): ItemDataSource
+    fun bindItemDataSource(itemDataSourceImpl: ItemDataSourceImpl): ItemDataSource
 
     @Singleton
     @Binds
@@ -32,4 +34,8 @@ interface DataSourceModule {
     @Singleton
     @Binds
     fun bindSignUpDataSource(signUpDataSourceImpl: SignUpDataSourceImpl): SignUpDataSource
+
+    @Singleton
+    @Binds
+    fun bindLocalDataSource(dataSourceImpl: LocalDataSourceImpl): LocalDataSource
 }
