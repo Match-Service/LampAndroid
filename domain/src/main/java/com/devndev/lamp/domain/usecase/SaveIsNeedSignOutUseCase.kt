@@ -1,12 +1,12 @@
 package com.devndev.lamp.domain.usecase
 
-import com.devndev.lamp.domain.repository.GoogleTokenRepository
+import com.devndev.lamp.domain.repository.LoginRepository
 import javax.inject.Inject
 
 class SaveIsNeedSignOutUseCase @Inject constructor(
-    private val googleTokenRepository: GoogleTokenRepository
+    private val loginRepository: LoginRepository
 ) {
     operator fun invoke(isNeedSignOut: Boolean) {
-        googleTokenRepository.saveIsNeedSignOut(isNeedSignOut)
+        loginRepository.saveIsNeedSignOut(isNeedSignOut)
     }
 }
