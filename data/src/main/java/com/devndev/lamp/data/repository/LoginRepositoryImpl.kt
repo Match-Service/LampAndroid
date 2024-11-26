@@ -7,13 +7,13 @@ import com.devndev.lamp.data.dto.response.GoogleTokenResponse
 import com.devndev.lamp.data.dto.response.toDomainModel
 import com.devndev.lamp.domain.model.GoogleTokenDomainModel
 import com.devndev.lamp.domain.model.GoogleTokenParam
-import com.devndev.lamp.domain.repository.GoogleTokenRepository
+import com.devndev.lamp.domain.repository.LoginRepository
 import javax.inject.Inject
 
-class GoogleTokenRepositoryImpl @Inject constructor(
+class LoginRepositoryImpl @Inject constructor(
     private val googleTokenDataSource: GoogleTokenDataSource,
     private val localDataSource: LocalDataSource
-) : GoogleTokenRepository {
+) : LoginRepository {
     override suspend fun getGoogleAuth(googleTokenParam: GoogleTokenParam): GoogleTokenDomainModel {
         // GoogleTokenRequest로 변환
         val googleTokenRequest = GoogleTokenRequest(idToken = googleTokenParam.idToken)
