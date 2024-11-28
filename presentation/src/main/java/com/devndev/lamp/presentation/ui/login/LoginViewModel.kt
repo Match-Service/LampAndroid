@@ -80,7 +80,7 @@ class LoginViewModel @Inject constructor(
                     AuthManager.updateAccountStatus(AccountStatus.SIGNED_IN_ACCOUNT)
                 }
             } catch (e: Exception) {
-                Log.d(logTag, e.message.toString())
+                Log.e(logTag, "authenticateWithGoogle", e)
             }
         }
     }

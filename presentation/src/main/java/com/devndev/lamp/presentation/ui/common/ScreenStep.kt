@@ -81,3 +81,9 @@ object AccountStatus {
     const val NEW_ACCOUNT = 1
     const val SIGNED_IN_ACCOUNT = 2
 }
+
+object InstagramStep {
+    const val NONE = 0
+    const val VALID = 1
+    const val INVALID = 2
+}

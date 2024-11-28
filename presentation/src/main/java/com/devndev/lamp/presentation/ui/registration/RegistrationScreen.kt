@@ -42,6 +42,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.AccountStatus
+import com.devndev.lamp.presentation.ui.common.InstagramStep
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.RegistrationScreen
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
@@ -77,7 +78,8 @@ fun RegistrationScreen(
     var selectedExercise by remember { mutableStateOf("") }
 
     var instagramId by remember { mutableStateOf("") }
-    var isValidInstagramId by remember { mutableStateOf(false) }
+
+    val instagramStep by registrationViewModel.instagramStep.collectAsState()
     var isAuthButtonClicked by remember { mutableStateOf(false) }
 
     var bitmaps by remember { mutableStateOf(List(6) { null as Bitmap? }) }
@@ -238,9 +240,9 @@ fun RegistrationScreen(
                             onInstagramIDChange = {
                                 instagramId = it
                                 isAuthButtonClicked = false
-                                isValidInstagramId = false
+                                registrationViewModel.updateInstagramStep(InstagramStep.NONE)
                             },
-                            isValid = isValidInstagramId,
+                            step = instagramStep,
                             isAuthButtonClicked = isAuthButtonClicked
                         )
 
@@ -281,7 +283,7 @@ fun RegistrationScreen(
                 )
             }
             val buttonText = if (currentStep == RegistrationScreen.INSTAGRAM) {
-                if (isValidInstagramId) {
+                if (instagramStep == InstagramStep.VALID) {
                     stringResource(id = R.string.next)
                 } else {
                     stringResource(id = R.string.authentication)
@@ -310,7 +312,7 @@ fun RegistrationScreen(
                         registrationViewModel.updateCurrentStep(currentStep + 1)
                     } else if (currentStep == RegistrationScreen.INSTAGRAM) {
                         if (buttonText == context.getString(R.string.authentication)) {
-                            isValidInstagramId = (0..1).random() == 1
+                            registrationViewModel.checkIsValidInstagramId(instagramId)
                             isAuthButtonClicked = true
                         } else {
                             registrationViewModel.updateCurrentStep(currentStep + 1)
