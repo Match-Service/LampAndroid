@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.ui.common.InstagramStep
 import com.devndev.lamp.presentation.ui.common.LampTextField
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
 import com.devndev.lamp.presentation.ui.theme.Typography
@@ -27,7 +28,7 @@ import com.devndev.lamp.presentation.ui.theme.WomanColor
 fun InstagramScreen(
     instagramID: String,
     onInstagramIDChange: (String) -> Unit,
-    isValid: Boolean,
+    step: Int,
     isAuthButtonClicked: Boolean
 ) {
     SelectionScreen(text = stringResource(id = R.string.input_insta)) {
@@ -40,7 +41,7 @@ fun InstagramScreen(
         ) {
             LampTextField(
                 width = 300,
-                isGradient = !isValid && isAuthButtonClicked,
+                isGradient = step == InstagramStep.INVALID && isAuthButtonClicked,
                 query = idQuery,
                 onQueryChange = {
                     idQuery = it
@@ -49,12 +50,12 @@ fun InstagramScreen(
                 hintText = stringResource(id = R.string.guide_insta)
             )
 
-            var guideText: String
+            var guideText: String = ""
             var guideTextColor = Color.White
             if (isAuthButtonClicked) {
-                if (isValid) {
+                if (step == InstagramStep.VALID) {
                     guideText = stringResource(id = R.string.auth_success)
-                } else {
+                } else if (step == InstagramStep.INVALID) {
                     guideText = stringResource(id = R.string.auth_failure)
                     guideTextColor = WomanColor
                 }

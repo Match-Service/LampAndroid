@@ -1,5 +1,6 @@
 package com.devndev.lamp.data.datsource
 
+import com.devndev.lamp.data.dto.request.ValidateInstagramRequest
 import com.devndev.lamp.data.dto.request.ValidateNameRequest
 import com.devndev.lamp.data.service.SignUpService
 import retrofit2.Response
@@ -10,5 +11,9 @@ class SignUpDataSourceImpl @Inject constructor(
 ) : SignUpDataSource {
     override suspend fun validateName(validateNameRequest: ValidateNameRequest): Response<Void> {
         return signUpService.validateName(validateNameRequest)
+    }
+
+    override suspend fun validateInstagram(validateInstagramRequest: ValidateInstagramRequest): Response<Void> {
+        return signUpService.validateInstagram(validateInstagramRequest)
     }
 }

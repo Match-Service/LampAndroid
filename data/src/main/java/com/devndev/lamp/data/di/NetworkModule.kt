@@ -74,6 +74,6 @@ internal class NetworkModule {
     ): SignUpService = retrofit.create()
 
     companion object {
-        private const val BASE_URL = "http://43.203.193.10/"
+        private const val BASE_URL = "https://dev-api.lamp-app.shop/"
     }
 }
