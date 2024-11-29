@@ -3,6 +3,7 @@ package com.devndev.lamp.data.datsource
 import com.devndev.lamp.data.dto.request.ValidateInstagramRequest
 import com.devndev.lamp.data.dto.request.ValidateNameRequest
 import com.devndev.lamp.data.service.SignUpService
+import okhttp3.MultipartBody
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -15,5 +16,9 @@ class SignUpDataSourceImpl @Inject constructor(
 
     override suspend fun validateInstagram(validateInstagramRequest: ValidateInstagramRequest): Response<Void> {
         return signUpService.validateInstagram(validateInstagramRequest)
+    }
+
+    override suspend fun uploadImage(file: MultipartBody.Part): Response<Void> {
+        return signUpService.uploadImage(file)
     }
 }
