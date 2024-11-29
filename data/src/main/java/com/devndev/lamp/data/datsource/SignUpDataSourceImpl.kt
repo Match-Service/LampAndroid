@@ -1,5 +1,6 @@
 package com.devndev.lamp.data.datsource
 
+import com.devndev.lamp.data.dto.request.SignUpRequest
 import com.devndev.lamp.data.dto.request.ValidateInstagramRequest
 import com.devndev.lamp.data.dto.request.ValidateNameRequest
 import com.devndev.lamp.data.service.SignUpService
@@ -20,5 +21,9 @@ class SignUpDataSourceImpl @Inject constructor(
 
     override suspend fun uploadImage(file: MultipartBody.Part): Response<Void> {
         return signUpService.uploadImage(file)
+    }
+
+    override suspend fun signUp(signUpRequest: SignUpRequest): Response<Void> {
+        return signUpService.signUp(signUpRequest)
     }
 }

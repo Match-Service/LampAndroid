@@ -1,5 +1,6 @@
 package com.devndev.lamp.data.service
 
+import com.devndev.lamp.data.dto.request.SignUpRequest
 import com.devndev.lamp.data.dto.request.ValidateInstagramRequest
 import com.devndev.lamp.data.dto.request.ValidateNameRequest
 import okhttp3.MultipartBody
@@ -24,5 +25,10 @@ interface SignUpService {
     @POST("api/v1/auth/profile-image")
     suspend fun uploadImage(
         @Part file: MultipartBody.Part
+    ): Response<Void>
+
+    @POST("api/v1/auth/signup")
+    suspend fun signUp(
+        @Body signUpRequest: SignUpRequest
     ): Response<Void>
 }

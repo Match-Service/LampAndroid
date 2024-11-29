@@ -76,8 +76,10 @@ class LoginViewModel @Inject constructor(
                 Log.d(logTag, "Signup Token: ${tokenResult.signupToken}")
                 if (tokenResult.token == null && tokenResult.signupToken != null) {
                     AuthManager.updateAccountStatus(AccountStatus.NEW_ACCOUNT)
+                    AuthManager.signUpToken = tokenResult.signupToken.toString()
                 } else if (tokenResult.token != null && tokenResult.signupToken == null) {
                     AuthManager.updateAccountStatus(AccountStatus.SIGNED_IN_ACCOUNT)
+                    AuthManager.updateLoginStatus(true)
                 }
             } catch (e: Exception) {
                 Log.e(logTag, "authenticateWithGoogle", e)
@@ -89,6 +91,7 @@ class LoginViewModel @Inject constructor(
         Log.d(logTag, "signOut()")
         googleSignInClient.signOut().addOnCompleteListener {
             AuthManager.updateLoginStatus(false)
+            AuthManager.updateAccountStatus(AccountStatus.NONE)
             Log.d(logTag, "signOut() isLoggedIn ${AuthManager.isLoggedIn.value}")
         }
     }

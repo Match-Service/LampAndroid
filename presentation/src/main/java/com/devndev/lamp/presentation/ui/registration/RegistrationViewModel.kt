@@ -4,13 +4,18 @@ import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devndev.lamp.domain.model.SignUpAuthRequest
+import com.devndev.lamp.domain.model.SignUpParam
+import com.devndev.lamp.domain.model.User
 import com.devndev.lamp.domain.model.ValidateInstagramParam
 import com.devndev.lamp.domain.model.ValidateNameParam
 import com.devndev.lamp.domain.usecase.ImageUploadUseCase
 import com.devndev.lamp.domain.usecase.SaveIsNeedSignOutUseCase
+import com.devndev.lamp.domain.usecase.SignUpUseCase
 import com.devndev.lamp.domain.usecase.ValidateInstagramUseCase
 import com.devndev.lamp.domain.usecase.ValidateNameUseCase
 import com.devndev.lamp.presentation.ui.common.InstagramStep
+import com.devndev.lamp.presentation.ui.login.AuthManager
 import com.google.android.gms.common.api.ApiException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,7 +32,8 @@ class RegistrationViewModel @Inject constructor(
     private val validateNameUseCase: ValidateNameUseCase,
     private val validateInstagramUseCase: ValidateInstagramUseCase,
     private val saveIsNeedSignOutUseCase: SaveIsNeedSignOutUseCase,
-    private val imageUploadUseCase: ImageUploadUseCase
+    private val imageUploadUseCase: ImageUploadUseCase,
+    private val signUpUseCase: SignUpUseCase
 ) : ViewModel() {
     private val logTag = "RegistrationViewModel"
 
@@ -39,6 +45,9 @@ class RegistrationViewModel @Inject constructor(
 
     private val _instagramStep = MutableStateFlow(InstagramStep.NONE)
     val instagramStep: StateFlow<Int> = _instagramStep
+
+    private val _isSignUpSuccess = MutableStateFlow(false)
+    val isSignUpSuccess: StateFlow<Boolean> = _isSignUpSuccess
 
     fun updateCurrentStep(step: Int) {
         _currentStep.value = step
@@ -108,12 +117,31 @@ class RegistrationViewModel @Inject constructor(
                 val multipartBody = bitmapToMultipartBody(bitmap, "file")
                 val response = imageUploadUseCase(multipartBody)
                 if (response.isSuccessful) {
-                    Log.d("ImageUpload", "Upload successful")
+                    Log.d(logTag, "Upload successful")
                 } else {
-                    Log.e("ImageUpload", "Upload failed: ${response.errorBody()?.string()}")
+                    Log.e(logTag, "Upload failed: ${response.errorBody()?.string()}")
                 }
             } catch (e: Exception) {
                 Log.e(logTag, "Error uploading image", e)
+            }
+        }
+    }
+
+    fun signUp(user: User) {
+        val signUpParam = SignUpParam(SignUpAuthRequest(AuthManager.signUpToken), user)
+        Log.d(logTag, "SignUpParam $signUpParam")
+        viewModelScope.launch {
+            try {
+                val response = signUpUseCase(signUpParam)
+                if (response.isSuccessful) {
+                    Log.d(logTag, "signUp Success")
+                    _isSignUpSuccess.value = true
+                    AuthManager.updateLoginStatus(true)
+                } else {
+                    Log.e(logTag, "signUp Failed: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e(logTag, "Error signUp", e)
             }
         }
     }

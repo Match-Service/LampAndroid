@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,10 +41,15 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.devndev.lamp.domain.model.AlarmSetting
+import com.devndev.lamp.domain.model.BioQuestion
+import com.devndev.lamp.domain.model.User
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.AccountStatus
 import com.devndev.lamp.presentation.ui.common.InstagramStep
 import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.RegistrationScreen
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.login.AuthManager
@@ -82,8 +88,16 @@ fun RegistrationScreen(
     val instagramStep by registrationViewModel.instagramStep.collectAsState()
     var isAuthButtonClicked by remember { mutableStateOf(false) }
 
+    val isSignUpSuccess by registrationViewModel.isSignUpSuccess.collectAsState()
+
     var bitmaps by remember { mutableStateOf(List(6) { null as Bitmap? }) }
     var profileIntro by remember { mutableStateOf("") }
+
+    LaunchedEffect(isSignUpSuccess) {
+        if (isSignUpSuccess) {
+            navController.navigateMain(MainScreenPage.HOME)
+        }
+    }
 
     fun isKoreanAndEnglishOnly(name: String): Boolean {
         val regex = "^[a-zA-Z가-힣]+$".toRegex()
@@ -91,6 +105,48 @@ fun RegistrationScreen(
             return true
         }
         return regex.matches(name)
+    }
+
+    fun signUp() {
+        val gender = if (selectedGender == "남성") {
+            "MALE"
+        } else {
+            "FEMALE"
+        }
+        val cleanedYear = birthYear.replace("년", "").trim()
+        val cleanedMonth = birthMonth.replace("월", "").trim()
+        val cleanedDay = birthDay.replace("일", "").trim()
+
+        val birth = "${cleanedYear.takeLast(2)}${cleanedMonth.padStart(2, '0')}${
+        cleanedDay.padStart(
+            2,
+            '0'
+        )
+        }"
+        val user = User(
+            name = name,
+            job = "STUDENT",
+            jobName = "STUDENT",
+            gender = gender,
+            birth = birth,
+            instagramId = instagramId,
+            bio = "",
+            profileImages = listOf(""),
+            alarmSetting = AlarmSetting(
+                allPush = true,
+                lampInvite = true,
+                newMatch = true,
+                receiveBadge = true,
+                receiveMessage = true
+            ),
+            bioQuestions = listOf(
+                BioQuestion("음주", selectedDrink),
+                BioQuestion("흡연", selectedSmoke),
+                BioQuestion("운동", selectedExercise)
+            )
+
+        )
+        registrationViewModel.signUp(user)
     }
 
     registrationViewModel.saveIsNeedSignOut(true)
@@ -323,7 +379,7 @@ fun RegistrationScreen(
                                 registrationViewModel.uploadImage(bitmap)
                             }
                         }
-                        registrationViewModel.updateCurrentStep(currentStep + 1)
+                        signUp()
                     } else {
                         registrationViewModel.updateCurrentStep(currentStep + 1)
                     }
