@@ -15,6 +15,8 @@ object AuthManager {
     private val _accountStatus = mutableIntStateOf(AccountStatus.NONE)
     val accountStatus = _accountStatus
 
+    var signUpToken = ""
+
     fun updateLoginStatus(isLoggedIn: Boolean) {
         _isLoggedIn.value = isLoggedIn
     }

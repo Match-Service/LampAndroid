@@ -2,6 +2,7 @@ package com.devndev.lamp.presentation.ui.mypage
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.devndev.lamp.presentation.ui.common.AccountStatus
 import com.devndev.lamp.presentation.ui.login.AuthManager
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,6 +18,7 @@ class MyPageViewModel @Inject constructor(
         Log.d(logTag, "signOut()")
         googleSignInClient.signOut().addOnCompleteListener {
             AuthManager.updateLoginStatus(false)
+            AuthManager.updateAccountStatus(AccountStatus.NONE)
             Log.d(logTag, "signOut() isLoggedIn ${AuthManager.isLoggedIn.value}")
         }
     }

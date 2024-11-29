@@ -1,5 +1,6 @@
 package com.devndev.lamp.domain.repository
 
+import com.devndev.lamp.domain.model.SignUpParam
 import com.devndev.lamp.domain.model.ValidateInstagramParam
 import com.devndev.lamp.domain.model.ValidateNameParam
 import okhttp3.MultipartBody
@@ -9,4 +10,5 @@ interface SignUpRepository {
     suspend fun validateName(validateNameParam: ValidateNameParam): Boolean
     suspend fun validateInstagram(validateInstagramParam: ValidateInstagramParam): Boolean
     suspend fun uploadImage(file: MultipartBody.Part): Response<Void>
+    suspend fun signUp(signUpParam: SignUpParam): Response<Void>
 }
