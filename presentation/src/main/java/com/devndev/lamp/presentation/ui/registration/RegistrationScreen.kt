@@ -317,6 +317,13 @@ fun RegistrationScreen(
                         } else {
                             registrationViewModel.updateCurrentStep(currentStep + 1)
                         }
+                    } else if (currentStep == RegistrationScreen.PROFILE) {
+                        for (bitmap in bitmaps) {
+                            if (bitmap != null) {
+                                registrationViewModel.uploadImage(bitmap)
+                            }
+                        }
+                        registrationViewModel.updateCurrentStep(currentStep + 1)
                     } else {
                         registrationViewModel.updateCurrentStep(currentStep + 1)
                     }

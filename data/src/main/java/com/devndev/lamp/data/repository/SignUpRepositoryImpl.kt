@@ -6,6 +6,8 @@ import com.devndev.lamp.data.dto.request.ValidateNameRequest
 import com.devndev.lamp.domain.model.ValidateInstagramParam
 import com.devndev.lamp.domain.model.ValidateNameParam
 import com.devndev.lamp.domain.repository.SignUpRepository
+import okhttp3.MultipartBody
+import retrofit2.Response
 import javax.inject.Inject
 
 class SignUpRepositoryImpl @Inject constructor(private val signUpDataSource: SignUpDataSource) :
@@ -23,5 +25,10 @@ class SignUpRepositoryImpl @Inject constructor(private val signUpDataSource: Sig
 //        return code == 200
         // 서버 미완성으로 인해 true 반환
         return true
+    }
+
+    override suspend fun uploadImage(file: MultipartBody.Part): Response<Void> {
+        val responses = signUpDataSource.uploadImage(file)
+        return responses
     }
 }
