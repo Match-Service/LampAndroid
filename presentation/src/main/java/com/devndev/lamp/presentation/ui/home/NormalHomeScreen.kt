@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,7 +28,7 @@ fun NormalHomeScreen(
     modifier: Modifier,
     navController: NavController
 ) {
-    val myInfo = viewModel.myInfo.collectAsState()
+    val myInfo by viewModel.myInfo.collectAsState()
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -44,7 +45,7 @@ fun NormalHomeScreen(
                 .weight(1f)
         ) {
             HomeTextArea(
-                nameText = "${myInfo.value?.name ?: ""} " + stringResource(id = R.string.sir),
+                nameText = "${myInfo?.name ?: ""} " + stringResource(id = R.string.sir),
                 middleText = stringResource(id = R.string.main_header),
                 bottomText = stringResource(id = R.string.meet_with_lamp)
             )

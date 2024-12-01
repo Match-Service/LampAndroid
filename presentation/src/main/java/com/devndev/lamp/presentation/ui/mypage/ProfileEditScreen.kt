@@ -5,6 +5,7 @@ import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.animation.AnimatedVisibility
@@ -36,6 +37,8 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -76,6 +79,7 @@ fun ProfileEditScreen(
     BackHandler {
         navController.navigateMain(MainScreenPage.MY_PAGE)
     }
+    val logTag = "ProfileEditScreen"
 
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
@@ -83,24 +87,35 @@ fun ProfileEditScreen(
     val bitmaps: List<Bitmap?> = mutableListOf()
     var deleteIndex by remember { mutableIntStateOf(-1) }
 
+    val myInfo by profileEditViewModel.myInfo.collectAsState()
+
     var profileQuery by remember { mutableStateOf("원래 있던 소개") }
 
-    var selectedDrink by remember { mutableStateOf(context.getString(R.string.drink_often)) }
+    Log.d(logTag, myInfo?.bioQuestions?.get(0)?.answer.toString())
+
+    var selectedDrink by remember { mutableStateOf("") }
     var isDrinkExpanded by remember { mutableStateOf(false) }
 
-    var selectedSmoke by remember { mutableStateOf(context.getString(R.string.smoke_often)) }
+    var selectedSmoke by remember { mutableStateOf("") }
     var isSmokeExpanded by remember { mutableStateOf(false) }
 
-    var selectedExercise by remember { mutableStateOf(context.getString(R.string.exercise_sometimes)) }
+    var selectedExercise by remember { mutableStateOf("") }
     var isExerciseExpanded by remember { mutableStateOf(false) }
+
+    var instagram by remember { mutableStateOf("") }
+    val instagramAuthStep by profileEditViewModel.instagramStep.collectAsState()
+
+    LaunchedEffect(myInfo) {
+        selectedDrink = myInfo?.bioQuestions?.get(0)?.answer ?: ""
+        selectedSmoke = myInfo?.bioQuestions?.get(1)?.answer ?: ""
+        selectedExercise = myInfo?.bioQuestions?.get(2)?.answer ?: ""
+        instagram = myInfo?.instagramId ?: ""
+    }
 
     var isShowEditUniversityPopup by remember { mutableStateOf(false) }
     var isShowEditInstagramPopup by remember { mutableStateOf(false) }
 
     var university by remember { mutableStateOf("한국대학교") }
-
-    var instagram by remember { mutableStateOf("instagram_ID") }
-    var instagramAuthStep by remember { mutableIntStateOf(InstagramAuth.BEFORE_AUTH) }
 
     if (isShowEditUniversityPopup) {
         EditPopup(
@@ -122,24 +137,19 @@ fun ProfileEditScreen(
             queryString = instagram,
             onXButtonClick = {
                 isShowEditInstagramPopup = false
-                instagramAuthStep = InstagramAuth.BEFORE_AUTH
+                profileEditViewModel.updateInstagramStep(InstagramAuth.BEFORE_AUTH)
             },
             onEditButtonClick = {
                 if (instagramAuthStep == InstagramAuth.BEFORE_AUTH || instagramAuthStep == InstagramAuth.AUTH_FAIL) {
-                    val isAuthSuccess = (0..1).random() == 1 // 추후 인증 절차로 수정
-                    if (isAuthSuccess) {
-                        instagramAuthStep = InstagramAuth.AUTH_SUCCESS
-                    } else {
-                        instagramAuthStep = InstagramAuth.AUTH_FAIL
-                    }
+                    profileEditViewModel.checkIsValidInstagramId(instagramId = instagram)
                 } else if (instagramAuthStep == InstagramAuth.AUTH_SUCCESS) {
                     instagram = it
                     isShowEditInstagramPopup = false
-                    instagramAuthStep = InstagramAuth.BEFORE_AUTH
+                    profileEditViewModel.updateInstagramStep(InstagramAuth.BEFORE_AUTH)
                 }
             },
             instagramAuthStep = instagramAuthStep,
-            onInstagramQueryChange = { instagramAuthStep = it }
+            onInstagramQueryChange = { profileEditViewModel.updateInstagramStep(it) }
         )
     }
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
@@ -314,6 +324,10 @@ fun InfoSection(
 ) {
     var text = ""
     var optionText by remember { mutableStateOf(selectedOption) }
+    Log.d("InfoSection", optionText)
+    LaunchedEffect(selectedOption) {
+        optionText = selectedOption
+    }
     var options: List<String> = emptyList()
     when (type) {
         InfoType.DRINK -> {

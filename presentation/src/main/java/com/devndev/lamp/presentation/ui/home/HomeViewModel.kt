@@ -30,6 +30,7 @@ class HomeViewModel @Inject constructor(
             try {
                 Log.d(logTag, "fetchData")
                 _myInfo.value = getMyInfoUseCase()
+                Log.d(logTag, "My Info ${myInfo.value}")
             } catch (e: HttpException) {
                 Log.e(logTag, "fetchData HttpException", e)
             } catch (e: Exception) {
