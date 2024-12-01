@@ -2,7 +2,9 @@ package com.devndev.lamp.data.di
 
 import android.content.Context
 import com.devndev.lamp.data.BuildConfig
+import com.devndev.lamp.data.di.qualifier.DefaultClient
 import com.devndev.lamp.data.di.qualifier.DefaultRetrofit
+import com.devndev.lamp.data.interceptor.AuthInterceptor
 import com.devndev.lamp.data.service.ApiService
 import com.devndev.lamp.data.service.LoginService
 import com.devndev.lamp.data.service.SignUpService
@@ -16,6 +18,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
@@ -45,12 +48,27 @@ internal class NetworkModule {
         return GoogleSignIn.getClient(context, gso)
     }
 
+    @DefaultClient
+    @Singleton
+    @Provides
+    fun provideDefaultOkHttpClient(
+        authInterceptor: AuthInterceptor
+    ): OkHttpClient {
+        return OkHttpClient
+            .Builder()
+            .addInterceptor(authInterceptor)
+            .build()
+    }
+
     @DefaultRetrofit
     @Provides
     @Singleton
-    fun provideDefaultRetrofit(): Retrofit {
+    fun provideDefaultRetrofit(
+        @DefaultClient okHttpClient: OkHttpClient
+    ): Retrofit {
         return Retrofit.Builder()
             .baseUrl(BASE_URL)
+            .client(okHttpClient)
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
     }

@@ -19,6 +19,7 @@ class MyPageViewModel @Inject constructor(
         googleSignInClient.signOut().addOnCompleteListener {
             AuthManager.updateLoginStatus(false)
             AuthManager.updateAccountStatus(AccountStatus.NONE)
+
             Log.d(logTag, "signOut() isLoggedIn ${AuthManager.isLoggedIn.value}")
         }
     }

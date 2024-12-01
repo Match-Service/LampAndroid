@@ -20,7 +20,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.devndev.lamp.domain.model.Item
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.theme.IncTypography
 import com.devndev.lamp.presentation.ui.theme.MainColor
@@ -35,12 +34,10 @@ fun HomeScreen(
 ) {
     val logTag = "HomeScreen"
     val context = LocalContext.current
-    val items: List<Item> by viewModel.items.collectAsState()
     val handler = remember { Handler(Looper.getMainLooper()) }
     var backPressedOnce = remember { false }
 
     val isWaiting by TempStatus.isWaiting.collectAsState()
-    val profileName by TempStatus.profileName.collectAsState()
     val isMatching by TempStatus.isMatching.collectAsState()
 
     BackHandler {

@@ -31,4 +31,8 @@ class LoginRepositoryImpl @Inject constructor(
     override fun saveIsNeedSignOut(isNeedSignOut: Boolean) {
         localDataSource.saveIsNeedSignOut(isNeedSignOut)
     }
+
+    override fun setToken(token: String) {
+        localDataSource.setToken(token)
+    }
 }
