@@ -7,4 +7,5 @@ interface LoginRepository {
     suspend fun getGoogleAuth(googleTokenParam: GoogleTokenParam): GoogleTokenDomainModel
     fun getIsNeedSignOut(): Boolean
     fun saveIsNeedSignOut(isNeedSignOut: Boolean)
+    fun setToken(token: String)
 }

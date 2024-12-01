@@ -1,5 +1,6 @@
 package com.devndev.lamp.data.service
 
+import com.devndev.lamp.data.dto.response.MyInfoResponse
 import com.devndev.lamp.data.dto.response.UserResponseDto
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -9,4 +10,7 @@ interface UserService {
     suspend fun searchUser(
         @Query("name") name: String
     ): List<UserResponseDto>
+
+    @GET("api/v1/user/me")
+    suspend fun getMyInfo(): MyInfoResponse
 }

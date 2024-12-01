@@ -7,11 +7,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
@@ -20,7 +22,12 @@ import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.review.navigation.navigateReview
 
 @Composable
-fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
+fun NormalHomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    modifier: Modifier,
+    navController: NavController
+) {
+    val myInfo = viewModel.myInfo.collectAsState()
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -37,7 +44,7 @@ fun NormalHomeScreen(modifier: Modifier, navController: NavController) {
                 .weight(1f)
         ) {
             HomeTextArea(
-                nameText = "북창동루쥬라 " + stringResource(id = R.string.sir),
+                nameText = "${myInfo.value?.name ?: ""} " + stringResource(id = R.string.sir),
                 middleText = stringResource(id = R.string.main_header),
                 bottomText = stringResource(id = R.string.meet_with_lamp)
             )

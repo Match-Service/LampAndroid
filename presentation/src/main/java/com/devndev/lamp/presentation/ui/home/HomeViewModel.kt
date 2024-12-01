@@ -1,9 +1,11 @@
 package com.devndev.lamp.presentation.ui.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devndev.lamp.domain.model.Item
-import com.devndev.lamp.domain.usecase.ItemUseCase
+import coil.network.HttpException
+import com.devndev.lamp.domain.model.MyInfoDomainModel
+import com.devndev.lamp.domain.usecase.GetMyInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -12,11 +14,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val itemUseCase: ItemUseCase
+    private val getMyInfoUseCase: GetMyInfoUseCase
 ) : ViewModel() {
+    private val logTag = "HomeViewModel"
 
-    private val _items = MutableStateFlow<List<Item>>(emptyList())
-    val items: StateFlow<List<Item>> = _items
+    private val _myInfo = MutableStateFlow<MyInfoDomainModel?>(null)
+    val myInfo: StateFlow<MyInfoDomainModel?> = _myInfo
 
     init {
         fetchData()
@@ -24,7 +27,14 @@ class HomeViewModel @Inject constructor(
 
     private fun fetchData() {
         viewModelScope.launch {
-            _items.value = itemUseCase()
+            try {
+                Log.d(logTag, "fetchData")
+                _myInfo.value = getMyInfoUseCase()
+            } catch (e: HttpException) {
+                Log.e(logTag, "fetchData HttpException", e)
+            } catch (e: Exception) {
+                Log.e(logTag, "fetchData Exception", e)
+            }
         }
     }
 }

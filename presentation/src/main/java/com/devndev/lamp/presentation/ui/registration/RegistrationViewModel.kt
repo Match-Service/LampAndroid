@@ -1,23 +1,29 @@
 package com.devndev.lamp.presentation.ui.registration
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devndev.lamp.domain.model.GoogleTokenParam
 import com.devndev.lamp.domain.model.SignUpAuthRequest
 import com.devndev.lamp.domain.model.SignUpParam
 import com.devndev.lamp.domain.model.User
 import com.devndev.lamp.domain.model.ValidateInstagramParam
 import com.devndev.lamp.domain.model.ValidateNameParam
+import com.devndev.lamp.domain.usecase.GoogleAuthUseCase
 import com.devndev.lamp.domain.usecase.ImageUploadUseCase
 import com.devndev.lamp.domain.usecase.SaveIsNeedSignOutUseCase
+import com.devndev.lamp.domain.usecase.SetTokenUseCase
 import com.devndev.lamp.domain.usecase.SignUpUseCase
 import com.devndev.lamp.domain.usecase.ValidateInstagramUseCase
 import com.devndev.lamp.domain.usecase.ValidateNameUseCase
 import com.devndev.lamp.presentation.ui.common.InstagramStep
 import com.devndev.lamp.presentation.ui.login.AuthManager
+import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -29,11 +35,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val googleAuthUseCase: GoogleAuthUseCase,
     private val validateNameUseCase: ValidateNameUseCase,
     private val validateInstagramUseCase: ValidateInstagramUseCase,
     private val saveIsNeedSignOutUseCase: SaveIsNeedSignOutUseCase,
     private val imageUploadUseCase: ImageUploadUseCase,
-    private val signUpUseCase: SignUpUseCase
+    private val signUpUseCase: SignUpUseCase,
+    private val setTokenUseCase: SetTokenUseCase
 ) : ViewModel() {
     private val logTag = "RegistrationViewModel"
 
@@ -137,6 +146,16 @@ class RegistrationViewModel @Inject constructor(
                     Log.d(logTag, "signUp Success")
                     _isSignUpSuccess.value = true
                     AuthManager.updateLoginStatus(true)
+                    val account = GoogleSignIn.getLastSignedInAccount(context)
+                    val idToken = account?.idToken
+                    if (idToken != null) {
+                        val googleTokenParam = GoogleTokenParam(idToken = idToken)
+                        val tokenResult = googleAuthUseCase(googleTokenParam)
+
+                        if (tokenResult.token != null && tokenResult.signupToken == null) {
+                            setTokenUseCase(tokenResult.token.toString())
+                        }
+                    }
                 } else {
                     Log.e(logTag, "signUp Failed: ${response.errorBody()?.string()}")
                 }

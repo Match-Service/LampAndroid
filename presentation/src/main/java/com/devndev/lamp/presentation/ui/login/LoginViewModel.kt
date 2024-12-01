@@ -9,6 +9,7 @@ import com.devndev.lamp.domain.model.GoogleTokenParam
 import com.devndev.lamp.domain.usecase.CheckIsNeedSignOutUseCase
 import com.devndev.lamp.domain.usecase.GoogleAuthUseCase
 import com.devndev.lamp.domain.usecase.SaveIsNeedSignOutUseCase
+import com.devndev.lamp.domain.usecase.SetTokenUseCase
 import com.devndev.lamp.presentation.ui.common.AccountStatus
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -24,7 +25,8 @@ class LoginViewModel @Inject constructor(
     private val googleSignInClient: GoogleSignInClient,
     private val googleAuthUseCase: GoogleAuthUseCase,
     private val checkIsNeedSignOutUseCase: CheckIsNeedSignOutUseCase,
-    private val saveIsNeedSignOutUseCase: SaveIsNeedSignOutUseCase
+    private val saveIsNeedSignOutUseCase: SaveIsNeedSignOutUseCase,
+    private val setTokenUseCase: SetTokenUseCase
 ) : ViewModel() {
     private val logTag = "LoginViewModel"
 
@@ -79,6 +81,7 @@ class LoginViewModel @Inject constructor(
                     AuthManager.signUpToken = tokenResult.signupToken.toString()
                 } else if (tokenResult.token != null && tokenResult.signupToken == null) {
                     AuthManager.updateAccountStatus(AccountStatus.SIGNED_IN_ACCOUNT)
+                    setTokenUseCase(tokenResult.token.toString())
                     AuthManager.updateLoginStatus(true)
                 }
             } catch (e: Exception) {
