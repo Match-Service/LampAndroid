@@ -31,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,6 +61,9 @@ import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.ManColor
 import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import kotlin.system.exitProcess
 
 @Composable
@@ -74,6 +78,10 @@ fun MyPageScreen(
     var backPressedOnce by remember { mutableStateOf(false) }
     val attractive = listOf(70, 80, 50, 40)
     val avgAttractive = attractive.average()
+
+    val myInfo by viewModel.myInfo.collectAsState()
+
+    val birthdate = myInfo?.birth?.takeIf { it.isNotBlank() } ?: "000000"
 
     val alarmsState = remember {
         AlarmsState()
@@ -115,7 +123,12 @@ fun MyPageScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
-            UserInfoSection(navController = navController)
+            UserInfoSection(
+                navController = navController,
+                name = myInfo?.name ?: "",
+                age = calculateManAge(birthdate = birthdate),
+                university = "한국대학교"
+            )
             Spacer(modifier = Modifier.height(30.dp))
             Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
                 AttractiveSection(
@@ -132,7 +145,12 @@ fun MyPageScreen(
 }
 
 @Composable
-fun UserInfoSection(navController: NavController) {
+fun UserInfoSection(
+    navController: NavController,
+    name: String,
+    age: String,
+    university: String?
+) {
     val navOption = navOptions {
         launchSingleTop = true
     }
@@ -166,12 +184,17 @@ fun UserInfoSection(navController: NavController) {
             ) {
                 Text(
                     modifier = Modifier.padding(top = 5.dp),
-                    text = "닉네임입니다 님",
+                    text = "$name 님",
                     color = Color.White,
                     style = IncTypography.normal30
                 )
+                val infoText = if (university == null) {
+                    "${age}세"
+                } else {
+                    "${age}세, 한국대학교"
+                }
                 Text(
-                    text = "28세, 한국대학교",
+                    text = infoText,
                     color = Gray3,
                     style = Typography.normal14
                 )
@@ -418,6 +441,40 @@ fun LogOutSection(modifier: Modifier, viewModel: MyPageViewModel) {
             style = Typography.medium15
         )
     }
+}
+
+fun calculateManAge(birthdate: String): String {
+    // Check if the birthdate string is valid
+    Log.d("MyPageScreen", "birthDate = $birthdate")
+    if (birthdate == "000000") {
+        return "0"
+    }
+
+    // Parse the birthdate string to a Date object
+    val formatter = SimpleDateFormat("yyMMdd", Locale.getDefault()) // Format "970530"
+    val birthDate =
+        formatter.parse(birthdate) ?: throw IllegalArgumentException("Invalid birthdate format")
+
+    // Get current date and year
+    val birthCalendar = Calendar.getInstance().apply { time = birthDate }
+
+    // Calculate age based on year difference
+    var age = Calendar.getInstance().get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR)
+
+    // Check if birthday has occurred this year
+    if (Calendar.getInstance().get(Calendar.MONTH) < birthCalendar.get(Calendar.MONTH) ||
+        (
+            Calendar.getInstance().get(Calendar.MONTH) == birthCalendar.get(Calendar.MONTH) &&
+                Calendar.getInstance()
+                .get(Calendar.DAY_OF_MONTH) < birthCalendar.get(
+                    Calendar.DAY_OF_MONTH
+                )
+            )
+    ) {
+        age -= 1
+    }
+
+    return age.toString()
 }
 
 class AlarmsState {
