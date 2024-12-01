@@ -142,7 +142,7 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
             modifier = modifier
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(25.dp)
+            verticalArrangement = Arrangement.spacedBy(47.dp)
         ) {
             MatchingHomeTopBar(
                 onExitIconClick = {
