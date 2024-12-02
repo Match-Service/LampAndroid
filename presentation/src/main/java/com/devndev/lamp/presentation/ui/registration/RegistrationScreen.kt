@@ -58,6 +58,7 @@ import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.Typography
+import java.time.LocalDate
 
 @Composable
 fun RegistrationScreen(
@@ -75,7 +76,8 @@ fun RegistrationScreen(
     var isNameValid by remember { mutableStateOf(true) }
     val isDuplicateName by registrationViewModel.isDuplicateName.collectAsState()
 
-    var birthYear by remember { mutableStateOf("2000") }
+    val currentYear = LocalDate.now().year
+    var birthYear by remember { mutableStateOf(currentYear.toString()) }
     var birthMonth by remember { mutableStateOf("1") }
     var birthDay by remember { mutableStateOf("1") }
 

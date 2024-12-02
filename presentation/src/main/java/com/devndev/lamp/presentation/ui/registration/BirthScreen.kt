@@ -37,6 +37,7 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import java.time.LocalDate
 
 @Composable
 fun BirthScreen(
@@ -55,7 +56,8 @@ fun BirthScreen(
             color = Color.White,
             style = Typography.normal12
         )
-        val years = remember { (1900..2024).map { it.toString() + "년" } }
+        val currentYear = LocalDate.now().year
+        val years = remember { (1900..currentYear).map { it.toString() + "년" } }
         val months = remember { (1..12).map { it.toString() + "월" } }
         val days = remember { (1..31).map { it.toString() + "일" } }
         Spacer(modifier = Modifier.height(40.dp))
