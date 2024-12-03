@@ -116,7 +116,7 @@ fun DatePicker(
             items = years,
             state = yearPickerState,
             visibleItemsCount = 5,
-            startIndex = 100,
+            startIndex = years.size - 1,
             textAlign = TextAlign.End
         )
 
