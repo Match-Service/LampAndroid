@@ -110,6 +110,7 @@ fun ProfileEditScreen(
         selectedSmoke = myInfo?.bioQuestions?.get(1)?.answer ?: ""
         selectedExercise = myInfo?.bioQuestions?.get(2)?.answer ?: ""
         instagram = myInfo?.instagramId ?: ""
+        profileQuery = myInfo?.bio ?: ""
     }
 
     var isShowEditUniversityPopup by remember { mutableStateOf(false) }
