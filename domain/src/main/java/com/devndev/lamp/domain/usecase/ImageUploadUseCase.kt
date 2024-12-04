@@ -8,7 +8,7 @@ import javax.inject.Inject
 class ImageUploadUseCase @Inject constructor(
     private val signUpRepository: SignUpRepository
 ) {
-    suspend operator fun invoke(file: MultipartBody.Part): Response<Void> {
-        return signUpRepository.uploadImage(file)
+    suspend operator fun invoke(files: List<MultipartBody.Part>): Response<Void> {
+        return signUpRepository.uploadImages(files)
     }
 }

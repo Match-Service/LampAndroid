@@ -110,21 +110,23 @@ class RegistrationViewModel @Inject constructor(
         saveIsNeedSignOutUseCase(isNeedSignOut)
     }
 
-    fun bitmapToMultipartBody(bitmap: Bitmap, fieldName: String): MultipartBody.Part {
-        val compressedBitmap = Bitmap.createScaledBitmap(bitmap, 1080, 1080, true) // 크기 조정
-        val stream = ByteArrayOutputStream()
-        compressedBitmap.compress(Bitmap.CompressFormat.JPEG, 75, stream) // 품질 조정 (75%)
-        val byteArray = stream.toByteArray()
+    fun bitmapsToMultipartBodies(bitmaps: List<Bitmap?>, fieldName: String): List<MultipartBody.Part> {
+        return bitmaps.map { bitmap ->
+            val stream = ByteArrayOutputStream()
+            bitmap?.let { Bitmap.createScaledBitmap(it, 1080, 1080, true) }
+                ?.compress(Bitmap.CompressFormat.JPEG, 75, stream) // 품질 조정
+            val byteArray = stream.toByteArray()
 
-        val requestBody = RequestBody.create("image/jpeg".toMediaTypeOrNull(), byteArray)
-        return MultipartBody.Part.createFormData(fieldName, "image.jpg", requestBody)
+            val requestBody = RequestBody.create("image/jpeg".toMediaTypeOrNull(), byteArray)
+            MultipartBody.Part.createFormData(fieldName, "image.jpg", requestBody)
+        }
     }
 
-    fun uploadImage(bitmap: Bitmap) {
+    fun uploadImages(bitmaps: List<Bitmap?>) {
         viewModelScope.launch {
             try {
-                val multipartBody = bitmapToMultipartBody(bitmap, "file")
-                val response = imageUploadUseCase(multipartBody)
+                val multipartBodies = bitmapsToMultipartBodies(bitmaps, "profileImages")
+                val response = imageUploadUseCase(multipartBodies)
                 if (response.isSuccessful) {
                     Log.d(logTag, "Upload successful message ${response.message()}")
                     Log.d(logTag, "Upload successful body ${response.body()}")

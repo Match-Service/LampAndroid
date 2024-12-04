@@ -9,6 +9,6 @@ import retrofit2.Response
 interface SignUpDataSource {
     suspend fun validateName(validateNameRequest: ValidateNameRequest): Response<Void>
     suspend fun validateInstagram(validateInstagramRequest: ValidateInstagramRequest): Response<Void>
-    suspend fun uploadImage(file: MultipartBody.Part): Response<Void>
+    suspend fun uploadImages(files: List<MultipartBody.Part>): Response<Void>
     suspend fun signUp(signUpRequest: SignUpRequest): Response<Void>
 }

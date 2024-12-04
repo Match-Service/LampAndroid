@@ -19,8 +19,8 @@ class SignUpDataSourceImpl @Inject constructor(
         return signUpService.validateInstagram(validateInstagramRequest)
     }
 
-    override suspend fun uploadImage(file: MultipartBody.Part): Response<Void> {
-        return signUpService.uploadImage(file)
+    override suspend fun uploadImages(files: List<MultipartBody.Part>): Response<Void> {
+        return signUpService.uploadImages(files)
     }
 
     override suspend fun signUp(signUpRequest: SignUpRequest): Response<Void> {
