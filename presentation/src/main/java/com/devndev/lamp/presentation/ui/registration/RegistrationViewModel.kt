@@ -126,7 +126,10 @@ class RegistrationViewModel @Inject constructor(
                 val multipartBody = bitmapToMultipartBody(bitmap, "file")
                 val response = imageUploadUseCase(multipartBody)
                 if (response.isSuccessful) {
-                    Log.d(logTag, "Upload successful")
+                    Log.d(logTag, "Upload successful message ${response.message()}")
+                    Log.d(logTag, "Upload successful body ${response.body()}")
+                    Log.d(logTag, "Upload successful header ${response.headers()}")
+                    Log.d(logTag, "Upload successful raw ${response.raw()}")
                 } else {
                     Log.e(logTag, "Upload failed: ${response.errorBody()?.string()}")
                 }

@@ -132,7 +132,7 @@ fun RegistrationScreen(
             gender = gender,
             birth = birth,
             instagramId = instagramId,
-            bio = "",
+            bio = profileIntro,
             profileImages = listOf(""),
             alarmSetting = AlarmSetting(
                 allPush = true,
