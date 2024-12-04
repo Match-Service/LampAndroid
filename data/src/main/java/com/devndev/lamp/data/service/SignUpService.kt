@@ -22,9 +22,9 @@ interface SignUpService {
     ): Response<Void>
 
     @Multipart
-    @POST("api/v1/auth/profile-image")
-    suspend fun uploadImage(
-        @Part file: MultipartBody.Part
+    @POST("api/v1/auth/profile-images")
+    suspend fun uploadImages(
+        @Part files: List<MultipartBody.Part>
     ): Response<Void>
 
     @POST("api/v1/auth/signup")

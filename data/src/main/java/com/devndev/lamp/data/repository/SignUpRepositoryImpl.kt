@@ -33,8 +33,8 @@ class SignUpRepositoryImpl @Inject constructor(private val signUpDataSource: Sig
         return true
     }
 
-    override suspend fun uploadImage(file: MultipartBody.Part): Response<Void> {
-        val response = signUpDataSource.uploadImage(file)
+    override suspend fun uploadImages(files: List<MultipartBody.Part>): Response<Void> {
+        val response = signUpDataSource.uploadImages(files)
         return response
     }
 
