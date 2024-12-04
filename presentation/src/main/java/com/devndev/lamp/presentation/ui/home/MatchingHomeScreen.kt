@@ -30,6 +30,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -55,6 +56,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
@@ -75,7 +77,11 @@ import kotlinx.coroutines.launch
 
 @SuppressLint("RememberReturnType")
 @Composable
-fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
+fun MatchingHomeScreen(
+    modifier: Modifier,
+    navController: NavController,
+    homeViewModel: HomeViewModel = hiltViewModel()
+) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
@@ -104,6 +110,7 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
     val pleaseStartMatching = stringResource(id = R.string.matching_header_start_matching)
     val whileMatching = stringResource(id = R.string.matching_header_while_invite)
 
+    val myInfo by homeViewModel.myInfo.collectAsState()
     // fullPersonnel = false : 친구 초대하기 및 스와이프 인식x
     // fullPersonnel = true : 매칭 시작하기 및 스와이프 인식o
     val buttonText = remember(fullPersonnel, isMatching) {
@@ -222,7 +229,7 @@ fun MatchingHomeScreen(modifier: Modifier, navController: NavController) {
                 )
                 Spacer(modifier = Modifier.height(10.dp))
 
-                ProfileInfo(null, "북창동루쥬라")
+                ProfileInfo(null, myInfo?.name ?: "")
 
                 Spacer(modifier = Modifier.height(30.dp))
 
