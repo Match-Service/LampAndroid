@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -40,59 +39,61 @@ fun InviteList(
     selectedItems: List<UserDomainModel>,
     onCheckedItemChanged: (UserDomainModel, Boolean) -> Unit
 ) {
-    Column(
+    LazyColumn(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
     ) {
-        LazyColumn {
-            items(searchUserList.size) { index ->
-                val profile = searchUserList[index]
+        items(searchUserList.size) { index ->
+            val profile = searchUserList[index]
 
-                val isSelected = selectedItems.contains(profile)
+            val isSelected = selectedItems.contains(profile)
 
-                InviteItem(
-                    profile = profile,
-                    selected = isSelected,
-                    onCheckedChange = {
-                        onCheckedItemChanged(profile, it)
-                    }
-                )
-                if (index < searchUserList.size - 1) {
-                    HorizontalDivider(
-                        color = Gray3.copy(alpha = 0.3f),
-                        thickness = 0.5.dp
-                    )
+            InviteItem(
+                profile = profile,
+                selected = isSelected,
+                onCheckedChange = {
+                    onCheckedItemChanged(profile, it)
                 }
+            )
+            if (index < searchUserList.size - 1) {
+                HorizontalDivider(
+                    color = Gray3.copy(alpha = 0.3f),
+                    thickness = 0.5.dp
+                )
             }
         }
+
         if (recentUserList.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(30.dp))
-            Text(
-                text = stringResource(id = R.string.recent_friend),
-                style = Typography.normal12,
-                color = Gray3
-            )
-        }
-        LazyColumn {
-            items(recentUserList.size) { index ->
-                val profile = recentUserList[index]
-
-                val isSelected = selectedItems.contains(profile)
-
-                InviteItem(
-                    profile = profile,
-                    selected = isSelected,
-                    onCheckedChange = {
-                        onCheckedItemChanged(profile, it)
-                    }
+            item {
+                Spacer(modifier = Modifier.height(30.dp))
+            }
+            item {
+                Text(
+                    text = stringResource(id = R.string.recent_friend),
+                    style = Typography.normal12,
+                    color = Gray3
                 )
-                if (index < recentUserList.size - 1) {
-                    HorizontalDivider(
-                        color = Gray3.copy(alpha = 0.3f),
-                        thickness = 0.5.dp
-                    )
+            }
+        }
+
+        items(recentUserList.size) { index ->
+            val profile = recentUserList[index]
+
+            val isSelected = selectedItems.contains(profile)
+
+            InviteItem(
+                profile = profile,
+                selected = isSelected,
+                onCheckedChange = {
+                    onCheckedItemChanged(profile, it)
                 }
+            )
+            if (index < recentUserList.size - 1) {
+                HorizontalDivider(
+                    color = Gray3.copy(alpha = 0.3f),
+                    thickness = 0.5.dp
+                )
             }
         }
     }

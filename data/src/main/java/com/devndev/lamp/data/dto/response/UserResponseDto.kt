@@ -6,14 +6,14 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class UserResponseDto(
-    @Json(name = "id")
-    val id: Int,
+    @Json(name = "userId")
+    val userId: Int,
 
-    @Json(name = "name")
-    val name: String,
+    @Json(name = "userName")
+    val userName: String,
 
-    @Json(name = "thumbnail")
-    val thumbnail: String,
+    @Json(name = "profileImage")
+    val profileImage: String,
 
     @Json(name = "lampId")
     val lampId: Int?
@@ -21,9 +21,9 @@ data class UserResponseDto(
 
 fun UserResponseDto.toDomainModel(): UserDomainModel {
     return UserDomainModel(
-        id = id,
-        name = name,
-        thumbnail = thumbnail,
+        id = userId,
+        name = userName,
+        thumbnail = profileImage,
         lampId = lampId
     )
 }
