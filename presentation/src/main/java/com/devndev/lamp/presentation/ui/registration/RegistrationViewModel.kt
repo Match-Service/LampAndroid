@@ -110,7 +110,10 @@ class RegistrationViewModel @Inject constructor(
         saveIsNeedSignOutUseCase(isNeedSignOut)
     }
 
-    fun bitmapsToMultipartBodies(bitmaps: List<Bitmap?>, fieldName: String): List<MultipartBody.Part> {
+    fun bitmapsToMultipartBodies(
+        bitmaps: List<Bitmap?>,
+        fieldName: String
+    ): List<MultipartBody.Part> {
         return bitmaps.map { bitmap ->
             val stream = ByteArrayOutputStream()
             bitmap?.let { Bitmap.createScaledBitmap(it, 1080, 1080, true) }
@@ -122,19 +125,19 @@ class RegistrationViewModel @Inject constructor(
         }
     }
 
-    fun uploadImages(bitmaps: List<Bitmap?>) {
+    fun uploadImages(user: User, bitmaps: List<Bitmap?>) {
         viewModelScope.launch {
             try {
                 val multipartBodies = bitmapsToMultipartBodies(bitmaps, "profileImages")
-                val response = imageUploadUseCase(multipartBodies)
-                if (response.isSuccessful) {
-                    Log.d(logTag, "Upload successful message ${response.message()}")
-                    Log.d(logTag, "Upload successful body ${response.body()}")
-                    Log.d(logTag, "Upload successful header ${response.headers()}")
-                    Log.d(logTag, "Upload successful raw ${response.raw()}")
-                } else {
-                    Log.e(logTag, "Upload failed: ${response.errorBody()?.string()}")
+                val responses = imageUploadUseCase(multipartBodies)
+                val imageUrls = responses.map { it.imageUrl }
+
+                user.profileImages = imageUrls
+
+                for (imageUrl in imageUrls) {
+                    Log.d(logTag, "imageUrl: $imageUrl")
                 }
+                signUp(user = user)
             } catch (e: Exception) {
                 Log.e(logTag, "Error uploading image", e)
             }
