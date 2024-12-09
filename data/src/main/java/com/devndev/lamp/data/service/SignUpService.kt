@@ -3,6 +3,7 @@ package com.devndev.lamp.data.service
 import com.devndev.lamp.data.dto.request.SignUpRequest
 import com.devndev.lamp.data.dto.request.ValidateInstagramRequest
 import com.devndev.lamp.data.dto.request.ValidateNameRequest
+import com.devndev.lamp.data.dto.response.ProfileImageResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -25,7 +26,7 @@ interface SignUpService {
     @POST("api/v1/auth/profile-images")
     suspend fun uploadImages(
         @Part files: List<MultipartBody.Part>
-    ): Response<Void>
+    ): List<ProfileImageResponse>
 
     @POST("api/v1/auth/signup")
     suspend fun signUp(

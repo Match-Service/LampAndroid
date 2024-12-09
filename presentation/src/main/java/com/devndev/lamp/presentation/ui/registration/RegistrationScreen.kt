@@ -148,7 +148,7 @@ fun RegistrationScreen(
             )
 
         )
-        registrationViewModel.signUp(user)
+        registrationViewModel.uploadImages(user = user, bitmaps = bitmaps.filterNotNull())
     }
 
     registrationViewModel.saveIsNeedSignOut(true)
@@ -376,7 +376,6 @@ fun RegistrationScreen(
                             registrationViewModel.updateCurrentStep(currentStep + 1)
                         }
                     } else if (currentStep == RegistrationScreen.PROFILE) {
-                        registrationViewModel.uploadImages(bitmaps)
                         signUp()
                     } else {
                         registrationViewModel.updateCurrentStep(currentStep + 1)

@@ -8,6 +8,8 @@ import com.devndev.lamp.data.dto.request.SignUpRequest
 import com.devndev.lamp.data.dto.request.User
 import com.devndev.lamp.data.dto.request.ValidateInstagramRequest
 import com.devndev.lamp.data.dto.request.ValidateNameRequest
+import com.devndev.lamp.data.dto.response.toDomainModel
+import com.devndev.lamp.domain.model.ProfileImageDomainModel
 import com.devndev.lamp.domain.model.SignUpParam
 import com.devndev.lamp.domain.model.ValidateInstagramParam
 import com.devndev.lamp.domain.model.ValidateNameParam
@@ -33,9 +35,9 @@ class SignUpRepositoryImpl @Inject constructor(private val signUpDataSource: Sig
         return true
     }
 
-    override suspend fun uploadImages(files: List<MultipartBody.Part>): Response<Void> {
+    override suspend fun uploadImages(files: List<MultipartBody.Part>): List<ProfileImageDomainModel> {
         val response = signUpDataSource.uploadImages(files)
-        return response
+        return response.toDomainModel()
     }
 
     override suspend fun signUp(signUpParam: SignUpParam): Response<Void> {

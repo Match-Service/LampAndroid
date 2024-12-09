@@ -3,6 +3,7 @@ package com.devndev.lamp.data.datsource
 import com.devndev.lamp.data.dto.request.SignUpRequest
 import com.devndev.lamp.data.dto.request.ValidateInstagramRequest
 import com.devndev.lamp.data.dto.request.ValidateNameRequest
+import com.devndev.lamp.data.dto.response.ProfileImageResponse
 import com.devndev.lamp.data.service.SignUpService
 import okhttp3.MultipartBody
 import retrofit2.Response
@@ -19,7 +20,7 @@ class SignUpDataSourceImpl @Inject constructor(
         return signUpService.validateInstagram(validateInstagramRequest)
     }
 
-    override suspend fun uploadImages(files: List<MultipartBody.Part>): Response<Void> {
+    override suspend fun uploadImages(files: List<MultipartBody.Part>): List<ProfileImageResponse> {
         return signUpService.uploadImages(files)
     }
 
