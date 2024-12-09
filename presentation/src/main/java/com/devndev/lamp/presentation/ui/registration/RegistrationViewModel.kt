@@ -152,16 +152,16 @@ class RegistrationViewModel @Inject constructor(
                 val response = signUpUseCase(signUpParam)
                 if (response.isSuccessful) {
                     Log.d(logTag, "signUp Success")
-                    _isSignUpSuccess.value = true
+
                     AuthManager.updateLoginStatus(true)
                     val account = GoogleSignIn.getLastSignedInAccount(context)
                     val idToken = account?.idToken
                     if (idToken != null) {
                         val googleTokenParam = GoogleTokenParam(idToken = idToken)
                         val tokenResult = googleAuthUseCase(googleTokenParam)
-
                         if (tokenResult.token != null && tokenResult.signupToken == null) {
                             setTokenUseCase(tokenResult.token.toString())
+                            _isSignUpSuccess.value = true
                         }
                     }
                 } else {
