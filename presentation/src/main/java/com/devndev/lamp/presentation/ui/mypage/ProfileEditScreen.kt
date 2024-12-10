@@ -69,7 +69,7 @@ import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.Typography
-
+// todo 사진 표시 처리 완료 했지만 추후 서버 프로필 수정 기능 완료 후 삭제, 변경 구현 필요
 @Composable
 fun ProfileEditScreen(
     modifier: Modifier,
@@ -84,9 +84,10 @@ fun ProfileEditScreen(
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var imageIndex by remember { mutableIntStateOf(-1) }
-    val bitmaps: List<Bitmap?> = mutableListOf()
+//    val bitmaps: List<Bitmap?> = mutableListOf()
+    var bitmaps by remember { mutableStateOf(List(6) { null as Bitmap? }) }
     var deleteIndex by remember { mutableIntStateOf(-1) }
-
+    var urls by remember { mutableStateOf(emptyList<String>()) }
     val myInfo by profileEditViewModel.myInfo.collectAsState()
 
     var profileQuery by remember { mutableStateOf("원래 있던 소개") }
@@ -111,6 +112,10 @@ fun ProfileEditScreen(
         selectedExercise = myInfo?.bioQuestions?.get(2)?.answer ?: ""
         instagram = myInfo?.instagramId ?: ""
         profileQuery = myInfo?.bio ?: ""
+        if (myInfo?.profileImages != null) {
+            val newUrls = myInfo!!.profileImages.map { profileImage -> profileImage.url }
+            urls = newUrls
+        }
     }
 
     var isShowEditUniversityPopup by remember { mutableStateOf(false) }
@@ -165,7 +170,7 @@ fun ProfileEditScreen(
             }
 
             if (imageIndex in bitmaps.indices) {
-                val updatedBitmaps = bitmaps.toMutableList().apply {
+                bitmaps = bitmaps.toMutableList().apply {
                     if (imageIndex == 0) {
                         this[0] = bitmap
                     } else {
@@ -212,11 +217,12 @@ fun ProfileEditScreen(
                         ) {
                             repeat(3) { column ->
                                 val index = row * 3 + column
-                                val currentBitmap =
-                                    if (index < bitmaps.size) bitmaps[index] else null
+
+                                val currentUrl =
+                                    if (index < urls.size) urls[index].ifEmpty { null } else null
 
                                 ProfileImage(
-                                    bitmap = currentBitmap,
+                                    url = currentUrl,
                                     onClick = {
                                         imageIndex = index
                                         imageCropLauncher.launch(
