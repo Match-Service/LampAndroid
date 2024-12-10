@@ -7,7 +7,6 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -51,6 +50,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
+import coil.compose.AsyncImage
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.home.ProgressBar
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateProfileEdit
@@ -124,6 +124,7 @@ fun MyPageScreen(
     ) {
         item {
             UserInfoSection(
+                url = myInfo?.profileImages?.get(0)?.url,
                 navController = navController,
                 name = myInfo?.name ?: "",
                 age = calculateManAge(birthdate = birthdate),
@@ -146,6 +147,7 @@ fun MyPageScreen(
 
 @Composable
 fun UserInfoSection(
+    url: String?,
     navController: NavController,
     name: String,
     age: String,
@@ -170,8 +172,8 @@ fun UserInfoSection(
             horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.testimage),
+            AsyncImage(
+                model = url,
                 contentDescription = null,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
