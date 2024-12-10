@@ -21,6 +21,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.ManColor
@@ -29,7 +30,8 @@ import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
 fun ProfileImage(
-    bitmap: Bitmap?,
+    url: String? = null,
+    bitmap: Bitmap? = null,
     onClick: () -> Unit,
     onDelete: () -> Unit,
     isFirstImage: Boolean = false
@@ -62,13 +64,23 @@ fun ProfileImage(
             contentDescription = null,
             tint = Color.Unspecified
         )
-        if (bitmap != null) {
-            Image(
-                bitmap = bitmap.asImageBitmap(),
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = modifier
-            )
+
+        if (bitmap != null || url != null) {
+            if (bitmap == null) {
+                AsyncImage(
+                    model = url,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = modifier
+                )
+            } else {
+                Image(
+                    bitmap = bitmap.asImageBitmap(),
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = modifier
+                )
+            }
 
             if (isFirstImage) {
                 MainProfileImage()
