@@ -1,6 +1,7 @@
 package com.devndev.lamp.presentation.main
 
-import android.content.Context
+import android.content.ComponentName
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -12,16 +13,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.devndev.lamp.domain.manager.AppIconManager
 import com.devndev.lamp.presentation.ui.login.LoginViewModel
 import com.devndev.lamp.presentation.ui.splsh.SplashScreen
 import com.devndev.lamp.presentation.ui.theme.LampTheme
+import com.devndev.lamp.presentation.ui.utils.IconStatusManager
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    @Inject lateinit var appIconManager: AppIconManager
+    private val logTag = "MainActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,14 +33,44 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        Log.d("MainActivity", "onPause")
-        val sharedPreferences = getSharedPreferences("AppPreferences", Context.MODE_PRIVATE)
-        val gender = sharedPreferences.getString("selected_icon", "NONE")
-        gender?.let {
-            appIconManager.updateAppIcon(it)
+    override fun onStop() {
+        super.onStop()
+        Log.d(logTag, "onStop")
+        setAppIcon(IconStatusManager.getIconStatus())
+    }
+
+    private fun setAppIcon(gender: String) {
+        Log.d(logTag, "setAppIcon()")
+        val packageManager = this.packageManager
+
+        // Correct ComponentName with fully qualified class names
+        val aliases = listOf(
+            "com.devndev.lamp.presentation.main.MainActivity",
+            "com.devndev.lamp.MainActivityMale",
+            "com.devndev.lamp.MainActivityFemale"
+        )
+
+        // Disable all aliases first
+        aliases.forEach { alias ->
+            packageManager.setComponentEnabledSetting(
+                ComponentName(this, alias),
+                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                PackageManager.DONT_KILL_APP
+            )
         }
+
+        // Enable the correct alias based on gender
+        val targetAlias = when (gender) {
+            "MALE" -> "com.devndev.lamp.MainActivityMale"
+            "FEMALE" -> "com.devndev.lamp.MainActivityFemale"
+            else -> "com.devndev.lamp.presentation.main.MainActivity"
+        }
+
+        packageManager.setComponentEnabledSetting(
+            ComponentName(this, targetAlias),
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP
+        )
     }
 }
 
