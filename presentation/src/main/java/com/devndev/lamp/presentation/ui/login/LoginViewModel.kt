@@ -11,6 +11,7 @@ import com.devndev.lamp.domain.usecase.GoogleAuthUseCase
 import com.devndev.lamp.domain.usecase.SaveIsNeedSignOutUseCase
 import com.devndev.lamp.domain.usecase.SetTokenUseCase
 import com.devndev.lamp.presentation.ui.common.AccountStatus
+import com.devndev.lamp.presentation.ui.utils.IconStatusManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
@@ -29,6 +30,10 @@ class LoginViewModel @Inject constructor(
     private val setTokenUseCase: SetTokenUseCase
 ) : ViewModel() {
     private val logTag = "LoginViewModel"
+
+    init {
+        IconStatusManager.setIconStatus("NONE")
+    }
 
     fun getSignInIntent(): Intent {
         Log.d(logTag, "getSignInIntent()")
