@@ -16,8 +16,8 @@ val WomanColor = Color(0xFFE4313C)
 // 남녀 색 구분 필요
 var MainColor = Color(0xFF16B9F7)
 
-fun getMainColor(sex: String) {
-    MainColor = if (sex == "man") {
+fun getMainColor(gender: String): Color {
+    return if (gender == "MALE") {
         ManColor
     } else {
         WomanColor
