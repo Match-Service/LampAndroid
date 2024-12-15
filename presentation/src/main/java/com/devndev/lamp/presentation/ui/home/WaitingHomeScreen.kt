@@ -36,6 +36,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButtonWithIcon
@@ -43,7 +44,12 @@ import com.devndev.lamp.presentation.ui.theme.WomanColor
 import kotlinx.coroutines.delay
 
 @Composable
-fun WaitingHomeScreen(modifier: Modifier, navController: NavController) {
+fun WaitingHomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    modifier: Modifier,
+    navController: NavController
+) {
+    val myInfo by viewModel.myInfo.collectAsState()
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val animationProgress by infiniteTransition.animateFloat(
         initialValue = 0.3f,
@@ -78,9 +84,10 @@ fun WaitingHomeScreen(modifier: Modifier, navController: NavController) {
                     .weight(1f)
             ) {
                 HomeTextArea(
-                    nameText = "북창동루쥬라 " + stringResource(id = R.string.sir),
+                    nameText = "${myInfo?.name ?: ""} " + stringResource(id = R.string.sir),
                     middleText = stringResource(id = R.string.waiting_header),
-                    bottomText = profileName + stringResource(id = R.string.waiting_guide)
+                    bottomText = profileName + stringResource(id = R.string.waiting_guide),
+                    gender = myInfo?.gender ?: "MALE"
                 )
             }
             Column(

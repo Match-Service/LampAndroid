@@ -47,7 +47,8 @@ fun NormalHomeScreen(
             HomeTextArea(
                 nameText = "${myInfo?.name ?: ""} " + stringResource(id = R.string.sir),
                 middleText = stringResource(id = R.string.main_header),
-                bottomText = stringResource(id = R.string.meet_with_lamp)
+                bottomText = stringResource(id = R.string.meet_with_lamp),
+                gender = myInfo?.gender ?: "MALE"
             )
         }
         Column(

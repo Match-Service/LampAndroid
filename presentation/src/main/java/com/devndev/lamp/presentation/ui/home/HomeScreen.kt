@@ -22,8 +22,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.theme.IncTypography
-import com.devndev.lamp.presentation.ui.theme.MainColor
 import com.devndev.lamp.presentation.ui.theme.Typography
+import com.devndev.lamp.presentation.ui.theme.getMainColor
 import kotlin.system.exitProcess
 
 @Composable
@@ -72,14 +72,15 @@ fun HomeScreen(
 fun HomeTextArea(
     nameText: String,
     middleText: String,
-    bottomText: String
+    bottomText: String,
+    gender: String
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
             text = nameText,
-            color = MainColor,
+            color = getMainColor(gender),
             style = IncTypography.normal42
         )
         Text(
