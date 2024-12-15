@@ -222,7 +222,7 @@ fun NotificationItem(notificationData: NotificationData, type: Int) {
         Text(text = notificationData.timeAgo, style = Typography.normal12, color = Gray3)
         val notificationText = when (type) {
             NotificationType.INVITE -> "${notificationData.hostName}님이 ${notificationData.userName}님을\n초대했어요"
-            NotificationType.VISIT -> "${notificationData.userName}님이 '${notificationData.roomName}'\n에 참여하기를 원해요"
+            NotificationType.VISIT -> "${notificationData.userName}님이 '${notificationData.roomName}'\n에 참여하길 원해요"
             else -> ""
         }
         Text(text = notificationText, style = Typography.medium18, color = Color.White)
