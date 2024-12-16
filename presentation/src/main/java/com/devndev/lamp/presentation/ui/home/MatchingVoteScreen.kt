@@ -46,6 +46,7 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -122,8 +123,16 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
         listOf("Profile4", 1, 25, "한국대학교", listOf(100, 100, 100, 100), "글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100", listOf(4, 4, 4))
     )
 
+    val shouldScrollToTop = rememberSaveable { mutableStateOf(false) }
+
     // Track scroll offset
     LaunchedEffect(listState) {
+        // scroll 상태 확인하여 초기화
+        if (shouldScrollToTop.value) {
+            listState.animateScrollToItem(0)
+            shouldScrollToTop.value = false
+        }
+
         snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
             .collect { (index, scrollOffset) ->
                 if (index > 0) {
@@ -135,8 +144,10 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
                     yOffset.value = scrollOffset.toFloat()
                     itemIndex.value = index
                 }
-                // Update the sticky header visibility based on scroll distance
+
                 isStickyHeaderAtTop.value = index > 1
+                // scroll이 조금이라도 된 상태이면 shouldScrollToTop = true
+                shouldScrollToTop.value = index != 0 || scrollOffset != 0
             }
     }
 
