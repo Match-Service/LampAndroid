@@ -62,6 +62,7 @@ fun HomeScreen(
         WaitingHomeScreen(modifier = modifier, navController = navController)
     } else if (isMatching) {
         MatchingHomeScreen(modifier = modifier, navController = navController)
+        // MatchingVoteScreen 테스트 용
 //        MatchingVoteScreen(modifier = modifier, navController = navController)
     } else {
         NormalHomeScreen(modifier = modifier, navController = navController)
