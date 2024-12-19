@@ -191,4 +191,7 @@
     <string name="chat_created">대화방이 생성되었어요!</string>
 
     <string name="edit">수정하기</string>
+
+    <string name="push_notification_agree_message">앱 푸시 알림 수신 동의가 설정되었어요.\n%s</string>
+    <string name="push_notification_disagree_message">앱 푸시 알림 수신 동의가 해제되었어요.\n%s</string>
 </resources>
