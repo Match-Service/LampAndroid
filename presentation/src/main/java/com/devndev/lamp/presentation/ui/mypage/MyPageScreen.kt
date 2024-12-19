@@ -1,7 +1,12 @@
 package com.devndev.lamp.presentation.ui.mypage
 
+import android.content.Context
 import android.os.Handler
 import android.os.Looper
+import android.text.Layout
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.AlignmentSpan
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
@@ -63,6 +68,7 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
 import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 import kotlin.system.exitProcess
 
@@ -245,6 +251,7 @@ fun AttractiveSection(modifier: Modifier, avgAttractive: Int, attractive: List<I
 
 @Composable
 fun AlarmSettingsSection(modifier: Modifier, alarmsState: AlarmsState) {
+    val context = LocalContext.current
     Column(
         modifier = modifier.animateContentSize(),
         verticalArrangement = Arrangement.spacedBy(10.dp)
@@ -258,6 +265,9 @@ fun AlarmSettingsSection(modifier: Modifier, alarmsState: AlarmsState) {
                     if (alarmsState.areAllAlarmsUnchecked()) {
                         alarmsState.checkAllAlarms()
                     }
+                    showAgreeToast(context, true)
+                } else {
+                    showAgreeToast(context, false)
                 }
             }
         )
@@ -477,6 +487,29 @@ fun calculateManAge(birthdate: String): String {
     }
 
     return age.toString()
+}
+
+fun showAgreeToast(context: Context, agree: Boolean) {
+    // 현재 날짜 포맷팅
+    val currentDate = Date()
+    val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault())
+    val formattedDate = dateFormat.format(currentDate)
+
+    val message = if (agree) {
+        context.getString(R.string.push_notification_agree_message, formattedDate)
+    } else {
+        context.getString(R.string.push_notification_disagree_message, formattedDate)
+    }
+
+    val centeredText = SpannableString(message)
+    centeredText.setSpan(
+        AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER),
+        0,
+        message.length - 2,
+        Spannable.SPAN_INCLUSIVE_INCLUSIVE
+    )
+
+    Toast.makeText(context, centeredText, Toast.LENGTH_LONG).show()
 }
 
 class AlarmsState {
