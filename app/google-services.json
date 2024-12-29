@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "431689714733",
-    "project_id": "lamp-9b751",
-    "storage_bucket": "lamp-9b751.firebasestorage.app"
+    "project_number": "65906436256",
+    "project_id": "lamp-test-32e31",
+    "storage_bucket": "lamp-test-32e31.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:431689714733:android:f169a0b25a610c343abca4",
+        "mobilesdk_app_id": "1:65906436256:android:8544a63171a9b72d4ac1c5",
         "android_client_info": {
           "package_name": "com.devndev.lamp"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyB5WGDMB95bbSJCkodoqvgwCRzp7WrJPYk"
+          "current_key": "AIzaSyDdo1zHvSVOQVyhH2qZm59ham4_8N2O4mc"
         }
       ],
       "services": {
