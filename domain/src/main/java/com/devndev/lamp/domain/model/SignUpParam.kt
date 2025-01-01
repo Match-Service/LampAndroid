@@ -19,7 +19,8 @@ data class User(
     val bio: String,
     var profileImages: List<String>,
     val alarmSetting: AlarmSetting,
-    val bioQuestions: List<BioQuestion>
+    val bioQuestions: List<BioQuestion>,
+    var pushToken: String
 )
 
 data class AlarmSetting(

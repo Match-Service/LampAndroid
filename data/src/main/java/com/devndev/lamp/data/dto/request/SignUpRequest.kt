@@ -25,7 +25,8 @@ data class User(
     @Json(name = "bio") val bio: String,
     @Json(name = "profileImages") val profileImages: List<String>,
     @Json(name = "alarmSetting") val alarmSetting: AlarmSetting,
-    @Json(name = "bioQuestions") val bioQuestions: List<BioQuestion>
+    @Json(name = "bioQuestions") val bioQuestions: List<BioQuestion>,
+    @Json(name = "pushToken") val pushToken: String
 )
 
 @JsonClass(generateAdapter = true)

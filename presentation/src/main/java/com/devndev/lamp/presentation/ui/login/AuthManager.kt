@@ -17,6 +17,8 @@ object AuthManager {
 
     var signUpToken = ""
 
+    var fcmToken = ""
+
     fun updateLoginStatus(isLoggedIn: Boolean) {
         _isLoggedIn.value = isLoggedIn
     }

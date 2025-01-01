@@ -89,4 +89,6 @@ dependencies {
     implementation(libs.coil.compose)
 
     implementation(libs.android.image.cropper)
+
+    implementation(libs.firebase.messaging)
 }
