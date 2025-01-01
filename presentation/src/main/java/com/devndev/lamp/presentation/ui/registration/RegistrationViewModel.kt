@@ -22,6 +22,7 @@ import com.devndev.lamp.presentation.ui.common.InstagramStep
 import com.devndev.lamp.presentation.ui.login.AuthManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.common.api.ApiException
+import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,6 +58,12 @@ class RegistrationViewModel @Inject constructor(
 
     private val _isSignUpSuccess = MutableStateFlow(false)
     val isSignUpSuccess: StateFlow<Boolean> = _isSignUpSuccess
+
+    private lateinit var fcmToken: String
+
+    init {
+        getFcmToken()
+    }
 
     fun updateCurrentStep(step: Int) {
         _currentStep.value = step
@@ -144,8 +151,23 @@ class RegistrationViewModel @Inject constructor(
         }
     }
 
+    fun getFcmToken() {
+        FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                return@addOnCompleteListener
+            }
+            viewModelScope.launch {
+                val token = task.result
+                fcmToken = token
+                Log.d(logTag, "getFcmToken() $fcmToken")
+            }
+        }
+    }
+
     fun signUp(user: User) {
+        user.pushToken = fcmToken
         val signUpParam = SignUpParam(SignUpAuthRequest(AuthManager.signUpToken), user)
+
         Log.d(logTag, "SignUpParam $signUpParam")
         viewModelScope.launch {
             try {

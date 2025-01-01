@@ -1,4 +1,4 @@
-package com.devndev.lamp
+package com.devndev.lamp.service
 
 import android.annotation.SuppressLint
 import android.app.NotificationChannel

@@ -80,7 +80,8 @@ class SignUpRepositoryImpl @Inject constructor(private val signUpDataSource: Sig
                     question = signUpParam.user.bioQuestions[2].question,
                     answer = signUpParam.user.bioQuestions[2].answer
                 )
-            )
+            ),
+            pushToken = signUpParam.user.pushToken
         )
     }
 }

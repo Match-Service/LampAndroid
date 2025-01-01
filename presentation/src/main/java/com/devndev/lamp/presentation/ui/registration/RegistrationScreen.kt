@@ -145,8 +145,8 @@ fun RegistrationScreen(
                 BioQuestion("음주", selectedDrink),
                 BioQuestion("흡연", selectedSmoke),
                 BioQuestion("운동", selectedExercise)
-            )
-
+            ),
+            pushToken = ""
         )
         registrationViewModel.uploadImages(user = user, bitmaps = bitmaps.filterNotNull())
     }

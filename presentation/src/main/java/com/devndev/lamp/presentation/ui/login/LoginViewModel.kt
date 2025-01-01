@@ -65,6 +65,7 @@ class LoginViewModel @Inject constructor(
         try {
             val account = task.getResult(ApiException::class.java)
             val idToken = account?.idToken
+            Log.d(logTag, "idToken $idToken")
             authenticateWithGoogle(idToken.toString())
             //    AuthManager.updateLoginStatus(account != null)
             //    Log.d(logTag, "signInWithGoogle() isLoggedIn ${AuthManager.isLoggedIn.value}")
