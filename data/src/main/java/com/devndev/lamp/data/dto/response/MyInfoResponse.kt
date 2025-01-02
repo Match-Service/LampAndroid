@@ -24,7 +24,8 @@ data class MyInfoResponse(
 @JsonClass(generateAdapter = true)
 data class ProfileImage(
     @Json(name = "profileImageId") val profileImageId: Int,
-    @Json(name = "url") val url: String,
+    @Json(name = "downloadUrl") val downloadUrl: String,
+    @Json(name = "originUrl") val originUrl: String,
     @Json(name = "isPrimary") val isPrimary: Boolean,
     @Json(name = "order") val order: Int
 )
@@ -32,7 +33,8 @@ data class ProfileImage(
 fun ProfileImage.toDomainModel(): ProfileImageForMyInfo {
     return ProfileImageForMyInfo(
         profileImageId = profileImageId,
-        url = url,
+        downloadUrl = downloadUrl,
+        originUrl = originUrl,
         isPrimary = isPrimary,
         order = order
     )

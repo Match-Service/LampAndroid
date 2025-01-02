@@ -130,7 +130,7 @@ fun MyPageScreen(
     ) {
         item {
             UserInfoSection(
-                url = myInfo?.profileImages?.get(0)?.url,
+                url = myInfo?.profileImages?.get(0)?.downloadUrl,
                 navController = navController,
                 name = myInfo?.name ?: "",
                 age = calculateManAge(birthdate = birthdate),
