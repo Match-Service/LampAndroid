@@ -87,7 +87,7 @@ fun MyPageScreen(
 
     val myInfo by viewModel.myInfo.collectAsState()
 
-    val birthdate = myInfo?.birth?.takeIf { it.isNotBlank() } ?: "000000"
+    val birthdate = myInfo?.birth ?: "00000000"
 
     val alarmsState = remember {
         AlarmsState()
@@ -134,7 +134,7 @@ fun MyPageScreen(
                 navController = navController,
                 name = myInfo?.name ?: "",
                 age = calculateManAge(birthdate = birthdate),
-                university = "한국대학교"
+                university = myInfo?.jobName ?: ""
             )
             Spacer(modifier = Modifier.height(30.dp))
             Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
@@ -199,7 +199,7 @@ fun UserInfoSection(
                 val infoText = if (university == null) {
                     "${age}세"
                 } else {
-                    "${age}세, 한국대학교"
+                    "${age}세, $university"
                 }
                 Text(
                     text = infoText,
@@ -458,12 +458,12 @@ fun LogOutSection(modifier: Modifier, viewModel: MyPageViewModel) {
 fun calculateManAge(birthdate: String): String {
     // Check if the birthdate string is valid
     Log.d("MyPageScreen", "birthDate = $birthdate")
-    if (birthdate == "000000") {
+    if (birthdate == "00000000") {
         return "0"
     }
 
-    // Parse the birthdate string to a Date object
-    val formatter = SimpleDateFormat("yyMMdd", Locale.getDefault()) // Format "970530"
+    // Parse the birthdate string to a Date object (using the "yyyyMMdd" format)
+    val formatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault()) // Format "19970530"
     val birthDate =
         formatter.parse(birthdate) ?: throw IllegalArgumentException("Invalid birthdate format")
 
@@ -485,7 +485,7 @@ fun calculateManAge(birthdate: String): String {
     ) {
         age -= 1
     }
-
+    Log.d("MyPageScreen", "만 나이: $age")
     return age.toString()
 }
 
