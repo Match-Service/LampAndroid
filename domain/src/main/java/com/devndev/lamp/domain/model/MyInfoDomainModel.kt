@@ -16,7 +16,8 @@ data class MyInfoDomainModel(
 
 data class ProfileImageForMyInfo(
     val profileImageId: Int,
-    val url: String,
+    val downloadUrl: String,
+    val originUrl: String,
     val isPrimary: Boolean,
     val order: Int
 )

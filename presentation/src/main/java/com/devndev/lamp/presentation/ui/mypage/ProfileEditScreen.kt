@@ -113,7 +113,7 @@ fun ProfileEditScreen(
         instagram = myInfo?.instagramId ?: ""
         profileQuery = myInfo?.bio ?: ""
         if (myInfo?.profileImages != null) {
-            val newUrls = myInfo!!.profileImages.map { profileImage -> profileImage.url }
+            val newUrls = myInfo!!.profileImages.map { profileImage -> profileImage.downloadUrl }
             urls = newUrls
         }
     }
