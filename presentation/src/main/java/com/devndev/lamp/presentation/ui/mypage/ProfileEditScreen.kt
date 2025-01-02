@@ -69,6 +69,7 @@ import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.Typography
+
 // todo 사진 표시 처리 완료 했지만 추후 서버 프로필 수정 기능 완료 후 삭제, 변경 구현 필요
 @Composable
 fun ProfileEditScreen(
@@ -106,12 +107,15 @@ fun ProfileEditScreen(
     var instagram by remember { mutableStateOf("") }
     val instagramAuthStep by profileEditViewModel.instagramStep.collectAsState()
 
+    var university by remember { mutableStateOf("") }
+
     LaunchedEffect(myInfo) {
         selectedDrink = myInfo?.bioQuestions?.get(0)?.answer ?: ""
         selectedSmoke = myInfo?.bioQuestions?.get(1)?.answer ?: ""
         selectedExercise = myInfo?.bioQuestions?.get(2)?.answer ?: ""
         instagram = myInfo?.instagramId ?: ""
         profileQuery = myInfo?.bio ?: ""
+        university = myInfo?.jobName ?: ""
         if (myInfo?.profileImages != null) {
             val newUrls = myInfo!!.profileImages.map { profileImage -> profileImage.downloadUrl }
             urls = newUrls
@@ -120,8 +124,6 @@ fun ProfileEditScreen(
 
     var isShowEditUniversityPopup by remember { mutableStateOf(false) }
     var isShowEditInstagramPopup by remember { mutableStateOf(false) }
-
-    var university by remember { mutableStateOf("한국대학교") }
 
     if (isShowEditUniversityPopup) {
         EditPopup(
