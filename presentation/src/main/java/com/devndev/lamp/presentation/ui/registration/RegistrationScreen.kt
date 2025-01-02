@@ -128,7 +128,7 @@ fun RegistrationScreen(
         val user = User(
             name = name,
             job = "STUDENT",
-            jobName = "STUDENT",
+            jobName = university,
             gender = gender,
             birth = birth,
             instagramId = instagramId,
@@ -325,8 +325,12 @@ fun RegistrationScreen(
             if (currentStep == RegistrationScreen.UNIVERSITY || currentStep == RegistrationScreen.INSTAGRAM) {
                 Text(
                     modifier = Modifier.clickable {
+                        if (currentStep == RegistrationScreen.UNIVERSITY) {
+                            university = ""
+                        } else {
+                            instagramId = ""
+                        }
                         registrationViewModel.updateCurrentStep(currentStep + 1)
-                        university = ""
                     },
                     text = buildAnnotatedString {
                         append(stringResource(id = R.string.skip))
