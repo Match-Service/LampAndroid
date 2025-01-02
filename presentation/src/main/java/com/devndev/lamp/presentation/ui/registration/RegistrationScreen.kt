@@ -119,12 +119,9 @@ fun RegistrationScreen(
         val cleanedMonth = birthMonth.replace("월", "").trim()
         val cleanedDay = birthDay.replace("일", "").trim()
 
-        val birth = "${cleanedYear.takeLast(2)}${cleanedMonth.padStart(2, '0')}${
-        cleanedDay.padStart(
-            2,
-            '0'
-        )
-        }"
+        val birth = cleanedYear +
+            cleanedMonth.padStart(2, '0') +
+            cleanedDay.padStart(2, '0')
         val user = User(
             name = name,
             job = "STUDENT",
