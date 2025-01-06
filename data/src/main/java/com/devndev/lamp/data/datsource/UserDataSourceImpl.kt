@@ -1,8 +1,10 @@
 package com.devndev.lamp.data.datsource
 
+import com.devndev.lamp.data.dto.request.ModifyUserRequest
 import com.devndev.lamp.data.dto.response.MyInfoResponse
 import com.devndev.lamp.data.dto.response.UserResponseDto
 import com.devndev.lamp.data.service.UserService
+import retrofit2.Response
 import javax.inject.Inject
 
 class UserDataSourceImpl @Inject constructor(
@@ -10,6 +12,10 @@ class UserDataSourceImpl @Inject constructor(
 ) : UserDataSource {
     override suspend fun searchUser(name: String): List<UserResponseDto> {
         return userService.searchUser(name)
+    }
+
+    override suspend fun modifyUser(modifyUserRequest: ModifyUserRequest): Response<Void> {
+        return userService.modifyUser(modifyUserRequest)
     }
 
     override suspend fun getMyInfo(): MyInfoResponse {
