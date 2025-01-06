@@ -6,6 +6,8 @@ import com.devndev.lamp.data.datsource.ItemDataSource
 import com.devndev.lamp.data.datsource.ItemDataSourceImpl
 import com.devndev.lamp.data.datsource.LocalDataSource
 import com.devndev.lamp.data.datsource.LocalDataSourceImpl
+import com.devndev.lamp.data.datsource.NotificationDataSource
+import com.devndev.lamp.data.datsource.NotificationDataSourceImpl
 import com.devndev.lamp.data.datsource.SignUpDataSource
 import com.devndev.lamp.data.datsource.SignUpDataSourceImpl
 import com.devndev.lamp.data.datsource.UserDataSource
@@ -38,4 +40,8 @@ interface DataSourceModule {
     @Singleton
     @Binds
     fun bindLocalDataSource(dataSourceImpl: LocalDataSourceImpl): LocalDataSource
+
+    @Singleton
+    @Binds
+    fun bindNotificationDataSource(notificationDataSourceImpl: NotificationDataSourceImpl): NotificationDataSource
 }

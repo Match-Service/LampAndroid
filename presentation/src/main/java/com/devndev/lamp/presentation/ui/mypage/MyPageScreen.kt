@@ -31,6 +31,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -146,6 +147,11 @@ fun MyPageScreen(
                 AlarmSettingsSection(modifier = outlineModifier, alarmsState = alarmsState)
                 AskQuestionSection(modifier = outlineModifier)
                 LogOutSection(modifier = outlineModifier, viewModel = viewModel)
+            }
+            Button(onClick = {
+                viewModel.sendFcmNotification("Fcm 테스트", "test")
+            }) {
+                Text("알람테스트")
             }
         }
     }

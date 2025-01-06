@@ -5,8 +5,7 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
-
-    id("com.google.gms.google-services")
+    alias(libs.plugins.google.gms.google.services)
 }
 
 android {
@@ -94,7 +93,7 @@ dependencies {
     implementation(libs.navigation.compose)
 
     // Firebase SDK
-    implementation("com.google.firebase:firebase-messaging-ktx")
+    implementation(libs.firebase.messaging)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
 }
