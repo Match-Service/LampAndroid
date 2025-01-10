@@ -15,9 +15,20 @@ interface UserService {
         @Query("userName") name: String
     ): List<UserResponseDto>
 
-    @PATCH("api/v1/user")
+    @PATCH("/api/v1/user")
     suspend fun modifyUser(
         @Body modifyUserRequest: ModifyUserRequest
+//        @Query("name") name: String,
+//        @Query("job") job: String,
+//        @Query("jobName") jobName: String,
+//        @Query("gender") gender: String,
+//        @Query("birth") birth: String,
+//        @Query("instagramId") instagramId: String,
+//        @Query("bio") bio: String,
+//        @Query("profileImages") profileImages: List<String>,
+//        @Query("alarmSetting") alarmSetting: AlarmSetting,
+//        @Query("bioQuestion") bioQuestion: List<BioQuestion>,
+//        @Query("pushToken") pushToken: String,
     ): Response<Void>
 
     @GET("api/v1/user/me")

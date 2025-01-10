@@ -136,7 +136,8 @@ fun RegistrationScreen(
                 lampInvite = true,
                 newMatch = true,
                 receiveBadge = true,
-                receiveMessage = true
+                receiveMessage = true,
+                event = true
             ),
             bioQuestions = listOf(
                 BioQuestion("음주", selectedDrink),

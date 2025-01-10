@@ -57,6 +57,9 @@ import com.canhub.cropper.CropImage.CancelledResult.uriContent
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
+import com.devndev.lamp.data.dto.request.ModifyUser
+import com.devndev.lamp.domain.model.AlarmSetting
+import com.devndev.lamp.domain.model.BioQuestion
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.CustomRadioButton
@@ -200,7 +203,34 @@ fun ProfileEditScreen(
             TopNavigationBar(
                 text = stringResource(id = R.string.edit_profile),
                 isNeedXButton = false,
-                onBackButtonClick = { navController.navigateMain(MainScreenPage.MY_PAGE) }
+                onBackButtonClick = {
+                    profileEditViewModel.modifyUser(
+                        ModifyUser(
+                            name = "string",
+                            job = "STUDENT",
+                            jobName = "string",
+                            gender = "MALE",
+                            birth = "19950101",
+                            instagramId = "string",
+                            bio = "string",
+                            profileImages = listOf("string"),
+                            alarmSetting = AlarmSetting(
+                                allPush = true,
+                                lampInvite = true,
+                                newMatch = true,
+                                receiveBadge = true,
+                                receiveMessage = true,
+                                event = true
+                            ),
+                            bioQuestions = listOf(
+                                BioQuestion(question = "음주", answer = "string"),
+                                BioQuestion(question = "흡연", answer = "string"),
+                                BioQuestion(question = "운동", answer = "string")
+                            )
+                        )
+                    )
+                    navController.navigateMain(MainScreenPage.MY_PAGE)
+                }
             )
 
             Spacer(modifier = Modifier.height(32.dp))

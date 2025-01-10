@@ -9,7 +9,7 @@ data class ModifyUserParam(
     val instagramId: String,
     val bio: String,
     val profileImages: List<String>,
-    val alarmSetting: List<AlarmSetting>,
-    val bioQuestion: List<BioQuestion>,
-    val pushToken: String
+    val alarmSetting: AlarmSetting,
+    val bioQuestions: List<BioQuestion>,
+    var pushToken: String
 )
