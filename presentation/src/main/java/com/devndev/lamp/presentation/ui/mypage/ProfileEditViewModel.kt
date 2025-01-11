@@ -73,22 +73,32 @@ class ProfileEditViewModel @Inject constructor(
 
     fun modifyUser(modifyUser: ModifyUser) {
         viewModelScope.launch {
-            Log.d(logTag, "modifyUserRequest $modifyUser")
-            modifyUserUseCase(
-                ModifyUserParam(
-                    name = modifyUser.name,
-                    job = modifyUser.job,
-                    jobName = modifyUser.jobName,
-                    gender = modifyUser.gender,
-                    birth = modifyUser.birth,
-                    instagramId = modifyUser.instagramId,
-                    bio = modifyUser.bio,
-                    profileImages = modifyUser.profileImages,
-                    alarmSetting = modifyUser.alarmSetting,
-                    bioQuestions = modifyUser.bioQuestions,
-                    pushToken = fcmToken
+            Log.d(logTag, "modifyUserRequest $modifyUser pushToken $fcmToken")
+            try {
+                val response = modifyUserUseCase(
+                    ModifyUserParam(
+                        name = modifyUser.name,
+                        job = modifyUser.job,
+                        jobName = modifyUser.jobName,
+                        gender = modifyUser.gender,
+                        birth = modifyUser.birth,
+                        instagramId = modifyUser.instagramId,
+                        bio = modifyUser.bio,
+                        profileImages = modifyUser.profileImages,
+                        alarmSetting = modifyUser.alarmSetting,
+                        bioQuestions = modifyUser.bioQuestions,
+                        pushToken = fcmToken
+                    )
                 )
-            )
+
+                if (response) {
+                    Log.d(logTag, "modifyUser: true")
+                } else {
+                    Log.d(logTag, "modifyUser: fail")
+                }
+            } catch (e: ApiException) {
+                Log.e(logTag, "modifyUser", e)
+            }
         }
     }
 

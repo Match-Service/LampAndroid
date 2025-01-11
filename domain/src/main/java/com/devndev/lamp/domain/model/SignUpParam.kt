@@ -29,8 +29,7 @@ data class AlarmSetting(
     val lampVisit: Boolean,
     val newMatch: Boolean,
     val receiveBadge: Boolean,
-    val receiveMessage: Boolean,
-    val event: Boolean
+    val receiveMessage: Boolean
 )
 
 data class BioQuestion(
