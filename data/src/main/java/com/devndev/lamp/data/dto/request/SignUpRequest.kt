@@ -33,6 +33,7 @@ data class User(
 data class AlarmSetting(
     @Json(name = "allPush") val allPush: Boolean,
     @Json(name = "lampInvite") val lampInvite: Boolean,
+    @Json(name = "lampVisit") val lampVisit: Boolean,
     @Json(name = "newMatch") val newMatch: Boolean,
     @Json(name = "receiveBadge") val receiveBadge: Boolean,
     @Json(name = "receiveMessage") val receiveMessage: Boolean

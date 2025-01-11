@@ -63,6 +63,7 @@ class SignUpRepositoryImpl @Inject constructor(private val signUpDataSource: Sig
             alarmSetting = AlarmSetting(
                 allPush = signUpParam.user.alarmSetting.allPush,
                 lampInvite = signUpParam.user.alarmSetting.lampInvite,
+                lampVisit = signUpParam.user.alarmSetting.lampVisit,
                 newMatch = signUpParam.user.alarmSetting.newMatch,
                 receiveBadge = signUpParam.user.alarmSetting.receiveBadge,
                 receiveMessage = signUpParam.user.alarmSetting.receiveMessage
