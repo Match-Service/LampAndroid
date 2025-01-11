@@ -26,6 +26,7 @@ data class User(
 data class AlarmSetting(
     val allPush: Boolean,
     val lampInvite: Boolean,
+    val lampVisit: Boolean,
     val newMatch: Boolean,
     val receiveBadge: Boolean,
     val receiveMessage: Boolean,

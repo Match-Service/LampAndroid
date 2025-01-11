@@ -134,6 +134,7 @@ fun RegistrationScreen(
             alarmSetting = AlarmSetting(
                 allPush = true,
                 lampInvite = true,
+                lampVisit = true,
                 newMatch = true,
                 receiveBadge = true,
                 receiveMessage = true,
