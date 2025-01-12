@@ -358,19 +358,19 @@ fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatchi
                 launch {
                     animatableOffset.animateTo(
                         targetValue = -screenHeightPx * 0.3f,
-                        animationSpec = tween(durationMillis = 500)
+                        animationSpec = tween(durationMillis = 750)
                     )
                 }
                 launch {
                     animatableAlpha.animateTo(
                         targetValue = 0f,
-                        animationSpec = tween(durationMillis = 500)
+                        animationSpec = tween(durationMillis = 750)
                     )
                 }
                 launch {
                     animatableShadowRadius.animateTo(
                         targetValue = 0f,
-                        animationSpec = tween(durationMillis = 500)
+                        animationSpec = tween(durationMillis = 750)
                     )
                 }
             }
@@ -384,19 +384,19 @@ fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatchi
                 launch {
                     animatableOffset.animateTo(
                         targetValue = 0f,
-                        animationSpec = tween(durationMillis = 500)
+                        animationSpec = tween(durationMillis = 750)
                     )
                 }
                 launch {
                     animatableAlpha.animateTo(
                         targetValue = 0.7f,
-                        animationSpec = tween(durationMillis = 500)
+                        animationSpec = tween(durationMillis = 750)
                     )
                 }
                 launch {
                     animatableShadowRadius.animateTo(
                         targetValue = 250f, // 블러를 서서히 올림
-                        animationSpec = tween(durationMillis = 500)
+                        animationSpec = tween(durationMillis = 750)
                     )
                 }
             }
