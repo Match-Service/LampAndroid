@@ -15,7 +15,7 @@ interface UserService {
         @Query("userName") name: String
     ): List<UserResponseDto>
 
-    @PATCH("api/v1/user")
+    @PATCH("/api/v1/user")
     suspend fun modifyUser(
         @Body modifyUserRequest: ModifyUserRequest
     ): Response<Void>

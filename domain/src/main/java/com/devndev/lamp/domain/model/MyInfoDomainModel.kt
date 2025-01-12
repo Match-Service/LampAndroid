@@ -26,6 +26,7 @@ data class AlarmSettingForMyInfo(
     val alarmSettingId: Int,
     val allPush: Boolean,
     val lampInvite: Boolean,
+    val lampVisit: Boolean,
     val newMatch: Boolean,
     val receiveBadge: Boolean,
     val receiveMessage: Boolean
