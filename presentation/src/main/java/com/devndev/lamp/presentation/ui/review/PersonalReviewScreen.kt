@@ -35,7 +35,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -143,25 +142,25 @@ fun PersonalReviewScreen(step: Int) {
 fun PersonalReviewProgressBar(title: String, isBorder: Boolean, progress: Float, onProgressChange: (Float) -> Unit) {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .let {
-                if (isBorder) {
-                    it.then(
-                        Modifier.drawBehind {
-                            val strokeWidth = 1.dp.toPx()
-                            val y = size.height - strokeWidth / 2
-                            drawLine(
-                                color = Gray,
-                                start = Offset(0f, y),
-                                end = Offset(size.width, y),
-                                strokeWidth = strokeWidth
-                            )
-                        }
-                    )
-                } else {
-                    it
-                }
-            },
+            .fillMaxWidth(),
+//            .let {
+//                if (isBorder) {
+//                    it.then(
+//                        Modifier.drawBehind {
+//                            val strokeWidth = 1.dp.toPx()
+//                            val y = size.height - strokeWidth / 2
+//                            drawLine(
+//                                color = Gray,
+//                                start = Offset(0f, y),
+//                                end = Offset(size.width, y),
+//                                strokeWidth = strokeWidth
+//                            )
+//                        }
+//                    )
+//                } else {
+//                    it
+//                }
+//            }
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -259,7 +258,7 @@ fun PersonalReviewProgressBar(title: String, isBorder: Boolean, progress: Float,
                 style = Typography.medium15
             )
         }
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(45.dp))
     }
 }
 
