@@ -57,9 +57,9 @@ import com.canhub.cropper.CropImage.CancelledResult.uriContent
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
-import com.devndev.lamp.data.dto.request.ModifyUser
 import com.devndev.lamp.domain.model.AlarmSetting
 import com.devndev.lamp.domain.model.BioQuestion
+import com.devndev.lamp.domain.model.ModifyUserParam
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.CustomRadioButton
@@ -205,7 +205,7 @@ fun ProfileEditScreen(
                 isNeedXButton = false,
                 onBackButtonClick = {
                     profileEditViewModel.modifyUser(
-                        ModifyUser(
+                        ModifyUserParam(
                             name = myInfo?.name ?: "",
                             job = myInfo?.job ?: "",
                             jobName = myInfo?.jobName ?: "",
@@ -226,7 +226,8 @@ fun ProfileEditScreen(
                                 BioQuestion(myInfo?.bioQuestions?.get(0)?.question ?: "음주", myInfo?.bioQuestions?.get(0)!!.answer ?: "자주 마셔요"),
                                 BioQuestion(myInfo?.bioQuestions?.get(1)?.question ?: "흡연", myInfo?.bioQuestions?.get(1)!!.answer ?: "자주 펴요"),
                                 BioQuestion(myInfo?.bioQuestions?.get(2)?.question ?: "운동", myInfo?.bioQuestions?.get(2)!!.answer ?: "매일 해요")
-                            )
+                            ),
+                            pushToken = ""
                         )
                     )
                     navController.navigateMain(MainScreenPage.MY_PAGE)

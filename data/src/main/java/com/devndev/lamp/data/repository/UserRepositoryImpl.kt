@@ -1,6 +1,8 @@
 package com.devndev.lamp.data.repository
 
 import com.devndev.lamp.data.datsource.UserDataSource
+import com.devndev.lamp.data.dto.request.AlarmSetting
+import com.devndev.lamp.data.dto.request.BioQuestion
 import com.devndev.lamp.data.dto.request.ModifyUserRequest
 import com.devndev.lamp.data.dto.response.toDomainModel
 import com.devndev.lamp.domain.model.ModifyUserParam
@@ -27,8 +29,28 @@ class UserRepositoryImpl @Inject constructor(private val userDataSource: UserDat
             instagramId = modifyUserParam.instagramId,
             bio = modifyUserParam.bio,
             profileImages = modifyUserParam.profileImages,
-            alarmSetting = modifyUserParam.alarmSetting,
-            bioQuestions = modifyUserParam.bioQuestions,
+            alarmSetting = AlarmSetting(
+                allPush = modifyUserParam.alarmSetting.allPush,
+                lampInvite = modifyUserParam.alarmSetting.lampInvite,
+                lampVisit = modifyUserParam.alarmSetting.lampVisit,
+                newMatch = modifyUserParam.alarmSetting.newMatch,
+                receiveBadge = modifyUserParam.alarmSetting.receiveBadge,
+                receiveMessage = modifyUserParam.alarmSetting.receiveMessage
+            ),
+            bioQuestions = listOf(
+                BioQuestion(
+                    question = modifyUserParam.bioQuestions[0].question,
+                    answer = modifyUserParam.bioQuestions[0].answer
+                ),
+                BioQuestion(
+                    question = modifyUserParam.bioQuestions[1].question,
+                    answer = modifyUserParam.bioQuestions[1].answer
+                ),
+                BioQuestion(
+                    question = modifyUserParam.bioQuestions[2].question,
+                    answer = modifyUserParam.bioQuestions[2].answer
+                )
+            ),
             pushToken = modifyUserParam.pushToken
         )
         val code = userDataSource.modifyUser(modifyUserRequest).code()

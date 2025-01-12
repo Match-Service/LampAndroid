@@ -3,7 +3,6 @@ package com.devndev.lamp.presentation.ui.mypage
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devndev.lamp.data.dto.request.ModifyUser
 import com.devndev.lamp.domain.model.ModifyUserParam
 import com.devndev.lamp.domain.model.MyInfoDomainModel
 import com.devndev.lamp.domain.model.ValidateInstagramParam
@@ -71,7 +70,7 @@ class ProfileEditViewModel @Inject constructor(
         }
     }
 
-    fun modifyUser(modifyUser: ModifyUser) {
+    fun modifyUser(modifyUser: ModifyUserParam) {
         viewModelScope.launch {
             Log.d(logTag, "modifyUserRequest $modifyUser pushToken $fcmToken")
             try {

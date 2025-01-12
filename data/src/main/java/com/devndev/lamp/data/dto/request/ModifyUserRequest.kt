@@ -1,7 +1,5 @@
 package com.devndev.lamp.data.dto.request
 
-import com.devndev.lamp.domain.model.AlarmSetting
-import com.devndev.lamp.domain.model.BioQuestion
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
