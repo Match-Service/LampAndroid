@@ -331,7 +331,19 @@ fun ProfileEditScreen(
                         }
                         .padding(horizontal = 20.dp, vertical = 10.dp)
                 ) {
-                    Text(text = university, color = Color.White, style = Typography.medium18)
+                    Text(
+                        text = if (university.isEmpty()) {
+                            stringResource(id = R.string.input_university)
+                        } else {
+                            university
+                        },
+                        color = if (university.isEmpty()) {
+                            LightGray
+                        } else {
+                            Color.White
+                        },
+                        style = Typography.medium18
+                    )
                 }
                 Box(
                     modifier = Modifier
@@ -346,7 +358,19 @@ fun ProfileEditScreen(
                         }
                         .padding(horizontal = 20.dp, vertical = 10.dp)
                 ) {
-                    Text(text = instagram, color = Color.White, style = Typography.medium18)
+                    Text(
+                        text = if (instagram.isEmpty()) {
+                            stringResource(id = R.string.guide_insta)
+                        } else {
+                            instagram
+                        },
+                        color = if (instagram.isEmpty()) {
+                            LightGray
+                        } else {
+                            Color.White
+                        },
+                        style = Typography.medium18
+                    )
                 }
             }
         }
