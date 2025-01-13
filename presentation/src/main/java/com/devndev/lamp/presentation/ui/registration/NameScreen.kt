@@ -28,7 +28,8 @@ fun NameScreen(
     name: String,
     onNameChange: (String) -> Unit,
     isValidName: Boolean,
-    isDuplicateName: Boolean
+    isDuplicateName: Boolean,
+    isNameValidCompleted: Boolean
 ) {
     SelectionScreen(text = stringResource(id = R.string.registration_name)) {
         var nameQuery by remember { mutableStateOf(name) }
@@ -41,7 +42,7 @@ fun NameScreen(
         ) {
             LampTextField(
                 width = 270,
-                isGradient = !isValidName || isDuplicateName,
+                isGradient = name.isNotEmpty() && !isNameValidCompleted,
                 query = nameQuery,
                 onQueryChange = {
                     nameQuery = it

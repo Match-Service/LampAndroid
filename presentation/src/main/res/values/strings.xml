@@ -39,9 +39,9 @@
 
     <string name="registration_university">출신/재학 중인\n학교는 어디인가요?</string>
     <string name="input_university">대학명을 입력하세요</string>
-    <string name="university_guide1">작성할 내용이 없다면 건너띄기를 눌러주세요</string>
+    <string name="university_guide1">넘어가기 버튼을 누르면, 학교 정보는 저장되지 않아요</string>
 
-    <string name="skip">건너뛰기</string>
+    <string name="skip">넘어가기</string>
 
     <string name="input_gender">성별은\n무엇인가요?</string>
     <string name="man">남성</string>
@@ -72,8 +72,9 @@
     <string name="input_insta">인스타그램 계정 공유하고\n숨겨진 매력을 보여주세요</string>
     <string name="guide_insta">인스타그램 계정을 입력하세요</string>
     <string name="authentication">인증하기</string>
-    <string name="auth_failure">없는 계정입니다. 다시 입력해주세요</string>
-    <string name="auth_success">인증 완료</string>
+    <string name="auth_failure">회원님의 계정을 찾을 수 없어요. 계정을 다시 입력해 주세요</string>
+    <string name="auth_success">인증이 완료 되었어요</string>
+    <string name="insta_guide1">넘어가기 버튼을 누르면, SNS 정보는 저장되지 않아요</string>
 
     <string name="slide_select_mood">옆으로 넘겨 분위기를\n선택해 주세요</string>
     <string name="funny_mood">신나는 분위기</string>

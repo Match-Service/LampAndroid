@@ -53,6 +53,9 @@ class RegistrationViewModel @Inject constructor(
     private val _isDuplicateName = MutableStateFlow(false)
     val isDuplicateName: StateFlow<Boolean> = _isDuplicateName
 
+    private val _isNameValidCompleted = MutableStateFlow(false)
+    val isNameValidCompleted: StateFlow<Boolean> = _isNameValidCompleted
+
     private val _instagramStep = MutableStateFlow(InstagramStep.NONE)
     val instagramStep: StateFlow<Int> = _instagramStep
 
@@ -80,6 +83,11 @@ class RegistrationViewModel @Inject constructor(
         Log.d(logTag, "updateInstagramStep: ${instagramStep.value}")
     }
 
+    fun updateIsNameValidCompleted(isNameValidComplete: Boolean) {
+        _isNameValidCompleted.value = isNameValidComplete
+        Log.d(logTag, "updateIsNameValidCompleted: ${isNameValidCompleted.value}")
+    }
+
     fun checkIsDuplicateName(name: String) {
         viewModelScope.launch {
             try {
@@ -87,6 +95,7 @@ class RegistrationViewModel @Inject constructor(
                     Log.d(logTag, "checkIsDuplicateName: false")
                     _isDuplicateName.value = false
                     _currentStep.value = currentStep.value + 1
+                    _isNameValidCompleted.value = true
                 } else {
                     Log.d(logTag, "checkIsDuplicateName: true")
                     _isDuplicateName.value = true

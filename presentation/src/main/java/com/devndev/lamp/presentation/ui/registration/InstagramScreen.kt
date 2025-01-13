@@ -3,6 +3,7 @@ package com.devndev.lamp.presentation.ui.registration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
@@ -15,12 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.InstagramStep
 import com.devndev.lamp.presentation.ui.common.LampTextField
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
+import com.devndev.lamp.presentation.ui.theme.ManColor
 import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
 
@@ -36,12 +41,12 @@ fun InstagramScreen(
         Spacer(modifier = Modifier.height(30.dp))
 
         Column(
-            verticalArrangement = Arrangement.spacedBy(15.dp),
+            verticalArrangement = Arrangement.spacedBy(6.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             LampTextField(
                 width = 300,
-                isGradient = step == InstagramStep.INVALID && isAuthButtonClicked,
+                isGradient = instagramID.isNotEmpty() && step != InstagramStep.VALID,
                 query = idQuery,
                 onQueryChange = {
                     idQuery = it
@@ -49,26 +54,46 @@ fun InstagramScreen(
                 },
                 hintText = stringResource(id = R.string.guide_insta)
             )
+            Spacer(modifier = Modifier.height(7.dp))
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = buildAnnotatedString {
+                    val fullText = stringResource(id = R.string.insta_guide1)
+                    val skipText = stringResource(id = R.string.skip)
 
+                    val startIndex = fullText.indexOf(skipText)
+                    val endIndex = startIndex + skipText.length
+
+                    append(fullText)
+
+                    addStyle(
+                        style = SpanStyle(textDecoration = TextDecoration.Underline),
+                        start = startIndex,
+                        end = endIndex
+                    )
+                },
+                style = Typography.normal12,
+                color = Color.White,
+                textAlign = TextAlign.Center
+            )
             var guideText: String = ""
             var guideTextColor = Color.White
             if (isAuthButtonClicked) {
                 if (step == InstagramStep.VALID) {
                     guideText = stringResource(id = R.string.auth_success)
+                    guideTextColor = ManColor
                 } else if (step == InstagramStep.INVALID) {
                     guideText = stringResource(id = R.string.auth_failure)
                     guideTextColor = WomanColor
                 }
-            } else {
-                guideText = stringResource(id = R.string.university_guide1)
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = guideText,
+                    style = Typography.normal12,
+                    color = guideTextColor,
+                    textAlign = TextAlign.Center
+                )
             }
-            Text(
-                modifier = Modifier.width(230.dp),
-                text = guideText,
-                style = Typography.normal12,
-                color = guideTextColor,
-                textAlign = TextAlign.Center
-            )
         }
     }
 }

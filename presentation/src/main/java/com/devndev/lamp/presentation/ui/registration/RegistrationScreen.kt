@@ -75,6 +75,9 @@ fun RegistrationScreen(
     var selectedGender by remember { mutableStateOf("") }
     var isNameValid by remember { mutableStateOf(true) }
     val isDuplicateName by registrationViewModel.isDuplicateName.collectAsState()
+    val isNameValidCompleted by registrationViewModel.isNameValidCompleted.collectAsState()
+
+    var isUniversityCompleted by remember { mutableStateOf(false) }
 
     val currentYear = LocalDate.now().year
     var birthYear by remember { mutableStateOf(currentYear.toString()) }
@@ -255,14 +258,20 @@ fun RegistrationScreen(
                                 if (isDuplicateName) {
                                     registrationViewModel.updateIsDuplicateName(false)
                                 }
+                                registrationViewModel.updateIsNameValidCompleted(false)
                             },
                             isValidName = isNameValid,
-                            isDuplicateName = isDuplicateName
+                            isDuplicateName = isDuplicateName,
+                            isNameValidCompleted = isNameValidCompleted
                         )
 
                         RegistrationScreen.UNIVERSITY -> UniversityScreen(
                             university = university,
-                            onUniversityChange = { newUniversity -> university = newUniversity }
+                            onUniversityChange = { newUniversity ->
+                                university = newUniversity
+                                isUniversityCompleted = false
+                            },
+                            isUniversityCompleted = isUniversityCompleted
                         )
 
                         RegistrationScreen.GENDER -> GenderScreen(selectedOption = selectedGender) {
@@ -325,6 +334,7 @@ fun RegistrationScreen(
                     modifier = Modifier.clickable {
                         if (currentStep == RegistrationScreen.UNIVERSITY) {
                             university = ""
+                            isUniversityCompleted = true
                         } else {
                             instagramId = ""
                         }
@@ -381,6 +391,7 @@ fun RegistrationScreen(
                         signUp()
                     } else {
                         registrationViewModel.updateCurrentStep(currentStep + 1)
+                        isUniversityCompleted = true
                     }
                 },
                 enabled = when (currentStep) {
