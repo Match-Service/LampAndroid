@@ -499,8 +499,8 @@ fun ProgressBar(attractive: List<Int>, barColor: Color = WomanColor) {
                     else -> stringResource(id = R.string.personality)
                 },
                 color = Color.White,
-                style = Typography.normal12.copy(lineHeight = 16.sp),
-                fontSize = 12.sp,
+                style = Typography.normal13.copy(lineHeight = 16.sp),
+                fontSize = 13.sp,
                 textAlign = TextAlign.Start
             )
 

@@ -27,11 +27,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -114,19 +112,19 @@ fun MyPageScreen(
     }
 
     val outlineModifier = Modifier
-        .width(300.dp)
+        .fillMaxWidth()
         .border(
             width = 1.dp,
             color = LightGray,
             shape = RoundedCornerShape(15.dp)
         )
-        .padding(horizontal = 20.dp, vertical = 10.dp)
+        .padding(horizontal = 20.dp)
 
     LazyColumn(
         modifier = modifier
             .background(LampBlack)
             .fillMaxSize()
-            .padding(top = 16.dp),
+            .padding(top = 16.dp, start = 30.dp, end = 30.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
@@ -135,7 +133,8 @@ fun MyPageScreen(
                 navController = navController,
                 name = myInfo?.name ?: "",
                 age = calculateManAge(birthdate = birthdate),
-                university = myInfo?.jobName ?: ""
+                university = myInfo?.jobName ?: "",
+                gender = myInfo?.gender ?: ""
             )
             Spacer(modifier = Modifier.height(30.dp))
             Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
@@ -148,11 +147,11 @@ fun MyPageScreen(
                 AskQuestionSection(modifier = outlineModifier)
                 LogOutSection(modifier = outlineModifier, viewModel = viewModel)
             }
-            Button(onClick = {
-                viewModel.sendFcmNotification("Fcm 테스트", "test")
-            }) {
-                Text("알람테스트")
-            }
+//            Button(onClick = {
+//                viewModel.sendFcmNotification("Fcm 테스트", "test")
+//            }) {
+//                Text("알람테스트")
+//            }
         }
     }
 }
@@ -163,14 +162,15 @@ fun UserInfoSection(
     navController: NavController,
     name: String,
     age: String,
-    university: String?
+    university: String?,
+    gender: String?
 ) {
     val navOption = navOptions {
         launchSingleTop = true
     }
     Row(
         modifier = Modifier
-            .width(300.dp)
+            .fillMaxWidth()
             .clickable(
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
@@ -196,10 +196,15 @@ fun UserInfoSection(
                 modifier = Modifier.height(60.dp),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
+                val textColor = if (gender == "MALE") {
+                    ManColor
+                } else {
+                    WomanColor
+                }
                 Text(
                     modifier = Modifier.padding(top = 5.dp),
                     text = "$name 님",
-                    color = Color.White,
+                    color = textColor,
                     style = IncTypography.normal30
                 )
                 val infoText = if (university == null) {
@@ -225,21 +230,21 @@ fun UserInfoSection(
 
 @Composable
 fun AttractiveSection(modifier: Modifier, avgAttractive: Int, attractive: List<Int>) {
-    Column(modifier = modifier) {
+    Column(modifier = modifier.padding(top = 15.dp, bottom = 7.dp)) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                modifier = Modifier.size(14.dp),
+                modifier = Modifier.size(16.dp),
                 painter = painterResource(id = R.drawable.heart),
                 contentDescription = null,
-                tint = WomanColor
+                tint = Color.White
             )
             Text(
                 text = "${stringResource(id = R.string.attractiveness)} $avgAttractive",
-                color = WomanColor,
-                style = Typography.medium15
+                color = Color.White,
+                style = Typography.medium18
             )
         }
         Spacer(modifier = Modifier.height(4.dp))
@@ -259,8 +264,8 @@ fun AttractiveSection(modifier: Modifier, avgAttractive: Int, attractive: List<I
 fun AlarmSettingsSection(modifier: Modifier, alarmsState: AlarmsState) {
     val context = LocalContext.current
     Column(
-        modifier = modifier.animateContentSize(),
-        verticalArrangement = Arrangement.spacedBy(10.dp)
+        modifier = modifier.padding(vertical = 15.dp).animateContentSize(),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         SwitchWithText(
             text = stringResource(id = R.string.push_alarm),
@@ -362,7 +367,7 @@ fun SwitchWithText(
                 },
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = text, color = Color.White, style = Typography.medium15)
+            Text(text = text, color = Color.White, style = Typography.medium18)
             GradientSwitch(isChecked = isChecked, onCheckedChange = onCheckedChange)
         }
         if (hintText.isNotEmpty()) {
@@ -420,13 +425,13 @@ fun GradientSwitch(
 @Composable
 fun AskQuestionSection(modifier: Modifier) {
     Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(4.dp)
+        modifier = modifier.padding(vertical = 15.dp),
+        verticalArrangement = Arrangement.spacedBy(7.dp)
     ) {
         Text(
             text = stringResource(id = R.string.ask_question),
             color = Color.White,
-            style = Typography.medium15
+            style = Typography.medium18
         )
         Text(
             text = stringResource(id = R.string.help_and_support),
@@ -444,7 +449,7 @@ fun AskQuestionSection(modifier: Modifier) {
 @Composable
 fun LogOutSection(modifier: Modifier, viewModel: MyPageViewModel) {
     Column(
-        modifier = modifier,
+        modifier = modifier.padding(vertical = 15.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Text(
@@ -456,7 +461,7 @@ fun LogOutSection(modifier: Modifier, viewModel: MyPageViewModel) {
             },
             text = stringResource(id = R.string.logout),
             color = Color.White,
-            style = Typography.medium15
+            style = Typography.medium18
         )
     }
 }

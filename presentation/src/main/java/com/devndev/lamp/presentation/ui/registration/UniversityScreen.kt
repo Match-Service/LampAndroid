@@ -3,6 +3,7 @@ package com.devndev.lamp.presentation.ui.registration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
@@ -15,7 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampTextField
@@ -25,7 +29,8 @@ import com.devndev.lamp.presentation.ui.theme.Typography
 @Composable
 fun UniversityScreen(
     university: String,
-    onUniversityChange: (String) -> Unit
+    onUniversityChange: (String) -> Unit,
+    isUniversityCompleted: Boolean
 ) {
     SelectionScreen(text = stringResource(id = R.string.registration_university)) {
         var universityQuery by remember { mutableStateOf(university) }
@@ -37,7 +42,7 @@ fun UniversityScreen(
         ) {
             LampTextField(
                 width = 270,
-                isGradient = false,
+                isGradient = university.isNotEmpty() && !isUniversityCompleted,
                 query = universityQuery,
                 onQueryChange = {
                     universityQuery = it
@@ -47,8 +52,22 @@ fun UniversityScreen(
             )
 
             Text(
-                modifier = Modifier.width(230.dp),
-                text = stringResource(id = R.string.university_guide1),
+                modifier = Modifier.fillMaxWidth(),
+                text = buildAnnotatedString {
+                    val fullText = stringResource(id = R.string.university_guide1)
+                    val skipText = stringResource(id = R.string.skip)
+
+                    val startIndex = fullText.indexOf(skipText)
+                    val endIndex = startIndex + skipText.length
+
+                    append(fullText)
+
+                    addStyle(
+                        style = SpanStyle(textDecoration = TextDecoration.Underline),
+                        start = startIndex,
+                        end = endIndex
+                    )
+                },
                 style = Typography.normal12,
                 color = Color.White,
                 textAlign = TextAlign.Center
