@@ -4,6 +4,8 @@ import com.devndev.lamp.data.datsource.GoogleTokenDataSource
 import com.devndev.lamp.data.datsource.GoogleTokenDataSourceImpl
 import com.devndev.lamp.data.datsource.ItemDataSource
 import com.devndev.lamp.data.datsource.ItemDataSourceImpl
+import com.devndev.lamp.data.datsource.LampDataSource
+import com.devndev.lamp.data.datsource.LampDataSourceImpl
 import com.devndev.lamp.data.datsource.LocalDataSource
 import com.devndev.lamp.data.datsource.LocalDataSourceImpl
 import com.devndev.lamp.data.datsource.NotificationDataSource
@@ -44,4 +46,8 @@ interface DataSourceModule {
     @Singleton
     @Binds
     fun bindNotificationDataSource(notificationDataSourceImpl: NotificationDataSourceImpl): NotificationDataSource
+
+    @Singleton
+    @Binds
+    fun bindLampDataSource(lampDataSourceImpl: LampDataSourceImpl): LampDataSource
 }

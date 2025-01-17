@@ -1,5 +1,6 @@
 package com.devndev.lamp.data.interceptor
 
+import android.util.Log
 import com.devndev.lamp.data.datsource.LocalDataSource
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -12,7 +13,7 @@ class AuthInterceptor @Inject constructor(
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val token = localDataSource.getToken()
-
+        Log.d("AuthInterceptor", token)
         return chain.proceed(
             chain.request()
                 .newBuilder()
