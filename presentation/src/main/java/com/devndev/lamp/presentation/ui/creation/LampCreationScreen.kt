@@ -29,28 +29,32 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.devndev.lamp.domain.model.CreateLampParam
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.main.TempDB
 import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.CreationScreen
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
-import com.devndev.lamp.presentation.ui.home.TempStatus
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.LampBlack
 import com.devndev.lamp.presentation.ui.theme.LightGray
 
 @Composable
-fun LampCreationScreen(modifier: Modifier, navController: NavController) {
+fun LampCreationScreen(
+    lampCreationViewModel: LampCreationViewModel = hiltViewModel(),
+    modifier: Modifier,
+    navController: NavController
+) {
     var currentStep by remember { mutableIntStateOf(1) }
 
-    var selectedPersonnel by remember { mutableStateOf(TempDB.personnel) }
-    var selectedRegion by remember { mutableStateOf(TempDB.region) }
-    var selectedMood by remember { mutableStateOf(TempDB.mood) }
-    var lampName by remember { mutableStateOf(TempDB.lampName) }
-    var lampSummary by remember { mutableStateOf(TempDB.lampSummary) }
+    var selectedPersonnel by remember { mutableStateOf("") }
+    var selectedRegion by remember { mutableStateOf("") }
+    var selectedMood by remember { mutableStateOf(0) }
+    var lampName by remember { mutableStateOf("") }
+    var lampSummary by remember { mutableStateOf("") }
 
     BackHandler(enabled = true) {
         if (currentStep > 1) {
@@ -180,13 +184,17 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                     if (currentStep < 4) {
                         currentStep++
                     } else {
-                        TempDB.personnel = selectedPersonnel
-                        TempDB.region = selectedRegion
-                        TempDB.mood = selectedMood
-                        TempDB.lampName = lampName
-                        TempDB.lampSummary = lampSummary
-                        TempStatus.updateIsMatching(true)
-                        navController.navigateMain(MainScreenPage.HOME)
+                        val hopeMatchNumber = selectedPersonnel.split(":")[0].toInt()
+
+                        lampCreationViewModel.createLamp(
+                            CreateLampParam(
+                                name = lampName,
+                                description = lampSummary,
+                                hopeMatchNumber = hopeMatchNumber,
+                                location = convertLocation(selectedRegion),
+                                color = convertMood(selectedMood)
+                            )
+                        )
                     }
                 },
                 enabled = when (currentStep) {
@@ -203,5 +211,25 @@ fun LampCreationScreen(modifier: Modifier, navController: NavController) {
                 }
             )
         }
+    }
+}
+
+fun convertLocation(selectedRegion: String): String {
+    return when (selectedRegion) {
+        "건대·성수" -> "KONDA_SEOUNGSU"
+        "신촌·홍대" -> "SINCHON_HONGDAE"
+        "강남·잠실" -> "GANGNAM_JAMSIL"
+        "인천" -> "INCHEON"
+        "경기" -> "GYEONGGI"
+        else -> throw IllegalArgumentException("Invalid region selected: $selectedRegion")
+    }
+}
+
+fun convertMood(selectedMood: Int): String {
+    return when (selectedMood) {
+        1 -> "FUNNY"
+        2 -> "CASUAL"
+        3 -> "SERIOUS"
+        else -> throw IllegalArgumentException("Invalid region selected: $selectedMood")
     }
 }

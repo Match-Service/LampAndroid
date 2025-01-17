@@ -6,6 +6,7 @@ import com.devndev.lamp.data.di.qualifier.DefaultClient
 import com.devndev.lamp.data.di.qualifier.DefaultRetrofit
 import com.devndev.lamp.data.interceptor.AuthInterceptor
 import com.devndev.lamp.data.service.ApiService
+import com.devndev.lamp.data.service.LampService
 import com.devndev.lamp.data.service.LoginService
 import com.devndev.lamp.data.service.NotificationService
 import com.devndev.lamp.data.service.SignUpService
@@ -97,6 +98,12 @@ internal class NetworkModule {
     fun provideNotificationService(
         @DefaultRetrofit retrofit: Retrofit
     ): NotificationService = retrofit.create()
+
+    @Singleton
+    @Provides
+    fun provideLampService(
+        @DefaultRetrofit retrofit: Retrofit
+    ): LampService = retrofit.create()
 
     companion object {
         private const val BASE_URL = "https://dev-api.lamp-app.shop/"
