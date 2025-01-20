@@ -52,7 +52,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getLampData() {
+    fun getLampData() {
         viewModelScope.launch {
             try {
                 Log.d(logTag, "getLampData")

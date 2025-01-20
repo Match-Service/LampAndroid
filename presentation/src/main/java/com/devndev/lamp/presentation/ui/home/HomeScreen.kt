@@ -58,6 +58,7 @@ fun HomeScreen(
             }, 2000)
         }
     }
+
     if (isWaiting) {
         WaitingHomeScreen(modifier = modifier, navController = navController)
     } else if (myLamp?.lamp != null) {

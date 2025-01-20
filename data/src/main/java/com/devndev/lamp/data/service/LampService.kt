@@ -1,6 +1,7 @@
 package com.devndev.lamp.data.service
 
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
+import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.data.dto.response.lamp.CreateLampResponse
 import com.devndev.lamp.data.dto.response.lamp.LampResponse
 import retrofit2.Response
@@ -22,5 +23,11 @@ interface LampService {
     @DELETE("api/v1/lamp/{lampId}")
     suspend fun deleteLamp(
         @Path("lampId") lampId: Int
+    ): Response<Unit>
+
+    @POST("api/v1/lamp/invite/{lampId}")
+    suspend fun inviteUsers(
+        @Path("lampId") lampId: Int,
+        @Body inviteUserRequest: InviteUsersRequest
     ): Response<Unit>
 }
