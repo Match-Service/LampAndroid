@@ -1,6 +1,7 @@
 package com.devndev.lamp.data.datsource.lamp
 
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
+import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.data.dto.response.lamp.CreateLampResponse
 import com.devndev.lamp.data.dto.response.lamp.LampResponse
 import com.devndev.lamp.data.service.LampService
@@ -20,5 +21,12 @@ class LampDataSourceImpl @Inject constructor(
 
     override suspend fun deleteLamp(lampId: Int): Response<Unit> {
         return lampService.deleteLamp(lampId)
+    }
+
+    override suspend fun inviteUser(
+        lampId: Int,
+        inviteUsersRequest: InviteUsersRequest
+    ): Response<Unit> {
+        return lampService.inviteUsers(lampId, inviteUsersRequest)
     }
 }

@@ -2,7 +2,9 @@ package com.devndev.lamp.data.repository
 
 import com.devndev.lamp.data.datsource.lamp.LampDataSource
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
+import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.domain.model.lamp.CreateLampParam
+import com.devndev.lamp.domain.model.lamp.InviteUsersParam
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.domain.repository.LampRepository
 import javax.inject.Inject
@@ -27,5 +29,12 @@ class LampRepositoryImpl @Inject constructor(
 
     override suspend fun deleteLamp(lampId: Int) {
         lampDataSource.deleteLamp(lampId)
+    }
+
+    override suspend fun inviteUser(lampId: Int, inviteUsersParam: InviteUsersParam) {
+        val inviteUsersRequest = InviteUsersRequest(
+            inviteUserNames = inviteUsersParam.inviteUserNames
+        )
+        lampDataSource.inviteUser(lampId, inviteUsersRequest)
     }
 }

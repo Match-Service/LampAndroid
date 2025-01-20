@@ -1,6 +1,5 @@
 package com.devndev.lamp.presentation.ui.search
 
-import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -22,7 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -39,7 +37,7 @@ import com.devndev.lamp.presentation.ui.theme.LampBlack
 
 @Composable
 fun InviteScreen(
-    viewModel: SearchViewModel = hiltViewModel(),
+    searchViewModel: SearchViewModel = hiltViewModel(),
     modifier: Modifier,
     navController: NavController
 ) {
@@ -56,11 +54,11 @@ fun InviteScreen(
         UserDomainModel(id = 998, name = "Super", thumbnail = "", lampId = 9)
     )
 
-    val users by remember { mutableStateOf(viewModel.users) }
+    val users by remember { mutableStateOf(searchViewModel.users) }
     val showBottomButton = selectedItems.isNotEmpty()
 
     LaunchedEffect(Unit) {
-        viewModel.resetUsers()
+        searchViewModel.resetUsers()
     }
 
     Column(
@@ -121,7 +119,7 @@ fun InviteScreen(
                 hintText = stringResource(id = R.string.guide_search_friend),
                 isSearchMode = true,
                 onSearchKeyEvent = {
-                    viewModel.searchUsers(searchQuery)
+                    searchViewModel.searchUsers(searchQuery)
                 }
             )
 
@@ -138,15 +136,11 @@ fun InviteScreen(
                 }
             )
         }
-        val context = LocalContext.current
+
         if (showBottomButton) {
             BottomSpaceForInvite(onClick = {
-                // 임시 선택된 id toast 표시
-                Toast.makeText(
-                    context,
-                    "Selected: ${selectedItems.joinToString { it.name }}",
-                    Toast.LENGTH_SHORT
-                ).show()
+                val selectedNames = selectedItems.map { it.name }
+                searchViewModel.inviteUsers(selectedNames)
             })
         }
     }
