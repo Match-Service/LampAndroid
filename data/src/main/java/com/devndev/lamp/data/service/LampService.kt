@@ -1,8 +1,8 @@
 package com.devndev.lamp.data.service
 
-import com.devndev.lamp.data.dto.request.CreateLampRequest
-import com.devndev.lamp.data.dto.response.CreateLampResponse
-import com.devndev.lamp.data.dto.response.LampResponse
+import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
+import com.devndev.lamp.data.dto.response.lamp.CreateLampResponse
+import com.devndev.lamp.data.dto.response.lamp.LampResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST

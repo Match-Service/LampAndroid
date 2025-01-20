@@ -1,9 +1,9 @@
 package com.devndev.lamp.data.repository
 
-import com.devndev.lamp.data.datsource.LampDataSource
-import com.devndev.lamp.data.dto.request.CreateLampRequest
-import com.devndev.lamp.domain.model.CreateLampParam
-import com.devndev.lamp.domain.model.LampDomainModel
+import com.devndev.lamp.data.datsource.lamp.LampDataSource
+import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
+import com.devndev.lamp.domain.model.lamp.CreateLampParam
+import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.domain.repository.LampRepository
 import javax.inject.Inject
 

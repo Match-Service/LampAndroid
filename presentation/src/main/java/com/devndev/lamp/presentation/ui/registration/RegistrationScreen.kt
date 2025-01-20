@@ -41,9 +41,9 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.devndev.lamp.domain.model.AlarmSetting
-import com.devndev.lamp.domain.model.BioQuestion
-import com.devndev.lamp.domain.model.User
+import com.devndev.lamp.domain.model.signup.AlarmSetting
+import com.devndev.lamp.domain.model.signup.BioQuestion
+import com.devndev.lamp.domain.model.signup.User
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.AccountStatus

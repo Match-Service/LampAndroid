@@ -4,10 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.network.HttpException
-import com.devndev.lamp.domain.model.LampDomainModel
-import com.devndev.lamp.domain.model.MyInfoDomainModel
-import com.devndev.lamp.domain.usecase.GetMyInfoUseCase
-import com.devndev.lamp.domain.usecase.GetMyLampUseCase
+import com.devndev.lamp.domain.model.lamp.LampDomainModel
+import com.devndev.lamp.domain.model.user.MyInfoDomainModel
+import com.devndev.lamp.domain.usecase.lamp.GetMyLampUseCase
+import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.presentation.ui.utils.IconStatusManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

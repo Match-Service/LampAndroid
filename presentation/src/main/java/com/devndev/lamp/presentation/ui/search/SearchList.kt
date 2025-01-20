@@ -24,7 +24,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
-import com.devndev.lamp.domain.model.UserDomainModel
+import com.devndev.lamp.domain.model.user.UserDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.Gray3

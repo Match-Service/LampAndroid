@@ -1,7 +1,7 @@
 package com.devndev.lamp.domain.repository
 
-import com.devndev.lamp.domain.model.GoogleTokenDomainModel
-import com.devndev.lamp.domain.model.GoogleTokenParam
+import com.devndev.lamp.domain.model.login.GoogleTokenDomainModel
+import com.devndev.lamp.domain.model.login.GoogleTokenParam
 
 interface LoginRepository {
     suspend fun getGoogleAuth(googleTokenParam: GoogleTokenParam): GoogleTokenDomainModel

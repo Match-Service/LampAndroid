@@ -1,8 +1,8 @@
 package com.devndev.lamp.data.repository
 
-import com.devndev.lamp.data.datsource.NotificationDataSource
-import com.devndev.lamp.data.dto.request.FcmNotificationRequest
-import com.devndev.lamp.domain.model.FcmNotificationParam
+import com.devndev.lamp.data.datsource.notification.NotificationDataSource
+import com.devndev.lamp.data.dto.request.notification.FcmNotificationRequest
+import com.devndev.lamp.domain.model.notification.FcmNotificationParam
 import com.devndev.lamp.domain.repository.NotificationRepository
 import javax.inject.Inject
 

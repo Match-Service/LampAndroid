@@ -3,8 +3,8 @@ package com.devndev.lamp.presentation.ui.creation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devndev.lamp.domain.model.CreateLampParam
-import com.devndev.lamp.domain.usecase.CreateLampUseCase
+import com.devndev.lamp.domain.model.lamp.CreateLampParam
+import com.devndev.lamp.domain.usecase.lamp.CreateLampUseCase
 import com.google.android.gms.common.api.ApiException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

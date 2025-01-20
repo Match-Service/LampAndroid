@@ -5,11 +5,11 @@ import android.content.Intent
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devndev.lamp.domain.model.GoogleTokenParam
-import com.devndev.lamp.domain.usecase.CheckIsNeedSignOutUseCase
-import com.devndev.lamp.domain.usecase.GoogleAuthUseCase
-import com.devndev.lamp.domain.usecase.SaveIsNeedSignOutUseCase
-import com.devndev.lamp.domain.usecase.SetTokenUseCase
+import com.devndev.lamp.domain.model.login.GoogleTokenParam
+import com.devndev.lamp.domain.usecase.login.CheckIsNeedSignOutUseCase
+import com.devndev.lamp.domain.usecase.login.GoogleAuthUseCase
+import com.devndev.lamp.domain.usecase.login.SaveIsNeedSignOutUseCase
+import com.devndev.lamp.domain.usecase.login.SetTokenUseCase
 import com.devndev.lamp.presentation.ui.common.AccountStatus
 import com.devndev.lamp.presentation.ui.utils.IconStatusManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
