@@ -6,4 +6,5 @@ import com.devndev.lamp.domain.model.lamp.LampDomainModel
 interface LampRepository {
     suspend fun createLamp(createLampParam: CreateLampParam): Int
     suspend fun getMyLamp(): LampDomainModel
+    suspend fun deleteLamp(lampId: Int)
 }

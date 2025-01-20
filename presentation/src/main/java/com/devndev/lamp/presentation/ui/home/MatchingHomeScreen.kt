@@ -60,8 +60,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.main.TempDB
 import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.search.navigation.navigateInvite
 import com.devndev.lamp.presentation.ui.theme.Gray
@@ -82,12 +82,26 @@ fun MatchingHomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val myLamp by homeViewModel.myLamp.collectAsState()
-
+    var isDeletePopupShow by remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
     val navOption = navOptions {
         launchSingleTop = true
+    }
+
+    if (isDeletePopupShow) {
+        TwoButtonPopup(
+            mainText = stringResource(id = R.string.lamp_out_popup_main, myLamp!!.lamp!!.name),
+            startButtonText = stringResource(id = R.string.cancel),
+            endButtonText = stringResource(id = R.string.out),
+            hintText = stringResource(id = R.string.lamp_out_hint),
+            onStartButtonClick = { isDeletePopupShow = false },
+            onEndButtonClick = {
+                homeViewModel.deleteLamp()
+                isDeletePopupShow = false
+            }
+        )
     }
 
     // 아직 방에 유저를 초대할 수 없어 테스트용으로 작업(방의 참여 인원수 2명으로 임시 설정)
@@ -153,12 +167,7 @@ fun MatchingHomeScreen(
         ) {
             MatchingHomeTopBar(
                 onExitIconClick = {
-                    TempStatus.updateIsMatching(false)
-                    TempDB.personnel = ""
-                    TempDB.region = ""
-                    TempDB.mood = 0
-                    TempDB.lampName = ""
-                    TempDB.lampSummary = ""
+                    isDeletePopupShow = true
                 },
                 onShareIconClick = {}
             )

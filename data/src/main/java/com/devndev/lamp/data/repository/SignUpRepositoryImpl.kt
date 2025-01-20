@@ -8,7 +8,7 @@ import com.devndev.lamp.data.dto.request.signup.SignUpRequest
 import com.devndev.lamp.data.dto.request.signup.User
 import com.devndev.lamp.data.dto.request.signup.ValidateInstagramRequest
 import com.devndev.lamp.data.dto.request.signup.ValidateNameRequest
-import com.devndev.lamp.data.dto.response.login.toDomainModel
+import com.devndev.lamp.data.dto.response.signup.toDomainModel
 import com.devndev.lamp.domain.model.signup.ProfileImageDomainModel
 import com.devndev.lamp.domain.model.signup.SignUpParam
 import com.devndev.lamp.domain.model.signup.ValidateInstagramParam

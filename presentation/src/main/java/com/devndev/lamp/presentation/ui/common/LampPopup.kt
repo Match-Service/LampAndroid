@@ -35,6 +35,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.theme.Gray
 import com.devndev.lamp.presentation.ui.theme.Gray3
+import com.devndev.lamp.presentation.ui.theme.LightGray
 import com.devndev.lamp.presentation.ui.theme.Typography
 import com.devndev.lamp.presentation.ui.theme.WomanColor
 
@@ -95,7 +96,14 @@ fun OneButtonPopup(onDismissRequest: () -> Unit) {
 }
 
 @Composable
-fun TwoButtonPopup(onStartButtonClick: () -> Unit, onEndButtonClick: () -> Unit) {
+fun TwoButtonPopup(
+    mainText: String,
+    startButtonText: String,
+    endButtonText: String,
+    hintText: String = "",
+    onStartButtonClick: () -> Unit,
+    onEndButtonClick: () -> Unit
+) {
     Dialog(
         onDismissRequest = { }
     ) {
@@ -105,27 +113,36 @@ fun TwoButtonPopup(onStartButtonClick: () -> Unit, onEndButtonClick: () -> Unit)
                 .background(Gray, shape = RoundedCornerShape(15.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Box(
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(110.dp),
-                contentAlignment = Alignment.Center
+                    .padding(vertical = 40.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 Text(
-                    text = stringResource(id = R.string.delete_profile_image),
+                    text = mainText,
                     color = Color.White,
                     style = Typography.semiBold20
                 )
+                if (hintText.isNotEmpty()) {
+                    Text(
+                        text = hintText,
+                        color = Color.White,
+                        style = Typography.medium15,
+                        textAlign = TextAlign.Center
+                    )
+                }
             }
             Column(modifier = Modifier.height(44.dp)) {
-                HorizontalDivider(thickness = 1.dp, color = Gray3)
+                HorizontalDivider(thickness = 1.dp, color = LightGray)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
-                        text = stringResource(id = R.string.no),
+                        text = startButtonText,
                         color = Color.White,
                         style = Typography.medium18,
                         textAlign = TextAlign.Center,
@@ -136,9 +153,9 @@ fun TwoButtonPopup(onStartButtonClick: () -> Unit, onEndButtonClick: () -> Unit)
                                 interactionSource = remember { MutableInteractionSource() }
                             ) { onStartButtonClick() }
                     )
-                    VerticalDivider(thickness = 1.dp, color = Gray3)
+                    VerticalDivider(thickness = 1.dp, color = LightGray)
                     Text(
-                        text = stringResource(id = R.string.yes),
+                        text = endButtonText,
                         color = Color.White,
                         style = Typography.medium18,
                         textAlign = TextAlign.Center,
