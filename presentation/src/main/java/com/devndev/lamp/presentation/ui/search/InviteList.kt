@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,13 +32,15 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.CheckButton
 import com.devndev.lamp.presentation.ui.theme.Gray3
 import com.devndev.lamp.presentation.ui.theme.Typography
+import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
 fun InviteList(
     searchUserList: List<UserDomainModel>,
     recentUserList: List<UserDomainModel>,
     selectedItems: List<UserDomainModel>,
-    onCheckedItemChanged: (UserDomainModel, Boolean) -> Unit
+    onCheckedItemChanged: (UserDomainModel, Boolean) -> Unit,
+    myName: String
 ) {
     LazyColumn(
         modifier = Modifier
@@ -54,7 +57,8 @@ fun InviteList(
                 selected = isSelected,
                 onCheckedChange = {
                     onCheckedItemChanged(profile, it)
-                }
+                },
+                myName = myName
             )
             if (index < searchUserList.size - 1) {
                 HorizontalDivider(
@@ -87,7 +91,8 @@ fun InviteList(
                 selected = isSelected,
                 onCheckedChange = {
                     onCheckedItemChanged(profile, it)
-                }
+                },
+                myName = myName
             )
             if (index < recentUserList.size - 1) {
                 HorizontalDivider(
@@ -100,12 +105,18 @@ fun InviteList(
 }
 
 @Composable
-fun InviteItem(profile: UserDomainModel, selected: Boolean, onCheckedChange: (Boolean) -> Unit) {
+fun InviteItem(
+    profile: UserDomainModel,
+    selected: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
+    myName: String
+) {
     val thumbnail = if (profile.thumbnail == "") {
         painterResource(id = R.drawable.testimage)
     } else {
         rememberAsyncImagePainter(model = profile.thumbnail)
     }
+    val lampStatus = profile.lampStatus
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
@@ -118,7 +129,9 @@ fun InviteItem(profile: UserDomainModel, selected: Boolean, onCheckedChange: (Bo
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
                 ) {
-                    onCheckedChange(!selected)
+                    if (lampStatus == "NONE") {
+                        onCheckedChange(!selected)
+                    }
                 },
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
@@ -135,17 +148,48 @@ fun InviteItem(profile: UserDomainModel, selected: Boolean, onCheckedChange: (Bo
                         .size(40.dp)
                         .clip(CircleShape)
                 )
-                Text(
-                    text = profile.name,
-                    style = Typography.medium18,
-                    color = Color.White
+                if (lampStatus == "NONE") {
+                    Text(
+                        text = profile.name,
+                        style = Typography.medium18,
+                        color = Color.White
+                    )
+                } else {
+                    Column() {
+                        Text(
+                            text = profile.name,
+                            style = Typography.medium18,
+                            color = Color.White
+                        )
+                        var lampStatusText = ""
+                        when (lampStatus) {
+                            "INVITED" ->
+                                lampStatusText =
+                                    stringResource(id = R.string.lamp_status_invited)
+
+                            "MY_LAMP" ->
+                                lampStatusText =
+                                    stringResource(id = R.string.lamp_status_my_lamp, myName)
+
+                            "OTHER_LAMP" ->
+                                lampStatusText =
+                                    stringResource(id = R.string.lamp_status_other_lamp)
+                        }
+                        Text(
+                            text = lampStatusText,
+                            style = Typography.normal12,
+                            color = WomanColor
+                        )
+                    }
+                }
+            }
+            if (lampStatus == "NONE") {
+                CheckButton(
+                    size = 20,
+                    selected = selected,
+                    onClick = { onCheckedChange(!selected) }
                 )
             }
-            CheckButton(
-                size = 20,
-                selected = selected,
-                onClick = { onCheckedChange(!selected) }
-            )
         }
     }
 }
