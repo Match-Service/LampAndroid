@@ -85,6 +85,9 @@ fun ProfileScreen(
 
     if (isShowDeletePopup) {
         TwoButtonPopup(
+            mainText = stringResource(id = R.string.delete_profile_image),
+            startButtonText = stringResource(id = R.string.no),
+            stringResource(id = R.string.yes),
             onStartButtonClick = {
                 isShowDeletePopup = false
             },

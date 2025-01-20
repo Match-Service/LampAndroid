@@ -3,9 +3,12 @@ package com.devndev.lamp.data.service
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
 import com.devndev.lamp.data.dto.response.lamp.CreateLampResponse
 import com.devndev.lamp.data.dto.response.lamp.LampResponse
+import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface LampService {
     @POST("api/v1/lamp")
@@ -15,4 +18,9 @@ interface LampService {
 
     @GET("api/v1/lamp")
     suspend fun getMyLamp(): LampResponse
+
+    @DELETE("api/v1/lamp/{lampId}")
+    suspend fun deleteLamp(
+        @Path("lampId") lampId: Int
+    ): Response<Unit>
 }

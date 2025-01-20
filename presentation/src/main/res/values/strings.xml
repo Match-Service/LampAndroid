@@ -195,4 +195,9 @@
 
     <string name="push_notification_agree_message">앱 푸시 알림 수신 동의가 설정되었어요.\n%s</string>
     <string name="push_notification_disagree_message">앱 푸시 알림 수신 동의가 해제되었어요.\n%s</string>
+
+    <string name="lamp_out_popup_main">%s에서 나가시겠습니까?</string>
+    <string name="cancel">취소</string>
+    <string name="out">나가기</string>
+    <string name="lamp_out_hint">회원님이 램프에서 나가실 경우\n램프가 해체돼요</string>
 </resources>

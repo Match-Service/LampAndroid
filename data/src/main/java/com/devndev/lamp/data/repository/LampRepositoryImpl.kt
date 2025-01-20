@@ -24,4 +24,8 @@ class LampRepositoryImpl @Inject constructor(
     override suspend fun getMyLamp(): LampDomainModel {
         return lampDataSource.getMyInfo().toDomainModel()
     }
+
+    override suspend fun deleteLamp(lampId: Int) {
+        lampDataSource.deleteLamp(lampId)
+    }
 }

@@ -4,7 +4,7 @@ import com.devndev.lamp.data.datsource.user.UserDataSource
 import com.devndev.lamp.data.dto.request.signup.AlarmSetting
 import com.devndev.lamp.data.dto.request.signup.BioQuestion
 import com.devndev.lamp.data.dto.request.user.ModifyUserRequest
-import com.devndev.lamp.data.dto.response.login.toDomainModel
+import com.devndev.lamp.data.dto.response.user.toDomainModel
 import com.devndev.lamp.domain.model.user.ModifyUserParam
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.model.user.UserDomainModel
