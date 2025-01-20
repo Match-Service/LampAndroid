@@ -16,7 +16,10 @@ data class UserResponseDto(
     val profileImage: String,
 
     @Json(name = "lampId")
-    val lampId: Int?
+    val lampId: Int?,
+
+    @Json(name = "lampStatus")
+    val lampStatus: String
 )
 
 fun UserResponseDto.toDomainModel(): UserDomainModel {
@@ -24,7 +27,8 @@ fun UserResponseDto.toDomainModel(): UserDomainModel {
         id = userId,
         name = userName,
         thumbnail = profileImage,
-        lampId = lampId
+        lampId = lampId,
+        lampStatus = lampStatus
     )
 }
 

@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.search
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -41,6 +42,7 @@ fun InviteScreen(
     modifier: Modifier,
     navController: NavController
 ) {
+    val logTag = "InviteScreen"
     BackHandler {
         navController.navigateMain(MainScreenPage.HOME)
     }
@@ -50,8 +52,8 @@ fun InviteScreen(
     val selectedItems = remember { mutableStateListOf<UserDomainModel>() }
 
     val tempRecentUser = listOf(
-        UserDomainModel(id = 999, name = "김수환무", thumbnail = "", lampId = null),
-        UserDomainModel(id = 998, name = "Super", thumbnail = "", lampId = 9)
+        UserDomainModel(id = 999, name = "김수환무", thumbnail = "", lampId = null, "NONE"),
+        UserDomainModel(id = 998, name = "Super", thumbnail = "", lampId = 9, "NONE")
     )
 
     val users by remember { mutableStateOf(searchViewModel.users) }
@@ -139,6 +141,7 @@ fun InviteScreen(
 
         if (showBottomButton) {
             BottomSpaceForInvite(onClick = {
+                Log.d(logTag, selectedItems.toString())
                 val selectedNames = selectedItems.map { it.name }
                 searchViewModel.inviteUsers(selectedNames)
             })
