@@ -3,10 +3,10 @@ package com.devndev.lamp.presentation.ui.mypage
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devndev.lamp.domain.model.FcmNotificationParam
-import com.devndev.lamp.domain.model.MyInfoDomainModel
-import com.devndev.lamp.domain.usecase.GetMyInfoUseCase
-import com.devndev.lamp.domain.usecase.SendFcmNotificationUseCase
+import com.devndev.lamp.domain.model.notification.FcmNotificationParam
+import com.devndev.lamp.domain.model.user.MyInfoDomainModel
+import com.devndev.lamp.domain.usecase.notification.SendFcmNotificationUseCase
+import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.presentation.ui.common.AccountStatus
 import com.devndev.lamp.presentation.ui.login.AuthManager
 import com.google.android.gms.auth.api.signin.GoogleSignInClient

@@ -1,13 +1,13 @@
 package com.devndev.lamp.data.repository
 
-import com.devndev.lamp.data.datsource.UserDataSource
-import com.devndev.lamp.data.dto.request.AlarmSetting
-import com.devndev.lamp.data.dto.request.BioQuestion
-import com.devndev.lamp.data.dto.request.ModifyUserRequest
-import com.devndev.lamp.data.dto.response.toDomainModel
-import com.devndev.lamp.domain.model.ModifyUserParam
-import com.devndev.lamp.domain.model.MyInfoDomainModel
-import com.devndev.lamp.domain.model.UserDomainModel
+import com.devndev.lamp.data.datsource.user.UserDataSource
+import com.devndev.lamp.data.dto.request.signup.AlarmSetting
+import com.devndev.lamp.data.dto.request.signup.BioQuestion
+import com.devndev.lamp.data.dto.request.user.ModifyUserRequest
+import com.devndev.lamp.data.dto.response.login.toDomainModel
+import com.devndev.lamp.domain.model.user.ModifyUserParam
+import com.devndev.lamp.domain.model.user.MyInfoDomainModel
+import com.devndev.lamp.domain.model.user.UserDomainModel
 import com.devndev.lamp.domain.repository.UserRepository
 import javax.inject.Inject
 

@@ -5,13 +5,11 @@ import com.devndev.lamp.data.BuildConfig
 import com.devndev.lamp.data.di.qualifier.DefaultClient
 import com.devndev.lamp.data.di.qualifier.DefaultRetrofit
 import com.devndev.lamp.data.interceptor.AuthInterceptor
-import com.devndev.lamp.data.service.ApiService
 import com.devndev.lamp.data.service.LampService
 import com.devndev.lamp.data.service.LoginService
 import com.devndev.lamp.data.service.NotificationService
 import com.devndev.lamp.data.service.SignUpService
 import com.devndev.lamp.data.service.UserService
-import com.devndev.lamp.domain.model.Item
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -29,17 +27,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 internal class NetworkModule {
-    @Provides
-    @Singleton
-    fun provideApiService(): ApiService {
-        return object : ApiService {
-            override suspend fun getItems(): List<Item> {
-                // 더미 데이터 반환
-                return listOf(Item("김수환", true, "멋쟁이 친구들"), Item("김수환무거북", false, null))
-            }
-        }
-    }
-
     @Provides
     @Singleton
     fun provideGoogleSignInClient(@ApplicationContext context: Context): GoogleSignInClient {

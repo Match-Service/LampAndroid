@@ -1,12 +1,12 @@
 package com.devndev.lamp.data.repository
 
-import com.devndev.lamp.data.datsource.GoogleTokenDataSource
-import com.devndev.lamp.data.datsource.LocalDataSource
-import com.devndev.lamp.data.dto.request.GoogleTokenRequest
-import com.devndev.lamp.data.dto.response.GoogleTokenResponse
-import com.devndev.lamp.data.dto.response.toDomainModel
-import com.devndev.lamp.domain.model.GoogleTokenDomainModel
-import com.devndev.lamp.domain.model.GoogleTokenParam
+import com.devndev.lamp.data.datsource.local.LocalDataSource
+import com.devndev.lamp.data.datsource.login.GoogleTokenDataSource
+import com.devndev.lamp.data.dto.request.login.GoogleTokenRequest
+import com.devndev.lamp.data.dto.response.login.GoogleTokenResponse
+import com.devndev.lamp.data.dto.response.login.toDomainModel
+import com.devndev.lamp.domain.model.login.GoogleTokenDomainModel
+import com.devndev.lamp.domain.model.login.GoogleTokenParam
 import com.devndev.lamp.domain.repository.LoginRepository
 import javax.inject.Inject
 

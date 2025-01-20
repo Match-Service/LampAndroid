@@ -1,9 +1,9 @@
 package com.devndev.lamp.data.service
 
-import com.devndev.lamp.data.dto.request.SignUpRequest
-import com.devndev.lamp.data.dto.request.ValidateInstagramRequest
-import com.devndev.lamp.data.dto.request.ValidateNameRequest
-import com.devndev.lamp.data.dto.response.ProfileImageResponse
+import com.devndev.lamp.data.dto.request.signup.SignUpRequest
+import com.devndev.lamp.data.dto.request.signup.ValidateInstagramRequest
+import com.devndev.lamp.data.dto.request.signup.ValidateNameRequest
+import com.devndev.lamp.data.dto.response.signup.ProfileImageResponse
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body

@@ -1,9 +1,9 @@
 package com.devndev.lamp.domain.repository
 
-import com.devndev.lamp.domain.model.ProfileImageDomainModel
-import com.devndev.lamp.domain.model.SignUpParam
-import com.devndev.lamp.domain.model.ValidateInstagramParam
-import com.devndev.lamp.domain.model.ValidateNameParam
+import com.devndev.lamp.domain.model.signup.ProfileImageDomainModel
+import com.devndev.lamp.domain.model.signup.SignUpParam
+import com.devndev.lamp.domain.model.signup.ValidateInstagramParam
+import com.devndev.lamp.domain.model.signup.ValidateNameParam
 import okhttp3.MultipartBody
 import retrofit2.Response
 

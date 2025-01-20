@@ -3,8 +3,8 @@ package com.devndev.lamp.presentation.ui.search
 import androidx.compose.runtime.mutableStateListOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devndev.lamp.domain.model.UserDomainModel
-import com.devndev.lamp.domain.usecase.SearchUserUseCase
+import com.devndev.lamp.domain.model.user.UserDomainModel
+import com.devndev.lamp.domain.usecase.user.SearchUserUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

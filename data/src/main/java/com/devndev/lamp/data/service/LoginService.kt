@@ -1,7 +1,7 @@
 package com.devndev.lamp.data.service
 
-import com.devndev.lamp.data.dto.request.GoogleTokenRequest
-import com.devndev.lamp.data.dto.response.GoogleTokenResponse
+import com.devndev.lamp.data.dto.request.login.GoogleTokenRequest
+import com.devndev.lamp.data.dto.response.login.GoogleTokenResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
 

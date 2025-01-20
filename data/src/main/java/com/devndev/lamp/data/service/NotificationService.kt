@@ -1,6 +1,6 @@
 package com.devndev.lamp.data.service
 
-import com.devndev.lamp.data.dto.request.FcmNotificationRequest
+import com.devndev.lamp.data.dto.request.notification.FcmNotificationRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST

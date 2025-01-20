@@ -31,7 +31,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.devndev.lamp.domain.model.CreateLampParam
+import com.devndev.lamp.domain.model.lamp.CreateLampParam
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.CreationScreen
