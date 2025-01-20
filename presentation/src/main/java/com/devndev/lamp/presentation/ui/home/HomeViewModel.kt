@@ -4,8 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.network.HttpException
+import com.devndev.lamp.domain.model.LampDomainModel
 import com.devndev.lamp.domain.model.MyInfoDomainModel
 import com.devndev.lamp.domain.usecase.GetMyInfoUseCase
+import com.devndev.lamp.domain.usecase.GetMyLampUseCase
 import com.devndev.lamp.presentation.ui.utils.IconStatusManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,15 +17,20 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val getMyInfoUseCase: GetMyInfoUseCase
+    private val getMyInfoUseCase: GetMyInfoUseCase,
+    private val getMyLampUseCase: GetMyLampUseCase
 ) : ViewModel() {
     private val logTag = "HomeViewModel"
 
     private val _myInfo = MutableStateFlow<MyInfoDomainModel?>(null)
     val myInfo: StateFlow<MyInfoDomainModel?> = _myInfo
 
+    private val _myLamp = MutableStateFlow<LampDomainModel?>(null)
+    val myLamp: StateFlow<LampDomainModel?> = _myLamp
+
     init {
         fetchData()
+        getLampData()
     }
 
     private fun fetchData() {
@@ -35,6 +42,20 @@ class HomeViewModel @Inject constructor(
                 _myInfo.value?.gender?.let {
                     IconStatusManager.setIconStatus(it)
                 }
+            } catch (e: HttpException) {
+                Log.e(logTag, "fetchData HttpException", e)
+            } catch (e: Exception) {
+                Log.e(logTag, "fetchData Exception", e)
+            }
+        }
+    }
+
+    private fun getLampData() {
+        viewModelScope.launch {
+            try {
+                Log.d(logTag, "getLampData")
+                _myLamp.value = getMyLampUseCase()
+                Log.d(logTag, "My Lamp ${myLamp.value}")
             } catch (e: HttpException) {
                 Log.e(logTag, "fetchData HttpException", e)
             } catch (e: Exception) {

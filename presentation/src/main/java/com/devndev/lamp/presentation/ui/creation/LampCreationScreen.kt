@@ -195,6 +195,7 @@ fun LampCreationScreen(
                                 color = convertMood(selectedMood)
                             )
                         )
+                        navController.navigateMain(MainScreenPage.HOME)
                     }
                 },
                 enabled = when (currentStep) {
