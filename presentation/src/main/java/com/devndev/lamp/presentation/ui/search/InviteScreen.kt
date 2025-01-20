@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -30,11 +33,14 @@ import com.devndev.lamp.domain.model.user.UserDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.navigation.navigateMain
 import com.devndev.lamp.presentation.ui.common.CircleProfile
+import com.devndev.lamp.presentation.ui.common.InviteStatus
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampTextField
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.theme.LampBlack
+import com.devndev.lamp.presentation.ui.theme.Typography
+import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
 fun InviteScreen(
@@ -47,12 +53,16 @@ fun InviteScreen(
         navController.navigateMain(MainScreenPage.HOME)
     }
 
+    val inviteStatus by searchViewModel.inviteStatus.collectAsState()
+
+    val myInfo by searchViewModel.myInfo.collectAsState()
+
     var searchQuery by remember { mutableStateOf("") }
 
     val selectedItems = remember { mutableStateListOf<UserDomainModel>() }
 
     val tempRecentUser = listOf(
-        UserDomainModel(id = 999, name = "김수환무", thumbnail = "", lampId = null, "NONE"),
+        UserDomainModel(id = 999, name = "김수환무", thumbnail = "", lampId = null, "MY_LAMP"),
         UserDomainModel(id = 998, name = "Super", thumbnail = "", lampId = 9, "NONE")
     )
 
@@ -71,6 +81,7 @@ fun InviteScreen(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(18.dp),
             modifier = Modifier.weight(1f)
         ) {
@@ -113,10 +124,15 @@ fun InviteScreen(
 
             LampTextField(
                 width = 0,
-                isGradient = false,
+                isGradient = inviteStatus == InviteStatus.SEARCHING || inviteStatus == InviteStatus.USER_NOT_FOUNT,
                 query = searchQuery,
                 onQueryChange = {
                     searchQuery = it
+                    if (searchQuery.isEmpty()) {
+                        searchViewModel.updateInviteStatus(InviteStatus.NONE)
+                    } else {
+                        searchViewModel.updateInviteStatus(InviteStatus.SEARCHING)
+                    }
                 },
                 hintText = stringResource(id = R.string.guide_search_friend),
                 isSearchMode = true,
@@ -124,6 +140,15 @@ fun InviteScreen(
                     searchViewModel.searchUsers(searchQuery)
                 }
             )
+
+            if (inviteStatus == InviteStatus.USER_NOT_FOUNT) {
+                Text(
+                    text = stringResource(id = R.string.user_not_found),
+                    style = Typography.normal12,
+                    color = WomanColor,
+                    textAlign = TextAlign.Center
+                )
+            }
 
             InviteList(
                 searchUserList = users,
@@ -135,7 +160,8 @@ fun InviteScreen(
                     } else {
                         selectedItems.remove(checkedItem)
                     }
-                }
+                },
+                myName = myInfo?.name ?: ""
             )
         }
 

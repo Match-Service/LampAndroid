@@ -87,3 +87,10 @@ object InstagramStep {
     const val VALID = 1
     const val INVALID = 2
 }
+
+object InviteStatus {
+    const val NONE = 0
+    const val USER_NOT_FOUNT = 1
+    const val SEARCHING = 2
+    const val SEARCHED = 3
+}
