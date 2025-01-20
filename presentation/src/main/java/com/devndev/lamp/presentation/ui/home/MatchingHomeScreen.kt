@@ -1,14 +1,12 @@
 package com.devndev.lamp.presentation.ui.home
 
 import android.annotation.SuppressLint
-import android.media.Image
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -60,6 +58,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import coil.compose.AsyncImage
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.main.TempDB
 import com.devndev.lamp.presentation.ui.common.LampButton
@@ -82,6 +81,8 @@ fun MatchingHomeScreen(
     navController: NavController,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
+    val myLamp by homeViewModel.myLamp.collectAsState()
+
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
@@ -92,13 +93,7 @@ fun MatchingHomeScreen(
     // 아직 방에 유저를 초대할 수 없어 테스트용으로 작업(방의 참여 인원수 2명으로 임시 설정)
     // TODO : 실제 방 참여 인원에 따라 매칭 시작 활성화 되도록 수정
     var currentPersonnel = 2
-    val maxPersonnel = when (TempDB.personnel) {
-        "2:2" -> 2
-        "3:3" -> 3
-        "4:4" -> 4
-        "5:5" -> 5
-        else -> 2
-    }
+    val maxPersonnel = myLamp?.lamp?.hopeMatchNumber
 
     var fullPersonnel by remember { mutableStateOf(currentPersonnel == maxPersonnel) }
     var isMatching by remember { mutableStateOf(false) }
@@ -134,9 +129,14 @@ fun MatchingHomeScreen(
             .background(LampBlack)
             .clipToBounds()
     ) {
-        VerticalSwipeGesture(fullPersonnel, onSwipeUp = {
-            isMatching = true
-        }, isMatching)
+        VerticalSwipeGesture(
+            fullPersonnel,
+            onSwipeUp = {
+                isMatching = true
+            },
+            isMatching,
+            mood = myLamp?.lamp?.color
+        )
         Box(
             modifier = Modifier
                 .height(100.dp)
@@ -186,7 +186,13 @@ fun MatchingHomeScreen(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text(text = TempDB.lampName, color = Color.White, style = Typography.semiBold20)
+                    myLamp?.lamp?.name?.let {
+                        Text(
+                            text = it,
+                            color = Color.White,
+                            style = Typography.semiBold20
+                        )
+                    }
                     Icon(
                         painter = painterResource(
                             id = R.drawable.edit_icon
@@ -199,10 +205,10 @@ fun MatchingHomeScreen(
                     )
                 }
                 var mood = ""
-                when (TempDB.mood) {
-                    1 -> mood = stringResource(id = R.string.funny_mood)
-                    2 -> mood = stringResource(id = R.string.casual_mood)
-                    3 -> mood = stringResource(id = R.string.serious_mood)
+                when (myLamp?.lamp?.color) {
+                    "FUNNY" -> mood = stringResource(id = R.string.funny_mood)
+                    "CASUAL" -> mood = stringResource(id = R.string.casual_mood)
+                    "SERIOUS" -> mood = stringResource(id = R.string.serious_mood)
                 }
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -210,26 +216,28 @@ fun MatchingHomeScreen(
                 ) {
                     LampInfo(
                         painter = painterResource(id = R.drawable.region_icon),
-                        text = TempDB.region
+                        text = convertLocation(myLamp?.lamp?.location)
                     )
                     LampInfo(
                         painter = painterResource(id = R.drawable.people_icon),
-                        text = TempDB.personnel
+                        text = "${myLamp?.lamp?.hopeMatchNumber}:${myLamp?.lamp?.hopeMatchNumber}"
                     )
                     LampInfo(painter = painterResource(id = R.drawable.heart), text = mood)
                 }
 
-                Text(
-                    text = TempDB.lampSummary,
-                    modifier = Modifier.width(270.dp),
-                    maxLines = 3,
-                    style = Typography.normal9,
-                    color = Gray3,
-                    textAlign = TextAlign.Center
-                )
+                myLamp?.lamp?.description?.let {
+                    Text(
+                        text = it,
+                        modifier = Modifier.width(270.dp),
+                        maxLines = 3,
+                        style = Typography.normal9,
+                        color = Gray3,
+                        textAlign = TextAlign.Center
+                    )
+                }
                 Spacer(modifier = Modifier.height(10.dp))
 
-                ProfileInfo(null, myInfo?.name ?: "")
+                ProfileInfo(myLamp?.lamp?.owner?.profileImageUrl, myInfo?.name ?: "")
 
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -263,6 +271,17 @@ fun MatchingHomeScreen(
     }
 }
 
+fun convertLocation(selectedRegion: String?): String {
+    return when (selectedRegion) {
+        "KONDA_SEOUNGSU" -> "건대·성수"
+        "SINCHON_HONGDAE" -> "신촌·홍대"
+        "GANGNAM_JAMSIL" -> "강남·잠실"
+        "INCHEON" -> "인천"
+        "GYEONGGI" -> "경기"
+        else -> throw IllegalArgumentException("Invalid region selected: $selectedRegion")
+    }
+}
+
 @Composable
 fun LampInfo(
     painter: Painter,
@@ -288,16 +307,16 @@ fun ProfileInfoList() {
 
 @Composable
 fun ProfileInfo(
-    image: Image? = null,
+    url: String?,
     text: String
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.testimage),
-            contentDescription = "testimage",
+        AsyncImage(
+            model = url,
+            contentDescription = null,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(40.dp)
@@ -339,7 +358,12 @@ fun MatchingHomeTopBar(onExitIconClick: () -> Unit, onShareIconClick: () -> Unit
  * 화면 스와이프해서 매칭 시작하기
  */
 @Composable
-fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatching: Boolean) {
+fun VerticalSwipeGesture(
+    fullPersonnel: Boolean,
+    onSwipeUp: () -> Unit,
+    isMatching: Boolean,
+    mood: String?
+) {
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
@@ -442,7 +466,7 @@ fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatchi
                 )
             }
     ) {
-        ShadowCircleBackground(animatableOffset, animatableAlpha, animatableShadowRadius)
+        ShadowCircleBackground(animatableOffset, animatableAlpha, animatableShadowRadius, mood)
     }
 }
 
@@ -450,13 +474,14 @@ fun VerticalSwipeGesture(fullPersonnel: Boolean, onSwipeUp: () -> Unit, isMatchi
 fun ShadowCircleBackground(
     animatableOffset: Animatable<Float, AnimationVector1D>,
     animatableAlpha: Animatable<Float, AnimationVector1D>,
-    animatableShadowRadius: Animatable<Float, AnimationVector1D>
+    animatableShadowRadius: Animatable<Float, AnimationVector1D>,
+    mood: String?
 ) {
     // mood에 따라 색상 변경
-    val shadowColor = when (TempDB.mood) {
-        1 -> MoodRed.copy(alpha = animatableAlpha.value)
-        2 -> MoodYellow.copy(alpha = animatableAlpha.value)
-        3 -> MoodBlue.copy(alpha = animatableAlpha.value)
+    val shadowColor = when (mood) {
+        "FUNNY" -> MoodRed.copy(alpha = animatableAlpha.value)
+        "CASUAL" -> MoodYellow.copy(alpha = animatableAlpha.value)
+        "SERIOUS" -> MoodBlue.copy(alpha = animatableAlpha.value)
         else -> MoodRed.copy(alpha = animatableAlpha.value)
     }
 

@@ -36,7 +36,7 @@ fun HomeScreen(
     val context = LocalContext.current
     val handler = remember { Handler(Looper.getMainLooper()) }
     var backPressedOnce = remember { false }
-
+    val myLamp by viewModel.myLamp.collectAsState()
     val isWaiting by TempStatus.isWaiting.collectAsState()
     val isMatching by TempStatus.isMatching.collectAsState()
 
@@ -60,7 +60,7 @@ fun HomeScreen(
     }
     if (isWaiting) {
         WaitingHomeScreen(modifier = modifier, navController = navController)
-    } else if (isMatching) {
+    } else if (myLamp?.lamp != null) {
         MatchingHomeScreen(modifier = modifier, navController = navController)
         // MatchingVoteScreen 테스트 용
 //        MatchingVoteScreen(modifier = modifier, navController = navController)

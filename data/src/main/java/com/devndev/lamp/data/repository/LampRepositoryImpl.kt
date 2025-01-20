@@ -3,6 +3,7 @@ package com.devndev.lamp.data.repository
 import com.devndev.lamp.data.datsource.LampDataSource
 import com.devndev.lamp.data.dto.request.CreateLampRequest
 import com.devndev.lamp.domain.model.CreateLampParam
+import com.devndev.lamp.domain.model.LampDomainModel
 import com.devndev.lamp.domain.repository.LampRepository
 import javax.inject.Inject
 
@@ -18,5 +19,9 @@ class LampRepositoryImpl @Inject constructor(
             color = createLampParam.color
         )
         return lampDataSource.createLamp(makeLampRequest).lampId
+    }
+
+    override suspend fun getMyLamp(): LampDomainModel {
+        return lampDataSource.getMyInfo().toDomainModel()
     }
 }
