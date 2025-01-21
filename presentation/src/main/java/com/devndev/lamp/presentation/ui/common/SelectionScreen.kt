@@ -14,7 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.devndev.lamp.presentation.ui.theme.Typography
+import com.devndev.lamp.presentation.theme.Typography
 
 @Composable
 fun SelectionScreen(

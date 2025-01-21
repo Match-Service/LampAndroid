@@ -1,34 +1,43 @@
-package com.devndev.lamp.presentation.main
+package com.devndev.lamp.presentation.ui.main
 
+import android.app.Activity
 import android.content.ComponentName
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
-import com.devndev.lamp.presentation.ui.login.LoginViewModel
-import com.devndev.lamp.presentation.ui.splsh.SplashScreen
-import com.devndev.lamp.presentation.ui.theme.LampTheme
-import com.devndev.lamp.presentation.ui.utils.IconStatusManager
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.devndev.lamp.presentation.theme.LampTheme
+import com.devndev.lamp.presentation.ui.login.LoginActivity
+import com.devndev.lamp.presentation.ui.mypage.MyPageViewModel
+import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val logTag = "MainActivity"
 
+    private val myPageViewModel by viewModels<MyPageViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val state by myPageViewModel.uiState.collectAsStateWithLifecycle()
             LampTheme {
-                val loginViewModel: LoginViewModel = hiltViewModel()
-                Lamp(viewModel = loginViewModel)
+                Lamp(
+                    signOut = myPageViewModel::signOut
+                )
+
+                if (state.isLoggedOut) {
+                    Log.d(logTag, "isUserLoggedOut true")
+                    LoginActivity.openActivity(this)
+                    finish()
+                }
             }
         }
     }
@@ -45,7 +54,7 @@ class MainActivity : ComponentActivity() {
 
         // Correct ComponentName with fully qualified class names
         val aliases = listOf(
-            "com.devndev.lamp.presentation.main.MainActivity",
+            "com.devndev.lamp.presentation.ui.splsh.SplashActivity",
             "com.devndev.lamp.MainActivityMale",
             "com.devndev.lamp.MainActivityFemale"
         )
@@ -63,7 +72,7 @@ class MainActivity : ComponentActivity() {
         val targetAlias = when (gender) {
             "MALE" -> "com.devndev.lamp.MainActivityMale"
             "FEMALE" -> "com.devndev.lamp.MainActivityFemale"
-            else -> "com.devndev.lamp.presentation.main.MainActivity"
+            else -> "com.devndev.lamp.presentation.ui.splsh.SplashActivity"
         }
 
         packageManager.setComponentEnabledSetting(
@@ -72,17 +81,25 @@ class MainActivity : ComponentActivity() {
             PackageManager.DONT_KILL_APP
         )
     }
+
+    companion object {
+        fun openActivity(context: Activity) {
+            context.startActivity(
+                Intent(context, MainActivity::class.java)
+            )
+        }
+
+        fun openActivity(context: Activity, flags: Int) {
+            context.startActivity(
+                Intent(context, MainActivity::class.java).apply {
+                    addFlags(flags)
+                }
+            )
+        }
+    }
 }
 
 @Composable
-fun Lamp(viewModel: LoginViewModel) {
-    var showSplash by remember { mutableStateOf(true) }
-    if (showSplash) {
-        SplashScreen {
-            showSplash = false // 애니메이션이 끝나면 메인 화면을 표시
-        }
-    } else {
-        // 애니메이션 후 메인 화면 표시
-        MainScreen(modifier = Modifier)
-    }
+fun Lamp(signOut: () -> Unit) {
+    MainScreen(modifier = Modifier, signOut = signOut)
 }

@@ -5,4 +5,5 @@ interface LocalDataSource {
     fun saveIsNeedSignOut(isNeedSignOut: Boolean)
     fun getToken(): String
     fun setToken(token: String)
+    fun removeToken()
 }

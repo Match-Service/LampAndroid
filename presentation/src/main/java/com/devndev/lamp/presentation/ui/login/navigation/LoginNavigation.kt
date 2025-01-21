@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.login.navigation
 
+import android.content.Intent
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,12 +19,14 @@ fun NavController.navigateLogin(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.loginNavGraph(
-    padding: PaddingValues,
-    modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    onClickSignInButton: (Intent) -> Unit
 ) {
     composable(Route.LOGIN) {
-        LoginScreen(navController = navController)
+        LoginScreen(
+            navController,
+            onClickSignInButton = onClickSignInButton
+        )
     }
 }
 

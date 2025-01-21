@@ -39,8 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.LampButtonWithIcon
-import com.devndev.lamp.presentation.ui.theme.WomanColor
 import kotlinx.coroutines.delay
 
 @Composable

@@ -46,9 +46,9 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.Gray
+import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
-import com.devndev.lamp.presentation.ui.theme.Gray
-import com.devndev.lamp.presentation.ui.theme.Typography
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable

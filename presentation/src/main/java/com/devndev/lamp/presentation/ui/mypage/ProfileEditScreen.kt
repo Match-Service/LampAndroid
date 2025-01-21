@@ -61,7 +61,9 @@ import com.devndev.lamp.domain.model.signup.AlarmSetting
 import com.devndev.lamp.domain.model.signup.BioQuestion
 import com.devndev.lamp.domain.model.user.ModifyUserParam
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.main.navigation.navigateMain
+import com.devndev.lamp.presentation.theme.LampBlack
+import com.devndev.lamp.presentation.theme.LightGray
+import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.CustomRadioButton
 import com.devndev.lamp.presentation.ui.common.EditPopup
 import com.devndev.lamp.presentation.ui.common.InstagramAuth
@@ -69,9 +71,7 @@ import com.devndev.lamp.presentation.ui.common.LampBigTextField
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.ProfileImage
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
-import com.devndev.lamp.presentation.ui.theme.LampBlack
-import com.devndev.lamp.presentation.ui.theme.LightGray
-import com.devndev.lamp.presentation.ui.theme.Typography
+import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
 
 // todo 사진 표시 처리 완료 했지만 추후 서버 프로필 수정 기능 완료 후 삭제, 변경 구현 필요
 @Composable

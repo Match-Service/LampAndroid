@@ -2,6 +2,7 @@ package com.devndev.lamp.data.datsource.local
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 
@@ -38,6 +39,12 @@ class LocalDataSourceImpl @Inject constructor(
         sharedPreferences.edit().remove(key).apply()
     }
 
+    private fun remove(key: String) {
+        return sharedPreferences.edit {
+            remove(key)
+        }
+    }
+
     override fun getIsNeedSignOut(): Boolean {
         return getBoolean(KEY_IS_NEED_SIGN_OUT)
     }
@@ -52,6 +59,10 @@ class LocalDataSourceImpl @Inject constructor(
 
     override fun setToken(token: String) {
         putString(KEY_TOKEN, token)
+    }
+
+    override fun removeToken() {
+        remove(KEY_TOKEN)
     }
 
     companion object {

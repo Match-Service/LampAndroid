@@ -36,11 +36,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.theme.LampBlack
-import com.devndev.lamp.presentation.ui.theme.LightGray
-import com.devndev.lamp.presentation.ui.theme.ManColor
-import com.devndev.lamp.presentation.ui.theme.Typography
-import com.devndev.lamp.presentation.ui.theme.WomanColor
+import com.devndev.lamp.presentation.theme.LampBlack
+import com.devndev.lamp.presentation.theme.LightGray
+import com.devndev.lamp.presentation.theme.ManColor
+import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.theme.WomanColor
 import java.util.Locale
 
 @Composable

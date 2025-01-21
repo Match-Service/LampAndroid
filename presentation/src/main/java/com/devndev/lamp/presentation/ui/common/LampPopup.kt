@@ -33,11 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.theme.Gray
-import com.devndev.lamp.presentation.ui.theme.Gray3
-import com.devndev.lamp.presentation.ui.theme.LightGray
-import com.devndev.lamp.presentation.ui.theme.Typography
-import com.devndev.lamp.presentation.ui.theme.WomanColor
+import com.devndev.lamp.presentation.theme.Gray
+import com.devndev.lamp.presentation.theme.Gray3
+import com.devndev.lamp.presentation.theme.LightGray
+import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.theme.WomanColor
 
 @Composable
 fun OneButtonPopup(onDismissRequest: () -> Unit) {

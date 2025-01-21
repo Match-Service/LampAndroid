@@ -31,16 +31,16 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.domain.model.user.UserDomainModel
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.main.navigation.navigateMain
+import com.devndev.lamp.presentation.theme.LampBlack
+import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.CircleProfile
 import com.devndev.lamp.presentation.ui.common.InviteStatus
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampTextField
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
-import com.devndev.lamp.presentation.ui.theme.LampBlack
-import com.devndev.lamp.presentation.ui.theme.Typography
-import com.devndev.lamp.presentation.ui.theme.WomanColor
+import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
 
 @Composable
 fun InviteScreen(

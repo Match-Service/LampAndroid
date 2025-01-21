@@ -8,4 +8,6 @@ interface LoginRepository {
     fun getIsNeedSignOut(): Boolean
     fun saveIsNeedSignOut(isNeedSignOut: Boolean)
     fun setToken(token: String)
+    fun removeToken()
+    fun isUserLoggedIn(): Boolean
 }

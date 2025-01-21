@@ -27,6 +27,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -47,6 +49,9 @@ class RegistrationViewModel @Inject constructor(
 ) : ViewModel() {
     private val logTag = "RegistrationViewModel"
 
+    private val _uiState = MutableStateFlow(RegistrationUiState())
+    val uiState: StateFlow<RegistrationUiState> = _uiState.asStateFlow()
+
     private val _currentStep = MutableStateFlow(1)
     val currentStep: StateFlow<Int> = _currentStep
 
@@ -58,9 +63,6 @@ class RegistrationViewModel @Inject constructor(
 
     private val _instagramStep = MutableStateFlow(InstagramStep.NONE)
     val instagramStep: StateFlow<Int> = _instagramStep
-
-    private val _isSignUpSuccess = MutableStateFlow(false)
-    val isSignUpSuccess: StateFlow<Boolean> = _isSignUpSuccess
 
     private lateinit var fcmToken: String
 
@@ -126,7 +128,7 @@ class RegistrationViewModel @Inject constructor(
         saveIsNeedSignOutUseCase(isNeedSignOut)
     }
 
-    fun bitmapsToMultipartBodies(
+    private fun bitmapsToMultipartBodies(
         bitmaps: List<Bitmap?>,
         fieldName: String
     ): List<MultipartBody.Part> {
@@ -160,7 +162,7 @@ class RegistrationViewModel @Inject constructor(
         }
     }
 
-    fun getFcmToken() {
+    private fun getFcmToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
             if (!task.isSuccessful) {
                 return@addOnCompleteListener
@@ -173,7 +175,7 @@ class RegistrationViewModel @Inject constructor(
         }
     }
 
-    fun signUp(user: User) {
+    private fun signUp(user: User) {
         user.pushToken = fcmToken
         val signUpParam = SignUpParam(SignUpAuthRequest(AuthManager.signUpToken), user)
 
@@ -184,7 +186,6 @@ class RegistrationViewModel @Inject constructor(
                 if (response.isSuccessful) {
                     Log.d(logTag, "signUp Success")
 
-                    AuthManager.updateLoginStatus(true)
                     val account = GoogleSignIn.getLastSignedInAccount(context)
                     val idToken = account?.idToken
                     if (idToken != null) {
@@ -192,7 +193,9 @@ class RegistrationViewModel @Inject constructor(
                         val tokenResult = googleAuthUseCase(googleTokenParam)
                         if (tokenResult.token != null && tokenResult.signupToken == null) {
                             setTokenUseCase(tokenResult.token.toString())
-                            _isSignUpSuccess.value = true
+                            _uiState.update { state ->
+                                state.copy(isSignedUp = true)
+                            }
                         }
                     }
                 } else {

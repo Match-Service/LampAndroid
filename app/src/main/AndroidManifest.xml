@@ -24,7 +24,7 @@
             </intent-filter>
         </service>
         <activity
-            android:name="com.devndev.lamp.presentation.main.MainActivity"
+            android:name="com.devndev.lamp.presentation.ui.splsh.SplashActivity"
             android:icon="@mipmap/ic_launcher_default"
             android:roundIcon="@mipmap/ic_launcher_default_round"
             android:exported="true">
@@ -41,7 +41,7 @@
             android:icon="@mipmap/ic_launcher_m"
             android:enabled="false"
             android:roundIcon="@mipmap/ic_launcher_m_round"
-            android:targetActivity=".presentation.main.MainActivity">
+            android:targetActivity=".presentation.ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -56,7 +56,7 @@
             android:icon="@mipmap/ic_launcher_w"
             android:enabled="false"
             android:roundIcon="@mipmap/ic_launcher_w_round"
-            android:targetActivity=".presentation.main.MainActivity">
+            android:targetActivity=".presentation.ui.main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

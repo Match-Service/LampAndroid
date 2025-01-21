@@ -31,10 +31,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.ManColor
+import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
-import com.devndev.lamp.presentation.ui.theme.ManColor
-import com.devndev.lamp.presentation.ui.theme.Typography
-import com.devndev.lamp.presentation.ui.theme.WomanColor
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import java.time.LocalDate

@@ -11,9 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.devndev.lamp.presentation.ui.theme.Gray
-import com.devndev.lamp.presentation.ui.theme.LampBlack
-import com.devndev.lamp.presentation.ui.theme.Typography
+import com.devndev.lamp.presentation.theme.Gray
+import com.devndev.lamp.presentation.theme.LampBlack
+import com.devndev.lamp.presentation.theme.Typography
 
 @Composable
 fun OptionButton(

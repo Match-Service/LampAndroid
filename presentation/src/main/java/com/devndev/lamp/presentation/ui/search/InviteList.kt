@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
 import com.devndev.lamp.domain.model.user.UserDomainModel
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.Gray3
+import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.CheckButton
-import com.devndev.lamp.presentation.ui.theme.Gray3
-import com.devndev.lamp.presentation.ui.theme.Typography
-import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
 fun InviteList(

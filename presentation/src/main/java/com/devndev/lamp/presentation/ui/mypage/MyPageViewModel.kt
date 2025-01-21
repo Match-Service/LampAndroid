@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.notification.FcmNotificationParam
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
+import com.devndev.lamp.domain.usecase.login.SignOutUseCase
 import com.devndev.lamp.domain.usecase.notification.SendFcmNotificationUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.presentation.ui.common.AccountStatus
@@ -14,6 +15,8 @@ import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,9 +24,13 @@ import javax.inject.Inject
 class MyPageViewModel @Inject constructor(
     private val googleSignInClient: GoogleSignInClient,
     private val getMyInfoUseCase: GetMyInfoUseCase,
-    private val sendFcmNotificationUseCase: SendFcmNotificationUseCase
+    private val sendFcmNotificationUseCase: SendFcmNotificationUseCase,
+    private val signOutUseCase: SignOutUseCase
 ) : ViewModel() {
     private val logTag = "MyPageViewModel"
+
+    private val _uiState = MutableStateFlow(MyPageUiState())
+    val uiState: StateFlow<MyPageUiState> = _uiState.asStateFlow()
 
     private val _myInfo = MutableStateFlow<MyInfoDomainModel?>(null)
     val myInfo: StateFlow<MyInfoDomainModel?> = _myInfo
@@ -76,11 +83,17 @@ class MyPageViewModel @Inject constructor(
 
     fun signOut() {
         Log.d(logTag, "signOut()")
-        googleSignInClient.signOut().addOnCompleteListener {
-            AuthManager.updateLoginStatus(false)
-            AuthManager.updateAccountStatus(AccountStatus.NONE)
-
-            Log.d(logTag, "signOut() isLoggedIn ${AuthManager.isLoggedIn.value}")
+        viewModelScope.launch {
+            googleSignInClient.signOut().addOnCompleteListener {
+                AuthManager.updateAccountStatus(AccountStatus.NONE)
+                Log.d(logTag, "signOut() completed")
+            }
+            signOutUseCase()
+            _uiState.update { state ->
+                state.copy(
+                    isLoggedOut = true
+                )
+            }
         }
     }
 }

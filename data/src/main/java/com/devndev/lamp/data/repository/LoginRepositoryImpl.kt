@@ -19,7 +19,8 @@ class LoginRepositoryImpl @Inject constructor(
         val googleTokenRequest = GoogleTokenRequest(idToken = googleTokenParam.idToken)
 
         // 실제 데이터 소스에서 구글 인증 정보를 가져옴
-        val googleTokenResponse: GoogleTokenResponse = googleTokenDataSource.getGoogleAuth(googleTokenRequest)
+        val googleTokenResponse: GoogleTokenResponse =
+            googleTokenDataSource.getGoogleAuth(googleTokenRequest)
 
         return googleTokenResponse.toDomainModel()
     }
@@ -34,5 +35,13 @@ class LoginRepositoryImpl @Inject constructor(
 
     override fun setToken(token: String) {
         localDataSource.setToken(token)
+    }
+
+    override fun removeToken() {
+        localDataSource.removeToken()
+    }
+
+    override fun isUserLoggedIn(): Boolean {
+        return localDataSource.getToken().isNotBlank()
     }
 }

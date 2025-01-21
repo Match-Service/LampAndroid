@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.theme
+package com.devndev.lamp.presentation.theme
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.text.PlatformTextStyle
