@@ -124,7 +124,7 @@ fun MyPageScreen(
         modifier = modifier
             .background(LampBlack)
             .fillMaxSize()
-            .padding(top = 16.dp, start = 30.dp, end = 30.dp),
+            .padding(top = 16.dp, start = 16.dp, end = 16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
