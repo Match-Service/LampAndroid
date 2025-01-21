@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.utils
+package com.devndev.lamp.presentation.utils
 
 object IconStatusManager {
     private var iconStatus: String = "NONE"

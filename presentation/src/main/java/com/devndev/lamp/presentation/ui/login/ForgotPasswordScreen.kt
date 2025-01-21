@@ -24,10 +24,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.ui.common.ForgotPasswordScreen
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
-import com.devndev.lamp.presentation.ui.theme.LampBlack
 
 @Composable
 fun ForgotPasswordScreen(modifier: Modifier, navController: NavController) {

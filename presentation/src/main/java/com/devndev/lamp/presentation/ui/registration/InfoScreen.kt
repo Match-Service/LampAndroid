@@ -17,10 +17,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.Gray
+import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.CustomRadioButton
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
-import com.devndev.lamp.presentation.ui.theme.Gray
-import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
 fun InfoScreen(

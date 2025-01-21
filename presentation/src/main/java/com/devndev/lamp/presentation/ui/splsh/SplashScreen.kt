@@ -17,17 +17,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.devndev.lamp.presentation.ui.theme.LampBlack
+import com.devndev.lamp.presentation.theme.LampBlack
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen(onSplashEnd: () -> Unit) {
+fun SplashScreen() {
     PngSequenceSplashAnimation(
         frameCount = 35,
-        frameDurationMillis = 33L, // 각 프레임을 33ms (약 30fps)으로 설정
-        onAnimationEnd = {
-            onSplashEnd() // 애니메이션이 끝나면 콜백
-        }
+        frameDurationMillis = 33L // 각 프레임을 33ms (약 30fps)으로 설정
+//        onAnimationEnd = {
+//            onSplashEnd() // 애니메이션이 끝나면 콜백
+//        }
     )
 }
 
@@ -35,8 +35,8 @@ fun SplashScreen(onSplashEnd: () -> Unit) {
 @Composable
 fun PngSequenceSplashAnimation(
     frameCount: Int, // 전체 프레임 개수
-    frameDurationMillis: Long, // 각 프레임의 지속 시간
-    onAnimationEnd: () -> Unit // 애니메이션이 끝났을 때의 콜백
+    frameDurationMillis: Long // 각 프레임의 지속 시간
+//    onAnimationEnd: () -> Unit // 애니메이션이 끝났을 때의 콜백
 ) {
     // 현재 프레임을 기억
     var currentFrame by remember { mutableStateOf(0) }
@@ -48,8 +48,8 @@ fun PngSequenceSplashAnimation(
             delay(frameDurationMillis) // 각 프레임의 지속 시간
             currentFrame++
         }
-        delay(500)
-        onAnimationEnd() // 애니메이션 끝났을 때 호출
+//        delay(500)
+//        onAnimationEnd() // 애니메이션 끝났을 때 호출
     }
 
     // 현재 프레임에 맞는 리소스 이름 생성

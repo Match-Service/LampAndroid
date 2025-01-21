@@ -20,10 +20,15 @@ fun NavController.navigateMyPage(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.myPageNavGraph(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    signOut: () -> Unit
 ) {
     composable(Route.MYPAGE) {
-        MyPageScreen(modifier = modifier.padding(padding), navController = navController)
+        MyPageScreen(
+            modifier = modifier.padding(padding),
+            navController = navController,
+            signOut = signOut
+        )
     }
 }
 

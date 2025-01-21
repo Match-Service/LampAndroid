@@ -22,7 +22,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,19 +44,17 @@ import com.devndev.lamp.domain.model.signup.AlarmSetting
 import com.devndev.lamp.domain.model.signup.BioQuestion
 import com.devndev.lamp.domain.model.signup.User
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.main.navigation.navigateMain
+import com.devndev.lamp.presentation.theme.Gray
+import com.devndev.lamp.presentation.theme.LampBlack
+import com.devndev.lamp.presentation.theme.LightGray
+import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.AccountStatus
 import com.devndev.lamp.presentation.ui.common.InstagramStep
 import com.devndev.lamp.presentation.ui.common.LampButton
-import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.RegistrationScreen
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.login.AuthManager
 import com.devndev.lamp.presentation.ui.login.LoginViewModel
-import com.devndev.lamp.presentation.ui.theme.Gray
-import com.devndev.lamp.presentation.ui.theme.LampBlack
-import com.devndev.lamp.presentation.ui.theme.LightGray
-import com.devndev.lamp.presentation.ui.theme.Typography
 import java.time.LocalDate
 
 @Composable
@@ -65,7 +62,8 @@ fun RegistrationScreen(
     loginViewModel: LoginViewModel = hiltViewModel(),
     registrationViewModel: RegistrationViewModel = hiltViewModel(),
     modifier: Modifier,
-    navController: NavController
+    navController: NavController,
+    onClickStartButton: (user: User, bitmaps: List<Bitmap?>) -> Unit
 ) {
     val logTag = "RegistrationScreen"
     val context = LocalContext.current
@@ -93,16 +91,8 @@ fun RegistrationScreen(
     val instagramStep by registrationViewModel.instagramStep.collectAsState()
     var isAuthButtonClicked by remember { mutableStateOf(false) }
 
-    val isSignUpSuccess by registrationViewModel.isSignUpSuccess.collectAsState()
-
     var bitmaps by remember { mutableStateOf(List(6) { null as Bitmap? }) }
     var profileIntro by remember { mutableStateOf("") }
-
-    LaunchedEffect(isSignUpSuccess) {
-        if (isSignUpSuccess) {
-            navController.navigateMain(MainScreenPage.HOME)
-        }
-    }
 
     fun isKoreanAndEnglishOnly(name: String): Boolean {
         val regex = "^[a-zA-Z가-힣]+$".toRegex()
@@ -149,7 +139,7 @@ fun RegistrationScreen(
             ),
             pushToken = ""
         )
-        registrationViewModel.uploadImages(user = user, bitmaps = bitmaps.filterNotNull())
+        onClickStartButton(user, bitmaps.filterNotNull())
     }
 
     registrationViewModel.saveIsNeedSignOut(true)

@@ -56,15 +56,15 @@ import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.Gray3
+import com.devndev.lamp.presentation.theme.IncTypography
+import com.devndev.lamp.presentation.theme.LampBlack
+import com.devndev.lamp.presentation.theme.LightGray
+import com.devndev.lamp.presentation.theme.ManColor
+import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.home.ProgressBar
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateProfileEdit
-import com.devndev.lamp.presentation.ui.theme.Gray3
-import com.devndev.lamp.presentation.ui.theme.IncTypography
-import com.devndev.lamp.presentation.ui.theme.LampBlack
-import com.devndev.lamp.presentation.ui.theme.LightGray
-import com.devndev.lamp.presentation.ui.theme.ManColor
-import com.devndev.lamp.presentation.ui.theme.Typography
-import com.devndev.lamp.presentation.ui.theme.WomanColor
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -75,7 +75,8 @@ import kotlin.system.exitProcess
 fun MyPageScreen(
     modifier: Modifier,
     viewModel: MyPageViewModel = hiltViewModel(),
-    navController: NavController
+    navController: NavController,
+    signOut: () -> Unit
 ) {
     val logTag = "MyPageScreen"
     val context = LocalContext.current
@@ -145,7 +146,7 @@ fun MyPageScreen(
                 )
                 AlarmSettingsSection(modifier = outlineModifier, alarmsState = alarmsState)
                 AskQuestionSection(modifier = outlineModifier)
-                LogOutSection(modifier = outlineModifier, viewModel = viewModel)
+                LogOutSection(modifier = outlineModifier, signOut = signOut)
             }
 //            Button(onClick = {
 //                viewModel.sendFcmNotification("Fcm 테스트", "test")
@@ -264,7 +265,9 @@ fun AttractiveSection(modifier: Modifier, avgAttractive: Int, attractive: List<I
 fun AlarmSettingsSection(modifier: Modifier, alarmsState: AlarmsState) {
     val context = LocalContext.current
     Column(
-        modifier = modifier.padding(vertical = 15.dp).animateContentSize(),
+        modifier = modifier
+            .padding(vertical = 15.dp)
+            .animateContentSize(),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         SwitchWithText(
@@ -447,7 +450,7 @@ fun AskQuestionSection(modifier: Modifier) {
 }
 
 @Composable
-fun LogOutSection(modifier: Modifier, viewModel: MyPageViewModel) {
+fun LogOutSection(modifier: Modifier, signOut: () -> Unit) {
     Column(
         modifier = modifier.padding(vertical = 15.dp),
         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -457,7 +460,7 @@ fun LogOutSection(modifier: Modifier, viewModel: MyPageViewModel) {
                 indication = null,
                 interactionSource = remember { MutableInteractionSource() }
             ) {
-                viewModel.signOut()
+                signOut()
             },
             text = stringResource(id = R.string.logout),
             color = Color.White,

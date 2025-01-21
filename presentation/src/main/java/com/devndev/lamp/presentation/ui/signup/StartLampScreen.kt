@@ -19,10 +19,10 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.login.navigation.navigateLogin
-import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
 fun StartLampScreen(navController: NavController) {

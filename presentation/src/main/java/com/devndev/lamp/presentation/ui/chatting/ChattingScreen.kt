@@ -22,9 +22,9 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.theme.IncTypography
-import com.devndev.lamp.presentation.ui.theme.ManColor
-import com.devndev.lamp.presentation.ui.theme.Typography
+import com.devndev.lamp.presentation.theme.IncTypography
+import com.devndev.lamp.presentation.theme.ManColor
+import com.devndev.lamp.presentation.theme.Typography
 import kotlin.system.exitProcess
 
 @Composable

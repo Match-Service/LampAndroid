@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.main
+package com.devndev.lamp.presentation.ui.main
 
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
@@ -16,7 +16,8 @@ fun MainPagerScreen(
     pagerState: PagerState,
     modifier: Modifier,
     navController: NavController,
-    initialPage: Int
+    initialPage: Int,
+    signOut: () -> Unit
 ) {
     LaunchedEffect(initialPage) {
         pagerState.scrollToPage(initialPage)
@@ -34,7 +35,11 @@ fun MainPagerScreen(
             }
 
             MainScreenPage.MY_PAGE -> {
-                MyPageScreen(modifier = modifier, navController = navController)
+                MyPageScreen(
+                    modifier = modifier,
+                    navController = navController,
+                    signOut = signOut
+                )
             }
         }
     }

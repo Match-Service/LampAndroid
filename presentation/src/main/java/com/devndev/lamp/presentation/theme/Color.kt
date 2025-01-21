@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.theme
+package com.devndev.lamp.presentation.theme
 
 import androidx.compose.ui.graphics.Color
 

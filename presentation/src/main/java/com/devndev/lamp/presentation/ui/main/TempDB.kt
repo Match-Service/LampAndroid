@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.main
+package com.devndev.lamp.presentation.ui.main
 
 object TempDB {
     var personnel = ""

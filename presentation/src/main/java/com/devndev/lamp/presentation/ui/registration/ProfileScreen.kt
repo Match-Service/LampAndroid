@@ -30,11 +30,11 @@ import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.LampBigTextField
 import com.devndev.lamp.presentation.ui.common.ProfileImage
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
 import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
-import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
 fun ProfileScreen(

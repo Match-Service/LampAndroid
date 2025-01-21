@@ -11,12 +11,16 @@ import com.devndev.lamp.domain.usecase.login.GoogleAuthUseCase
 import com.devndev.lamp.domain.usecase.login.SaveIsNeedSignOutUseCase
 import com.devndev.lamp.domain.usecase.login.SetTokenUseCase
 import com.devndev.lamp.presentation.ui.common.AccountStatus
-import com.devndev.lamp.presentation.ui.utils.IconStatusManager
+import com.devndev.lamp.presentation.utils.IconStatusManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.common.api.ApiException
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -30,9 +34,12 @@ class LoginViewModel @Inject constructor(
     private val setTokenUseCase: SetTokenUseCase
 ) : ViewModel() {
     private val logTag = "LoginViewModel"
+    private val _uiState = MutableStateFlow(LoginUiState())
+    val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
     init {
         IconStatusManager.setIconStatus("NONE")
+        checkLoginStatus()
     }
 
     fun getSignInIntent(): Intent {
@@ -40,23 +47,11 @@ class LoginViewModel @Inject constructor(
         return googleSignInClient.signInIntent
     }
 
-    fun checkLoginStatus() {
-        viewModelScope.launch {
-            if (checkIsNeedSignOutUseCase()) {
-                signOut()
-                saveIsNeedSignOutUseCase(false)
-                AuthManager.updateLoadingStatus(true)
-                AuthManager.updateLoginStatus(false)
-                AuthManager.updateLoadingStatus(false)
-            } else {
-                AuthManager.updateLoadingStatus(true)
-                val account = GoogleSignIn.getLastSignedInAccount(context)
-
-                AuthManager.updateLoginStatus(account != null)
-                AuthManager.updateLoadingStatus(false)
-            }
+    private fun checkLoginStatus() {
+        if (checkIsNeedSignOutUseCase()) {
+            signOut()
+            saveIsNeedSignOutUseCase(false)
         }
-        Log.d(logTag, "checkLoginStatus() status: ${AuthManager.isLoggedIn.value}")
     }
 
     fun signInWithGoogle(intentData: Intent?) {
@@ -67,11 +62,20 @@ class LoginViewModel @Inject constructor(
             val idToken = account?.idToken
             Log.d(logTag, "idToken $idToken")
             authenticateWithGoogle(idToken.toString())
-            //    AuthManager.updateLoginStatus(account != null)
-            //    Log.d(logTag, "signInWithGoogle() isLoggedIn ${AuthManager.isLoggedIn.value}")
         } catch (e: ApiException) {
-            AuthManager.updateLoginStatus(false)
+            AuthManager.updateAccountStatus(AccountStatus.NONE)
             Log.e(logTag, "signInResult:failed", e)
+        }
+    }
+
+    fun signInSuccess() {
+        viewModelScope.launch {
+            Log.d(logTag, "signInSuccess()")
+            _uiState.update { state ->
+                state.copy(
+                    isUserLoggedIn = true
+                )
+            }
         }
     }
 
@@ -86,9 +90,11 @@ class LoginViewModel @Inject constructor(
                     AuthManager.updateAccountStatus(AccountStatus.NEW_ACCOUNT)
                     AuthManager.signUpToken = tokenResult.signupToken.toString()
                 } else if (tokenResult.token != null && tokenResult.signupToken == null) {
-                    AuthManager.updateAccountStatus(AccountStatus.SIGNED_IN_ACCOUNT)
+//                    AuthManager.updateAccountStatus(AccountStatus.SIGNED_IN_ACCOUNT)
                     setTokenUseCase(tokenResult.token.toString())
-                    AuthManager.updateLoginStatus(true)
+                    _uiState.update { state ->
+                        state.copy(isUserLoggedIn = true)
+                    }
                 }
             } catch (e: Exception) {
                 Log.e(logTag, "authenticateWithGoogle", e)
@@ -99,9 +105,8 @@ class LoginViewModel @Inject constructor(
     fun signOut() {
         Log.d(logTag, "signOut()")
         googleSignInClient.signOut().addOnCompleteListener {
-            AuthManager.updateLoginStatus(false)
             AuthManager.updateAccountStatus(AccountStatus.NONE)
-            Log.d(logTag, "signOut() isLoggedIn ${AuthManager.isLoggedIn.value}")
+            Log.d(logTag, "signOut() Completed")
         }
     }
 

@@ -21,9 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.theme.IncTypography
-import com.devndev.lamp.presentation.ui.theme.Typography
-import com.devndev.lamp.presentation.ui.theme.getMainColor
+import com.devndev.lamp.presentation.theme.IncTypography
+import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.theme.getMainColor
 import kotlin.system.exitProcess
 
 @Composable

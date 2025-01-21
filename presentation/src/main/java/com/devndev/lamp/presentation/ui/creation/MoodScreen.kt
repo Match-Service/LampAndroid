@@ -40,14 +40,14 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.devndev.lamp.presentation.R
-import com.devndev.lamp.presentation.ui.theme.LampBlack
-import com.devndev.lamp.presentation.ui.theme.MoodBlack
-import com.devndev.lamp.presentation.ui.theme.MoodBlue
-import com.devndev.lamp.presentation.ui.theme.MoodGray
-import com.devndev.lamp.presentation.ui.theme.MoodRed
-import com.devndev.lamp.presentation.ui.theme.MoodTextGray
-import com.devndev.lamp.presentation.ui.theme.MoodYellow
-import com.devndev.lamp.presentation.ui.theme.Typography
+import com.devndev.lamp.presentation.theme.LampBlack
+import com.devndev.lamp.presentation.theme.MoodBlack
+import com.devndev.lamp.presentation.theme.MoodBlue
+import com.devndev.lamp.presentation.theme.MoodGray
+import com.devndev.lamp.presentation.theme.MoodRed
+import com.devndev.lamp.presentation.theme.MoodTextGray
+import com.devndev.lamp.presentation.theme.MoodYellow
+import com.devndev.lamp.presentation.theme.Typography
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.rememberPagerState
 

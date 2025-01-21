@@ -1,14 +1,13 @@
 package com.devndev.lamp.presentation.ui.login
 
+import android.content.Intent
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -28,33 +27,28 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.SpanStyle
-import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.Gray
+import com.devndev.lamp.presentation.theme.LampBlack
+import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.AccountStatus
-import com.devndev.lamp.presentation.ui.login.navigation.navigateEmailLogin
 import com.devndev.lamp.presentation.ui.registration.navigation.navigateRegistration
-import com.devndev.lamp.presentation.ui.signup.navigation.navigateSignUp
-import com.devndev.lamp.presentation.ui.theme.Gray
-import com.devndev.lamp.presentation.ui.theme.LampBlack
-import com.devndev.lamp.presentation.ui.theme.Typography
 
 @Composable
 fun LoginScreen(
+    navController: NavController,
     viewModel: LoginViewModel = hiltViewModel(),
-    navController: NavController
+    onClickSignInButton: (Intent) -> Unit
 ) {
     val accountStatus by AuthManager.accountStatus
     val logTag = "LoginScreen"
     val signInLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
-        viewModel.signInWithGoogle(result.data)
+        result.data?.let { onClickSignInButton(it) }
         Log.d(logTag, "accountStatus == $accountStatus")
     }
 
@@ -119,50 +113,50 @@ fun LoginScreen(
                     style = Typography.medium18
                 )
             }
-
-            Button(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                onClick = {
-                    val navOption = navOptions {
-                        launchSingleTop = true
-                    }
-                    navController.navigateSignUp(navOption)
-                },
-                colors = buttonColor
-            ) {
-                Text(
-                    text = stringResource(id = R.string.sign_in_email),
-                    style = Typography.medium18
-                )
-            }
+//
+//            Button(
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .height(48.dp),
+//                onClick = {
+//                    val navOption = navOptions {
+//                        launchSingleTop = true
+//                    }
+//                    navController.navigateSignUp(navOption)
+//                },
+//                colors = buttonColor
+//            ) {
+//                Text(
+//                    text = stringResource(id = R.string.sign_in_email),
+//                    style = Typography.medium18
+//                )
+//            }
             Spacer(modifier = Modifier.height(10.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text(
-                    text = stringResource(id = R.string.have_account),
-                    color = Color.White,
-                    style = Typography.normal12
-                )
-                Text(
-                    modifier = Modifier.clickable {
-                        val navOption = navOptions {
-                            launchSingleTop = true
-                        }
-                        navController.navigateEmailLogin(navOption)
-                    },
-                    text = buildAnnotatedString {
-                        append(stringResource(id = R.string.login))
-                        addStyle(
-                            style = SpanStyle(textDecoration = TextDecoration.Underline),
-                            start = 0,
-                            end = this.length
-                        )
-                    },
-                    color = Color.White,
-                    style = Typography.normal12
-                )
-            }
+//            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+//                Text(
+//                    text = stringResource(id = R.string.have_account),
+//                    color = Color.White,
+//                    style = Typography.normal12
+//                )
+//                Text(
+//                    modifier = Modifier.clickable {
+//                        val navOption = navOptions {
+//                            launchSingleTop = true
+//                        }
+//                        navController.navigateEmailLogin(navOption)
+//                    },
+//                    text = buildAnnotatedString {
+//                        append(stringResource(id = R.string.login))
+//                        addStyle(
+//                            style = SpanStyle(textDecoration = TextDecoration.Underline),
+//                            start = 0,
+//                            end = this.length
+//                        )
+//                    },
+//                    color = Color.White,
+//                    style = Typography.normal12
+//                )
+//            }
         }
     }
 }

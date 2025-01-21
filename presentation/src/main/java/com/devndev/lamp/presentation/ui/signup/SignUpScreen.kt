@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.ui.common.EmailStatus
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.PasswordStatus
@@ -35,7 +36,6 @@ import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.common.SignUpScreen
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.signup.navigation.navigateStartLamp
-import com.devndev.lamp.presentation.ui.theme.LampBlack
 import kotlinx.coroutines.delay
 
 private const val INITIAL_TIME = 180
