@@ -21,7 +21,13 @@ class LampDataSourceImpl @Inject constructor(
     }
 
     override suspend fun deleteLamp(lampId: Int): Response<Unit> {
-        return lampService.deleteLamp(lampId)
+        val response = lampService.deleteLamp(lampId)
+        if (response.isSuccessful) {
+            Log.d("deleteLamp", "deleteLamp successfully, Status Code: ${response.code()}")
+        } else {
+            Log.e("deleteLamp", "Failed to deleteLamp, Status Code: ${response.code()}")
+        }
+        return response
     }
 
     override suspend fun inviteUser(
@@ -33,6 +39,16 @@ class LampDataSourceImpl @Inject constructor(
             Log.d("InviteUser", "User invited successfully, Status Code: ${response.code()}")
         } else {
             Log.e("InviteUser", "Failed to invite user, Status Code: ${response.code()}")
+        }
+        return response
+    }
+
+    override suspend fun exitLamp(lampId: Int): Response<Unit> {
+        val response = lampService.exitLamp(lampId)
+        if (response.isSuccessful) {
+            Log.d("exitLamp", "exitLamp successfully, Status Code: ${response.code()}")
+        } else {
+            Log.e("exitLamp", "Failed to deleteLamp, Status Code: ${response.code()}")
         }
         return response
     }

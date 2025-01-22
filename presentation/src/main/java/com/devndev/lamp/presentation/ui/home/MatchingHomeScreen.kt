@@ -88,6 +88,7 @@ fun MatchingHomeScreen(
     val myInfo by homeViewModel.myInfo.collectAsState()
     val isOwner = myLamp?.lamp?.owner?.userId == myInfo?.userId
     var isDeletePopupShow by remember { mutableStateOf(false) }
+    var isExitPopupShow by remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
@@ -105,6 +106,19 @@ fun MatchingHomeScreen(
             onEndButtonClick = {
                 homeViewModel.deleteLamp()
                 isDeletePopupShow = false
+            }
+        )
+    }
+
+    if (isExitPopupShow) {
+        TwoButtonPopup(
+            mainText = stringResource(id = R.string.lamp_out_popup_main, myLamp!!.lamp!!.name),
+            startButtonText = stringResource(id = R.string.cancel),
+            endButtonText = stringResource(id = R.string.out),
+            onStartButtonClick = { isExitPopupShow = false },
+            onEndButtonClick = {
+                homeViewModel.exitLamp()
+                isExitPopupShow = false
             }
         )
     }
@@ -174,7 +188,7 @@ fun MatchingHomeScreen(
                     if (isOwner) {
                         isDeletePopupShow = true
                     } else {
-                        // 나가기 팝업
+                        isExitPopupShow = true
                     }
                 },
                 onShareIconClick = {}

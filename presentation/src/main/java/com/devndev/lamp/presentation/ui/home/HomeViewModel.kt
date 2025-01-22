@@ -7,6 +7,7 @@ import coil.network.HttpException
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.usecase.lamp.DeleteLampUseCase
+import com.devndev.lamp.domain.usecase.lamp.ExitLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.GetMyLampUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.presentation.utils.IconStatusManager
@@ -20,7 +21,8 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val getMyInfoUseCase: GetMyInfoUseCase,
     private val getMyLampUseCase: GetMyLampUseCase,
-    private val deleteLampUseCase: DeleteLampUseCase
+    private val deleteLampUseCase: DeleteLampUseCase,
+    private val exitLampUseCase: ExitLampUseCase
 ) : ViewModel() {
     private val logTag = "HomeViewModel"
 
@@ -52,7 +54,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getLampData() {
+    private fun getLampData() {
         viewModelScope.launch {
             try {
                 Log.d(logTag, "getLampData")
@@ -76,6 +78,18 @@ class HomeViewModel @Inject constructor(
                 Log.e(logTag, "deleteLamp HttpException", e)
             } catch (e: Exception) {
                 Log.e(logTag, "deleteLamp Exception", e)
+            }
+        }
+    }
+
+    fun exitLamp() {
+        viewModelScope.launch {
+            try {
+                Log.d(logTag, "exitLamp()")
+                myLamp.value?.lamp?.lampId?.let { exitLampUseCase(it) }
+                getLampData()
+            } catch (e: Exception) {
+                Log.e(logTag, "exitLamp Exception", e)
             }
         }
     }

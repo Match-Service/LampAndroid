@@ -9,4 +9,5 @@ interface LampRepository {
     suspend fun getMyLamp(): LampDomainModel
     suspend fun deleteLamp(lampId: Int)
     suspend fun inviteUser(lampId: Int, inviteUsersParam: InviteUsersParam)
+    suspend fun exitLamp(lampId: Int)
 }
