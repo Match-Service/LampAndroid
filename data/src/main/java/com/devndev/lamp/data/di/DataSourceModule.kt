@@ -1,5 +1,7 @@
 package com.devndev.lamp.data.di
 
+import com.devndev.lamp.data.datsource.alarm.AlarmDataSource
+import com.devndev.lamp.data.datsource.alarm.AlarmDataSourceImpl
 import com.devndev.lamp.data.datsource.lamp.LampDataSource
 import com.devndev.lamp.data.datsource.lamp.LampDataSourceImpl
 import com.devndev.lamp.data.datsource.local.LocalDataSource
@@ -44,4 +46,8 @@ interface DataSourceModule {
     @Singleton
     @Binds
     fun bindLampDataSource(lampDataSourceImpl: LampDataSourceImpl): LampDataSource
+
+    @Singleton
+    @Binds
+    fun bindAlarmDataSource(alarmDataSourceImpl: AlarmDataSourceImpl): AlarmDataSource
 }

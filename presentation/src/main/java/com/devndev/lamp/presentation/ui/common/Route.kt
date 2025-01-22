@@ -12,7 +12,7 @@ object Route {
     const val CREATION = "creation"
     const val REGISTRATION = "registration"
     const val INVITE = "invite"
-    const val NOTIFICATION = "notification"
+    const val ALARM = "ALARM"
     const val SIGNUP = "signup"
     const val START_LAMP = "start_lamp"
     const val REVIEW = "review"

@@ -35,6 +35,8 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.BackGroundColor
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.LightGray
+import com.devndev.lamp.presentation.ui.alarm.navigation.alarmNavGraph
+import com.devndev.lamp.presentation.ui.alarm.navigation.navigateAlarm
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.creation.navigation.creationNavGraph
@@ -42,8 +44,6 @@ import com.devndev.lamp.presentation.ui.login.navigation.emailLoginNavGraph
 import com.devndev.lamp.presentation.ui.login.navigation.forgotPasswordNavGraph
 import com.devndev.lamp.presentation.ui.main.navigation.mainNavGraph
 import com.devndev.lamp.presentation.ui.mypage.navigation.profileEditNavGraph
-import com.devndev.lamp.presentation.ui.notification.navigation.navigateNotification
-import com.devndev.lamp.presentation.ui.notification.navigation.notificationNavGraph
 import com.devndev.lamp.presentation.ui.review.navigation.reviewNavGraph
 import com.devndev.lamp.presentation.ui.search.navigation.inviteNavGraph
 import com.devndev.lamp.presentation.ui.search.navigation.searchNavGraph
@@ -91,7 +91,7 @@ fun MainScreen(modifier: Modifier, signOut: () -> Unit) {
             if (currentRoute != Route.SEARCH &&
                 currentRoute != Route.CREATION &&
                 currentRoute != Route.INVITE &&
-                currentRoute != Route.NOTIFICATION &&
+                currentRoute != Route.ALARM &&
                 currentRoute != Route.SIGNUP &&
                 currentRoute != Route.START_LAMP &&
                 currentRoute != Route.PROFILE_EDIT &&
@@ -118,7 +118,7 @@ fun MainScreen(modifier: Modifier, signOut: () -> Unit) {
             searchNavGraph(padding = innerPadding, navController = navController)
             inviteNavGraph(padding = innerPadding, navController = navController)
             creationNavGraph(padding = innerPadding, navController = navController)
-            notificationNavGraph(
+            alarmNavGraph(
                 padding = innerPadding,
                 navController = navController,
                 pagerState = pagerState
@@ -136,7 +136,7 @@ fun MainScreen(modifier: Modifier, signOut: () -> Unit) {
 @Composable
 fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean) {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
-    val alarmIcon = if (currentRoute?.startsWith(Route.NOTIFICATION) == true) {
+    val alarmIcon = if (currentRoute?.startsWith(Route.ALARM) == true) {
         painterResource(id = R.drawable.alarm_icon_on)
     } else {
         painterResource(id = R.drawable.alarm_icon)
@@ -167,8 +167,8 @@ fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean) {
                 modifier = Modifier
                     .size(24.dp)
                     .clickable {
-                        if (currentRoute?.startsWith(Route.NOTIFICATION) == false) {
-                            navController.navigateNotification(isFromMain = isFromMain)
+                        if (currentRoute?.startsWith(Route.ALARM) == false) {
+                            navController.navigateAlarm(isFromMain = isFromMain)
                         } else {
                             navController.popBackStack()
                         }
