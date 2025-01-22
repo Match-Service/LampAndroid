@@ -100,7 +100,7 @@
     <string name="invite_friend">친구 초대하기</string>
     <string name="invite">초대하기</string>
     <string name="start_matching">매칭 시작하기</string>
-    <string name="stop_matching">매칭 취소</string>
+    <string name="stop_matching">매칭 취소하기</string>
     <string name="recent_friend">최근 함께한 친구</string>
 
     <string name="notification">알림</string>
@@ -206,4 +206,9 @@
     <string name="lamp_status_invited">이미 초대한 친구에요</string>
 
     <string name="user_not_found">검색하신 닉네임을 찾을 수 없어요\n닉네임을 다시 검색해 주세요</string>
+
+    <string name="swipe_guide">새로운 인연을 찾아 램프를 비추려면 화면을 쓸어올리세요</string>
+
+    <string name="kick_popup_text">%s님을 강퇴 하시겠습니까?</string>
+    <string name="kick_user">강퇴하기</string>
 </resources>

@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.network.HttpException
+import com.devndev.lamp.domain.model.lamp.KickUserParam
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.usecase.lamp.DeleteLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.ExitLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.GetMyLampUseCase
+import com.devndev.lamp.domain.usecase.lamp.KickUserUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -22,7 +24,8 @@ class HomeViewModel @Inject constructor(
     private val getMyInfoUseCase: GetMyInfoUseCase,
     private val getMyLampUseCase: GetMyLampUseCase,
     private val deleteLampUseCase: DeleteLampUseCase,
-    private val exitLampUseCase: ExitLampUseCase
+    private val exitLampUseCase: ExitLampUseCase,
+    private val kickUserUseCase: KickUserUseCase
 ) : ViewModel() {
     private val logTag = "HomeViewModel"
 
@@ -90,6 +93,21 @@ class HomeViewModel @Inject constructor(
                 getLampData()
             } catch (e: Exception) {
                 Log.e(logTag, "exitLamp Exception", e)
+            }
+        }
+    }
+
+    fun kickUser(kickUserId: Int) {
+        viewModelScope.launch {
+            try {
+                Log.d(logTag, "kickUser()")
+                myLamp.value?.lamp?.lampId?.let {
+                    kickUserUseCase(it, KickUserParam(kickUserId))
+                    Log.d(logTag, "kickUser lampId $it, kickUserId $kickUserId")
+                }
+                getLampData()
+            } catch (e: Exception) {
+                Log.e(logTag, "kickUser Exception", e)
             }
         }
     }
