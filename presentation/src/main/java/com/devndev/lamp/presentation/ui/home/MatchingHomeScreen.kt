@@ -1,6 +1,7 @@
 package com.devndev.lamp.presentation.ui.home
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.RepeatMode
@@ -8,6 +9,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -59,6 +61,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
+import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Gray3
@@ -82,7 +85,10 @@ fun MatchingHomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val myLamp by homeViewModel.myLamp.collectAsState()
+    val myInfo by homeViewModel.myInfo.collectAsState()
+    val isOwner = myLamp?.lamp?.owner?.userId == myInfo?.userId
     var isDeletePopupShow by remember { mutableStateOf(false) }
+    var isExitPopupShow by remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
 
@@ -104,6 +110,19 @@ fun MatchingHomeScreen(
         )
     }
 
+    if (isExitPopupShow) {
+        TwoButtonPopup(
+            mainText = stringResource(id = R.string.lamp_out_popup_main, myLamp!!.lamp!!.name),
+            startButtonText = stringResource(id = R.string.cancel),
+            endButtonText = stringResource(id = R.string.out),
+            onStartButtonClick = { isExitPopupShow = false },
+            onEndButtonClick = {
+                homeViewModel.exitLamp()
+                isExitPopupShow = false
+            }
+        )
+    }
+
     // 아직 방에 유저를 초대할 수 없어 테스트용으로 작업(방의 참여 인원수 2명으로 임시 설정)
     // TODO : 실제 방 참여 인원에 따라 매칭 시작 활성화 되도록 수정
     var currentPersonnel = 2
@@ -119,7 +138,6 @@ fun MatchingHomeScreen(
     val pleaseStartMatching = stringResource(id = R.string.matching_header_start_matching)
     val whileMatching = stringResource(id = R.string.matching_header_while_invite)
 
-    val myInfo by homeViewModel.myInfo.collectAsState()
     // fullPersonnel = false : 친구 초대하기 및 스와이프 인식x
     // fullPersonnel = true : 매칭 시작하기 및 스와이프 인식o
     val buttonText = remember(fullPersonnel, isMatching) {
@@ -167,7 +185,11 @@ fun MatchingHomeScreen(
         ) {
             MatchingHomeTopBar(
                 onExitIconClick = {
-                    isDeletePopupShow = true
+                    if (isOwner) {
+                        isDeletePopupShow = true
+                    } else {
+                        isExitPopupShow = true
+                    }
                 },
                 onShareIconClick = {}
             )
@@ -246,7 +268,7 @@ fun MatchingHomeScreen(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
-                ProfileInfo(myLamp?.lamp?.owner?.profileImageUrl, myInfo?.name ?: "")
+                myLamp?.let { ProfileInfoList(it, isOwner) }
 
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -310,28 +332,83 @@ fun LampInfo(
 }
 
 @Composable
-fun ProfileInfoList() {
-    // todo 추후 친구 초대 가능할 경우 프로필 이미지들 Row로 확장
+fun ProfileInfoList(myLamp: LampDomainModel, isOwner: Boolean) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.animateContentSize()
+    ) {
+        ProfileInfo(
+            myLamp.lamp?.owner?.profileImageUrl,
+            myLamp.lamp?.owner?.name ?: "",
+            true,
+            isOwner
+        )
+
+        myLamp.lamp?.participants?.forEach { participant ->
+            ProfileInfo(participant.profileImageUrl, participant.name, false, isOwner)
+        }
+    }
 }
 
 @Composable
 fun ProfileInfo(
     url: String?,
-    text: String
+    text: String,
+    isOwnerProfile: Boolean,
+    isOwner: Boolean
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(horizontal = 3.dp)
     ) {
-        AsyncImage(
-            model = url,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-        )
-        Text(text = text, color = Gray3, style = Typography.normal9)
+        Box(
+            contentAlignment = Alignment.TopEnd,
+            modifier = Modifier.size(40.dp)
+        ) {
+            AsyncImage(
+                model = url,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .then(
+                        if (isOwnerProfile) {
+                            Modifier.border(0.5.dp, Color.White, CircleShape)
+                        } else {
+                            Modifier
+                        }
+                    )
+            )
+            if (isOwnerProfile) {
+                Box() {
+                    Icon(
+                        painter = painterResource(id = R.drawable.owner_icon_out),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.owner_icon_in),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            } else if (isOwner) {
+                Icon(
+                    painter = painterResource(id = R.drawable.x_circle_icon),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                    modifier = Modifier.clickable {
+                        // 강퇴
+                    }
+                )
+            }
+        }
+        Text(text = text, color = Color.White, style = Typography.normal9)
     }
 }
 

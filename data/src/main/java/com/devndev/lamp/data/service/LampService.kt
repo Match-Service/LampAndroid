@@ -30,4 +30,9 @@ interface LampService {
         @Path("lampId") lampId: Int,
         @Body inviteUserRequest: InviteUsersRequest
     ): Response<Unit>
+
+    @POST("api/v1/lamp/out/{lampId}")
+    suspend fun exitLamp(
+        @Path("lampId") lampId: Int
+    ): Response<Unit>
 }

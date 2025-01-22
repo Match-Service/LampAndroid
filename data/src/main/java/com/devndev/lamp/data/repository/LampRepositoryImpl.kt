@@ -37,4 +37,8 @@ class LampRepositoryImpl @Inject constructor(
         )
         lampDataSource.inviteUser(lampId, inviteUsersRequest)
     }
+
+    override suspend fun exitLamp(lampId: Int) {
+        lampDataSource.exitLamp(lampId)
+    }
 }
