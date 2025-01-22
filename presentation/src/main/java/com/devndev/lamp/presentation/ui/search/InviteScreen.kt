@@ -168,8 +168,8 @@ fun InviteScreen(
         if (showBottomButton) {
             BottomSpaceForInvite(onClick = {
                 Log.d(logTag, selectedItems.toString())
-                val selectedNames = selectedItems.map { it.name }
-                searchViewModel.inviteUsers(selectedNames)
+                val selectedIds = selectedItems.map { it.id }
+                searchViewModel.inviteUsers(selectedIds)
             })
         }
     }
