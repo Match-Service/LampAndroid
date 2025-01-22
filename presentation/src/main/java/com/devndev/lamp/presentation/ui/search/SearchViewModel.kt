@@ -94,12 +94,15 @@ class SearchViewModel @Inject constructor(
         _users.clear()
     }
 
-    fun inviteUsers(users: List<String>) {
+    fun inviteUsers(users: List<Int>) {
         viewModelScope.launch {
             try {
                 val inviteUsersParam = InviteUsersParam(users)
                 Log.d(logTag, "inviteUsers(), users $users")
-                myLamp.value?.lamp?.lampId?.let { inviteUsersUseCase(it, inviteUsersParam) }
+                myLamp.value?.lamp?.lampId?.let {
+                    Log.d(logTag, "inviteUsers(), myLampId $it")
+                    inviteUsersUseCase(it, inviteUsersParam)
+                }
             } catch (e: HttpException) {
                 Log.e(logTag, "inviteUsers HttpException", e)
             } catch (e: Exception) {

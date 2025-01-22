@@ -5,6 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class InviteUsersRequest(
-    @Json(name = "inviteUserNames")
-    val inviteUserNames: List<String>
+    @Json(name = "inviteUserIds")
+    val inviteUserIds: List<Int>
 )

@@ -33,7 +33,7 @@ class LampRepositoryImpl @Inject constructor(
 
     override suspend fun inviteUser(lampId: Int, inviteUsersParam: InviteUsersParam) {
         val inviteUsersRequest = InviteUsersRequest(
-            inviteUserNames = inviteUsersParam.inviteUserNames
+            inviteUserIds = inviteUsersParam.inviteUserIds
         )
         lampDataSource.inviteUser(lampId, inviteUsersRequest)
     }
