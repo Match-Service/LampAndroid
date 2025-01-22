@@ -85,6 +85,8 @@ fun MatchingHomeScreen(
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val myLamp by homeViewModel.myLamp.collectAsState()
+    val myInfo by homeViewModel.myInfo.collectAsState()
+    val isOwner = myLamp?.lamp?.owner?.userId == myInfo?.userId
     var isDeletePopupShow by remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -122,7 +124,6 @@ fun MatchingHomeScreen(
     val pleaseStartMatching = stringResource(id = R.string.matching_header_start_matching)
     val whileMatching = stringResource(id = R.string.matching_header_while_invite)
 
-    val myInfo by homeViewModel.myInfo.collectAsState()
     // fullPersonnel = false : 친구 초대하기 및 스와이프 인식x
     // fullPersonnel = true : 매칭 시작하기 및 스와이프 인식o
     val buttonText = remember(fullPersonnel, isMatching) {
@@ -170,7 +171,11 @@ fun MatchingHomeScreen(
         ) {
             MatchingHomeTopBar(
                 onExitIconClick = {
-                    isDeletePopupShow = true
+                    if (isOwner) {
+                        isDeletePopupShow = true
+                    } else {
+                        // 나가기 팝업
+                    }
                 },
                 onShareIconClick = {}
             )
@@ -249,7 +254,7 @@ fun MatchingHomeScreen(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
-                myLamp?.let { ProfileInfoList(it) }
+                myLamp?.let { ProfileInfoList(it, isOwner) }
 
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -313,16 +318,21 @@ fun LampInfo(
 }
 
 @Composable
-fun ProfileInfoList(myLamp: LampDomainModel) {
+fun ProfileInfoList(myLamp: LampDomainModel, isOwner: Boolean) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.animateContentSize()
     ) {
-        ProfileInfo(myLamp.lamp?.owner?.profileImageUrl, myLamp.lamp?.owner?.name ?: "", true)
+        ProfileInfo(
+            myLamp.lamp?.owner?.profileImageUrl,
+            myLamp.lamp?.owner?.name ?: "",
+            true,
+            isOwner
+        )
 
         myLamp.lamp?.participants?.forEach { participant ->
-            ProfileInfo(participant.profileImageUrl, participant.name, false)
+            ProfileInfo(participant.profileImageUrl, participant.name, false, isOwner)
         }
     }
 }
@@ -331,6 +341,7 @@ fun ProfileInfoList(myLamp: LampDomainModel) {
 fun ProfileInfo(
     url: String?,
     text: String,
+    isOwnerProfile: Boolean,
     isOwner: Boolean
 ) {
     Column(
@@ -350,14 +361,14 @@ fun ProfileInfo(
                     .size(40.dp)
                     .clip(CircleShape)
                     .then(
-                        if (isOwner) {
+                        if (isOwnerProfile) {
                             Modifier.border(0.5.dp, Color.White, CircleShape)
                         } else {
                             Modifier
                         }
                     )
             )
-            if (isOwner) {
+            if (isOwnerProfile) {
                 Box() {
                     Icon(
                         painter = painterResource(id = R.drawable.owner_icon_out),
@@ -372,7 +383,7 @@ fun ProfileInfo(
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
-            } else {
+            } else if (isOwner) {
                 Icon(
                     painter = painterResource(id = R.drawable.x_circle_icon),
                     contentDescription = null,
