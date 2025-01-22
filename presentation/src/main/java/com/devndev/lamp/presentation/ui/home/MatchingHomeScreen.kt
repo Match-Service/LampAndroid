@@ -12,6 +12,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -32,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -89,9 +91,11 @@ fun MatchingHomeScreen(
     val isOwner = myLamp?.lamp?.owner?.userId == myInfo?.userId
     var isDeletePopupShow by remember { mutableStateOf(false) }
     var isExitPopupShow by remember { mutableStateOf(false) }
+    var isKickUserPopupShow by remember { mutableStateOf(false) }
+    var kickUserId by remember { mutableIntStateOf(0) }
+    var kickUserName by remember { mutableStateOf("") }
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-
     val navOption = navOptions {
         launchSingleTop = true
     }
@@ -123,12 +127,22 @@ fun MatchingHomeScreen(
         )
     }
 
-    // 아직 방에 유저를 초대할 수 없어 테스트용으로 작업(방의 참여 인원수 2명으로 임시 설정)
-    // TODO : 실제 방 참여 인원에 따라 매칭 시작 활성화 되도록 수정
-    var currentPersonnel = 2
-    val maxPersonnel = myLamp?.lamp?.hopeMatchNumber
+    if (isKickUserPopupShow) {
+        TwoButtonPopup(
+            mainText = stringResource(id = R.string.kick_popup_text, kickUserName),
+            startButtonText = stringResource(id = R.string.cancel),
+            endButtonText = stringResource(id = R.string.kick_user),
+            onStartButtonClick = { isKickUserPopupShow = false },
+            onEndButtonClick = {
+                homeViewModel.kickUser(kickUserId)
+                isKickUserPopupShow = false
+            }
+        )
+    }
 
-    var fullPersonnel by remember { mutableStateOf(currentPersonnel == maxPersonnel) }
+    val currentPersonnel = myLamp?.lamp?.participants?.size?.plus(1)
+    val maxPersonnel = myLamp?.lamp?.hopeMatchNumber
+    val fullPersonnel by remember { mutableStateOf(currentPersonnel == maxPersonnel) }
     var isMatching by remember { mutableStateOf(false) }
     var lampTitle by remember { mutableStateOf("") }
     val inviteFriend = stringResource(id = R.string.invite_friend)
@@ -162,6 +176,7 @@ fun MatchingHomeScreen(
             .clipToBounds()
     ) {
         VerticalSwipeGesture(
+            isOwner = isOwner,
             fullPersonnel,
             onSwipeUp = {
                 isMatching = true
@@ -224,16 +239,18 @@ fun MatchingHomeScreen(
                             style = Typography.semiBold20
                         )
                     }
-                    Icon(
-                        painter = painterResource(
-                            id = R.drawable.edit_icon
-                        ),
-                        contentDescription = null,
-                        tint = Color.White,
-                        modifier = Modifier.clickable {
-                            navController.navigateCreation(navOption)
-                        }
-                    )
+                    if (isOwner) {
+                        Icon(
+                            painter = painterResource(
+                                id = R.drawable.edit_icon
+                            ),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.clickable {
+                                navController.navigateCreation(navOption)
+                            }
+                        )
+                    }
                 }
                 var mood = ""
                 when (myLamp?.lamp?.color) {
@@ -266,37 +283,72 @@ fun MatchingHomeScreen(
                         textAlign = TextAlign.Center
                     )
                 }
-                Spacer(modifier = Modifier.height(10.dp))
+                Spacer(modifier = Modifier.height(5.dp))
 
-                myLamp?.let { ProfileInfoList(it, isOwner) }
-
-                Spacer(modifier = Modifier.height(30.dp))
-
-                if (!fullPersonnel) {
-                    Button(
-                        onClick = { navController.navigateInvite(navOption) },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Gray,
-                            contentColor = Color.White
-                        ),
-                        modifier = Modifier.height(50.dp)
-                    ) {
-                        Text(
-                            text = buttonText,
-                            color = Color.White,
-                            style = Typography.medium18,
-                            modifier = Modifier.padding(horizontal = 12.dp)
-                        )
-                    }
-                } else {
-                    LampButton(
-                        isGradient = !isMatching,
-                        buttonWidth = 300,
-                        buttonText = buttonText,
-                        onClick = { isMatching = !isMatching },
-                        enabled = true
+                myLamp?.let { myLamp ->
+                    ProfileInfoList(
+                        myLamp = myLamp,
+                        isOwner = isOwner,
+                        isMatching = isMatching,
+                        onKickButtonClick = { i, s ->
+                            kickUserId = i
+                            kickUserName = s
+                            isKickUserPopupShow = true
+                        }
                     )
                 }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                if (!fullPersonnel) {
+                    if (isOwner) {
+                        Button(
+                            onClick = { navController.navigateInvite(navOption) },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Gray,
+                                contentColor = Color.White
+                            ),
+                            modifier = Modifier.height(50.dp)
+                        ) {
+                            Text(
+                                text = buttonText,
+                                color = Color.White,
+                                style = Typography.medium18,
+                                modifier = Modifier.padding(horizontal = 12.dp)
+                            )
+                        }
+                    }
+                } else {
+                    if (isOwner || isMatching) {
+                        LampButton(
+                            isGradient = !isMatching,
+                            buttonWidth = 300,
+                            buttonText = buttonText,
+                            onClick = { isMatching = !isMatching },
+                            enabled = true
+                        )
+                    }
+                }
+            }
+        }
+        if (isOwner && !isMatching) {
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 85.dp),
+                verticalArrangement = Arrangement.spacedBy(1.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.swipe_icon),
+                    contentDescription = null,
+                    tint = Color.Unspecified
+                )
+                Text(
+                    text = stringResource(id = R.string.swipe_guide),
+                    color = Gray3,
+                    style = Typography.normal12
+                )
             }
         }
     }
@@ -332,21 +384,37 @@ fun LampInfo(
 }
 
 @Composable
-fun ProfileInfoList(myLamp: LampDomainModel, isOwner: Boolean) {
+fun ProfileInfoList(
+    myLamp: LampDomainModel,
+    isOwner: Boolean,
+    isMatching: Boolean,
+    onKickButtonClick: (Int, String) -> Unit = { i: Int, s: String -> }
+) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.animateContentSize()
     ) {
         ProfileInfo(
-            myLamp.lamp?.owner?.profileImageUrl,
-            myLamp.lamp?.owner?.name ?: "",
-            true,
-            isOwner
+            url = myLamp.lamp?.owner?.profileImageUrl,
+            text = myLamp.lamp?.owner?.name ?: "",
+            isOwnerProfile = true,
+            isOwner = isOwner,
+            isMatching = isMatching
         )
 
         myLamp.lamp?.participants?.forEach { participant ->
-            ProfileInfo(participant.profileImageUrl, participant.name, false, isOwner)
+            ProfileInfo(
+                url = participant.profileImageUrl,
+                text = participant.name,
+                userId = participant.userId,
+                isOwnerProfile = false,
+                isOwner = isOwner,
+                isMatching = isMatching,
+                onKickButtonClick = { i, s ->
+                    onKickButtonClick(i, s)
+                }
+            )
         }
     }
 }
@@ -355,8 +423,11 @@ fun ProfileInfoList(myLamp: LampDomainModel, isOwner: Boolean) {
 fun ProfileInfo(
     url: String?,
     text: String,
+    userId: Int = 0,
     isOwnerProfile: Boolean,
-    isOwner: Boolean
+    isOwner: Boolean,
+    isMatching: Boolean,
+    onKickButtonClick: (Int, String) -> Unit = { i: Int, s: String -> }
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
@@ -397,15 +468,22 @@ fun ProfileInfo(
                         modifier = Modifier.align(Alignment.Center)
                     )
                 }
-            } else if (isOwner) {
-                Icon(
-                    painter = painterResource(id = R.drawable.x_circle_icon),
-                    contentDescription = null,
-                    tint = Color.Unspecified,
-                    modifier = Modifier.clickable {
-                        // 강퇴
-                    }
-                )
+            } else if (isOwner && !isMatching) {
+                Box(
+                    contentAlignment = Alignment.TopEnd,
+                    modifier = Modifier
+                        .size(25.dp)
+                        .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() }
+                        ) { onKickButtonClick(userId, text) }
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.x_circle_icon),
+                        contentDescription = null,
+                        tint = Color.Unspecified
+                    )
+                }
             }
         }
         Text(text = text, color = Color.White, style = Typography.normal9)
@@ -445,6 +523,7 @@ fun MatchingHomeTopBar(onExitIconClick: () -> Unit, onShareIconClick: () -> Unit
  */
 @Composable
 fun VerticalSwipeGesture(
+    isOwner: Boolean,
     fullPersonnel: Boolean,
     onSwipeUp: () -> Unit,
     isMatching: Boolean,
@@ -542,7 +621,7 @@ fun VerticalSwipeGesture(
             .pointerInput(Unit) {
                 detectVerticalDragGestures(
                     onVerticalDrag = { change, dragAmount ->
-                        if (dragAmount < -10 && fullPersonnel) {
+                        if (dragAmount < -10 && fullPersonnel && isOwner) {
                             // 스와이프 업 인식
                             println("Swiped up")
                             // 스와이프 상태를 업데이트

@@ -2,6 +2,7 @@ package com.devndev.lamp.domain.repository
 
 import com.devndev.lamp.domain.model.lamp.CreateLampParam
 import com.devndev.lamp.domain.model.lamp.InviteUsersParam
+import com.devndev.lamp.domain.model.lamp.KickUserParam
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
 
 interface LampRepository {
@@ -10,4 +11,5 @@ interface LampRepository {
     suspend fun deleteLamp(lampId: Int)
     suspend fun inviteUser(lampId: Int, inviteUsersParam: InviteUsersParam)
     suspend fun exitLamp(lampId: Int)
+    suspend fun kickUser(lampId: Int, kickUserParam: KickUserParam)
 }

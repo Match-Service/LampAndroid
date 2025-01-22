@@ -3,6 +3,7 @@ package com.devndev.lamp.data.datsource.lamp
 import android.util.Log
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
 import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
+import com.devndev.lamp.data.dto.request.lamp.KickUserRequest
 import com.devndev.lamp.data.dto.response.lamp.CreateLampResponse
 import com.devndev.lamp.data.dto.response.lamp.LampResponse
 import com.devndev.lamp.data.service.LampService
@@ -49,6 +50,16 @@ class LampDataSourceImpl @Inject constructor(
             Log.d("exitLamp", "exitLamp successfully, Status Code: ${response.code()}")
         } else {
             Log.e("exitLamp", "Failed to deleteLamp, Status Code: ${response.code()}")
+        }
+        return response
+    }
+
+    override suspend fun kickUser(lampId: Int, kickUserRequest: KickUserRequest): Response<Unit> {
+        val response = lampService.kickUser(lampId, kickUserRequest)
+        if (response.isSuccessful) {
+            Log.d("kickUser", "kickUser successfully, Status Code: ${response.code()}")
+        } else {
+            Log.e("kickUser", "Failed to kickUser, Status Code: ${response.code()}")
         }
         return response
     }
