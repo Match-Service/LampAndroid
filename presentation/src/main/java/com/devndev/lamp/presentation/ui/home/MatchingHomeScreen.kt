@@ -1,6 +1,7 @@
 package com.devndev.lamp.presentation.ui.home
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.RepeatMode
@@ -8,6 +9,7 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -59,6 +61,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
+import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Gray3
@@ -246,7 +249,7 @@ fun MatchingHomeScreen(
                 }
                 Spacer(modifier = Modifier.height(10.dp))
 
-                ProfileInfo(myLamp?.lamp?.owner?.profileImageUrl, myInfo?.name ?: "")
+                myLamp?.let { ProfileInfoList(it) }
 
                 Spacer(modifier = Modifier.height(30.dp))
 
@@ -310,28 +313,77 @@ fun LampInfo(
 }
 
 @Composable
-fun ProfileInfoList() {
-    // todo 추후 친구 초대 가능할 경우 프로필 이미지들 Row로 확장
+fun ProfileInfoList(myLamp: LampDomainModel) {
+    Row(
+        horizontalArrangement = Arrangement.spacedBy(10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.animateContentSize()
+    ) {
+        ProfileInfo(myLamp.lamp?.owner?.profileImageUrl, myLamp.lamp?.owner?.name ?: "", true)
+
+        myLamp.lamp?.participants?.forEach { participant ->
+            ProfileInfo(participant.profileImageUrl, participant.name, false)
+        }
+    }
 }
 
 @Composable
 fun ProfileInfo(
     url: String?,
-    text: String
+    text: String,
+    isOwner: Boolean
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.padding(horizontal = 3.dp)
     ) {
-        AsyncImage(
-            model = url,
-            contentDescription = null,
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
-        )
-        Text(text = text, color = Gray3, style = Typography.normal9)
+        Box(
+            contentAlignment = Alignment.TopEnd,
+            modifier = Modifier.size(40.dp)
+        ) {
+            AsyncImage(
+                model = url,
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .size(40.dp)
+                    .clip(CircleShape)
+                    .then(
+                        if (isOwner) {
+                            Modifier.border(0.5.dp, Color.White, CircleShape)
+                        } else {
+                            Modifier
+                        }
+                    )
+            )
+            if (isOwner) {
+                Box() {
+                    Icon(
+                        painter = painterResource(id = R.drawable.owner_icon_out),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                    Icon(
+                        painter = painterResource(id = R.drawable.owner_icon_in),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+            } else {
+                Icon(
+                    painter = painterResource(id = R.drawable.x_circle_icon),
+                    contentDescription = null,
+                    tint = Color.Unspecified,
+                    modifier = Modifier.clickable {
+                        // 강퇴
+                    }
+                )
+            }
+        }
+        Text(text = text, color = Color.White, style = Typography.normal9)
     }
 }
 
