@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.notification
+package com.devndev.lamp.presentation.ui.alarm
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
@@ -32,6 +32,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,7 +43,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.devndev.lamp.domain.model.alarm.AlarmDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Gray3
@@ -53,13 +56,16 @@ import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
+import java.time.Duration
+import java.time.Instant
 
 @Composable
-fun NotificationScreen(
+fun AlarmScreen(
     modifier: Modifier,
     navController: NavController,
     pagerState: PagerState,
-    isFromMain: Boolean
+    isFromMain: Boolean,
+    viewModel: AlarmViewModel = hiltViewModel()
 ) {
     BackHandler {
         if (isFromMain) {
@@ -68,6 +74,12 @@ fun NotificationScreen(
             navController.popBackStack()
         }
     }
+
+    val alarms by viewModel.alarms.collectAsState()
+
+    val inviteList = alarms.filter { it.type == "INVITE" }
+    val visitList = alarms.filter { it.type == "VISIT" }
+
     var isInvitationExpanded by remember { mutableStateOf(false) }
     var isVisitExpanded by remember { mutableStateOf(false) }
     Column(
@@ -98,50 +110,22 @@ fun NotificationScreen(
                     .padding(8.dp)
             ) {
                 item {
-                    NotificationSection(
+                    AlarmSection(
                         title = stringResource(id = R.string.invite_notification),
                         isExpanded = isInvitationExpanded,
                         onToggleExpand = { isInvitationExpanded = !isInvitationExpanded },
-                        notifications = listOf(
-                            NotificationData(
-                                hostName = "네네",
-                                userName = "북창동루쥬라",
-                                roomName = "복창동루루캠프",
-                                timeAgo = "36분 전"
-                            ),
-                            NotificationData(
-                                hostName = "북창동김수환",
-                                userName = "사용자B",
-                                roomName = "캠프B",
-                                timeAgo = "15시간 전"
-                            )
-                        ),
-                        color = WomanColor,
-                        type = NotificationType.INVITE
+                        alarms = inviteList,
+                        color = WomanColor
                     )
                 }
                 item { Spacer(modifier = Modifier.height(70.dp)) }
                 item {
-                    NotificationSection(
+                    AlarmSection(
                         title = stringResource(id = R.string.visit_notification),
                         isExpanded = isVisitExpanded,
                         onToggleExpand = { isVisitExpanded = !isVisitExpanded },
-                        notifications = listOf(
-                            NotificationData(
-                                hostName = "",
-                                userName = "북창동이어진",
-                                roomName = "맛쟁이 신사들",
-                                timeAgo = "15분 전"
-                            ),
-                            NotificationData(
-                                hostName = "",
-                                userName = "사용자B",
-                                roomName = "캠프B",
-                                timeAgo = "3시간 전"
-                            )
-                        ),
-                        color = ManColor,
-                        type = NotificationType.VISIT
+                        alarms = visitList,
+                        color = ManColor
                     )
                 }
             }
@@ -150,13 +134,12 @@ fun NotificationScreen(
 }
 
 @Composable
-fun NotificationSection(
+fun AlarmSection(
     title: String,
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
-    notifications: List<NotificationData>,
-    color: Color,
-    type: Int
+    alarms: List<AlarmDomainModel>,
+    color: Color
 ) {
     Column(
         modifier = Modifier
@@ -196,9 +179,9 @@ fun NotificationSection(
             exit = slideOutVertically(animationSpec = tween(500)) + shrinkVertically() + fadeOut()
         ) {
             Column {
-                notifications.forEachIndexed { index, notificationData ->
-                    NotificationItem(notificationData = notificationData, type = type)
-                    if (index < notifications.size - 1) {
+                alarms.forEachIndexed { index, alarmData ->
+                    AlarmItem(alarmData = alarmData)
+                    if (index < alarms.size - 1) {
                         HorizontalDivider(
                             color = Gray3.copy(alpha = 0.3f),
                             thickness = 0.5.dp
@@ -211,7 +194,7 @@ fun NotificationSection(
 }
 
 @Composable
-fun NotificationItem(notificationData: NotificationData, type: Int) {
+fun AlarmItem(alarmData: AlarmDomainModel) {
     Column(
         modifier = Modifier
             .background(color = LampBlack)
@@ -219,17 +202,13 @@ fun NotificationItem(notificationData: NotificationData, type: Int) {
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(2.dp)
     ) {
-        Text(text = notificationData.timeAgo, style = Typography.normal12, color = Gray3)
-        val notificationText = when (type) {
-            NotificationType.INVITE -> "${notificationData.hostName}님이 ${notificationData.userName}님을\n초대했어요"
-            NotificationType.VISIT -> "${notificationData.userName}님이 '${notificationData.roomName}'\n에 참여하길 원해요"
-            else -> ""
-        }
-        Text(text = notificationText, style = Typography.medium18, color = Color.White)
+        Text(text = getTimeAgo(alarmData.createdAt), style = Typography.normal12, color = Gray3)
 
-        val buttonText = when (type) {
-            NotificationType.INVITE -> stringResource(id = R.string.accept_invite)
-            NotificationType.VISIT -> stringResource(id = R.string.accept_visit)
+        Text(text = alarmData.content, style = Typography.medium18, color = Color.White)
+
+        val buttonText = when (alarmData.type) {
+            "INVITE" -> stringResource(id = R.string.accept_invite)
+            "VISIT" -> stringResource(id = R.string.accept_visit)
             else -> ""
         }
         Row(
@@ -278,14 +257,28 @@ fun StartCircle(color: Color) {
     }
 }
 
-data class NotificationData(
-    val hostName: String,
-    val userName: String,
-    val roomName: String,
-    val timeAgo: String
-)
+fun getTimeAgo(isoTime: String): String {
+    // Parsing the ISO time string to Instant
+    val time = Instant.parse(isoTime)
 
-object NotificationType {
-    const val INVITE = 0
-    const val VISIT = 1
+    // Getting the current time
+    val now = Instant.now()
+
+    // Calculating the duration between the provided time and now
+    val duration = Duration.between(time, now)
+
+    // Converting duration to minutes and hours
+    val minutes = duration.toMinutes()
+    val hours = duration.toHours()
+
+    // Return appropriate string based on the duration
+    return when {
+        minutes < 1 -> "방금 전"
+        minutes < 60 -> "${minutes}분 전"
+        hours < 24 -> "${hours}시간 전"
+        else -> {
+            val days = duration.toDays()
+            "${days}일 전"
+        }
+    }
 }

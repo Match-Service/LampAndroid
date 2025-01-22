@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.notification.navigation
+package com.devndev.lamp.presentation.ui.alarm.navigation
 
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
@@ -12,22 +12,22 @@ import androidx.navigation.NavOptions
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.devndev.lamp.presentation.ui.alarm.AlarmScreen
 import com.devndev.lamp.presentation.ui.common.Route
-import com.devndev.lamp.presentation.ui.notification.NotificationScreen
 
-fun NavController.navigateNotification(isFromMain: Boolean, navOptions: NavOptions? = null) {
-    val routeWithArgs = "${Route.NOTIFICATION}?isFromMain=$isFromMain"
+fun NavController.navigateAlarm(isFromMain: Boolean, navOptions: NavOptions? = null) {
+    val routeWithArgs = "${Route.ALARM}?isFromMain=$isFromMain"
     this.navigate(routeWithArgs, navOptions)
 }
 
-fun NavGraphBuilder.notificationNavGraph(
+fun NavGraphBuilder.alarmNavGraph(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
     navController: NavController,
     pagerState: PagerState
 ) {
     composable(
-        "${Route.NOTIFICATION}?isFromMain={isFromMain}",
+        "${Route.ALARM}?isFromMain={isFromMain}",
         arguments = listOf(
             navArgument("isFromMain") { type = NavType.BoolType }
         ),
@@ -35,7 +35,7 @@ fun NavGraphBuilder.notificationNavGraph(
         exitTransition = { slideOutHorizontally(targetOffsetX = { it }) }
     ) { backStackEntry ->
         val isFromMain = backStackEntry.arguments?.getBoolean("isFromMain")
-        NotificationScreen(
+        AlarmScreen(
             modifier = modifier.padding(padding),
             navController = navController,
             pagerState = pagerState,
