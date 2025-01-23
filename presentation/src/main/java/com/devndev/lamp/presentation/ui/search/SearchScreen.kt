@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.search
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,12 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.theme.WomanColor
+import com.devndev.lamp.presentation.ui.common.InviteStatus
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampTextField
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
@@ -36,6 +41,12 @@ fun SearchScreen(
     modifier: Modifier,
     navController: NavController
 ) {
+    BackHandler {
+        navController.navigateMain(MainScreenPage.HOME)
+    }
+
+    val inviteStatus by viewModel.inviteStatus.collectAsState()
+
     var searchQuery by remember { mutableStateOf("") }
 
     val users by remember { mutableStateOf(viewModel.users) }
@@ -54,6 +65,7 @@ fun SearchScreen(
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(18.dp),
             modifier = Modifier.weight(1f)
         ) {
@@ -65,7 +77,7 @@ fun SearchScreen(
 
             LampTextField(
                 width = 0,
-                isGradient = false,
+                isNeedClearFocus = inviteStatus == InviteStatus.SEARCHED,
                 query = searchQuery,
                 onQueryChange = { searchQuery = it },
                 hintText = stringResource(id = R.string.guide_search_friend),
@@ -74,6 +86,15 @@ fun SearchScreen(
                     viewModel.searchUsers(searchQuery)
                 }
             )
+
+            if (inviteStatus == InviteStatus.USER_NOT_FOUNT) {
+                Text(
+                    text = stringResource(id = R.string.user_not_found),
+                    style = Typography.normal12,
+                    color = WomanColor,
+                    textAlign = TextAlign.Center
+                )
+            }
 
             SearchList(
                 profileList = users,

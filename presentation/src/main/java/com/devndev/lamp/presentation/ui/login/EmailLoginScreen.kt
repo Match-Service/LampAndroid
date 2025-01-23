@@ -58,7 +58,6 @@ fun EmailLoginScreen(modifier: Modifier, navController: NavController) {
             SelectionScreen(text = "") {
                 LampTextField(
                     width = 300,
-                    isGradient = emailLoginStatus == EmailLoginStatus.INVALID_EMAIL,
                     query = emailQuery,
                     onQueryChange = {
                         emailQuery = it
@@ -76,7 +75,6 @@ fun EmailLoginScreen(modifier: Modifier, navController: NavController) {
                 Spacer(modifier = Modifier.height(20.dp))
                 LampTextField(
                     width = 300,
-                    isGradient = emailLoginStatus == EmailLoginStatus.INVALID_PASSWORD,
                     query = passwordQuery,
                     onQueryChange = {
                         passwordQuery = it

@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -38,6 +37,7 @@ fun InstagramScreen(
 ) {
     SelectionScreen(text = stringResource(id = R.string.input_insta)) {
         var idQuery by remember { mutableStateOf(instagramID) }
+
         Spacer(modifier = Modifier.height(30.dp))
 
         Column(
@@ -46,7 +46,7 @@ fun InstagramScreen(
         ) {
             LampTextField(
                 width = 300,
-                isGradient = instagramID.isNotEmpty() && step != InstagramStep.VALID,
+                isNeedClearFocus = step == InstagramStep.VALID,
                 query = idQuery,
                 onQueryChange = {
                     idQuery = it

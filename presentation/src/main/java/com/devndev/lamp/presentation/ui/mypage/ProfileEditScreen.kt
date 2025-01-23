@@ -160,7 +160,8 @@ fun ProfileEditScreen(
                 }
             },
             instagramAuthStep = instagramAuthStep,
-            onInstagramQueryChange = { profileEditViewModel.updateInstagramStep(it) }
+            onInstagramQueryChange = { profileEditViewModel.updateInstagramStep(it) },
+            isNeedClearFocus = instagramAuthStep == InstagramAuth.AUTH_SUCCESS
         )
     }
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
