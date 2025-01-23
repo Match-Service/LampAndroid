@@ -40,7 +40,6 @@ fun PasswordScreen(
         ) {
             LampTextField(
                 width = 300,
-                isGradient = passwordStatus == PasswordStatus.INVALID_PASSWORD,
                 query = passwordQuery,
                 onQueryChange = {
                     passwordQuery = it
@@ -78,7 +77,6 @@ fun PasswordScreen(
                     Spacer(modifier = Modifier.height(50.dp))
                     LampTextField(
                         width = 300,
-                        isGradient = false,
                         query = confirmPasswordQuery,
                         onQueryChange = {
                             confirmPasswordQuery = it

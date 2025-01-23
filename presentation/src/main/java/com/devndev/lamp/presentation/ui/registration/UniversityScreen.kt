@@ -29,8 +29,7 @@ import com.devndev.lamp.presentation.ui.common.SelectionScreen
 @Composable
 fun UniversityScreen(
     university: String,
-    onUniversityChange: (String) -> Unit,
-    isUniversityCompleted: Boolean
+    onUniversityChange: (String) -> Unit
 ) {
     SelectionScreen(text = stringResource(id = R.string.registration_university)) {
         var universityQuery by remember { mutableStateOf(university) }
@@ -42,7 +41,6 @@ fun UniversityScreen(
         ) {
             LampTextField(
                 width = 270,
-                isGradient = university.isNotEmpty() && !isUniversityCompleted,
                 query = universityQuery,
                 onQueryChange = {
                     universityQuery = it

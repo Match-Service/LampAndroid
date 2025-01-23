@@ -18,6 +18,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,10 +26,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
@@ -46,7 +51,7 @@ import java.util.Locale
 @Composable
 fun LampTextField(
     width: Int,
-    isGradient: Boolean,
+    isNeedClearFocus: Boolean = false,
     query: String,
     onQueryChange: (String) -> Unit,
     maxLength: Int = 100,
@@ -65,8 +70,18 @@ fun LampTextField(
     val gradientBrush = Brush.linearGradient(
         colors = listOf(WomanColor, ManColor)
     )
+
     val keyboardController = LocalSoftwareKeyboardController.current
     var isPasswordShow by remember { mutableStateOf(false) }
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+    val isFocused = remember { mutableStateOf(false) }
+
+    LaunchedEffect(isNeedClearFocus) {
+        if (isNeedClearFocus) {
+            focusManager.clearFocus()
+        }
+    }
 
     Row(
         modifier = Modifier
@@ -79,7 +94,7 @@ fun LampTextField(
             )
             .background(Color.Transparent, shape = RoundedCornerShape(cornerRadius.dp))
             .then(
-                if (isGradient) {
+                if (isFocused.value) {
                     Modifier.drawBehind {
                         val strokeWidth = 1.dp.toPx()
                         drawRoundRect(
@@ -127,7 +142,12 @@ fun LampTextField(
             keyboardActions = KeyboardActions(onSearch = {
                 onSearchKeyEvent()
                 keyboardController?.hide()
-            })
+            }),
+            modifier = Modifier
+                .focusRequester(focusRequester)
+                .onFocusChanged {
+                    isFocused.value = it.isFocused
+                }
         ) { innerTextField ->
             if (query.isEmpty()) {
                 Text(
@@ -182,15 +202,39 @@ fun LampBigTextField(
     maxLength: Int = 100,
     hintText: String
 ) {
+    val gradientBrush = Brush.linearGradient(
+        colors = listOf(WomanColor, ManColor)
+    )
+    val focusRequester = remember { FocusRequester() }
+    val isFocused = remember { mutableStateOf(false) }
     Box(
         modifier = Modifier
             .width(width.dp)
             .height(height.dp)
             .background(LampBlack, shape = RoundedCornerShape(15.dp))
-            .border(
-                width = 1.dp,
-                color = LightGray,
-                shape = RoundedCornerShape(15.dp)
+            .then(
+                if (isFocused.value) {
+                    Modifier.drawBehind {
+                        val strokeWidth = 1.dp.toPx()
+                        drawRoundRect(
+                            brush = gradientBrush,
+                            size = size,
+                            cornerRadius = CornerRadius(
+                                15.dp.toPx(),
+                                15.dp.toPx()
+                            ),
+                            style = androidx.compose.ui.graphics.drawscope.Stroke(
+                                strokeWidth
+                            )
+                        )
+                    }
+                } else {
+                    Modifier.border(
+                        width = 1.dp,
+                        color = LightGray,
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                }
             )
             .padding(horizontal = 20.dp, vertical = 14.dp)
     ) {
@@ -204,7 +248,10 @@ fun LampBigTextField(
             textStyle = Typography.normal14.copy(color = Color.White),
             cursorBrush = SolidColor(Color.White),
             modifier = Modifier
-
+                .focusRequester(focusRequester)
+                .onFocusChanged {
+                    isFocused.value = it.isFocused
+                }
         ) { innerTextField ->
             if (query.isEmpty()) {
                 Text(

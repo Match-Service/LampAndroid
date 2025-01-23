@@ -42,7 +42,6 @@ fun NameScreen(
         ) {
             LampTextField(
                 width = 270,
-                isGradient = name.isNotEmpty() && !isNameValidCompleted,
                 query = nameQuery,
                 onQueryChange = {
                     nameQuery = it

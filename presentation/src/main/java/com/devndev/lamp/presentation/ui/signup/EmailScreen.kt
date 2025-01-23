@@ -55,7 +55,6 @@ fun EmailScreen(
         ) {
             LampTextField(
                 width = 300,
-                isGradient = false,
                 query = emailQuery,
                 onQueryChange = {
                     emailQuery = it
@@ -80,7 +79,6 @@ fun EmailScreen(
                 Spacer(modifier = Modifier.height(20.dp))
                 LampTextField(
                     width = 300,
-                    isGradient = emailStatus != EmailStatus.NORMAL,
                     query = numberQuery,
                     onQueryChange = {
                         numberQuery = it

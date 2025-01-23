@@ -124,7 +124,7 @@ fun InviteScreen(
 
             LampTextField(
                 width = 0,
-                isGradient = inviteStatus == InviteStatus.SEARCHING || inviteStatus == InviteStatus.USER_NOT_FOUNT,
+                isNeedClearFocus = inviteStatus == InviteStatus.SEARCHED,
                 query = searchQuery,
                 onQueryChange = {
                     searchQuery = it

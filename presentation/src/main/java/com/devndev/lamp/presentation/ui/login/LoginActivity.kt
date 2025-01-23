@@ -7,10 +7,13 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.devndev.lamp.presentation.theme.LampBlack
@@ -29,11 +32,19 @@ class LoginActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val keyboardController = LocalSoftwareKeyboardController.current
             val loginState by loginViewModel.uiState.collectAsStateWithLifecycle()
             val registrationState by registrationViewModel.uiState.collectAsStateWithLifecycle()
             val navController = rememberNavController()
             LampTheme() {
-                Scaffold(containerColor = LampBlack) { innerPadding ->
+                Scaffold(
+                    containerColor = LampBlack,
+                    modifier = Modifier.pointerInput(Unit) {
+                        detectTapGestures(onTap = {
+                            keyboardController?.hide()
+                        })
+                    }
+                ) { innerPadding ->
                     LoginNavHost(
                         onClickSignInButton = loginViewModel::signInWithGoogle,
                         onClickStartButton = registrationViewModel::uploadImages,

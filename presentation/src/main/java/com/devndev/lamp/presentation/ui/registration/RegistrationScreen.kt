@@ -75,8 +75,6 @@ fun RegistrationScreen(
     val isDuplicateName by registrationViewModel.isDuplicateName.collectAsState()
     val isNameValidCompleted by registrationViewModel.isNameValidCompleted.collectAsState()
 
-    var isUniversityCompleted by remember { mutableStateOf(false) }
-
     val currentYear = LocalDate.now().year
     var birthYear by remember { mutableStateOf(currentYear.toString()) }
     var birthMonth by remember { mutableStateOf("1") }
@@ -259,9 +257,7 @@ fun RegistrationScreen(
                             university = university,
                             onUniversityChange = { newUniversity ->
                                 university = newUniversity
-                                isUniversityCompleted = false
-                            },
-                            isUniversityCompleted = isUniversityCompleted
+                            }
                         )
 
                         RegistrationScreen.GENDER -> GenderScreen(selectedOption = selectedGender) {
@@ -324,7 +320,6 @@ fun RegistrationScreen(
                     modifier = Modifier.clickable {
                         if (currentStep == RegistrationScreen.UNIVERSITY) {
                             university = ""
-                            isUniversityCompleted = true
                         } else {
                             instagramId = ""
                         }
@@ -381,7 +376,6 @@ fun RegistrationScreen(
                         signUp()
                     } else {
                         registrationViewModel.updateCurrentStep(currentStep + 1)
-                        isUniversityCompleted = true
                     }
                 },
                 enabled = when (currentStep) {

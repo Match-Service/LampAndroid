@@ -54,7 +54,6 @@ fun InfoInputScreen(
         ) {
             LampTextField(
                 width = 300,
-                isGradient = false,
                 query = emailQuery,
                 onQueryChange = {
                     emailQuery = it
@@ -64,7 +63,6 @@ fun InfoInputScreen(
             )
             LampTextField(
                 width = 300,
-                isGradient = false,
                 query = birthQuery,
                 onQueryChange = {
                     birthQuery = it

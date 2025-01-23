@@ -179,7 +179,8 @@ fun EditPopup(
     onXButtonClick: () -> Unit,
     onEditButtonClick: (String) -> Unit,
     instagramAuthStep: Int = InstagramAuth.NONE,
-    onInstagramQueryChange: (Int) -> Unit = {}
+    onInstagramQueryChange: (Int) -> Unit = {},
+    isNeedClearFocus: Boolean = false
 ) {
     var query by remember { mutableStateOf(queryString) }
     Dialog(onDismissRequest = {}, properties = DialogProperties(usePlatformDefaultWidth = false)) {
@@ -227,7 +228,7 @@ fun EditPopup(
                     )
                     LampTextField(
                         width = 270,
-                        isGradient = false,
+                        isNeedClearFocus = isNeedClearFocus,
                         query = query,
                         onQueryChange = {
                             query = it

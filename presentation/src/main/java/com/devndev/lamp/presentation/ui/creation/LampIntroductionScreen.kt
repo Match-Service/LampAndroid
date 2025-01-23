@@ -39,7 +39,6 @@ fun LampIntroductionScreen(
         ) {
             LampTextField(
                 width = 270,
-                isGradient = false,
                 query = subjectQuery,
                 onQueryChange = {
                     subjectQuery = it
