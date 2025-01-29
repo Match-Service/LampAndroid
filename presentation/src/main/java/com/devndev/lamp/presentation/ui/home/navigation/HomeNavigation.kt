@@ -9,6 +9,7 @@ import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.home.HomeScreen
+import com.devndev.lamp.presentation.ui.home.MatchingVoteScreen
 
 fun NavController.navigateHome(navOptions: NavOptions? = null) {
     this.navigate(Route.HOME, navOptions)
@@ -21,5 +22,19 @@ fun NavGraphBuilder.homeNavGraph(
 ) {
     composable(Route.HOME) {
         HomeScreen(modifier = modifier.padding(padding), navController = navController)
+    }
+}
+
+fun NavController.navigateVote(navOptions: NavOptions? = null) {
+    this.navigate(Route.VOTE, navOptions)
+}
+
+fun NavGraphBuilder.voteNavGraph(
+    padding: PaddingValues,
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
+    composable(Route.VOTE) {
+        MatchingVoteScreen(modifier = modifier.padding(padding), navController = navController)
     }
 }
