@@ -18,4 +18,5 @@ object Route {
     const val REVIEW = "review"
     const val PROFILE_EDIT = "profile_edit"
     const val FORGOT_PASSWORD = "forgot_password"
+    const val VOTE = "vote"
 }
