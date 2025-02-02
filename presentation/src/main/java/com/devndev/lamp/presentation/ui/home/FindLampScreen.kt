@@ -34,8 +34,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.LampButton
-import com.devndev.lamp.presentation.ui.theme.WomanColor
 
 @Composable
 fun FindLampScreen(

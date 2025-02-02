@@ -207,13 +207,13 @@ fun ProfileEditScreen(
                 onBackButtonClick = {
                     profileEditViewModel.modifyUser(
                         ModifyUserParam(
-                            name = myInfo?.name ?: "",
+                            name = myInfo?.name ?: "", // 변경불가
                             job = myInfo?.job ?: "",
-                            jobName = myInfo?.jobName ?: "",
-                            gender = myInfo?.gender ?: "",
-                            birth = myInfo?.birth ?: "",
-                            instagramId = myInfo?.instagramId ?: "",
-                            bio = "hahaha",
+                            jobName = university,
+                            gender = myInfo?.gender ?: "", // 변경불가
+                            birth = myInfo?.birth ?: "", // 변경불가
+                            instagramId = instagram,
+                            bio = profileQuery,
                             profileImages = listOf(myInfo?.profileImages?.get(0)?.downloadUrl ?: ""),
                             alarmSetting = AlarmSetting(
                                 allPush = myInfo?.alarmSetting?.allPush ?: true,
@@ -224,9 +224,9 @@ fun ProfileEditScreen(
                                 receiveMessage = myInfo?.alarmSetting?.receiveMessage ?: true
                             ),
                             bioQuestions = listOf(
-                                BioQuestion(myInfo?.bioQuestions?.get(0)?.question ?: "음주", myInfo?.bioQuestions?.get(0)!!.answer ?: "자주 마셔요"),
-                                BioQuestion(myInfo?.bioQuestions?.get(1)?.question ?: "흡연", myInfo?.bioQuestions?.get(1)!!.answer ?: "자주 펴요"),
-                                BioQuestion(myInfo?.bioQuestions?.get(2)?.question ?: "운동", myInfo?.bioQuestions?.get(2)!!.answer ?: "매일 해요")
+                                BioQuestion(myInfo?.bioQuestions?.get(0)?.question ?: "음주", selectedDrink ?: myInfo?.bioQuestions?.get(0)!!.answer),
+                                BioQuestion(myInfo?.bioQuestions?.get(1)?.question ?: "흡연", selectedSmoke ?: myInfo?.bioQuestions?.get(1)!!.answer),
+                                BioQuestion(myInfo?.bioQuestions?.get(2)?.question ?: "운동", selectedExercise ?: myInfo?.bioQuestions?.get(2)!!.answer)
                             ),
                             pushToken = ""
                         )
