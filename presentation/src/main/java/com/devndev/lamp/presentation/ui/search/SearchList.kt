@@ -103,25 +103,36 @@ fun SearchItem(profile: UserDomainModel, onEnterButtonClick: (UserDomainModel) -
 
 @Composable
 fun NameSpace(profile: UserDomainModel) {
+    val lampStatus = profile.lampStatus
     if (profile.lampId != null) {
+        Text(
+            text = profile.name,
+            style = Typography.medium18,
+            color = Color.White
+        )
+    } else {
         Column() {
             Text(
                 text = profile.name,
                 style = Typography.medium18,
                 color = Color.White
             )
+            var lampStatusText = ""
+            when (lampStatus) {
+                "NONE" ->
+                    lampStatusText =
+                        stringResource(id = R.string.find_lamp_status_none)
+                "OTHER_LAMP" ->
+                    lampStatusText =
+                        stringResource(id = R.string.lamp_status_other_lamp)
+                // todo lampStatus 인원 초과 추가 필요
+            }
             Text(
-                text = profile.lampId.toString() ?: "",
+                text = lampStatusText,
                 style = Typography.normal12,
-                color = Gray3
+                color = WomanColor
             )
         }
-    } else {
-        Text(
-            text = profile.name,
-            style = Typography.medium18,
-            color = Color.White
-        )
     }
 }
 

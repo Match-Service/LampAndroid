@@ -11,8 +11,8 @@
     <string name="back_button_end_message">뒤로 가기 버튼을 한번 더 클릭하면 앱이 종료됩니다.</string>
     <string name="search_friend">친구 찾아가기</string>
     <string name="guide_search_friend">닉네임을 검색해주세요</string>
-    <string name="enter_lamp">램프 입장</string>
-    <string name="no_lamp">램프 없음</string>
+    <string name="enter_lamp">램프 입장 가능</string>
+    <string name="no_lamp">램프 입장 불가</string>
     <string name="search_make_lame_guide">친구가 생성한 램프가 없어요, 램프를 생성할까요?</string>
     <string name="select_personnel">램프에 참여할\n인원을 선택해 주세요</string>
     <string name="select_region">원하시는 미팅 장소를\n선택해 주세요</string>
@@ -214,4 +214,6 @@
 
     <string name="kick_popup_text">%s님을 강퇴 하시겠습니까?</string>
     <string name="kick_user">강퇴하기</string>
+
+    <string name="find_lamp_status_none">"생성한 램프가 없어요</string>
 </resources>
