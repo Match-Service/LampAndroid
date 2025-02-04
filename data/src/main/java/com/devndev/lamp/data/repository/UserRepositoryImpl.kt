@@ -1,12 +1,15 @@
 package com.devndev.lamp.data.repository
 
+import android.util.Log
 import com.devndev.lamp.data.datsource.user.UserDataSource
 import com.devndev.lamp.data.dto.request.signup.AlarmSetting
 import com.devndev.lamp.data.dto.request.signup.BioQuestion
 import com.devndev.lamp.data.dto.request.user.ModifyUserRequest
+import com.devndev.lamp.data.dto.request.user.PushTokenRequest
 import com.devndev.lamp.data.dto.response.user.toDomainModel
 import com.devndev.lamp.domain.model.user.ModifyUserParam
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
+import com.devndev.lamp.domain.model.user.PushTokenParam
 import com.devndev.lamp.domain.model.user.UserDomainModel
 import com.devndev.lamp.domain.repository.UserRepository
 import javax.inject.Inject
@@ -18,7 +21,7 @@ class UserRepositoryImpl @Inject constructor(private val userDataSource: UserDat
         return userResponseDtos.toDomainModel()
     }
 
-//    override suspend fun modifyUser(modifyUserParam: ModifyUserParam): Response<Void> {
+    //    override suspend fun modifyUser(modifyUserParam: ModifyUserParam): Response<Void> {
     override suspend fun modifyUser(modifyUserParam: ModifyUserParam): Boolean {
         val modifyUserRequest = ModifyUserRequest(
             name = modifyUserParam.name,
@@ -60,5 +63,19 @@ class UserRepositoryImpl @Inject constructor(private val userDataSource: UserDat
     override suspend fun getMyInfo(): MyInfoDomainModel {
         val myInfoResponse = userDataSource.getMyInfo()
         return myInfoResponse.toDomainModel()
+    }
+
+    override suspend fun putPushToken(pushTokenParam: PushTokenParam) {
+        try {
+            val response =
+                userDataSource.putPushToken(PushTokenRequest(pushToken = pushTokenParam.pushToken))
+            if (response.isSuccessful) {
+                Log.d("PushToken", "putPushToken Success pushToken: ${pushTokenParam.pushToken}")
+            } else {
+                Log.e("PushToken", "putPushToken Fail: ${response.code()} - ${response.message()}")
+            }
+        } catch (e: Exception) {
+            Log.e("PushToken", "putPushToken Error", e)
+        }
     }
 }

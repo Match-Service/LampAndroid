@@ -1,6 +1,7 @@
 package com.devndev.lamp.data.datsource.user
 
 import com.devndev.lamp.data.dto.request.user.ModifyUserRequest
+import com.devndev.lamp.data.dto.request.user.PushTokenRequest
 import com.devndev.lamp.data.dto.response.user.MyInfoResponse
 import com.devndev.lamp.data.dto.response.user.UserResponseDto
 import com.devndev.lamp.data.service.UserService
@@ -20,5 +21,9 @@ class UserDataSourceImpl @Inject constructor(
 
     override suspend fun getMyInfo(): MyInfoResponse {
         return userService.getMyInfo()
+    }
+
+    override suspend fun putPushToken(pushTokenRequest: PushTokenRequest): Response<Void> {
+        return userService.putPushToken(pushTokenRequest)
     }
 }
