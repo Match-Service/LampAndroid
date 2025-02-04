@@ -22,10 +22,11 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val logTag = "MainActivity"
-
+    private val mainViewModel by viewModels<MainViewModel>()
     private val myPageViewModel by viewModels<MyPageViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainViewModel.putPushToken()
         setContent {
             val state by myPageViewModel.uiState.collectAsStateWithLifecycle()
             LampTheme {

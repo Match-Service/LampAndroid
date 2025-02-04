@@ -2,6 +2,7 @@ package com.devndev.lamp.domain.repository
 
 import com.devndev.lamp.domain.model.user.ModifyUserParam
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
+import com.devndev.lamp.domain.model.user.PushTokenParam
 import com.devndev.lamp.domain.model.user.UserDomainModel
 
 interface UserRepository {
@@ -10,4 +11,5 @@ interface UserRepository {
 
     suspend fun modifyUser(modifyUserParam: ModifyUserParam): Boolean
     suspend fun getMyInfo(): MyInfoDomainModel
+    suspend fun putPushToken(pushTokenParam: PushTokenParam)
 }
