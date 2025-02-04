@@ -102,6 +102,7 @@ fun SearchScreen(
                     TempStatus.updateIsWaiting(true)
                     TempStatus.updateProfileName(profile.name)
                     navController.navigateMain(MainScreenPage.HOME)
+                    // todo 램프 입장 버튼 click
                 }
             )
         }
