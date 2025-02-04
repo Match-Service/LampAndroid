@@ -16,6 +16,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +34,7 @@ import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Gray3
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
+import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 
 @Composable
 fun SearchList(profileList: List<UserDomainModel>, onEnterButtonClick: (UserDomainModel) -> Unit) {
@@ -46,6 +51,20 @@ fun SearchItem(profile: UserDomainModel, onEnterButtonClick: (UserDomainModel) -
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
     ) {
+        var isEnterPopupShow by remember { mutableStateOf(false) }
+
+        if (isEnterPopupShow) {
+            TwoButtonPopup(
+                mainText = stringResource(id = R.string.enter_popup_main, profile.name),
+                startButtonText = stringResource(id = R.string.no),
+                endButtonText = stringResource(id = R.string.yes),
+                onStartButtonClick = { isEnterPopupShow = false },
+                onEndButtonClick = {
+                    onEnterButtonClick(profile)
+                    isEnterPopupShow = false
+                }
+            )
+        }
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -76,7 +95,7 @@ fun SearchItem(profile: UserDomainModel, onEnterButtonClick: (UserDomainModel) -
                 buttonColors = WomanColor
                 textColor = Color.White
                 buttonText = stringResource(id = R.string.enter_lamp)
-                onButtonClick = { onEnterButtonClick(profile) }
+                onButtonClick = { isEnterPopupShow = true }
             } else {
                 buttonColors = Gray
                 textColor = Gray3
@@ -122,6 +141,7 @@ fun NameSpace(profile: UserDomainModel) {
                 "NONE" ->
                     lampStatusText =
                         stringResource(id = R.string.find_lamp_status_none)
+
                 "OTHER_LAMP" ->
                     lampStatusText =
                         stringResource(id = R.string.lamp_status_other_lamp)
