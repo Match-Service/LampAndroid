@@ -13,6 +13,7 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,7 +31,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -51,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
@@ -69,12 +70,14 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Gray3
@@ -114,6 +117,9 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
     var curYOffset = remember { mutableStateOf(0f) }
     // stickyHeader가 최상단에 위치했는지 여부를 저장하는 상태
     val isStickyHeaderAtTop = remember { mutableStateOf(false) }
+
+    // lamp 임시 데이터
+    val lampProfile = listOf("트와이수더", "신촌,홍대", "4명", "신나는 분위기", "안녕하세요")
 
     // profile 임시 데이터
     val profiles = listOf(
@@ -175,16 +181,9 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
                 .wrapContentHeight()
                 .zIndex(1f)
         ) {
-            // Header Section
             item {
-                HeaderSection(
-                    modifier = modifier,
-                    onHeightChange = { height -> headerSectionHeight = height }
-                )
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(spacerHeight))
+//                Spacer(modifier = Modifier.height(spacerHeight))
+                Spacer(modifier = Modifier.height(113.dp))
             }
 
             // Sticky Header with Mood and Info
@@ -195,53 +194,17 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
                         .background(if (isStickyHeaderAtTop.value) Color(0xFF6E2126) else Color.Transparent) // 배경 색상 변경
                         .zIndex(10f)
                 ) {
-                    MoodInfoSection(onHeightChange = { height -> moodInfoSectionHeight = height })
+                    MoodInfoSection(lampProfile = lampProfile, onHeightChange = { height -> moodInfoSectionHeight = height })
                 }
             }
 
-            // Second Section
+            // Second Section(조회할 프로필 선택)
             item {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    /*Canvas(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        val fillColor = Color(0xFF191919)
-                        val shadowColor = Color(0xFF151515)
-                        val shadowRadius = 80.dp.toPx()
-                        val center = Offset(size.width / 2, (headerSectionHeight + moodInfoSectionHeight + secondSectionHeight + 80f.toDp()).toPx())
-                        val radius = 400.dp.toPx()
-                        drawIntoCanvas { canvas ->
-                            val paint = android.graphics.Paint().apply {
-                                isAntiAlias = true
-                                shader = RadialGradient(
-                                    center.x,
-                                    center.y,
-                                    radius,
-                                    intArrayOf(
-                                        shadowColor.toArgb(),
-                                        fillColor.toArgb(),
-                                        android.graphics.Color.TRANSPARENT
-                                    ),
-                                    floatArrayOf(0.3f, 0.6f, 1f), // 색상 위치 (그라데이션 진행도)
-                                    android.graphics.Shader.TileMode.CLAMP // 그라데이션 방식
-                                )
-                                setShadowLayer(
-                                    shadowRadius,
-                                    0f,
-                                    -shadowRadius,
-                                    shadowColor.toArgb()
-                                )
-                                style = android.graphics.Paint.Style.FILL
-                            }
-                            canvas.nativeCanvas.drawCircle(center.x, center.y, radius, paint)
-                        }
-                    }*/
-
                     SecondSection(
                         onHeightChange = { height -> secondSectionHeight = height }
                     )
@@ -249,7 +212,7 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
             }
 
             // Additional items to create scrollable area
-            items(profiles.size) { index -> // Adjust the item count to ensure scrolling
+            items(profiles.size) { index ->
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -301,7 +264,7 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 25.dp, bottom = 10.dp),
+            .padding(bottom = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         items(profiles[index][1] as Int) {
@@ -637,7 +600,7 @@ fun HeaderSection(modifier: Modifier, onHeightChange: (Dp) -> Unit) {
 
 // 무드 및 정보 섹션
 @Composable
-fun MoodInfoSection(onHeightChange: (Dp) -> Unit) {
+fun MoodInfoSection(lampProfile: List<String>, onHeightChange: (Dp) -> Unit) {
     val density = LocalDensity.current
     Column(
         modifier = Modifier
@@ -652,11 +615,10 @@ fun MoodInfoSection(onHeightChange: (Dp) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = "1",
+            text = lampProfile[0],
             color = Color.White,
-            style = Typography.semiBold20,
+            style = Typography.medium25,
             textAlign = TextAlign.Center
         )
         val mood = when (TempDB.mood) {
@@ -669,11 +631,16 @@ fun MoodInfoSection(onHeightChange: (Dp) -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OtherLampInfo(painter = painterResource(id = R.drawable.region_icon), text = TempDB.region)
-            OtherLampInfo(painter = painterResource(id = R.drawable.people_icon), text = TempDB.personnel)
-            OtherLampInfo(painter = painterResource(id = R.drawable.heart), text = mood)
+            OtherLampInfo(painter = painterResource(id = R.drawable.region_icon), text = lampProfile[1])
+            OtherLampInfo(painter = painterResource(id = R.drawable.people_icon), text = lampProfile[2])
+            OtherLampInfo(painter = painterResource(id = R.drawable.heart), text = lampProfile[3])
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = lampProfile[4],
+            color = Gray3,
+            style = Typography.medium10,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
@@ -695,35 +662,25 @@ fun SecondSection(onHeightChange: (Dp) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        Text(
-            text = TempDB.lampSummary,
-            modifier = Modifier
-                .width(270.dp)
-                .wrapContentHeight(),
-            maxLines = 3,
-            style = Typography.normal9,
-            color = Color.White,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(41.dp))
         OtherProfileInfo(null, "닉네임입니다")
-        Spacer(modifier = Modifier.height(58.dp))
-        Icon(
-            painter = painterResource(id = R.drawable.scroll_arrow),
-            contentDescription = "Check",
-            tint = Color.White,
-            modifier = Modifier
-                .fillMaxSize()
-        )
-        Text(
-            modifier = Modifier
-                .wrapContentWidth(),
-            text = "스크롤하여 상대의 프로필을 확인하세요",
-            style = Typography.normal12,
-            color = Color.White,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(145.dp))
+        Spacer(modifier = Modifier.height(50.dp))
+//        Icon(
+//            painter = painterResource(id = R.drawable.scroll_arrow),
+//            contentDescription = "Check",
+//            tint = Color.White,
+//            modifier = Modifier
+//                .fillMaxSize()
+//        )
+//        Text(
+//            modifier = Modifier
+//                .wrapContentWidth(),
+//            text = "스크롤하여 상대의 프로필을 확인하세요",
+//            style = Typography.normal12,
+//            color = Color.White,
+//            textAlign = TextAlign.Center
+//        )
+//        Spacer(modifier = Modifier.height(145.dp))
     }
 }
 
@@ -900,19 +857,83 @@ fun OtherProfileInfo(
     image: Image? = null,
     text: String
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+    // 선택된 이미지 추적
+    var selectedImage by remember { mutableStateOf(0) } // 0: 첫 번째 이미지, 1: 두 번째 이미지
+
+    Row(
+        modifier = Modifier
+            .width(225.dp)
+            .height(60.dp)
+            .clip(CircleShape)
+            .background(Gray)
+            .padding(start = 10.dp, end = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
+        SelectableImage(
+            imageRes = R.drawable.testimage,
+            isSelected = selectedImage == 0,
+            onClick = { selectedImage = 0 }
+        )
+        SelectableImage(
+            imageRes = R.drawable.testimage,
+            isSelected = selectedImage == 1,
+            onClick = { selectedImage = 1 }
+        )
+        SelectableImage(
+            imageRes = R.drawable.testimage,
+            isSelected = selectedImage == 2,
+            onClick = { selectedImage = 2 }
+        )
+        SelectableImage(
+            imageRes = R.drawable.testimage,
+            isSelected = selectedImage == 3,
+            onClick = { selectedImage = 3 }
+        )
+    }
+}
+
+// Profile 선택 시 효과
+@Composable
+fun SelectableImage(
+    imageRes: Int,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .clickable { onClick() }
+            .alpha(if (isSelected) 0.5f else 1f)
+            .then(
+                if (isSelected) {
+                    Modifier.border(
+                        width = 1.dp,
+                        color = Color.White,
+                        shape = CircleShape
+                    )
+                } else {
+                    Modifier // 선택되지 않은 경우 border 없음
+                }
+            )
     ) {
         Image(
             painter = painterResource(id = R.drawable.testimage),
-            contentDescription = "testimage",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
         )
-        Text(text = text, color = Color.White, style = Typography.normal9)
+
+        // 가운데 하트 추가
+        if (isSelected) {
+            Image(
+                painter = painterResource(id = R.drawable.heart),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(16.dp) // 작은 크기의 선택된 이미지
+                    .align(Alignment.Center) // 가운데 정렬
+            )
+        }
     }
 }
 
@@ -985,4 +1006,10 @@ fun getNavigationBarHeight(context: Context): Int {
     } else {
         0
     }
+}
+
+@Preview
+@Composable
+fun A() {
+    MatchingVoteScreen(modifier = Modifier, navController = rememberNavController())
 }

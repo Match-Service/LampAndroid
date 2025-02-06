@@ -33,15 +33,16 @@ data class PretendardTypography(
     val semiBold32: TextStyle,
     val semiBold25: TextStyle,
     val semiBold20: TextStyle,
+    val normal9: TextStyle,
     val normal12: TextStyle,
     val normal13: TextStyle,
     val normal14: TextStyle,
     val normal15: TextStyle,
-    val normal9: TextStyle,
-    val medium18: TextStyle,
-    val medium15: TextStyle,
+    val medium10: TextStyle,
     val medium12: TextStyle,
-    val medium10: TextStyle
+    val medium15: TextStyle,
+    val medium18: TextStyle,
+    val medium25: TextStyle
 )
 
 val IncTypography = IncheonTypography(
@@ -69,6 +70,10 @@ val Typography = PretendardTypography(
         fontWeight = FontWeight.SemiBold,
         fontSize = 20
     ),
+    normal9 = pretendardTextStyle(
+        fontWeight = FontWeight.Normal,
+        fontSize = 9
+    ),
     normal12 = pretendardTextStyle(
         fontWeight = FontWeight.Normal,
         fontSize = 12
@@ -85,26 +90,27 @@ val Typography = PretendardTypography(
         fontWeight = FontWeight.Normal,
         fontSize = 15
     ),
-    normal9 = pretendardTextStyle(
-        fontWeight = FontWeight.Normal,
-        fontSize = 9
-    ),
-    medium18 = pretendardTextStyle(
+    medium10 = pretendardTextStyle(
         fontWeight = FontWeight.Medium,
-        fontSize = 18
-    ),
-    medium15 = pretendardTextStyle(
-        fontWeight = FontWeight.Medium,
-        fontSize = 15
+        fontSize = 10
     ),
     medium12 = pretendardTextStyle(
         fontWeight = FontWeight.Medium,
         fontSize = 12
     ),
-    medium10 = pretendardTextStyle(
+    medium15 = pretendardTextStyle(
         fontWeight = FontWeight.Medium,
-        fontSize = 10
+        fontSize = 15
+    ),
+    medium18 = pretendardTextStyle(
+        fontWeight = FontWeight.Medium,
+        fontSize = 18
+    ),
+    medium25 = pretendardTextStyle(
+        fontWeight = FontWeight.Medium,
+        fontSize = 25
     )
+
 //    bodyLarge = TextStyle(
 //        fontFamily = FontFamily.Default,
 //        fontWeight = FontWeight.Normal,

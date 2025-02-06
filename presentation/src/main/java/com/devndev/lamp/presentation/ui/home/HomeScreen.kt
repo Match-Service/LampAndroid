@@ -63,12 +63,15 @@ fun HomeScreen(
         WaitingHomeScreen(modifier = modifier, navController = navController)
     } else if (myLamp?.lamp != null) {
         MatchingHomeScreen(modifier = modifier, navController = navController)
-        // MatchingVoteScreen 테스트 용
-//        MatchingVoteScreen(modifier = modifier, navController = navController)
     } else {
-        NormalHomeScreen(modifier = modifier, navController = navController)
+        // 기존 소스
+//        NormalHomeScreen(modifier = modifier, navController = navController)
+
         // FindLampScreen 테스트 용
 //        FindLampScreen(modifier = Modifier, navController = navController)
+
+        // MatchingVoteScreen 테스트 용
+        MatchingVoteScreen(modifier = modifier, navController = navController)
     }
 }
 
