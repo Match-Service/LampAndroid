@@ -5,22 +5,17 @@ import android.content.Context
 import android.graphics.RadialGradient
 import android.media.Image
 import android.util.Log
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -35,7 +30,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -44,37 +38,39 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Gray3
@@ -82,6 +78,7 @@ import com.devndev.lamp.presentation.theme.IncTypography
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.MoodBlue
+import com.devndev.lamp.presentation.theme.MoodGray
 import com.devndev.lamp.presentation.theme.MoodRed
 import com.devndev.lamp.presentation.theme.MoodYellow
 import com.devndev.lamp.presentation.theme.Typography
@@ -113,11 +110,16 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
     var prevYOffset = remember { mutableStateOf(0f) }
     var curYOffset = remember { mutableStateOf(0f) }
     // stickyHeader가 최상단에 위치했는지 여부를 저장하는 상태
-    val isStickyHeaderAtTop = remember { mutableStateOf(false) }
+//    val isStickyHeaderAtTop = remember { mutableStateOf(false) }
+    // 선택된 이미지 추적
+    var selectedImage by remember { mutableIntStateOf(0) }
+
+    // lamp 임시 데이터
+    val lampProfile = listOf("트와이수더", "신촌,홍대", "4명", "신나는 분위기", "안녕하세요")
 
     // profile 임시 데이터
     val profiles = listOf(
-        listOf("Profile1", 3, 28, "한국대학교", null, "글자수100글자수100글자수100", listOf(1, 1, 1)),
+        listOf("Profile1", 3, 28, "한국대학교", listOf(10, 20, 30, 40), "글자수100글자수100글자수100", listOf(1, 1, 1)),
         listOf("Profile2", 2, 27, "한국대학교", listOf(80, 70, 100, 10), "글자수100글자수100글자수100글자수100글자수100글자수100", listOf(2, 2, 2)),
         listOf("Profile3", 3, 26, "한국대학교", listOf(50, 50, 50, 50), "글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100", listOf(3, 3, 3)),
         listOf("Profile4", 1, 25, "한국대학교", listOf(100, 100, 100, 100), "글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100", listOf(4, 4, 4))
@@ -133,22 +135,22 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
             shouldScrollToTop.value = false
         }
 
-        snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
-            .collect { (index, scrollOffset) ->
-                if (index > 0) {
-                    curYOffset.value = scrollOffset.toFloat()
-                    yOffset.value += curYOffset.value - prevYOffset.value
-                    prevYOffset.value = curYOffset.value
-                    itemIndex.value = index
-                } else {
-                    yOffset.value = scrollOffset.toFloat()
-                    itemIndex.value = index
-                }
-
-                isStickyHeaderAtTop.value = index > 1
-                // scroll이 조금이라도 된 상태이면 shouldScrollToTop = true
-                shouldScrollToTop.value = index != 0 || scrollOffset != 0
-            }
+//        snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
+//            .collect { (index, scrollOffset) ->
+//                if (index > 0) {
+//                    curYOffset.value = scrollOffset.toFloat()
+//                    yOffset.value += curYOffset.value - prevYOffset.value
+//                    prevYOffset.value = curYOffset.value
+//                    itemIndex.value = index
+//                } else {
+//                    yOffset.value = scrollOffset.toFloat()
+//                    itemIndex.value = index
+//                }
+//
+//                isStickyHeaderAtTop.value = index > 1
+//                // scroll이 조금이라도 된 상태이면 shouldScrollToTop = true
+//                shouldScrollToTop.value = index != 0 || scrollOffset != 0
+//            }
     }
 
     // Spacer 높이를 동적으로 계산
@@ -165,7 +167,7 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            ShadowCircleBackground(itemIndex, yOffset, yOffsetHigh)
+//            ShadowCircleBackground(itemIndex, yOffset, yOffsetHigh)
         }
 
         LazyColumn(
@@ -175,16 +177,9 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
                 .wrapContentHeight()
                 .zIndex(1f)
         ) {
-            // Header Section
             item {
-                HeaderSection(
-                    modifier = modifier,
-                    onHeightChange = { height -> headerSectionHeight = height }
-                )
-            }
-
-            item {
-                Spacer(modifier = Modifier.height(spacerHeight))
+//                Spacer(modifier = Modifier.height(spacerHeight))
+                Spacer(modifier = Modifier.height(113.dp))
             }
 
             // Sticky Header with Mood and Info
@@ -192,97 +187,49 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(if (isStickyHeaderAtTop.value) Color(0xFF6E2126) else Color.Transparent) // 배경 색상 변경
+                        .background(Color.Transparent)
+//                        .background(if (isStickyHeaderAtTop.value) Color(0xFF6E2126) else Color.Transparent) // 배경 색상 변경
                         .zIndex(10f)
                 ) {
-                    MoodInfoSection(onHeightChange = { height -> moodInfoSectionHeight = height })
+                    MoodInfoSection(lampProfile = lampProfile, onHeightChange = { height -> moodInfoSectionHeight = height })
                 }
             }
 
-            // Second Section
+            // Second Section(조회할 프로필 선택)
             item {
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    /*Canvas(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        val fillColor = Color(0xFF191919)
-                        val shadowColor = Color(0xFF151515)
-                        val shadowRadius = 80.dp.toPx()
-                        val center = Offset(size.width / 2, (headerSectionHeight + moodInfoSectionHeight + secondSectionHeight + 80f.toDp()).toPx())
-                        val radius = 400.dp.toPx()
-                        drawIntoCanvas { canvas ->
-                            val paint = android.graphics.Paint().apply {
-                                isAntiAlias = true
-                                shader = RadialGradient(
-                                    center.x,
-                                    center.y,
-                                    radius,
-                                    intArrayOf(
-                                        shadowColor.toArgb(),
-                                        fillColor.toArgb(),
-                                        android.graphics.Color.TRANSPARENT
-                                    ),
-                                    floatArrayOf(0.3f, 0.6f, 1f), // 색상 위치 (그라데이션 진행도)
-                                    android.graphics.Shader.TileMode.CLAMP // 그라데이션 방식
-                                )
-                                setShadowLayer(
-                                    shadowRadius,
-                                    0f,
-                                    -shadowRadius,
-                                    shadowColor.toArgb()
-                                )
-                                style = android.graphics.Paint.Style.FILL
-                            }
-                            canvas.nativeCanvas.drawCircle(center.x, center.y, radius, paint)
-                        }
-                    }*/
-
                     SecondSection(
-                        onHeightChange = { height -> secondSectionHeight = height }
+                        onHeightChange = { height -> secondSectionHeight = height },
+                        selectedImage = selectedImage,
+                        onImageSelected = { selectedImage = it }
                     )
                 }
             }
 
-            // Additional items to create scrollable area
-            items(profiles.size) { index -> // Adjust the item count to ensure scrolling
+            item {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .background(Color.Black)
-                        .padding(start = 30.dp, end = 30.dp)
-                        .then(
-                            if (index < profiles.size - 1) {
-                                Modifier.drawBehind {
-                                    val strokeWidth = 1.dp.toPx()
-                                    val y = size.height - strokeWidth / 2
-                                    drawLine(
-                                        color = Gray,
-                                        start = Offset(0f, y),
-                                        end = Offset(size.width, y),
-                                        strokeWidth = strokeWidth
-                                    )
-                                }
-                            } else {
-                                Modifier // 마지막 항목에는 border 추가하지 않음
-                            }
-                        )
+                        .background(LampBlack)
+                        .padding(start = 16.dp, end = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
                 ) {
-                    ProfileTop(profiles, index)
-                    Spacer(modifier = Modifier.height(20.dp))
-                    ProfileAttractive(profiles, index)
-                    ProfileDescription(profiles, index)
-                    if (index == profiles.size - 1) {
-                        val density = context.resources.displayMetrics.density
-                        val naviBarHeightPx = getNavigationBarHeight(context)
-                        val naviBarHeightDp = naviBarHeightPx / density
-                        Spacer(modifier = Modifier.height((naviBarHeightDp + 149).dp))
-                    }
+                    ProfileTop(profiles = profiles, index = selectedImage)
+                    Spacer(modifier = Modifier.height(35.dp))
+                    ProfileAttractive(profiles = profiles, index = selectedImage)
+                    Spacer(modifier = Modifier.height(35.dp))
+                    ProfileDescription(profiles = profiles, index = selectedImage)
+
+                    val density = context.resources.displayMetrics.density
+                    val naviBarHeightPx = getNavigationBarHeight(context)
+                    val naviBarHeightDp = naviBarHeightPx / density
+                    Spacer(modifier = Modifier.height((naviBarHeightDp + 149).dp))
                 }
             }
         }
@@ -301,7 +248,7 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 25.dp, bottom = 10.dp),
+            .padding(bottom = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
         items(profiles[index][1] as Int) {
@@ -311,23 +258,24 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(120.dp)
-                    .clip(RoundedCornerShape(4.dp))
             )
         }
     }
+    Spacer(modifier = Modifier.height(20.dp))
     Row(
         modifier = Modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.Center
     ) {
         Text(
             text = "${profiles[index][0]} " + stringResource(id = R.string.sir),
+            // TODO: 텍스트 컬러 추가
             color = Color.White,
-            style = IncTypography.normal42.copy(lineHeight = 40.sp),
-            fontSize = 30.sp,
+            style = IncTypography.normal42.copy(lineHeight = 56.sp),
             textAlign = TextAlign.Center
         )
+        Spacer(modifier = Modifier.width(10.dp))
         Image(
             modifier = Modifier
                 .size(23.dp)
@@ -339,13 +287,13 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
     Row(
         modifier = Modifier
             .fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.Center
     ) {
         Text(
             text = "${profiles[index][2]}" + stringResource(id = R.string.age) + ", " + "${profiles[index][3]}",
             color = Color.White,
-            style = Typography.medium15.copy(lineHeight = 20.sp),
-            fontSize = 15.sp,
+            style = Typography.medium18.copy(lineHeight = 20.sp),
             textAlign = TextAlign.Center
         )
     }
@@ -356,178 +304,93 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
 fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
     // MutableState to hold the button's width
     var buttonWidth by remember { mutableStateOf(0) }
-    var isDropdownExpanded by remember { mutableStateOf(false) }
     val attractive = profiles[index][4] as? List<Int>
     attractive?.let {
         val attractiveAvg = attractive.sum() / attractive.size
-        // Create a gradient brush
-        val gradientBrush = when {
-            attractiveAvg == 0 -> {
-                // If attractiveness is 0, the color is fully gray
-                Brush.horizontalGradient(
-                    colors = listOf(Gray, Gray)
-                )
-            }
-            attractiveAvg < 100 && attractiveAvg > 0 -> {
-                // If attractiveness is between 1 and 99, create a red-to-gray gradient
-                val redWidth = buttonWidth * (attractiveAvg / 100f) // Calculate the ratio for red (0.0 to 1.0)
-                Brush.horizontalGradient(
-                    colors = listOf(WomanColor, Gray),
-                    startX = redWidth - 50f,
-                    endX = redWidth + 50f // Use the calculated redWidth for the gradient
-                )
-            }
-            else -> {
-                // If attractiveness is 100, the color is fully red
-                Brush.horizontalGradient(
-                    colors = listOf(WomanColor, WomanColor)
-                )
-            }
-        }
         Column(
             modifier = Modifier
                 .fillMaxWidth()
         ) {
-            Button(
-                onClick = { isDropdownExpanded = !isDropdownExpanded },
-                contentPadding = PaddingValues(0.dp),
+            Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(30.dp)
-                    .onSizeChanged { size ->
-                        buttonWidth = size.width // Capture the button width
-                    }
-                    .clip(RoundedCornerShape(27.dp))
-                    .background(gradientBrush)
-                    .padding(horizontal = 0.dp, vertical = 0.dp),
-                colors = ButtonDefaults.buttonColors(Color.Transparent)
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
             ) {
-                Row(
+                Icon(
+                    painter = painterResource(id = R.drawable.heart),
+                    contentDescription = "Heart",
+                    tint = Color.White,
                     modifier = Modifier
-                        .fillMaxSize()
-                        .padding(start = 20.dp, end = 20.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.Center
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.heart),
-                        contentDescription = "Heart",
-                        tint = Color.White,
-                        modifier = Modifier
-                            .size(14.dp)
-                            .padding(0.dp)
-                    )
-                    Spacer(modifier = Modifier.width(5.dp))
-                    Text(
-                        text = "${stringResource(id = R.string.attractiveness)} $attractiveAvg",
-                        color = Color.White,
-                        style = Typography.medium15.copy(lineHeight = 20.sp),
-                        fontSize = 15.sp,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.weight(1f))
-                    Icon(
-                        painter = if (isDropdownExpanded) painterResource(id = R.drawable.reduce_icon) else painterResource(id = R.drawable.expand_icon),
-                        contentDescription = "Expand",
-                        tint = Color.White,
-                        modifier = Modifier
-                            .size(10.dp)
-                            .padding(0.dp)
-                    )
-                }
+                        .size(16.dp)
+                )
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    text = "${stringResource(id = R.string.attractiveness)} $attractiveAvg",
+                    color = Color.White,
+                    style = Typography.medium18.copy(lineHeight = 20.sp),
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center
+                )
             }
 
-            // 드롭다운 애니메이션 추가
-            AnimatedVisibility(
-                visible = isDropdownExpanded,
-                enter = expandVertically(animationSpec = tween(durationMillis = 300)),
-                exit = shrinkVertically(animationSpec = tween(durationMillis = 300))
-            ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 8.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    Spacer(modifier = Modifier.height(10.dp)) // Space between button and dropdown
-                    ProgressBar(attractive)
-                }
-            }
-            if (!isDropdownExpanded) {
-                Spacer(modifier = Modifier.height(8.dp))
-            }
+            Spacer(modifier = Modifier.height(9.dp))
 
-//            // Conditionally show the Row based on the state
-//            if (isDropdownExpanded) {
-//                Spacer(modifier = Modifier.height(10.dp)) // Space between button and dropdown
-//                // The Row that gets shown/hidden
-//                Column(
-//                    modifier = Modifier
-//                        .fillMaxWidth()
-//                        .padding(bottom = 8.dp),
-//                    horizontalAlignment = Alignment.CenterHorizontally,
-//                    verticalArrangement = Arrangement.Center
-//                ) {
-//                    ProgressBar(attractive)
-//                }
-//            } else {
-//                Spacer(modifier = Modifier.height(8.dp)) // Space between button and dropdown
-//            }
+            ProgressBar(attractive)
         }
     }
 }
 
 @Composable
 fun ProgressBar(attractive: List<Int>, barColor: Color = WomanColor) {
-    for (i in attractive.indices) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                modifier = Modifier
-                    .width(36.dp),
-                text = when (i) {
-                    0 -> stringResource(id = R.string.personality)
-                    1 -> stringResource(id = R.string.voice)
-                    2 -> stringResource(id = R.string.fashion)
-                    3 -> stringResource(id = R.string.conversation)
-                    else -> stringResource(id = R.string.personality)
-                },
-                color = Color.White,
-                style = Typography.normal13.copy(lineHeight = 16.sp),
-                fontSize = 13.sp,
-                textAlign = TextAlign.Start
-            )
-
-            // Ensure the value is between 0 and 100
+    Row(
+        modifier = Modifier
+            .wrapContentWidth()
+            .padding(start = 41.5.dp, end = 41.5.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
+        for (i in attractive.indices) {
             val percentage = attractive[i].coerceIn(0, 100) / 100f
-
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(6.dp) // Set the desired height for the progress bar
-                    .background(Gray, RoundedCornerShape(40.dp)) // Gray background bar
-                    .clip(RoundedCornerShape(40.dp)) // Rounded corners for the gray bar
+                    .wrapContentSize()
+                    .clip(CircleShape),
+                contentAlignment = Alignment.Center
             ) {
-                // Red bar representing the value
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight() // Match height of the gray bar
-                        .fillMaxWidth(percentage) // Width based on percentage
-                        .background(barColor, RoundedCornerShape(40.dp))
+                Canvas(modifier = Modifier.size(50.dp)) {
+                    // 원의 반지름
+                    val radius = size.minDimension / 2
+
+                    // 회색 원 그리기 (전체 원)
+                    drawCircle(
+                        color = Gray,
+                        radius = radius,
+                        style = Stroke(width = 10f) // 회색 원 스트로크
+                    )
+
+                    // 흰색 원 주위의 비율을 채우는 아크 그리기
+                    drawArc(
+                        color = Color.White,
+                        startAngle = -90f, // 12시부터 그리게끔
+                        sweepAngle = 360f * percentage, // 비율에 따른 각도
+                        useCenter = false, // 중심을 사용하지 않음 (경계선만 그리기)
+                        style = Stroke(width = 10f) // 스트로크 두께
+                    )
+                }
+                Text(
+                    text = when (i) {
+                        0 -> stringResource(id = R.string.personality)
+                        1 -> stringResource(id = R.string.voice)
+                        2 -> stringResource(id = R.string.fashion)
+                        3 -> stringResource(id = R.string.conversation)
+                        else -> stringResource(id = R.string.personality)
+                    },
+                    color = Color.White,
+                    style = Typography.normal13,
+                    textAlign = TextAlign.Center
                 )
             }
-        }
-        // 매력도 사이 간격
-        if (i < attractive.size - 1) {
-            Spacer(modifier = Modifier.height(5.dp))
-        } else {
-            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
@@ -539,8 +402,6 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
         text = "${profiles[index][5]}",
         color = Color.White,
         style = Typography.normal12.copy(lineHeight = 16.sp),
-        fontSize = 12.sp,
-        textAlign = TextAlign.Start,
         maxLines = 3
     )
     Spacer(modifier = Modifier.height(8.dp))
@@ -548,7 +409,7 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
         modifier = Modifier
             .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(3.dp)
+        horizontalArrangement = Arrangement.Center
     ) {
         val profileInfo = profiles[index][6] as List<Int>
         for (i in profileInfo.indices) {
@@ -584,8 +445,7 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
                     else -> "" // nothing
                 },
                 color = Gray3,
-                style = Typography.medium15.copy(lineHeight = 12.sp),
-                fontSize = 10.sp,
+                style = Typography.medium10.copy(lineHeight = 12.sp),
                 textAlign = TextAlign.Center
             )
             if (i < profileInfo.size - 1) {
@@ -602,42 +462,9 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
     Spacer(modifier = Modifier.height(25.dp))
 }
 
-// 헤더 섹션
-@Composable
-fun HeaderSection(modifier: Modifier, onHeightChange: (Dp) -> Unit) {
-    val density = LocalDensity.current
-    Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .onGloballyPositioned { coordinates ->
-                val headerSectionHeightDp = with(density) {
-                    coordinates.size.height.toDp()
-                }
-                onHeightChange(headerSectionHeightDp)
-            },
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(25.dp)
-    ) {
-        Text(
-            text = "인연의 불빛을 발견했어요",
-            color = Color.White,
-            style = Typography.semiBold25.copy(lineHeight = 33.sp),
-            fontSize = 25.sp,
-            textAlign = TextAlign.Center
-        )
-        Text(
-            text = "상대의 램프를 확인 해보세요",
-            color = Color.White,
-            style = Typography.semiBold25.copy(lineHeight = 16.sp),
-            fontSize = 12.sp,
-            textAlign = TextAlign.Center
-        )
-    }
-}
-
 // 무드 및 정보 섹션
 @Composable
-fun MoodInfoSection(onHeightChange: (Dp) -> Unit) {
+fun MoodInfoSection(lampProfile: List<String>, onHeightChange: (Dp) -> Unit) {
     val density = LocalDensity.current
     Column(
         modifier = Modifier
@@ -652,11 +479,10 @@ fun MoodInfoSection(onHeightChange: (Dp) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(modifier = Modifier.height(10.dp))
         Text(
-            text = "1",
+            text = lampProfile[0],
             color = Color.White,
-            style = Typography.semiBold20,
+            style = Typography.medium25,
             textAlign = TextAlign.Center
         )
         val mood = when (TempDB.mood) {
@@ -669,17 +495,26 @@ fun MoodInfoSection(onHeightChange: (Dp) -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OtherLampInfo(painter = painterResource(id = R.drawable.region_icon), text = TempDB.region)
-            OtherLampInfo(painter = painterResource(id = R.drawable.people_icon), text = TempDB.personnel)
-            OtherLampInfo(painter = painterResource(id = R.drawable.heart), text = mood)
+            OtherLampInfo(painter = painterResource(id = R.drawable.region_icon), text = lampProfile[1])
+            OtherLampInfo(painter = painterResource(id = R.drawable.people_icon), text = lampProfile[2])
+            OtherLampInfo(painter = painterResource(id = R.drawable.heart), text = lampProfile[3])
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        Text(
+            text = lampProfile[4],
+            color = Gray3,
+            style = Typography.medium10,
+            textAlign = TextAlign.Center
+        )
     }
 }
 
 // 두 번째 섹션
 @Composable
-fun SecondSection(onHeightChange: (Dp) -> Unit) {
+fun SecondSection(
+    onHeightChange: (Dp) -> Unit,
+    selectedImage: Int,
+    onImageSelected: (Int) -> Unit
+) {
     val density = LocalDensity.current
     Column(
         modifier = Modifier
@@ -695,35 +530,9 @@ fun SecondSection(onHeightChange: (Dp) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        Text(
-            text = TempDB.lampSummary,
-            modifier = Modifier
-                .width(270.dp)
-                .wrapContentHeight(),
-            maxLines = 3,
-            style = Typography.normal9,
-            color = Color.White,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(6.dp))
-        OtherProfileInfo(null, "닉네임입니다")
-        Spacer(modifier = Modifier.height(58.dp))
-        Icon(
-            painter = painterResource(id = R.drawable.scroll_arrow),
-            contentDescription = "Check",
-            tint = Color.White,
-            modifier = Modifier
-                .fillMaxSize()
-        )
-        Text(
-            modifier = Modifier
-                .wrapContentWidth(),
-            text = "스크롤하여 상대의 프로필을 확인하세요",
-            style = Typography.normal12,
-            color = Color.White,
-            textAlign = TextAlign.Center
-        )
-        Spacer(modifier = Modifier.height(145.dp))
+        Spacer(modifier = Modifier.height(41.dp))
+        OtherProfileInfo(null, "닉네임입니다", selectedImage, onImageSelected)
+        Spacer(modifier = Modifier.height(50.dp))
     }
 }
 
@@ -757,8 +566,16 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .clip(RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp))
-                .background(Gray)
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            MoodGray.copy(alpha = 1f),
+                            Gray.copy(alpha = 1f)
+                        ),
+                        startY = 0f,
+                        endY = Float.POSITIVE_INFINITY
+                    )
+                )
                 .onGloballyPositioned { coordinates ->
                     onHeightChange(coordinates.size.height)
                 },
@@ -789,38 +606,25 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
                         contentColor = Color.White
                     )
                 ) {
-                    Column(
+                    Row(
                         modifier = Modifier
                             .wrapContentSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
                             text = "수락하기",
-                            style = Typography.normal12,
-                            fontSize = 18.sp,
+                            style = Typography.medium18,
                             color = Color.White,
                             textAlign = TextAlign.Center
                         )
-                        Row(
-                            modifier = Modifier
-                                .wrapContentSize(),
-                            horizontalArrangement = Arrangement.spacedBy(3.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.vote),
-                                contentDescription = "Vote",
-                                tint = Color.White
-                            )
-                            Text(
-                                text = "9명 투표",
-                                style = Typography.normal12,
-                                fontSize = 9.sp,
-                                color = Color.White,
-                                textAlign = TextAlign.Center
-                            )
-                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "9명",
+                            style = Typography.medium10,
+                            color = Gray3,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
                 Button(
@@ -833,38 +637,25 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
                         contentColor = Color.White
                     )
                 ) {
-                    Column(
+                    Row(
                         modifier = Modifier
                             .wrapContentSize(),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.Center
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
                             text = "거절하기",
-                            style = Typography.normal12,
-                            fontSize = 18.sp,
+                            style = Typography.medium18,
                             color = Color.White,
                             textAlign = TextAlign.Center
                         )
-                        Row(
-                            modifier = Modifier
-                                .wrapContentSize(),
-                            horizontalArrangement = Arrangement.spacedBy(3.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.vote),
-                                contentDescription = "Vote",
-                                tint = Color.White
-                            )
-                            Text(
-                                text = "9명 투표",
-                                style = Typography.normal12,
-                                fontSize = 9.sp,
-                                color = Color.White,
-                                textAlign = TextAlign.Center
-                            )
-                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "9명",
+                            style = Typography.medium10,
+                            color = Gray3,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
             }
@@ -898,21 +689,87 @@ fun OtherProfileInfoList() {
 @Composable
 fun OtherProfileInfo(
     image: Image? = null,
-    text: String
+    text: String,
+    selectedImage: Int,
+    onImageSelected: (Int) -> Unit
 ) {
-    Column(
-        verticalArrangement = Arrangement.spacedBy(10.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+//    // 선택된 이미지 추적
+//    var selectedImage by remember { mutableStateOf(0) }
+
+    Row(
+        modifier = Modifier
+            .width(225.dp)
+            .height(60.dp)
+            .clip(CircleShape)
+            .background(Gray)
+            .padding(start = 10.dp, end = 10.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(15.dp)
+    ) {
+        SelectableImage(
+            imageRes = R.drawable.testimage,
+            isSelected = selectedImage == 0,
+            onClick = { onImageSelected(0) }
+        )
+        SelectableImage(
+            imageRes = R.drawable.testimage,
+            isSelected = selectedImage == 1,
+            onClick = { onImageSelected(1) }
+        )
+        SelectableImage(
+            imageRes = R.drawable.testimage,
+            isSelected = selectedImage == 2,
+            onClick = { onImageSelected(2) }
+        )
+        SelectableImage(
+            imageRes = R.drawable.testimage,
+            isSelected = selectedImage == 3,
+            onClick = { onImageSelected(3) }
+        )
+    }
+}
+
+// Profile 선택 시 효과
+@Composable
+fun SelectableImage(
+    imageRes: Int,
+    isSelected: Boolean,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(40.dp)
+            .clip(CircleShape)
+            .clickable { onClick() }
+            .alpha(if (isSelected) 0.5f else 1f)
+            .then(
+                if (isSelected) {
+                    Modifier.border(
+                        width = 1.dp,
+                        color = Color.White,
+                        shape = CircleShape
+                    )
+                } else {
+                    Modifier // 선택되지 않은 경우 border 없음
+                }
+            )
     ) {
         Image(
             painter = painterResource(id = R.drawable.testimage),
-            contentDescription = "testimage",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(40.dp)
-                .clip(CircleShape)
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize()
         )
-        Text(text = text, color = Color.White, style = Typography.normal9)
+
+        // 가운데 하트 추가
+        if (isSelected) {
+            Image(
+                painter = painterResource(id = R.drawable.heart),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(16.dp) // 작은 크기의 선택된 이미지
+                    .align(Alignment.Center) // 가운데 정렬
+            )
+        }
     }
 }
 
@@ -985,4 +842,10 @@ fun getNavigationBarHeight(context: Context): Int {
     } else {
         0
     }
+}
+
+@Preview
+@Composable
+fun A() {
+    MatchingVoteScreen(modifier = Modifier, navController = rememberNavController())
 }
