@@ -11,8 +11,12 @@ import javax.inject.Inject
 class UserDataSourceImpl @Inject constructor(
     private val userService: UserService
 ) : UserDataSource {
-    override suspend fun searchUser(name: String): List<UserResponseDto> {
-        return userService.searchUser(name)
+    override suspend fun searchInviteUser(name: String): List<UserResponseDto> {
+        return userService.searchInviteUser(name)
+    }
+
+    override suspend fun searchVisitUser(name: String): List<UserResponseDto> {
+        return userService.searchVisitUser(name)
     }
 
     override suspend fun modifyUser(modifyUserRequest: ModifyUserRequest): Response<Void> {

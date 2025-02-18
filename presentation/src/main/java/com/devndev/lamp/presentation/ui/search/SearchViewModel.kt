@@ -12,8 +12,9 @@ import com.devndev.lamp.domain.model.user.UserDomainModel
 import com.devndev.lamp.domain.usecase.lamp.GetMyLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.InviteUsersUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
-import com.devndev.lamp.domain.usecase.user.SearchUserUseCase
-import com.devndev.lamp.presentation.ui.common.InviteStatus
+import com.devndev.lamp.domain.usecase.user.SearchInviteUserUseCase
+import com.devndev.lamp.domain.usecase.user.SearchVisitUserUseCase
+import com.devndev.lamp.presentation.ui.common.SearchStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,7 +23,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
-    private val searchUserUseCase: SearchUserUseCase,
+    private val searchInviteUserUseCase: SearchInviteUserUseCase,
+    private val searchVisitUserUseCase: SearchVisitUserUseCase,
     private val inviteUsersUseCase: InviteUsersUseCase,
     private val getMyLampUseCase: GetMyLampUseCase,
     private val getMyInfoUseCase: GetMyInfoUseCase
@@ -37,17 +39,17 @@ class SearchViewModel @Inject constructor(
     private val _myLamp = MutableStateFlow<LampDomainModel?>(null)
     val myLamp: StateFlow<LampDomainModel?> = _myLamp
 
-    private val _inviteStatus = MutableStateFlow(InviteStatus.NONE)
-    val inviteStatus = _inviteStatus
+    private val _searchStatus = MutableStateFlow(SearchStatus.NONE)
+    val searchStatus = _searchStatus
 
     init {
         getMyInfo()
         getLampData()
     }
 
-    fun updateInviteStatus(status: Int) {
-        _inviteStatus.value = status
-        Log.d(logTag, "updateInviteStatus: ${inviteStatus.value}")
+    fun updateSearchStatus(status: Int) {
+        _searchStatus.value = status
+        Log.d(logTag, "updateSearchStatus: ${searchStatus.value}")
     }
 
     private fun getMyInfo() {
@@ -77,14 +79,27 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-    fun searchUsers(name: String) {
+    fun searchInviteUsers(name: String) {
         viewModelScope.launch {
             _users.clear()
-            _users.addAll(searchUserUseCase(name))
+            _users.addAll(searchInviteUserUseCase(name))
             if (users.isEmpty()) {
-                updateInviteStatus(InviteStatus.USER_NOT_FOUNT)
+                updateSearchStatus(SearchStatus.USER_NOT_FOUNT)
             } else {
-                updateInviteStatus(InviteStatus.SEARCHED)
+                updateSearchStatus(SearchStatus.SEARCHED)
+            }
+            Log.d(logTag, users.toString())
+        }
+    }
+
+    fun searchVisitUsers(name: String) {
+        viewModelScope.launch {
+            _users.clear()
+            _users.addAll(searchVisitUserUseCase(name))
+            if (users.isEmpty()) {
+                updateSearchStatus(SearchStatus.USER_NOT_FOUNT)
+            } else {
+                updateSearchStatus(SearchStatus.SEARCHED)
             }
             Log.d(logTag, users.toString())
         }

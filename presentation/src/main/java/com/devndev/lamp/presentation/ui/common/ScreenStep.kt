@@ -88,7 +88,7 @@ object InstagramStep {
     const val INVALID = 2
 }
 
-object InviteStatus {
+object SearchStatus {
     const val NONE = 0
     const val USER_NOT_FOUNT = 1
     const val SEARCHING = 2

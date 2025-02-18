@@ -4,10 +4,10 @@ import com.devndev.lamp.domain.model.user.UserDomainModel
 import com.devndev.lamp.domain.repository.UserRepository
 import javax.inject.Inject
 
-class SearchUserUseCase @Inject constructor(
+class SearchVisitUserUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
     suspend operator fun invoke(name: String): List<UserDomainModel> {
-        return userRepository.searchUser(name)
+        return userRepository.searchVisitUser(name)
     }
 }

@@ -216,6 +216,7 @@
     <string name="kick_user">강퇴하기</string>
 
     <string name="find_lamp_status_none">"생성한 램프가 없어요</string>
+    <string name="visit_lamp_status_full">"램프에 빈자리가 없어요</string>
 
     <string name="enter_popup_main">"%s 램프에\n입장 하시겠습니까?"</string>
 </resources>

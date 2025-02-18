@@ -16,8 +16,13 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(private val userDataSource: UserDataSource) :
     UserRepository {
-    override suspend fun searchUser(name: String): List<UserDomainModel> {
-        val userResponseDtos = userDataSource.searchUser(name)
+    override suspend fun searchInviteUser(name: String): List<UserDomainModel> {
+        val userResponseDtos = userDataSource.searchInviteUser(name)
+        return userResponseDtos.toDomainModel()
+    }
+
+    override suspend fun searchVisitUser(name: String): List<UserDomainModel> {
+        val userResponseDtos = userDataSource.searchVisitUser(name)
         return userResponseDtos.toDomainModel()
     }
 
