@@ -47,6 +47,7 @@ fun SearchList(profileList: List<UserDomainModel>, onEnterButtonClick: (UserDoma
 
 @Composable
 fun SearchItem(profile: UserDomainModel, onEnterButtonClick: (UserDomainModel) -> Unit) {
+    val lampStatus = profile.lampStatus
     Box(
         modifier = Modifier.fillMaxWidth(),
         contentAlignment = Alignment.Center
@@ -91,7 +92,7 @@ fun SearchItem(profile: UserDomainModel, onEnterButtonClick: (UserDomainModel) -
             val textColor: Color
             var buttonText = ""
             var onButtonClick = {}
-            if (profile.lampId != null) {
+            if (lampStatus == "OK") {
                 buttonColors = WomanColor
                 textColor = Color.White
                 buttonText = stringResource(id = R.string.enter_lamp)
@@ -145,7 +146,10 @@ fun NameSpace(profile: UserDomainModel) {
                 "OTHER_LAMP" ->
                     lampStatusText =
                         stringResource(id = R.string.lamp_status_other_lamp)
-                // todo lampStatus 인원 초과 추가 필요
+
+                "FULL" ->
+                    lampStatusText =
+                        stringResource(id = R.string.visit_lamp_status_full)
             }
             Text(
                 text = lampStatusText,

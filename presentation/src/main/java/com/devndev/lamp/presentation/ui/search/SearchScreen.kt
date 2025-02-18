@@ -26,10 +26,10 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
-import com.devndev.lamp.presentation.ui.common.InviteStatus
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampTextField
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
+import com.devndev.lamp.presentation.ui.common.SearchStatus
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.home.TempStatus
@@ -45,7 +45,7 @@ fun SearchScreen(
         navController.navigateMain(MainScreenPage.HOME)
     }
 
-    val inviteStatus by viewModel.inviteStatus.collectAsState()
+    val searchStatus by viewModel.searchStatus.collectAsState()
 
     var searchQuery by remember { mutableStateOf("") }
 
@@ -77,17 +77,24 @@ fun SearchScreen(
 
             LampTextField(
                 width = 0,
-                isNeedClearFocus = inviteStatus == InviteStatus.SEARCHED,
+                isNeedClearFocus = searchStatus == SearchStatus.SEARCHED,
                 query = searchQuery,
-                onQueryChange = { searchQuery = it },
+                onQueryChange = {
+                    searchQuery = it
+                    if (searchQuery.isEmpty()) {
+                        viewModel.updateSearchStatus(SearchStatus.NONE)
+                    } else {
+                        viewModel.updateSearchStatus(SearchStatus.SEARCHING)
+                    }
+                },
                 hintText = stringResource(id = R.string.guide_search_friend),
                 isSearchMode = true,
                 onSearchKeyEvent = {
-                    viewModel.searchUsers(searchQuery)
+                    viewModel.searchVisitUsers(searchQuery)
                 }
             )
 
-            if (inviteStatus == InviteStatus.USER_NOT_FOUNT) {
+            if (searchStatus == SearchStatus.USER_NOT_FOUNT) {
                 Text(
                     text = stringResource(id = R.string.user_not_found),
                     style = Typography.normal12,

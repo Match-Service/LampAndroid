@@ -35,10 +35,10 @@ import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.CircleProfile
-import com.devndev.lamp.presentation.ui.common.InviteStatus
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampTextField
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
+import com.devndev.lamp.presentation.ui.common.SearchStatus
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
 
@@ -53,7 +53,7 @@ fun InviteScreen(
         navController.navigateMain(MainScreenPage.HOME)
     }
 
-    val inviteStatus by searchViewModel.inviteStatus.collectAsState()
+    val searchStatus by searchViewModel.searchStatus.collectAsState()
 
     val myInfo by searchViewModel.myInfo.collectAsState()
 
@@ -62,8 +62,8 @@ fun InviteScreen(
     val selectedItems = remember { mutableStateListOf<UserDomainModel>() }
 
     val tempRecentUser = listOf(
-        UserDomainModel(id = 999, name = "김수환무", thumbnail = "", lampId = null, "MY_LAMP"),
-        UserDomainModel(id = 998, name = "Super", thumbnail = "", lampId = 9, "NONE")
+        UserDomainModel(id = 999, name = "김수환무", thumbnail = "", lampId = null, "PARTICIPATED"),
+        UserDomainModel(id = 998, name = "Super", thumbnail = "", lampId = 9, "INVITED")
     )
 
     val users by remember { mutableStateOf(searchViewModel.users) }
@@ -124,24 +124,24 @@ fun InviteScreen(
 
             LampTextField(
                 width = 0,
-                isNeedClearFocus = inviteStatus == InviteStatus.SEARCHED,
+                isNeedClearFocus = searchStatus == SearchStatus.SEARCHED,
                 query = searchQuery,
                 onQueryChange = {
                     searchQuery = it
                     if (searchQuery.isEmpty()) {
-                        searchViewModel.updateInviteStatus(InviteStatus.NONE)
+                        searchViewModel.updateSearchStatus(SearchStatus.NONE)
                     } else {
-                        searchViewModel.updateInviteStatus(InviteStatus.SEARCHING)
+                        searchViewModel.updateSearchStatus(SearchStatus.SEARCHING)
                     }
                 },
                 hintText = stringResource(id = R.string.guide_search_friend),
                 isSearchMode = true,
                 onSearchKeyEvent = {
-                    searchViewModel.searchUsers(searchQuery)
+                    searchViewModel.searchInviteUsers(searchQuery)
                 }
             )
 
-            if (inviteStatus == InviteStatus.USER_NOT_FOUNT) {
+            if (searchStatus == SearchStatus.USER_NOT_FOUNT) {
                 Text(
                     text = stringResource(id = R.string.user_not_found),
                     style = Typography.normal12,

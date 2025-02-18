@@ -129,7 +129,7 @@ fun InviteItem(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }
                 ) {
-                    if (lampStatus == "NONE") {
+                    if (lampStatus == "OK") {
                         onCheckedChange(!selected)
                     }
                 },
@@ -148,7 +148,7 @@ fun InviteItem(
                         .size(40.dp)
                         .clip(CircleShape)
                 )
-                if (lampStatus == "NONE") {
+                if (lampStatus == "OK") {
                     Text(
                         text = profile.name,
                         style = Typography.medium18,
@@ -167,11 +167,11 @@ fun InviteItem(
                                 lampStatusText =
                                     stringResource(id = R.string.lamp_status_invited)
 
-                            "MY_LAMP" ->
+                            "PARTICIPATED" ->
                                 lampStatusText =
                                     stringResource(id = R.string.lamp_status_my_lamp, myName)
 
-                            "OTHER_LAMP" ->
+                            "JOINED" ->
                                 lampStatusText =
                                     stringResource(id = R.string.lamp_status_other_lamp)
                         }
@@ -183,7 +183,7 @@ fun InviteItem(
                     }
                 }
             }
-            if (lampStatus == "NONE") {
+            if (lampStatus == "OK") {
                 CheckButton(
                     size = 20,
                     selected = selected,

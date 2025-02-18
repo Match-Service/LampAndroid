@@ -7,7 +7,8 @@ import com.devndev.lamp.data.dto.response.user.UserResponseDto
 import retrofit2.Response
 
 interface UserDataSource {
-    suspend fun searchUser(name: String): List<UserResponseDto>
+    suspend fun searchInviteUser(name: String): List<UserResponseDto>
+    suspend fun searchVisitUser(name: String): List<UserResponseDto>
     suspend fun modifyUser(modifyUserRequest: ModifyUserRequest): Response<Void>
     suspend fun getMyInfo(): MyInfoResponse
     suspend fun putPushToken(pushTokenRequest: PushTokenRequest): Response<Void>
