@@ -40,6 +40,7 @@ import com.devndev.lamp.presentation.ui.alarm.navigation.navigateAlarm
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.creation.navigation.creationNavGraph
+import com.devndev.lamp.presentation.ui.home.navigation.voteNavGraph
 import com.devndev.lamp.presentation.ui.login.navigation.emailLoginNavGraph
 import com.devndev.lamp.presentation.ui.login.navigation.forgotPasswordNavGraph
 import com.devndev.lamp.presentation.ui.main.navigation.mainNavGraph
@@ -72,7 +73,8 @@ fun MainScreen(modifier: Modifier, signOut: () -> Unit) {
             if (
                 currentRoute != Route.START_LAMP &&
                 currentRoute != Route.CREATION &&
-                currentRoute != Route.REVIEW
+                currentRoute != Route.REVIEW &&
+                currentRoute != Route.VOTE
             ) {
                 if (
                     currentRoute == Route.SIGNUP ||
@@ -129,6 +131,7 @@ fun MainScreen(modifier: Modifier, signOut: () -> Unit) {
             emailLoginNavGraph(padding = innerPadding, navController = navController)
             forgotPasswordNavGraph(padding = innerPadding, navController = navController)
             reviewNavGraph(padding = innerPadding, navController = navController)
+            voteNavGraph(padding = innerPadding, navController = navController)
         }
     }
 }

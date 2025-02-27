@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -43,6 +42,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -135,22 +135,22 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
             shouldScrollToTop.value = false
         }
 
-//        snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
-//            .collect { (index, scrollOffset) ->
-//                if (index > 0) {
-//                    curYOffset.value = scrollOffset.toFloat()
-//                    yOffset.value += curYOffset.value - prevYOffset.value
-//                    prevYOffset.value = curYOffset.value
-//                    itemIndex.value = index
-//                } else {
-//                    yOffset.value = scrollOffset.toFloat()
-//                    itemIndex.value = index
-//                }
-//
+        snapshotFlow { listState.firstVisibleItemIndex to listState.firstVisibleItemScrollOffset }
+            .collect { (index, scrollOffset) ->
+                if (index > 0) {
+                    curYOffset.value = scrollOffset.toFloat()
+                    yOffset.value += curYOffset.value - prevYOffset.value
+                    prevYOffset.value = curYOffset.value
+                    itemIndex.value = index
+                } else {
+                    yOffset.value = scrollOffset.toFloat()
+                    itemIndex.value = index
+                }
+
 //                isStickyHeaderAtTop.value = index > 1
-//                // scroll이 조금이라도 된 상태이면 shouldScrollToTop = true
-//                shouldScrollToTop.value = index != 0 || scrollOffset != 0
-//            }
+                // scroll이 조금이라도 된 상태이면 shouldScrollToTop = true
+                shouldScrollToTop.value = index != 0 || scrollOffset != 0
+            }
     }
 
     // Spacer 높이를 동적으로 계산
@@ -167,7 +167,7 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
             modifier = Modifier
                 .fillMaxSize()
         ) {
-//            ShadowCircleBackground(itemIndex, yOffset, yOffsetHigh)
+            ShadowCircleBackground(itemIndex, yOffset, yOffsetHigh)
         }
 
         LazyColumn(
@@ -179,11 +179,12 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
         ) {
             item {
 //                Spacer(modifier = Modifier.height(spacerHeight))
-                Spacer(modifier = Modifier.height(113.dp))
+                Spacer(modifier = Modifier.height(63.dp))
             }
 
             // Sticky Header with Mood and Info
-            stickyHeader {
+//            stickyHeader {
+            item {
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -345,51 +346,55 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
 fun ProgressBar(attractive: List<Int>, barColor: Color = WomanColor) {
     Row(
         modifier = Modifier
-            .wrapContentWidth()
-            .padding(start = 41.5.dp, end = 41.5.dp),
+            .fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(15.dp)
+        horizontalArrangement = Arrangement.Center
     ) {
-        for (i in attractive.indices) {
-            val percentage = attractive[i].coerceIn(0, 100) / 100f
-            Box(
-                modifier = Modifier
-                    .wrapContentSize()
-                    .clip(CircleShape),
-                contentAlignment = Alignment.Center
-            ) {
-                Canvas(modifier = Modifier.size(50.dp)) {
-                    // 원의 반지름
-                    val radius = size.minDimension / 2
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(15.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            for (i in attractive.indices) {
+                val percentage = attractive[i].coerceIn(0, 100) / 100f
+                Box(
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .clip(CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Canvas(modifier = Modifier.size(50.dp)) {
+                        // 원의 반지름
+                        val radius = size.minDimension / 2
 
-                    // 회색 원 그리기 (전체 원)
-                    drawCircle(
-                        color = Gray,
-                        radius = radius,
-                        style = Stroke(width = 10f) // 회색 원 스트로크
-                    )
+                        // 회색 원 그리기 (전체 원)
+                        drawCircle(
+                            color = Gray,
+                            radius = radius,
+                            style = Stroke(width = 10f) // 회색 원 스트로크
+                        )
 
-                    // 흰색 원 주위의 비율을 채우는 아크 그리기
-                    drawArc(
+                        // 흰색 원 주위의 비율을 채우는 아크 그리기
+                        drawArc(
+                            color = Color.White,
+                            startAngle = -90f, // 12시부터 그리게끔
+                            sweepAngle = 360f * percentage, // 비율에 따른 각도
+                            useCenter = false, // 중심을 사용하지 않음 (경계선만 그리기)
+                            style = Stroke(width = 10f) // 스트로크 두께
+                        )
+                    }
+                    Text(
+                        text = when (i) {
+                            0 -> stringResource(id = R.string.personality)
+                            1 -> stringResource(id = R.string.voice)
+                            2 -> stringResource(id = R.string.fashion)
+                            3 -> stringResource(id = R.string.conversation)
+                            else -> stringResource(id = R.string.personality)
+                        },
                         color = Color.White,
-                        startAngle = -90f, // 12시부터 그리게끔
-                        sweepAngle = 360f * percentage, // 비율에 따른 각도
-                        useCenter = false, // 중심을 사용하지 않음 (경계선만 그리기)
-                        style = Stroke(width = 10f) // 스트로크 두께
+                        style = Typography.normal13,
+                        textAlign = TextAlign.Center
                     )
                 }
-                Text(
-                    text = when (i) {
-                        0 -> stringResource(id = R.string.personality)
-                        1 -> stringResource(id = R.string.voice)
-                        2 -> stringResource(id = R.string.fashion)
-                        3 -> stringResource(id = R.string.conversation)
-                        else -> stringResource(id = R.string.personality)
-                    },
-                    color = Color.White,
-                    style = Typography.normal13,
-                    textAlign = TextAlign.Center
-                )
             }
         }
     }
@@ -449,6 +454,7 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
                 textAlign = TextAlign.Center
             )
             if (i < profileInfo.size - 1) {
+                Spacer(modifier = Modifier.width(3.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.seperate),
                     contentDescription = "Seperate",
@@ -456,6 +462,7 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
                     modifier = Modifier
                         .wrapContentSize()
                 )
+                Spacer(modifier = Modifier.width(3.dp))
             }
         }
     }
@@ -583,7 +590,7 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                modifier = Modifier.padding(top = 10.dp, bottom = 10.dp),
+                modifier = Modifier.padding(top = 30.dp, bottom = 15.dp),
                 text = "매칭 완료까지 ${String.format("%02d:%02d:%02d", hours, minutes, seconds)} 남았어요",
                 style = Typography.normal12,
                 fontSize = 12.sp,
@@ -599,7 +606,7 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
                 Button(
                     modifier = Modifier
                         .weight(1f)
-                        .wrapContentHeight(),
+                        .height(54.dp),
                     onClick = { /*TODO*/ },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LightGray,
@@ -630,7 +637,7 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
                 Button(
                     modifier = Modifier
                         .weight(1f)
-                        .wrapContentHeight(),
+                        .height(54.dp),
                     onClick = { /*TODO*/ },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LightGray,
@@ -741,7 +748,6 @@ fun SelectableImage(
             .size(40.dp)
             .clip(CircleShape)
             .clickable { onClick() }
-            .alpha(if (isSelected) 0.5f else 1f)
             .then(
                 if (isSelected) {
                     Modifier.border(
@@ -757,7 +763,9 @@ fun SelectableImage(
         Image(
             painter = painterResource(id = R.drawable.testimage),
             contentDescription = null,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier
+                .fillMaxSize()
+                .alpha(if (isSelected) 0.5f else 1f)
         )
 
         // 가운데 하트 추가
@@ -782,7 +790,7 @@ fun ShadowCircleBackground(itemIndex: MutableState<Int>, yOffset: MutableState<F
         3 -> MoodBlue.copy(alpha = 0.4f)
         else -> MoodRed.copy(alpha = 0.4f)
     }
-    val fillColor = shadowColor.copy(alpha = 0.3f)
+    val fillColor = shadowColor.copy(alpha = 0.5f)
 
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
@@ -803,7 +811,7 @@ fun ShadowCircleBackground(itemIndex: MutableState<Int>, yOffset: MutableState<F
     ) {
         val size = size
         val shadowRadius = 50.dp.toPx()
-        val center = Offset(size.width / 2, screenHeight.toPx() / 7 * 5)
+        val center = Offset(size.width / 2, -screenHeight.toPx() / 5)
         val radius = 400.dp.toPx()
         drawIntoCanvas { canvas ->
             val paint = android.graphics.Paint().apply {

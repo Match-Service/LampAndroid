@@ -36,6 +36,7 @@ import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.home.navigation.navigateVote
 
 @Composable
 fun FindLampScreen(
@@ -90,7 +91,7 @@ fun FindLampScreen(
                     buttonText = stringResource(id = R.string.find_other_lamp),
                     onClick = {
                         // TODO : MatchingVoteScreen과 화면 연결 필요
-//                        navController.navigateVote(navOptions = navOption)
+                        navController.navigateVote(navOptions = navOption)
                     },
                     buttonWidth = 190,
                     enabled = true
