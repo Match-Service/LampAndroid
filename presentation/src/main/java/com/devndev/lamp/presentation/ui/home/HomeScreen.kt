@@ -65,10 +65,10 @@ fun HomeScreen(
         MatchingHomeScreen(modifier = modifier, navController = navController)
     } else {
         // 기존 소스
-//        NormalHomeScreen(modifier = modifier, navController = navController)
+        NormalHomeScreen(modifier = modifier, navController = navController)
 
         // FindLampScreen 테스트 용
-        FindLampScreen(modifier = Modifier, navController = navController)
+//        FindLampScreen(modifier = Modifier, navController = navController)
 
         // MatchingVoteScreen 테스트 용
 //        MatchingVoteScreen(modifier = modifier, navController = navController)
