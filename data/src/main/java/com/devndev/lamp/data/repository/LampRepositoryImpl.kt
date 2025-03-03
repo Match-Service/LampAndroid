@@ -1,9 +1,12 @@
 package com.devndev.lamp.data.repository
 
+import android.util.Log
 import com.devndev.lamp.data.datsource.lamp.LampDataSource
+import com.devndev.lamp.data.dto.request.lamp.AcceptInviteRequest
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
 import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.data.dto.request.lamp.KickUserRequest
+import com.devndev.lamp.domain.model.lamp.AcceptInviteParam
 import com.devndev.lamp.domain.model.lamp.CreateLampParam
 import com.devndev.lamp.domain.model.lamp.InviteUsersParam
 import com.devndev.lamp.domain.model.lamp.KickUserParam
@@ -37,7 +40,25 @@ class LampRepositoryImpl @Inject constructor(
         val inviteUsersRequest = InviteUsersRequest(
             inviteUserIds = inviteUsersParam.inviteUserIds
         )
-        lampDataSource.inviteUser(lampId, inviteUsersRequest)
+        val response = lampDataSource.inviteUser(lampId, inviteUsersRequest)
+        if (response.isSuccessful) {
+            Log.d("InviteUser", "User invited successfully, Status Code: ${response.code()}")
+        } else {
+            Log.e("InviteUser", "Failed to invite user, Status Code: ${response.code()}")
+        }
+    }
+
+    override suspend fun acceptInvite(lampId: Int, acceptInviteParam: AcceptInviteParam) {
+        val acceptUserRequest = AcceptInviteRequest(
+            inviteUserId = acceptInviteParam.inviteUserId,
+            alarmId = acceptInviteParam.alarmId
+        )
+        val response = lampDataSource.acceptInvite(lampId, acceptUserRequest)
+        if (response.isSuccessful) {
+            Log.d("AcceptInvite", "AcceptInvite successfully, Status Code: ${response.code()}")
+        } else {
+            Log.e("AcceptInvite", "Failed to AcceptInvite, Status Code: ${response.code()} ${response.raw()}}")
+        }
     }
 
     override suspend fun exitLamp(lampId: Int) {

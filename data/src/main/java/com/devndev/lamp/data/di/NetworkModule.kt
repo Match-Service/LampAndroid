@@ -8,7 +8,6 @@ import com.devndev.lamp.data.interceptor.AuthInterceptor
 import com.devndev.lamp.data.service.AlarmService
 import com.devndev.lamp.data.service.LampService
 import com.devndev.lamp.data.service.LoginService
-import com.devndev.lamp.data.service.NotificationService
 import com.devndev.lamp.data.service.SignUpService
 import com.devndev.lamp.data.service.UserService
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -80,12 +79,6 @@ internal class NetworkModule {
     fun provideSignUpService(
         @DefaultRetrofit retrofit: Retrofit
     ): SignUpService = retrofit.create()
-
-    @Singleton
-    @Provides
-    fun provideNotificationService(
-        @DefaultRetrofit retrofit: Retrofit
-    ): NotificationService = retrofit.create()
 
     @Singleton
     @Provides

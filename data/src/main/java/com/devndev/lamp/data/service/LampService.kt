@@ -1,5 +1,6 @@
 package com.devndev.lamp.data.service
 
+import com.devndev.lamp.data.dto.request.lamp.AcceptInviteRequest
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
 import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.data.dto.request.lamp.KickUserRequest
@@ -26,10 +27,16 @@ interface LampService {
         @Path("lampId") lampId: Int
     ): Response<Unit>
 
-    @POST("api/v1/lamp/invite/{lampId}")
+    @POST("api/v1/lamp/{lampId}/invite/request")
     suspend fun inviteUsers(
         @Path("lampId") lampId: Int,
         @Body inviteUserRequest: InviteUsersRequest
+    ): Response<Unit>
+
+    @POST("api/v1/lamp/{lampId}/invite/accept")
+    suspend fun acceptInvite(
+        @Path("lampId") lampId: Int,
+        @Body acceptInviteRequest: AcceptInviteRequest
     ): Response<Unit>
 
     @POST("api/v1/lamp/out/{lampId}")
@@ -42,4 +49,9 @@ interface LampService {
         @Path("lampId") lampId: Int,
         @Body kickUserRequest: KickUserRequest
     ): Response<Unit>
+
+    @POST("api/v1/lamp/{lampId}/invite/accept")
+    suspend fun acceptInvite(
+        @Path("lampId") lampId: Int
+    )
 }

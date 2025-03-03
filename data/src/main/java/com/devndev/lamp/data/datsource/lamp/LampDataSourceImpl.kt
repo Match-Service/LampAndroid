@@ -1,6 +1,7 @@
 package com.devndev.lamp.data.datsource.lamp
 
 import android.util.Log
+import com.devndev.lamp.data.dto.request.lamp.AcceptInviteRequest
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
 import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.data.dto.request.lamp.KickUserRequest
@@ -35,13 +36,14 @@ class LampDataSourceImpl @Inject constructor(
         lampId: Int,
         inviteUsersRequest: InviteUsersRequest
     ): Response<Unit> {
-        val response = lampService.inviteUsers(lampId, inviteUsersRequest)
-        if (response.isSuccessful) {
-            Log.d("InviteUser", "User invited successfully, Status Code: ${response.code()}")
-        } else {
-            Log.e("InviteUser", "Failed to invite user, Status Code: ${response.code()}")
-        }
-        return response
+        return lampService.inviteUsers(lampId, inviteUsersRequest)
+    }
+
+    override suspend fun acceptInvite(
+        lampId: Int,
+        acceptInviteRequest: AcceptInviteRequest
+    ): Response<Unit> {
+        return lampService.acceptInvite(lampId, acceptInviteRequest)
     }
 
     override suspend fun exitLamp(lampId: Int): Response<Unit> {

@@ -1,5 +1,6 @@
 package com.devndev.lamp.data.datsource.lamp
 
+import com.devndev.lamp.data.dto.request.lamp.AcceptInviteRequest
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
 import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.data.dto.request.lamp.KickUserRequest
@@ -12,6 +13,7 @@ interface LampDataSource {
     suspend fun getMyInfo(): LampResponse
     suspend fun deleteLamp(lampId: Int): Response<Unit>
     suspend fun inviteUser(lampId: Int, inviteUsersRequest: InviteUsersRequest): Response<Unit>
+    suspend fun acceptInvite(lampId: Int, acceptInviteRequest: AcceptInviteRequest): Response<Unit>
     suspend fun exitLamp(lampId: Int): Response<Unit>
     suspend fun kickUser(lampId: Int, kickUserRequest: KickUserRequest): Response<Unit>
 }
