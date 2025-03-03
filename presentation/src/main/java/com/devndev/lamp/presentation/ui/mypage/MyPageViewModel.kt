@@ -3,10 +3,8 @@ package com.devndev.lamp.presentation.ui.mypage
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devndev.lamp.domain.model.notification.FcmNotificationParam
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.usecase.login.SignOutUseCase
-import com.devndev.lamp.domain.usecase.notification.SendFcmNotificationUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.presentation.ui.common.AccountStatus
 import com.devndev.lamp.presentation.ui.login.AuthManager
@@ -24,7 +22,6 @@ import javax.inject.Inject
 class MyPageViewModel @Inject constructor(
     private val googleSignInClient: GoogleSignInClient,
     private val getMyInfoUseCase: GetMyInfoUseCase,
-    private val sendFcmNotificationUseCase: SendFcmNotificationUseCase,
     private val signOutUseCase: SignOutUseCase
 ) : ViewModel() {
     private val logTag = "MyPageViewModel"
@@ -53,19 +50,6 @@ class MyPageViewModel @Inject constructor(
                 fcmToken = token
                 Log.d(logTag, "getFcmToken() $fcmToken")
             }
-        }
-    }
-
-    fun sendFcmNotification(title: String, message: String) {
-        viewModelScope.launch {
-            Log.d(logTag, "token $fcmToken, title $title, message $message")
-            sendFcmNotificationUseCase(
-                FcmNotificationParam(
-                    pushToken = fcmToken,
-                    title = title,
-                    message = message
-                )
-            )
         }
     }
 

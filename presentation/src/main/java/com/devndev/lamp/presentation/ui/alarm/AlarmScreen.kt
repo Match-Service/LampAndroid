@@ -82,6 +82,7 @@ fun AlarmScreen(
 
     var isInvitationExpanded by remember { mutableStateOf(false) }
     var isVisitExpanded by remember { mutableStateOf(false) }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -115,7 +116,14 @@ fun AlarmScreen(
                         isExpanded = isInvitationExpanded,
                         onToggleExpand = { isInvitationExpanded = !isInvitationExpanded },
                         alarms = inviteList,
-                        color = WomanColor
+                        color = WomanColor,
+                        onAcceptClick = {
+                            viewModel.acceptInvite(
+                                lampId = it.lampId,
+                                inviteUserId = 4,
+                                alarmId = it.id
+                            )
+                        }
                     )
                 }
                 item { Spacer(modifier = Modifier.height(70.dp)) }
@@ -125,7 +133,8 @@ fun AlarmScreen(
                         isExpanded = isVisitExpanded,
                         onToggleExpand = { isVisitExpanded = !isVisitExpanded },
                         alarms = visitList,
-                        color = ManColor
+                        color = ManColor,
+                        onAcceptClick = {}
                     )
                 }
             }
@@ -139,7 +148,8 @@ fun AlarmSection(
     isExpanded: Boolean,
     onToggleExpand: () -> Unit,
     alarms: List<AlarmDomainModel>,
-    color: Color
+    color: Color,
+    onAcceptClick: (AlarmDomainModel) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -180,7 +190,10 @@ fun AlarmSection(
         ) {
             Column {
                 alarms.forEachIndexed { index, alarmData ->
-                    AlarmItem(alarmData = alarmData)
+                    AlarmItem(
+                        alarmData = alarmData,
+                        onAcceptClick = { onAcceptClick(alarmData) }
+                    )
                     if (index < alarms.size - 1) {
                         HorizontalDivider(
                             color = Gray3.copy(alpha = 0.3f),
@@ -194,7 +207,10 @@ fun AlarmSection(
 }
 
 @Composable
-fun AlarmItem(alarmData: AlarmDomainModel) {
+fun AlarmItem(
+    alarmData: AlarmDomainModel,
+    onAcceptClick: (AlarmDomainModel) -> Unit
+) {
     Column(
         modifier = Modifier
             .background(color = LampBlack)
@@ -220,7 +236,9 @@ fun AlarmItem(alarmData: AlarmDomainModel) {
             LampButton(
                 isGradient = true,
                 buttonText = buttonText,
-                onClick = {},
+                onClick = {
+                    onAcceptClick(alarmData)
+                },
                 buttonWidth = 1,
                 enabled = true,
                 textStyle = Typography.medium15,
@@ -261,11 +279,12 @@ fun getTimeAgo(isoTime: String): String {
     // Parsing the ISO time string to Instant
     val time = Instant.parse(isoTime)
 
+    val adjustedTime = time.plus(Duration.ofHours(9))
     // Getting the current time
     val now = Instant.now()
 
     // Calculating the duration between the provided time and now
-    val duration = Duration.between(time, now)
+    val duration = Duration.between(adjustedTime, now)
 
     // Converting duration to minutes and hours
     val minutes = duration.toMinutes()

@@ -8,8 +8,6 @@ import com.devndev.lamp.data.datsource.local.LocalDataSource
 import com.devndev.lamp.data.datsource.local.LocalDataSourceImpl
 import com.devndev.lamp.data.datsource.login.GoogleTokenDataSource
 import com.devndev.lamp.data.datsource.login.GoogleTokenDataSourceImpl
-import com.devndev.lamp.data.datsource.notification.NotificationDataSource
-import com.devndev.lamp.data.datsource.notification.NotificationDataSourceImpl
 import com.devndev.lamp.data.datsource.signup.SignUpDataSource
 import com.devndev.lamp.data.datsource.signup.SignUpDataSourceImpl
 import com.devndev.lamp.data.datsource.user.UserDataSource
@@ -38,10 +36,6 @@ interface DataSourceModule {
     @Singleton
     @Binds
     fun bindLocalDataSource(dataSourceImpl: LocalDataSourceImpl): LocalDataSource
-
-    @Singleton
-    @Binds
-    fun bindNotificationDataSource(notificationDataSourceImpl: NotificationDataSourceImpl): NotificationDataSource
 
     @Singleton
     @Binds
