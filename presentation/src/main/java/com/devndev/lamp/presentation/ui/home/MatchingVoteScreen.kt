@@ -119,7 +119,7 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
 
     // profile 임시 데이터
     val profiles = listOf(
-        listOf("Profile1", 3, 28, "한국대학교", listOf(10, 20, 30, 40), "글자수100글자수100글자수100", listOf(1, 1, 1)),
+        listOf("Profile1", 4, 28, "한국대학교", listOf(10, 20, 30, 40), "글자수100글자수100글자수100", listOf(1, 1, 1)),
         listOf("Profile2", 2, 27, "한국대학교", listOf(80, 70, 100, 10), "글자수100글자수100글자수100글자수100글자수100글자수100", listOf(2, 2, 2)),
         listOf("Profile3", 3, 26, "한국대학교", listOf(50, 50, 50, 50), "글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100", listOf(3, 3, 3)),
         listOf("Profile4", 1, 25, "한국대학교", listOf(100, 100, 100, 100), "글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100", listOf(4, 4, 4))
@@ -216,8 +216,7 @@ fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .background(LampBlack)
-                        .padding(start = 16.dp, end = 16.dp),
+                        .background(LampBlack),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
@@ -252,6 +251,9 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
             .padding(bottom = 10.dp),
         horizontalArrangement = Arrangement.spacedBy(5.dp)
     ) {
+        items(1) {
+            Spacer(modifier = Modifier.width(16.dp))
+        }
         items(profiles[index][1] as Int) {
             Image(
                 painter = painterResource(id = R.drawable.testimage),
@@ -260,6 +262,9 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
                 modifier = Modifier
                     .size(120.dp)
             )
+        }
+        items(1) {
+            Spacer(modifier = Modifier.width(16.dp))
         }
     }
     Spacer(modifier = Modifier.height(20.dp))
@@ -330,7 +335,7 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
                     text = "${stringResource(id = R.string.attractiveness)} $attractiveAvg",
                     color = Color.White,
                     style = Typography.medium18.copy(lineHeight = 20.sp),
-                    fontSize = 15.sp,
+                    fontSize = 18.sp,
                     textAlign = TextAlign.Center
                 )
             }
@@ -370,7 +375,7 @@ fun ProgressBar(attractive: List<Int>, barColor: Color = WomanColor) {
                         drawCircle(
                             color = Gray,
                             radius = radius,
-                            style = Stroke(width = 10f) // 회색 원 스트로크
+                            style = Stroke(width = 20f) // 회색 원 스트로크
                         )
 
                         // 흰색 원 주위의 비율을 채우는 아크 그리기
@@ -379,7 +384,7 @@ fun ProgressBar(attractive: List<Int>, barColor: Color = WomanColor) {
                             startAngle = -90f, // 12시부터 그리게끔
                             sweepAngle = 360f * percentage, // 비율에 따른 각도
                             useCenter = false, // 중심을 사용하지 않음 (경계선만 그리기)
-                            style = Stroke(width = 10f) // 스트로크 두께
+                            style = Stroke(width = 20f) // 스트로크 두께
                         )
                     }
                     Text(
@@ -575,12 +580,14 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
                 .align(Alignment.BottomCenter)
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(
-                            MoodGray.copy(alpha = 1f),
-                            Gray.copy(alpha = 1f)
+                        colorStops = arrayOf(
+                            0.0f to MoodGray.copy(alpha = 1f),
+                            0.1f to MoodGray.copy(alpha = 1f),
+                            1.0f to Gray.copy(alpha = 1f)
                         ),
                         startY = 0f,
-                        endY = Float.POSITIVE_INFINITY
+                        endY = 100f
+//                        endY = Float.POSITIVE_INFINITY
                     )
                 )
                 .onGloballyPositioned { coordinates ->
@@ -765,7 +772,9 @@ fun SelectableImage(
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
-                .alpha(if (isSelected) 0.5f else 1f)
+                .clip(CircleShape)
+                .alpha(if (isSelected) 0.5f else 1f),
+            contentScale = ContentScale.Crop // 이미지가 박스 내부에서 꽉 차도록
         )
 
         // 가운데 하트 추가

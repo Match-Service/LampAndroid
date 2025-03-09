@@ -34,7 +34,9 @@ fun NavGraphBuilder.voteNavGraph(
     modifier: Modifier = Modifier,
     navController: NavController
 ) {
-    composable(Route.VOTE) {
+    composable(
+        Route.VOTE
+    ) {
         MatchingVoteScreen(modifier = modifier.padding(padding), navController = navController)
     }
 }

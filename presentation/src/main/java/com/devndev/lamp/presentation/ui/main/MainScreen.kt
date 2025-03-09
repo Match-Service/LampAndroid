@@ -33,6 +33,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.BackGroundColor
+import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.ui.alarm.navigation.alarmNavGraph
@@ -101,7 +102,11 @@ fun MainScreen(modifier: Modifier, signOut: () -> Unit) {
                 currentRoute != Route.FORGOT_PASSWORD &&
                 currentRoute != Route.REVIEW
             ) {
-                LampBottomNavigation(pagerState)
+                if (currentRoute != Route.VOTE) {
+                    LampBottomNavigation(pagerState, LampBlack)
+                } else {
+                    LampBottomNavigation(pagerState, Gray)
+                }
             } else {
                 Spacer(modifier = Modifier.height(0.dp))
             }
@@ -182,11 +187,11 @@ fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean) {
 }
 
 @Composable
-fun LampBottomNavigation(pagerState: PagerState) {
+fun LampBottomNavigation(pagerState: PagerState, containerColor: Color) {
     val coroutineScope = rememberCoroutineScope()
 
     NavigationBar(
-        containerColor = LampBlack,
+        containerColor = containerColor,
         contentColor = Color.White,
         modifier = Modifier.height(70.dp)
     ) {
