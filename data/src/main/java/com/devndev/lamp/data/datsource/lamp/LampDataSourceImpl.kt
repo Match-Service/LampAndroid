@@ -5,6 +5,7 @@ import com.devndev.lamp.data.dto.request.lamp.AcceptInviteRequest
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
 import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.data.dto.request.lamp.KickUserRequest
+import com.devndev.lamp.data.dto.request.lamp.RejectInviteRequest
 import com.devndev.lamp.data.dto.response.lamp.CreateLampResponse
 import com.devndev.lamp.data.dto.response.lamp.LampResponse
 import com.devndev.lamp.data.service.LampService
@@ -44,6 +45,13 @@ class LampDataSourceImpl @Inject constructor(
         acceptInviteRequest: AcceptInviteRequest
     ): Response<Unit> {
         return lampService.acceptInvite(lampId, acceptInviteRequest)
+    }
+
+    override suspend fun rejectInvite(
+        lampId: Int,
+        rejectInviteRequest: RejectInviteRequest
+    ): Response<Unit> {
+        return lampService.rejectInvite(lampId, rejectInviteRequest)
     }
 
     override suspend fun exitLamp(lampId: Int): Response<Unit> {

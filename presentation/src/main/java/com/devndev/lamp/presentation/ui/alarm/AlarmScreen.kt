@@ -120,7 +120,14 @@ fun AlarmScreen(
                         onAcceptClick = {
                             viewModel.acceptInvite(
                                 lampId = it.lampId,
-                                inviteUserId = 4,
+                                inviteRequestUserId = it.inviteRequestUserId ?: 0,
+                                alarmId = it.id
+                            )
+                        },
+                        onRejectClick = {
+                            viewModel.rejectInvite(
+                                lampId = it.lampId,
+                                inviteRequestUserId = it.inviteRequestUserId ?: 0,
                                 alarmId = it.id
                             )
                         }
@@ -134,7 +141,8 @@ fun AlarmScreen(
                         onToggleExpand = { isVisitExpanded = !isVisitExpanded },
                         alarms = visitList,
                         color = ManColor,
-                        onAcceptClick = {}
+                        onAcceptClick = {},
+                        onRejectClick = {}
                     )
                 }
             }
@@ -149,7 +157,8 @@ fun AlarmSection(
     onToggleExpand: () -> Unit,
     alarms: List<AlarmDomainModel>,
     color: Color,
-    onAcceptClick: (AlarmDomainModel) -> Unit
+    onAcceptClick: (AlarmDomainModel) -> Unit,
+    onRejectClick: (AlarmDomainModel) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -192,7 +201,8 @@ fun AlarmSection(
                 alarms.forEachIndexed { index, alarmData ->
                     AlarmItem(
                         alarmData = alarmData,
-                        onAcceptClick = { onAcceptClick(alarmData) }
+                        onAcceptClick = { onAcceptClick(alarmData) },
+                        onRejectClick = { onRejectClick(alarmData) }
                     )
                     if (index < alarms.size - 1) {
                         HorizontalDivider(
@@ -209,7 +219,8 @@ fun AlarmSection(
 @Composable
 fun AlarmItem(
     alarmData: AlarmDomainModel,
-    onAcceptClick: (AlarmDomainModel) -> Unit
+    onAcceptClick: (AlarmDomainModel) -> Unit,
+    onRejectClick: (AlarmDomainModel) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -247,7 +258,9 @@ fun AlarmItem(
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 modifier = Modifier.height(40.dp),
-                onClick = { },
+                onClick = {
+                    onRejectClick(alarmData)
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Gray,
                     contentColor = Color.White

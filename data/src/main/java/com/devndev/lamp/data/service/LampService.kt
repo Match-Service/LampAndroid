@@ -4,6 +4,7 @@ import com.devndev.lamp.data.dto.request.lamp.AcceptInviteRequest
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
 import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.data.dto.request.lamp.KickUserRequest
+import com.devndev.lamp.data.dto.request.lamp.RejectInviteRequest
 import com.devndev.lamp.data.dto.response.lamp.CreateLampResponse
 import com.devndev.lamp.data.dto.response.lamp.LampResponse
 import retrofit2.Response
@@ -39,6 +40,12 @@ interface LampService {
         @Body acceptInviteRequest: AcceptInviteRequest
     ): Response<Unit>
 
+    @POST("api/v1/lamp/{lampId}/invite/reject")
+    suspend fun rejectInvite(
+        @Path("lampId") lampId: Int,
+        @Body rejectInviteRequest: RejectInviteRequest
+    ): Response<Unit>
+
     @POST("api/v1/lamp/out/{lampId}")
     suspend fun exitLamp(
         @Path("lampId") lampId: Int
@@ -49,9 +56,4 @@ interface LampService {
         @Path("lampId") lampId: Int,
         @Body kickUserRequest: KickUserRequest
     ): Response<Unit>
-
-    @POST("api/v1/lamp/{lampId}/invite/accept")
-    suspend fun acceptInvite(
-        @Path("lampId") lampId: Int
-    )
 }
