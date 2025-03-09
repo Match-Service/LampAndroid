@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class AcceptInviteRequest(
+data class RejectInviteRequest(
     @Json(name = "inviteRequestUserId")
     val inviteRequestUserId: Int,
     @Json(name = "alarmId")
