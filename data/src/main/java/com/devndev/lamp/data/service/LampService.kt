@@ -1,6 +1,7 @@
 package com.devndev.lamp.data.service
 
 import com.devndev.lamp.data.dto.request.lamp.AcceptInviteRequest
+import com.devndev.lamp.data.dto.request.lamp.AcceptVisitRequest
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
 import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.data.dto.request.lamp.KickUserRequest
@@ -46,14 +47,31 @@ interface LampService {
         @Body rejectInviteRequest: RejectInviteRequest
     ): Response<Unit>
 
-    @POST("api/v1/lamp/out/{lampId}")
+    @POST("api/v1/lamp/{lampId}/out")
     suspend fun exitLamp(
         @Path("lampId") lampId: Int
     ): Response<Unit>
 
-    @POST("api/v1/lamp/kick/{lampId}")
+    @POST("api/v1/lamp/{lampId}/kick")
     suspend fun kickUser(
         @Path("lampId") lampId: Int,
         @Body kickUserRequest: KickUserRequest
+    ): Response<Unit>
+
+    @POST("api/v1/lamp/{lampId}/visit/request")
+    suspend fun requestVisit(
+        @Path("lampId") lampId: Int
+    ): Response<Unit>
+
+    @POST("api/v1/lamp/{lampId}/visit/accept")
+    suspend fun acceptVisit(
+        @Path("lampId") lampId: Int,
+        @Body acceptVisitRequest: AcceptVisitRequest
+    ): Response<Unit>
+
+    @POST("api/v1/lamp/{lampId}/visit/reject")
+    suspend fun rejectVisit(
+        @Path("lampId") lampId: Int,
+        @Body acceptVisitRequest: AcceptVisitRequest
     ): Response<Unit>
 }
