@@ -56,6 +56,7 @@ class AlarmViewModel @Inject constructor(
                         alarmId = alarmId
                     )
                 )
+                getAlarm()
             } catch (e: Exception) {
                 Log.e(logTag, "acceptInvite Exception", e)
             }
@@ -76,6 +77,7 @@ class AlarmViewModel @Inject constructor(
                         alarmId = alarmId
                     )
                 )
+                getAlarm()
             } catch (e: Exception) {
                 Log.e(logTag, "rejectInvite Exception", e)
             }
