@@ -11,6 +11,7 @@ import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.model.user.UserDomainModel
 import com.devndev.lamp.domain.usecase.lamp.GetMyLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.InviteUsersUseCase
+import com.devndev.lamp.domain.usecase.lamp.RequestVisitUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.domain.usecase.user.SearchInviteUserUseCase
 import com.devndev.lamp.domain.usecase.user.SearchVisitUserUseCase
@@ -27,7 +28,8 @@ class SearchViewModel @Inject constructor(
     private val searchVisitUserUseCase: SearchVisitUserUseCase,
     private val inviteUsersUseCase: InviteUsersUseCase,
     private val getMyLampUseCase: GetMyLampUseCase,
-    private val getMyInfoUseCase: GetMyInfoUseCase
+    private val getMyInfoUseCase: GetMyInfoUseCase,
+    private val requestVisitUseCase: RequestVisitUseCase
 ) : ViewModel() {
     private val logTag = "SearchViewModel"
     private val _users = mutableStateListOf<UserDomainModel>()
@@ -118,6 +120,19 @@ class SearchViewModel @Inject constructor(
                     Log.d(logTag, "inviteUsers(), myLampId $it")
                     inviteUsersUseCase(it, inviteUsersParam)
                 }
+            } catch (e: HttpException) {
+                Log.e(logTag, "inviteUsers HttpException", e)
+            } catch (e: Exception) {
+                Log.e(logTag, "inviteUsers Exception", e)
+            }
+        }
+    }
+
+    fun requestVisit(lampId: Int) {
+        viewModelScope.launch {
+            try {
+                Log.d(logTag, "requestVisit, lampId $lampId")
+                requestVisitUseCase(lampId)
             } catch (e: HttpException) {
                 Log.e(logTag, "inviteUsers HttpException", e)
             } catch (e: Exception) {
