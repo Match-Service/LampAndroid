@@ -6,6 +6,7 @@ import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
 import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.data.dto.request.lamp.KickUserRequest
 import com.devndev.lamp.data.dto.request.lamp.RejectInviteRequest
+import com.devndev.lamp.data.dto.request.lamp.RejectVisitRequest
 import com.devndev.lamp.data.dto.response.lamp.CreateLampResponse
 import com.devndev.lamp.data.dto.response.lamp.LampResponse
 import retrofit2.Response
@@ -72,6 +73,6 @@ interface LampService {
     @POST("api/v1/lamp/{lampId}/visit/reject")
     suspend fun rejectVisit(
         @Path("lampId") lampId: Int,
-        @Body acceptVisitRequest: AcceptVisitRequest
+        @Body rejectVisitRequest: RejectVisitRequest
     ): Response<Unit>
 }

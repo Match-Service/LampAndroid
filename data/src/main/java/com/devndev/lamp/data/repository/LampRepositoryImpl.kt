@@ -94,4 +94,8 @@ class LampRepositoryImpl @Inject constructor(
         )
         lampDataSource.kickUser(lampId, kickUserRequest)
     }
+
+    override suspend fun visitRequest(lampId: Int) {
+        lampDataSource.requestVisit(lampId)
+    }
 }
