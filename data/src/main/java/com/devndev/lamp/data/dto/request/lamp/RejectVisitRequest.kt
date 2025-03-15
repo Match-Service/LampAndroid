@@ -6,5 +6,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class RejectVisitRequest(
     @Json(name = "visitUserId")
-    val visitUserId: Int
+    val visitUserId: Int,
+    @Json(name = "alarmId")
+    val alarmId: Int
 )

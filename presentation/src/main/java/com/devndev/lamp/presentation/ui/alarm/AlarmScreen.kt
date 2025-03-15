@@ -74,6 +74,7 @@ fun AlarmScreen(
             navController.popBackStack()
         }
     }
+    // Todo 알람 수락, 거절 눌렀을 때 알람 list empty 되면 expanded false로 변경
 
     val alarms by viewModel.alarms.collectAsState()
 
@@ -141,8 +142,20 @@ fun AlarmScreen(
                         onToggleExpand = { isVisitExpanded = !isVisitExpanded },
                         alarms = visitList,
                         color = ManColor,
-                        onAcceptClick = {},
-                        onRejectClick = {}
+                        onAcceptClick = {
+                            viewModel.acceptVisit(
+                                lampId = it.lampId,
+                                visitUserId = it.inviteRequestUserId ?: 0,
+                                alarmId = it.id
+                            )
+                        },
+                        onRejectClick = {
+                            viewModel.rejectVisit(
+                                lampId = it.lampId,
+                                visitUserId = it.inviteRequestUserId ?: 0,
+                                alarmId = it.id
+                            )
+                        }
                     )
                 }
             }
