@@ -5,10 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.alarm.AlarmDomainModel
 import com.devndev.lamp.domain.model.lamp.AcceptInviteParam
+import com.devndev.lamp.domain.model.lamp.AcceptVisitParam
 import com.devndev.lamp.domain.model.lamp.RejectInviteParam
+import com.devndev.lamp.domain.model.lamp.RejectVisitParam
 import com.devndev.lamp.domain.usecase.alarm.GetAlarmUseCase
 import com.devndev.lamp.domain.usecase.lamp.AcceptInviteUseCase
+import com.devndev.lamp.domain.usecase.lamp.AcceptVisitUseCase
 import com.devndev.lamp.domain.usecase.lamp.RejectInviteUseCase
+import com.devndev.lamp.domain.usecase.lamp.RejectVisitUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +23,9 @@ import javax.inject.Inject
 class AlarmViewModel @Inject constructor(
     private val getAlarmUseCase: GetAlarmUseCase,
     private val acceptInviteUseCase: AcceptInviteUseCase,
-    private val rejectInviteUseCase: RejectInviteUseCase
+    private val rejectInviteUseCase: RejectInviteUseCase,
+    private val acceptVisitUseCase: AcceptVisitUseCase,
+    private val rejectVisitUseCase: RejectVisitUseCase
 ) : ViewModel() {
     private val logTag = "AlarmViewModel"
 
@@ -80,6 +86,42 @@ class AlarmViewModel @Inject constructor(
                 getAlarm()
             } catch (e: Exception) {
                 Log.e(logTag, "rejectInvite Exception", e)
+            }
+        }
+    }
+
+    fun acceptVisit(lampId: Int, visitUserId: Int, alarmId: Int) {
+        viewModelScope.launch {
+            try {
+                Log.d(
+                    logTag,
+                    "acceptVisit, lampId: $lampId visitUserId: $visitUserId alarmId: $alarmId"
+                )
+                acceptVisitUseCase(
+                    lampId = lampId,
+                    AcceptVisitParam(visitUserId, alarmId)
+                )
+                getAlarm()
+            } catch (e: Exception) {
+                Log.e(logTag, "acceptVisit Exception", e)
+            }
+        }
+    }
+
+    fun rejectVisit(lampId: Int, visitUserId: Int, alarmId: Int) {
+        viewModelScope.launch {
+            try {
+                Log.d(
+                    logTag,
+                    "rejectVisit, lampId: $lampId visitUserId: $visitUserId alarmId: $alarmId"
+                )
+                rejectVisitUseCase(
+                    lampId = lampId,
+                    RejectVisitParam(visitUserId, alarmId)
+                )
+                getAlarm()
+            } catch (e: Exception) {
+                Log.e(logTag, "rejectVisit Exception", e)
             }
         }
     }

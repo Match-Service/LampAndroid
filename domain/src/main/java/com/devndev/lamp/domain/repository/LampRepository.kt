@@ -1,11 +1,13 @@
 package com.devndev.lamp.domain.repository
 
 import com.devndev.lamp.domain.model.lamp.AcceptInviteParam
+import com.devndev.lamp.domain.model.lamp.AcceptVisitParam
 import com.devndev.lamp.domain.model.lamp.CreateLampParam
 import com.devndev.lamp.domain.model.lamp.InviteUsersParam
 import com.devndev.lamp.domain.model.lamp.KickUserParam
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.domain.model.lamp.RejectInviteParam
+import com.devndev.lamp.domain.model.lamp.RejectVisitParam
 
 interface LampRepository {
     suspend fun createLamp(createLampParam: CreateLampParam): Int
@@ -17,4 +19,6 @@ interface LampRepository {
     suspend fun exitLamp(lampId: Int)
     suspend fun kickUser(lampId: Int, kickUserParam: KickUserParam)
     suspend fun visitRequest(lampId: Int)
+    suspend fun acceptVisit(lampId: Int, acceptVisitParam: AcceptVisitParam)
+    suspend fun rejectVisit(lampId: Int, rejectVisitParam: RejectVisitParam)
 }

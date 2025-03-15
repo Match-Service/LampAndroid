@@ -3,16 +3,20 @@ package com.devndev.lamp.data.repository
 import android.util.Log
 import com.devndev.lamp.data.datsource.lamp.LampDataSource
 import com.devndev.lamp.data.dto.request.lamp.AcceptInviteRequest
+import com.devndev.lamp.data.dto.request.lamp.AcceptVisitRequest
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
 import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.data.dto.request.lamp.KickUserRequest
 import com.devndev.lamp.data.dto.request.lamp.RejectInviteRequest
+import com.devndev.lamp.data.dto.request.lamp.RejectVisitRequest
 import com.devndev.lamp.domain.model.lamp.AcceptInviteParam
+import com.devndev.lamp.domain.model.lamp.AcceptVisitParam
 import com.devndev.lamp.domain.model.lamp.CreateLampParam
 import com.devndev.lamp.domain.model.lamp.InviteUsersParam
 import com.devndev.lamp.domain.model.lamp.KickUserParam
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.domain.model.lamp.RejectInviteParam
+import com.devndev.lamp.domain.model.lamp.RejectVisitParam
 import com.devndev.lamp.domain.repository.LampRepository
 import javax.inject.Inject
 
@@ -97,5 +101,39 @@ class LampRepositoryImpl @Inject constructor(
 
     override suspend fun visitRequest(lampId: Int) {
         lampDataSource.requestVisit(lampId)
+    }
+
+    override suspend fun acceptVisit(lampId: Int, acceptVisitParam: AcceptVisitParam) {
+        val acceptVisitRequest = AcceptVisitRequest(
+            visitUserId = acceptVisitParam.visitUserId,
+            alarmId = acceptVisitParam.alarmId
+        )
+        val response = lampDataSource.acceptVisit(lampId, acceptVisitRequest)
+
+        if (response.isSuccessful) {
+            Log.d("AcceptVisit", "AcceptVisit successfully, Status Code: ${response.code()}")
+        } else {
+            Log.e(
+                "AcceptVisit",
+                "Failed to AcceptVisit, Status Code: ${response.code()} ${response.raw()}"
+            )
+        }
+    }
+
+    override suspend fun rejectVisit(lampId: Int, rejectVisitParam: RejectVisitParam) {
+        val rejectVisitRequest = RejectVisitRequest(
+            visitUserId = rejectVisitParam.visitUserId,
+            alarmId = rejectVisitParam.alarmId
+        )
+        val response = lampDataSource.rejectVisit(lampId, rejectVisitRequest)
+
+        if (response.isSuccessful) {
+            Log.d("RejectVisit", "RejectVisit successfully, Status Code: ${response.code()}")
+        } else {
+            Log.e(
+                "RejectVisit",
+                "Failed to RejectVisit, Status Code: ${response.code()} ${response.raw()}"
+            )
+        }
     }
 }

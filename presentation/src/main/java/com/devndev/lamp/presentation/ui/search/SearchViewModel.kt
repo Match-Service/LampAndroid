@@ -134,9 +134,9 @@ class SearchViewModel @Inject constructor(
                 Log.d(logTag, "requestVisit, lampId $lampId")
                 requestVisitUseCase(lampId)
             } catch (e: HttpException) {
-                Log.e(logTag, "inviteUsers HttpException", e)
+                Log.e(logTag, "requestVisit HttpException", e)
             } catch (e: Exception) {
-                Log.e(logTag, "inviteUsers Exception", e)
+                Log.e(logTag, "requestVisit Exception", e)
             }
         }
     }
