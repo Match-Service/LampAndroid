@@ -4,6 +4,8 @@ import com.devndev.lamp.data.datsource.alarm.AlarmDataSource
 import com.devndev.lamp.data.datsource.alarm.AlarmDataSourceImpl
 import com.devndev.lamp.data.datsource.lamp.LampDataSource
 import com.devndev.lamp.data.datsource.lamp.LampDataSourceImpl
+import com.devndev.lamp.data.datsource.lampmatach.LampMatchDataSource
+import com.devndev.lamp.data.datsource.lampmatach.LampMatchDataSourceImpl
 import com.devndev.lamp.data.datsource.local.LocalDataSource
 import com.devndev.lamp.data.datsource.local.LocalDataSourceImpl
 import com.devndev.lamp.data.datsource.login.GoogleTokenDataSource
@@ -44,4 +46,8 @@ interface DataSourceModule {
     @Singleton
     @Binds
     fun bindAlarmDataSource(alarmDataSourceImpl: AlarmDataSourceImpl): AlarmDataSource
+
+    @Singleton
+    @Binds
+    fun bindLampMatchDataSource(lampMatchDataSourceImpl: LampMatchDataSourceImpl): LampMatchDataSource
 }
