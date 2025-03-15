@@ -324,7 +324,12 @@ fun MatchingHomeScreen(
                             isGradient = !isMatching,
                             buttonWidth = 300,
                             buttonText = buttonText,
-                            onClick = { isMatching = !isMatching },
+                            onClick = {
+                                if (isMatching) {
+                                    homeViewModel.matchStart()
+                                }
+                                isMatching = !isMatching
+                            },
                             enabled = true
                         )
                     }
