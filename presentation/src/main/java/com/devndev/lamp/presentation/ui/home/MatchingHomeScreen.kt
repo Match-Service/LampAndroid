@@ -326,7 +326,9 @@ fun MatchingHomeScreen(
                             buttonText = buttonText,
                             onClick = {
                                 if (isMatching) {
-                                    homeViewModel.matchStart()
+                                    homeViewModel.stopMatch()
+                                } else {
+                                    homeViewModel.startMatch()
                                 }
                                 isMatching = !isMatching
                             },

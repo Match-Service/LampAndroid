@@ -11,7 +11,8 @@ import com.devndev.lamp.domain.usecase.lamp.DeleteLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.ExitLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.GetMyLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.KickUserUseCase
-import com.devndev.lamp.domain.usecase.lampmatch.MatchStartUseCase
+import com.devndev.lamp.domain.usecase.lampmatch.StartMatchUseCase
+import com.devndev.lamp.domain.usecase.lampmatch.StopMatchUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +28,8 @@ class HomeViewModel @Inject constructor(
     private val deleteLampUseCase: DeleteLampUseCase,
     private val exitLampUseCase: ExitLampUseCase,
     private val kickUserUseCase: KickUserUseCase,
-    private val matchStartUseCase: MatchStartUseCase
+    private val startMatchUseCase: StartMatchUseCase,
+    private val stopMatchUseCase: StopMatchUseCase
 ) : ViewModel() {
     private val logTag = "HomeViewModel"
 
@@ -114,13 +116,23 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun matchStart() {
+    fun startMatch() {
         viewModelScope.launch {
             try {
                 Log.d(logTag, "startMatch()")
-                matchStartUseCase()
+                startMatchUseCase()
             } catch (e: Exception) {
-                Log.e(logTag, "matchStart Exception", e)
+                Log.e(logTag, "startMatch Exception", e)
+            }
+        }
+    }
+
+    fun stopMatch() {
+        viewModelScope.launch {
+            try {
+                Log.d(logTag, "stopMatch")
+            } catch (e: Exception) {
+                Log.e(logTag, "stopMatchException", e)
             }
         }
     }
