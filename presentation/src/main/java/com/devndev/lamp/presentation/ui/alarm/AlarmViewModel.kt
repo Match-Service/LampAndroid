@@ -36,7 +36,7 @@ class AlarmViewModel @Inject constructor(
         getAlarm()
     }
 
-    private fun getAlarm() {
+    fun getAlarm() {
         viewModelScope.launch {
             try {
                 Log.d(logTag, "getAlarm")
