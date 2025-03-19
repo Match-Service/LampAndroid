@@ -7,7 +7,11 @@ import javax.inject.Inject
 class LampMatchRepositoryImpl @Inject constructor(
     private val lampMatchDataSource: LampMatchDataSource
 ) : LampMatchRepository {
-    override suspend fun matchStart() {
-        lampMatchDataSource.matchStart()
+    override suspend fun startMatch() {
+        lampMatchDataSource.startMatch()
+    }
+
+    override suspend fun stopMatch() {
+        lampMatchDataSource.stopMatch()
     }
 }

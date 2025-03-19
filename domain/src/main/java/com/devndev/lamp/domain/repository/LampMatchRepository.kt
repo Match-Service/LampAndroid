@@ -1,5 +1,6 @@
 package com.devndev.lamp.domain.repository
 
 interface LampMatchRepository {
-    suspend fun matchStart()
+    suspend fun startMatch()
+    suspend fun stopMatch()
 }
