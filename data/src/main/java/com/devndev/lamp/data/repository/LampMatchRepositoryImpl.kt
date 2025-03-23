@@ -1,6 +1,7 @@
 package com.devndev.lamp.data.repository
 
 import com.devndev.lamp.data.datsource.lampmatach.LampMatchDataSource
+import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.domain.repository.LampMatchRepository
 import javax.inject.Inject
 
@@ -13,5 +14,9 @@ class LampMatchRepositoryImpl @Inject constructor(
 
     override suspend fun stopMatch() {
         lampMatchDataSource.stopMatch()
+    }
+
+    override suspend fun getMatchSuggestion(): MatchSuggestionDomainModel {
+        return lampMatchDataSource.getMatchSuggestion().toDomainModel()
     }
 }
