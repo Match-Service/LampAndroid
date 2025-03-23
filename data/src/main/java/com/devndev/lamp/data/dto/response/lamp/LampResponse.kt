@@ -35,6 +35,8 @@ data class Lamp(
     val location: String,
     @Json(name = "color")
     val color: String,
+    @Json(name = "lampStatus")
+    val lampStatus: String,
     @Json(name = "owner")
     val owner: Owner,
     @Json(name = "participants")
@@ -49,6 +51,7 @@ data class Lamp(
             hopeMatchNumber = hopeMatchNumber,
             location = location,
             color = color,
+            lampStatus = lampStatus,
             owner = owner.toDomainModel(),
             participants = participants.map { it.toDomainModel() }
         )

@@ -16,6 +16,7 @@ import com.devndev.lamp.domain.usecase.lampmatch.GetMatchSuggestionUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.StartMatchUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.StopMatchUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
+import com.devndev.lamp.domain.usecase.user.GetUserStatusUseCase
 import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,7 +33,8 @@ class HomeViewModel @Inject constructor(
     private val kickUserUseCase: KickUserUseCase,
     private val startMatchUseCase: StartMatchUseCase,
     private val stopMatchUseCase: StopMatchUseCase,
-    private val getMatchSuggestionUseCase: GetMatchSuggestionUseCase
+    private val getMatchSuggestionUseCase: GetMatchSuggestionUseCase,
+    private val getUserStatusUseCase: GetUserStatusUseCase
 ) : ViewModel() {
     private val logTag = "HomeViewModel"
 
@@ -42,12 +44,20 @@ class HomeViewModel @Inject constructor(
     private val _myLamp = MutableStateFlow<LampDomainModel?>(null)
     val myLamp: StateFlow<LampDomainModel?> = _myLamp
 
+    private val _myLampForProfile = MutableStateFlow<LampDomainModel?>(null)
+    val myLampForProfile: StateFlow<LampDomainModel?> = _myLampForProfile
+
     private val _matchSuggestion = MutableStateFlow<MatchSuggestionDomainModel?>(null)
     val matchSuggestion: StateFlow<MatchSuggestionDomainModel?> = _matchSuggestion
+
+    private val _userStatus = MutableStateFlow<String>("")
+    val userStatue: StateFlow<String> = _userStatus
 
     init {
         fetchData()
         getLampData()
+        getUserStatus()
+        getLampDataForProfile()
     }
 
     private fun fetchData() {
@@ -63,6 +73,20 @@ class HomeViewModel @Inject constructor(
                 Log.e(logTag, "fetchData HttpException", e)
             } catch (e: Exception) {
                 Log.e(logTag, "fetchData Exception", e)
+            }
+        }
+    }
+
+    private fun getLampDataForProfile() {
+        viewModelScope.launch {
+            try {
+                Log.d(logTag, "getLampDataForProfile")
+                _myLampForProfile.value = getMyLampUseCase()
+                Log.d(logTag, "My Lamp ${myLampForProfile.value}")
+            } catch (e: HttpException) {
+                Log.e(logTag, "getLampDataForProfile HttpException", e)
+            } catch (e: Exception) {
+                Log.e(logTag, "getLampDataForProfile Exception", e)
             }
         }
     }
@@ -115,6 +139,7 @@ class HomeViewModel @Inject constructor(
                     kickUserUseCase(it, KickUserParam(kickUserId))
                     Log.d(logTag, "kickUser lampId $it, kickUserId $kickUserId")
                 }
+                getLampDataForProfile()
                 getLampData()
             } catch (e: Exception) {
                 Log.e(logTag, "kickUser Exception", e)
@@ -127,6 +152,7 @@ class HomeViewModel @Inject constructor(
             try {
                 Log.d(logTag, "startMatch()")
                 startMatchUseCase()
+                getLampData()
             } catch (e: Exception) {
                 Log.e(logTag, "startMatch Exception", e)
             }
@@ -138,6 +164,7 @@ class HomeViewModel @Inject constructor(
             try {
                 Log.d(logTag, "stopMatch")
                 stopMatchUseCase()
+                getLampData()
             } catch (e: Exception) {
                 Log.e(logTag, "stopMatchException", e)
             }
@@ -154,6 +181,20 @@ class HomeViewModel @Inject constructor(
                 Log.e(logTag, "getMatchSuggestion HttpException", e)
             } catch (e: Exception) {
                 Log.e(logTag, "getMatchSuggestion Exception", e)
+            }
+        }
+    }
+
+    fun getUserStatus() {
+        viewModelScope.launch {
+            try {
+                Log.d(logTag, "getUserStatus")
+                _userStatus.value = getUserStatusUseCase().userLampStatus
+                Log.d(logTag, "UserStatus ${userStatue.value}")
+            } catch (e: HttpException) {
+                Log.e(logTag, "getUserStatus HttpException", e)
+            } catch (e: Exception) {
+                Log.e(logTag, "getUserStatus Exception", e)
             }
         }
     }

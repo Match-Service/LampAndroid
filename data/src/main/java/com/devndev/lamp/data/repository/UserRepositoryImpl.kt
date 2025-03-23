@@ -11,6 +11,7 @@ import com.devndev.lamp.domain.model.user.ModifyUserParam
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.model.user.PushTokenParam
 import com.devndev.lamp.domain.model.user.UserDomainModel
+import com.devndev.lamp.domain.model.user.UserStatusDomainModel
 import com.devndev.lamp.domain.repository.UserRepository
 import javax.inject.Inject
 
@@ -82,5 +83,9 @@ class UserRepositoryImpl @Inject constructor(private val userDataSource: UserDat
         } catch (e: Exception) {
             Log.e("PushToken", "putPushToken Error", e)
         }
+    }
+
+    override suspend fun getUserStatus(): UserStatusDomainModel {
+        return userDataSource.getUserStatus().toDomainModel()
     }
 }

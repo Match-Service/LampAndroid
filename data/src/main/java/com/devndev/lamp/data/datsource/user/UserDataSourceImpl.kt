@@ -4,6 +4,7 @@ import com.devndev.lamp.data.dto.request.user.ModifyUserRequest
 import com.devndev.lamp.data.dto.request.user.PushTokenRequest
 import com.devndev.lamp.data.dto.response.user.MyInfoResponse
 import com.devndev.lamp.data.dto.response.user.UserResponseDto
+import com.devndev.lamp.data.dto.response.user.UserStatusResponse
 import com.devndev.lamp.data.service.UserService
 import retrofit2.Response
 import javax.inject.Inject
@@ -29,5 +30,9 @@ class UserDataSourceImpl @Inject constructor(
 
     override suspend fun putPushToken(pushTokenRequest: PushTokenRequest): Response<Void> {
         return userService.putPushToken(pushTokenRequest)
+    }
+
+    override suspend fun getUserStatus(): UserStatusResponse {
+        return userService.getUserStatus()
     }
 }
