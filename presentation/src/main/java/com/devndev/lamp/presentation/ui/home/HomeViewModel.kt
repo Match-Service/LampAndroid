@@ -6,11 +6,13 @@ import androidx.lifecycle.viewModelScope
 import coil.network.HttpException
 import com.devndev.lamp.domain.model.lamp.KickUserParam
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
+import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.usecase.lamp.DeleteLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.ExitLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.GetMyLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.KickUserUseCase
+import com.devndev.lamp.domain.usecase.lampmatch.GetMatchSuggestionUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.StartMatchUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.StopMatchUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
@@ -29,7 +31,8 @@ class HomeViewModel @Inject constructor(
     private val exitLampUseCase: ExitLampUseCase,
     private val kickUserUseCase: KickUserUseCase,
     private val startMatchUseCase: StartMatchUseCase,
-    private val stopMatchUseCase: StopMatchUseCase
+    private val stopMatchUseCase: StopMatchUseCase,
+    private val getMatchSuggestionUseCase: GetMatchSuggestionUseCase
 ) : ViewModel() {
     private val logTag = "HomeViewModel"
 
@@ -38,6 +41,9 @@ class HomeViewModel @Inject constructor(
 
     private val _myLamp = MutableStateFlow<LampDomainModel?>(null)
     val myLamp: StateFlow<LampDomainModel?> = _myLamp
+
+    private val _matchSuggestion = MutableStateFlow<MatchSuggestionDomainModel?>(null)
+    val matchSuggestion: StateFlow<MatchSuggestionDomainModel?> = _matchSuggestion
 
     init {
         fetchData()
@@ -131,8 +137,23 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 Log.d(logTag, "stopMatch")
+                stopMatchUseCase()
             } catch (e: Exception) {
                 Log.e(logTag, "stopMatchException", e)
+            }
+        }
+    }
+
+    fun getMatchSuggestion() {
+        viewModelScope.launch {
+            try {
+                Log.d(logTag, "getMatchSuggestion")
+                _matchSuggestion.value = getMatchSuggestionUseCase()
+                Log.d(logTag, "MatchSuggestion ${matchSuggestion.value}")
+            } catch (e: HttpException) {
+                Log.e(logTag, "getMatchSuggestion HttpException", e)
+            } catch (e: Exception) {
+                Log.e(logTag, "getMatchSuggestion Exception", e)
             }
         }
     }

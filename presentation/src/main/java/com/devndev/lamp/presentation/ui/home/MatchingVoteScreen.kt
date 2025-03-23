@@ -36,6 +36,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -69,6 +70,7 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.devndev.lamp.presentation.R
@@ -89,7 +91,13 @@ import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MatchingVoteScreen(modifier: Modifier, navController: NavController?) {
+fun MatchingVoteScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    modifier: Modifier,
+    navController: NavController?
+) {
+    val matchSuggestion by viewModel.matchSuggestion.collectAsState()
+
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
     val bottomNaviBarHeight = getNavigationBarHeight(context)
