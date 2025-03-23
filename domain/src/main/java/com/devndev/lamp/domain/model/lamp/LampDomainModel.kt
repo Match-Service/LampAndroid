@@ -12,6 +12,7 @@ data class Lamp(
     val hopeMatchNumber: Int,
     val location: String,
     val color: String,
+    val lampStatus: String,
     val owner: Owner,
     val participants: List<Participant>
 )

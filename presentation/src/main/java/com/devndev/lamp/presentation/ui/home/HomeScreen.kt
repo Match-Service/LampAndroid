@@ -39,6 +39,7 @@ fun HomeScreen(
     val myLamp by viewModel.myLamp.collectAsState()
     val isWaiting by TempStatus.isWaiting.collectAsState()
     val isMatching by TempStatus.isMatching.collectAsState()
+    val userStatus by viewModel.userStatue.collectAsState()
 
     BackHandler {
         Log.d(logTag, "back button clicked")
@@ -59,21 +60,46 @@ fun HomeScreen(
         }
     }
 
-    if (isWaiting) {
-        WaitingHomeScreen(modifier = modifier, navController = navController)
-    } else if (myLamp?.lamp != null) {
-        MatchingHomeScreen(modifier = modifier, navController = navController)
-    } else {
-        // 기존 소스
-        NormalHomeScreen(modifier = modifier, navController = navController)
+    when (userStatus) {
+        "ON_BOARDING" -> {
+            NormalHomeScreen(modifier = modifier, navController = navController)
+        }
 
-        // FindLampScreen 테스트 용
-//        FindLampScreen(modifier = Modifier, navController = navController)
+        "PREPARE",
+        "MATCHING" -> {
+            MatchingHomeScreen(modifier = modifier, navController = navController)
+        }
 
-        // MatchingVoteScreen 테스트 용
-//        MatchingVoteScreen(modifier = modifier, navController = navController)
+        "FIND_LAMP" -> {
+            FindLampScreen(modifier = modifier, navController = navController)
+        }
+
+        "FAILED" -> (TODO("Not yet implementation"))
+
+        "IN_PROGRESS" -> (TODO("Not yet implementation"))
+
+        "VISIT_WAITING" -> (TODO("Not yet implementation"))
+
+        "VOTE" -> (TODO("Not yet implementation"))
+
+        "FINISHED" -> (TODO("Not yet implementation"))
     }
 }
+//    if (isWaiting) {
+//        WaitingHomeScreen(modifier = modifier, navController = navController)
+//    } else if (myLamp?.lamp != null) {
+//        MatchingHomeScreen(modifier = modifier, navController = navController)
+//    } else {
+//        // 기존 소스
+//        NormalHomeScreen(modifier = modifier, navController = navController)
+//
+//        // FindLampScreen 테스트 용
+//        FindLampScreen(modifier = Modifier, navController = navController)
+//
+//        // MatchingVoteScreen 테스트 용
+//        MatchingVoteScreen(modifier = modifier, navController = navController)
+//    }
+//    }
 
 @Composable
 fun HomeTextArea(

@@ -32,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -88,6 +89,7 @@ fun MatchingHomeScreen(
 ) {
     val myLamp by homeViewModel.myLamp.collectAsState()
     val myInfo by homeViewModel.myInfo.collectAsState()
+    val myLampForProfile by homeViewModel.myLampForProfile.collectAsState()
     val isOwner = myLamp?.lamp?.owner?.userId == myInfo?.userId
     var isDeletePopupShow by remember { mutableStateOf(false) }
     var isExitPopupShow by remember { mutableStateOf(false) }
@@ -98,6 +100,13 @@ fun MatchingHomeScreen(
     val screenHeight = configuration.screenHeightDp.dp
     val navOption = navOptions {
         launchSingleTop = true
+    }
+
+    //    var isMatching by remember { mutableStateOf(false) }
+    val isMatching by remember(myLamp) {
+        derivedStateOf {
+            myLamp?.lamp?.lampStatus == "MATCHING"
+        }
     }
 
     if (isDeletePopupShow) {
@@ -143,7 +152,6 @@ fun MatchingHomeScreen(
     val currentPersonnel = myLamp?.lamp?.participants?.size?.plus(1)
     val maxPersonnel = myLamp?.lamp?.hopeMatchNumber
     val fullPersonnel by remember { mutableStateOf(currentPersonnel == maxPersonnel) }
-    var isMatching by remember { mutableStateOf(false) }
     var lampTitle by remember { mutableStateOf("") }
     val inviteFriend = stringResource(id = R.string.invite_friend)
     val startMatching = stringResource(id = R.string.start_matching)
@@ -179,7 +187,7 @@ fun MatchingHomeScreen(
             isOwner = isOwner,
             fullPersonnel,
             onSwipeUp = {
-                isMatching = true
+                homeViewModel.startMatch()
             },
             isMatching,
             mood = myLamp?.lamp?.color
@@ -285,7 +293,7 @@ fun MatchingHomeScreen(
                 }
                 Spacer(modifier = Modifier.height(5.dp))
 
-                myLamp?.let { myLamp ->
+                myLampForProfile?.let { myLamp ->
                     ProfileInfoList(
                         myLamp = myLamp,
                         isOwner = isOwner,
@@ -330,7 +338,6 @@ fun MatchingHomeScreen(
                                 } else {
                                     homeViewModel.startMatch()
                                 }
-                                isMatching = !isMatching
                             },
                             enabled = true
                         )

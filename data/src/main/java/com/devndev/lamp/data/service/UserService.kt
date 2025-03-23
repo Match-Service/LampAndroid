@@ -4,6 +4,7 @@ import com.devndev.lamp.data.dto.request.user.ModifyUserRequest
 import com.devndev.lamp.data.dto.request.user.PushTokenRequest
 import com.devndev.lamp.data.dto.response.user.MyInfoResponse
 import com.devndev.lamp.data.dto.response.user.UserResponseDto
+import com.devndev.lamp.data.dto.response.user.UserStatusResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -34,4 +35,7 @@ interface UserService {
     suspend fun putPushToken(
         @Body pushTokenRequest: PushTokenRequest
     ): Response<Void>
+
+    @GET("api/v1/user/status")
+    suspend fun getUserStatus(): UserStatusResponse
 }
