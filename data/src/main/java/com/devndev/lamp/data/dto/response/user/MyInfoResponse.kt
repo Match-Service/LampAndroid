@@ -1,5 +1,6 @@
 package com.devndev.lamp.data.dto.response.user
 
+import com.devndev.lamp.data.dto.response.lampmatch.Individuality
 import com.devndev.lamp.domain.model.user.AlarmSettingForMyInfo
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.model.user.ProfileImageForMyInfo
@@ -18,7 +19,8 @@ data class MyInfoResponse(
     @Json(name = "bio") val bio: String?,
     @Json(name = "profileImages") val profileImages: List<ProfileImage>,
     @Json(name = "alarmSetting") val alarmSetting: AlarmSetting,
-    @Json(name = "bioQuestions") val bioQuestions: List<BioQuestion>
+    @Json(name = "bioQuestions") val bioQuestions: List<BioQuestion>,
+    @Json(name = "individuality") val individuality: Individuality?
 )
 
 @JsonClass(generateAdapter = true)
@@ -88,6 +90,7 @@ fun MyInfoResponse.toDomainModel(): MyInfoDomainModel {
         bio = bio,
         profileImages = profileImages.map { it.toDomainModel() },
         alarmSetting = alarmSetting.toDomainModel(),
-        bioQuestions = bioQuestions.map { it.toDomainModel() }
+        bioQuestions = bioQuestions.map { it.toDomainModel() },
+        individualityDomainModel = individuality?.toDomainModel()
     )
 }

@@ -1,5 +1,6 @@
 package com.devndev.lamp.domain.model.user
 
+import com.devndev.lamp.domain.model.lampmatch.IndividualityDomainModel
 import com.devndev.lamp.domain.model.signup.BioQuestion
 
 data class MyInfoDomainModel(
@@ -13,7 +14,8 @@ data class MyInfoDomainModel(
     val bio: String?,
     val profileImages: List<ProfileImageForMyInfo>,
     val alarmSetting: AlarmSettingForMyInfo,
-    val bioQuestions: List<BioQuestion>
+    val bioQuestions: List<BioQuestion>,
+    val individualityDomainModel: IndividualityDomainModel?
 )
 
 data class ProfileImageForMyInfo(

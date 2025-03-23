@@ -35,6 +35,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -82,10 +83,23 @@ fun MyPageScreen(
     val context = LocalContext.current
     val handler = remember { Handler(Looper.getMainLooper()) }
     var backPressedOnce by remember { mutableStateOf(false) }
-    val attractive = listOf(70, 80, 50, 40)
-    val avgAttractive = attractive.average()
+//    val avgAttractive = attractive.average()
 
     val myInfo by viewModel.myInfo.collectAsState()
+
+    val attractive by remember(myInfo) {
+        derivedStateOf {
+            myInfo?.individualityDomainModel?.let {
+                listOf(it.personality, it.voice, it.fashion, it.conversation)
+            } ?: listOf(0, 0, 0, 0) // 기본값
+        }
+    }
+
+    val avgAttractive by remember(myInfo) {
+        derivedStateOf {
+            myInfo?.individualityDomainModel?.attractiveness ?: 0
+        }
+    }
 
     val birthdate = myInfo?.birth ?: "00000000"
 
@@ -256,7 +270,8 @@ fun AttractiveSection(modifier: Modifier, avgAttractive: Int, attractive: List<I
                 style = Typography.normal12
             )
         } else {
-            ProgressBar(attractive = attractive, barColor = Color.White)
+            Spacer(modifier = Modifier.height(8.dp))
+            ProgressBar(attractive = attractive, barColor = Color.White, isMyPage = true)
         }
     }
 }

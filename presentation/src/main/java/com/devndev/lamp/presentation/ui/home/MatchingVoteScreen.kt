@@ -127,10 +127,42 @@ fun MatchingVoteScreen(
 
     // profile 임시 데이터
     val profiles = listOf(
-        listOf("Profile1", 4, 28, "한국대학교", listOf(10, 20, 30, 40), "글자수100글자수100글자수100", listOf(1, 1, 1)),
-        listOf("Profile2", 2, 27, "한국대학교", listOf(80, 70, 100, 10), "글자수100글자수100글자수100글자수100글자수100글자수100", listOf(2, 2, 2)),
-        listOf("Profile3", 3, 26, "한국대학교", listOf(50, 50, 50, 50), "글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100", listOf(3, 3, 3)),
-        listOf("Profile4", 1, 25, "한국대학교", listOf(100, 100, 100, 100), "글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100", listOf(4, 4, 4))
+        listOf(
+            "Profile1",
+            4,
+            28,
+            "한국대학교",
+            listOf(10, 20, 30, 40),
+            "글자수100글자수100글자수100",
+            listOf(1, 1, 1)
+        ),
+        listOf(
+            "Profile2",
+            2,
+            27,
+            "한국대학교",
+            listOf(80, 70, 100, 10),
+            "글자수100글자수100글자수100글자수100글자수100글자수100",
+            listOf(2, 2, 2)
+        ),
+        listOf(
+            "Profile3",
+            3,
+            26,
+            "한국대학교",
+            listOf(50, 50, 50, 50),
+            "글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100",
+            listOf(3, 3, 3)
+        ),
+        listOf(
+            "Profile4",
+            1,
+            25,
+            "한국대학교",
+            listOf(100, 100, 100, 100),
+            "글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100",
+            listOf(4, 4, 4)
+        )
     )
 
     val shouldScrollToTop = rememberSaveable { mutableStateOf(false) }
@@ -163,7 +195,8 @@ fun MatchingVoteScreen(
 
     // Spacer 높이를 동적으로 계산
     LaunchedEffect(secondSectionHeight) {
-        spacerHeight = (screenHeight - (headerSectionHeight + moodInfoSectionHeight + secondSectionHeight + 70.dp + bottomNaviBarHeight.dp))
+        spacerHeight =
+            (screenHeight - (headerSectionHeight + moodInfoSectionHeight + secondSectionHeight + 70.dp + bottomNaviBarHeight.dp))
     }
 
     Box(
@@ -200,7 +233,10 @@ fun MatchingVoteScreen(
 //                        .background(if (isStickyHeaderAtTop.value) Color(0xFF6E2126) else Color.Transparent) // 배경 색상 변경
                         .zIndex(10f)
                 ) {
-                    MoodInfoSection(lampProfile = lampProfile, onHeightChange = { height -> moodInfoSectionHeight = height })
+                    MoodInfoSection(
+                        lampProfile = lampProfile,
+                        onHeightChange = { height -> moodInfoSectionHeight = height }
+                    )
                 }
             }
 
@@ -356,10 +392,18 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
 }
 
 @Composable
-fun ProgressBar(attractive: List<Int>, barColor: Color = WomanColor) {
+fun ProgressBar(
+    attractive: List<Int>,
+    barColor: Color = WomanColor,
+    isMyPage: Boolean = false
+) {
+    val modifier = if (isMyPage) {
+        Modifier
+    } else {
+        Modifier.fillMaxWidth()
+    }
     Row(
-        modifier = Modifier
-            .fillMaxWidth(),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
@@ -442,6 +486,7 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
                             else -> {}
                         }
                     }
+
                     1 -> {
                         "${stringResource(id = R.string.smoke)} : " + when (profileInfo[i]) {
                             1 -> stringResource(id = R.string.smoke_often)
@@ -451,6 +496,7 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
                             else -> {}
                         }
                     }
+
                     2 -> {
                         "${stringResource(id = R.string.exercise)} : " + when (profileInfo[i]) {
                             1 -> stringResource(id = R.string.exercise_often)
@@ -460,6 +506,7 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
                             else -> {}
                         }
                     }
+
                     else -> "" // nothing
                 },
                 color = Gray3,
@@ -515,8 +562,14 @@ fun MoodInfoSection(lampProfile: List<String>, onHeightChange: (Dp) -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OtherLampInfo(painter = painterResource(id = R.drawable.region_icon), text = lampProfile[1])
-            OtherLampInfo(painter = painterResource(id = R.drawable.people_icon), text = lampProfile[2])
+            OtherLampInfo(
+                painter = painterResource(id = R.drawable.region_icon),
+                text = lampProfile[1]
+            )
+            OtherLampInfo(
+                painter = painterResource(id = R.drawable.people_icon),
+                text = lampProfile[2]
+            )
             OtherLampInfo(painter = painterResource(id = R.drawable.heart), text = lampProfile[3])
         }
         Text(
@@ -799,7 +852,11 @@ fun SelectableImage(
 }
 
 @Composable
-fun ShadowCircleBackground(itemIndex: MutableState<Int>, yOffset: MutableState<Float>, yOffsetHigh: MutableState<Float>) {
+fun ShadowCircleBackground(
+    itemIndex: MutableState<Int>,
+    yOffset: MutableState<Float>,
+    yOffsetHigh: MutableState<Float>
+) {
     // mood에 따라 색상 변경
     val shadowColor = when (TempDB.mood) {
         1 -> MoodRed.copy(alpha = 0.4f)
