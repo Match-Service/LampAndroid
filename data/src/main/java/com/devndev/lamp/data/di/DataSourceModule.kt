@@ -12,6 +12,8 @@ import com.devndev.lamp.data.datsource.login.GoogleTokenDataSource
 import com.devndev.lamp.data.datsource.login.GoogleTokenDataSourceImpl
 import com.devndev.lamp.data.datsource.signup.SignUpDataSource
 import com.devndev.lamp.data.datsource.signup.SignUpDataSourceImpl
+import com.devndev.lamp.data.datsource.socket.LampSocketDataSource
+import com.devndev.lamp.data.datsource.socket.LampSocketDataSourceImpl
 import com.devndev.lamp.data.datsource.user.UserDataSource
 import com.devndev.lamp.data.datsource.user.UserDataSourceImpl
 import dagger.Binds
@@ -50,4 +52,8 @@ interface DataSourceModule {
     @Singleton
     @Binds
     fun bindLampMatchDataSource(lampMatchDataSourceImpl: LampMatchDataSourceImpl): LampMatchDataSource
+
+    @Singleton
+    @Binds
+    fun bindLampSocketDataSource(lampSocketDataSourceImpl: LampSocketDataSourceImpl): LampSocketDataSource
 }
