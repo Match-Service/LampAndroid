@@ -15,6 +15,8 @@ import com.devndev.lamp.domain.usecase.lamp.KickUserUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.GetMatchSuggestionUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.StartMatchUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.StopMatchUseCase
+import com.devndev.lamp.domain.usecase.socket.ConnectSocketUseCase
+import com.devndev.lamp.domain.usecase.socket.DisconnectSocketUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.domain.usecase.user.GetUserStatusUseCase
 import com.devndev.lamp.presentation.utils.IconStatusManager
@@ -34,7 +36,9 @@ class HomeViewModel @Inject constructor(
     private val startMatchUseCase: StartMatchUseCase,
     private val stopMatchUseCase: StopMatchUseCase,
     private val getMatchSuggestionUseCase: GetMatchSuggestionUseCase,
-    private val getUserStatusUseCase: GetUserStatusUseCase
+    private val getUserStatusUseCase: GetUserStatusUseCase,
+    private val connectSocketUseCase: ConnectSocketUseCase,
+    private val disconnectSocketUseCase: DisconnectSocketUseCase
 ) : ViewModel() {
     private val logTag = "HomeViewModel"
 
@@ -196,6 +200,32 @@ class HomeViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e(logTag, "getUserStatus Exception", e)
             }
+        }
+    }
+
+    fun connectSocket() {
+        viewModelScope.launch {
+            try {
+                connectSocketUseCase(
+                    onConnected = {
+                        // 연결 완료 후의 작업
+                        Log.d(logTag, "Connected to socket")
+                    },
+                    onMessage = { message ->
+                        _userStatus.value = message
+                        Log.d(logTag, "status: ${userStatue.value}")
+                    }
+                )
+            } catch (e: Exception) {
+                Log.e(logTag, "Socket connection failed", e)
+            }
+        }
+    }
+
+    fun disconnectSocket() {
+        viewModelScope.launch {
+            disconnectSocketUseCase()
+            Log.d(logTag, "Disconnect socket")
         }
     }
 }

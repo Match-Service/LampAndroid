@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -19,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.IncTypography
@@ -40,6 +42,17 @@ fun HomeScreen(
     val isWaiting by TempStatus.isWaiting.collectAsState()
     val isMatching by TempStatus.isMatching.collectAsState()
     val userStatus by viewModel.userStatue.collectAsState()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        // 화면이 보일 때 연결
+        viewModel.connectSocket()
+        Log.d(logTag, "Connecting to socket")
+        // 화면이 사라질 때 연결 해제
+        onDispose {
+            viewModel.disconnectSocket()
+        }
+    }
 
     BackHandler {
         Log.d(logTag, "back button clicked")
