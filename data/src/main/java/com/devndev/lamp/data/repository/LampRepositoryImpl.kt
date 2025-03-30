@@ -50,7 +50,8 @@ class LampRepositoryImpl @Inject constructor(
         if (response.isSuccessful) {
             Log.d("InviteUser", "User invited successfully, Status Code: ${response.code()}")
         } else {
-            Log.e("InviteUser", "Failed to invite user, Status Code: ${response.code()}")
+            val errorBody = response.errorBody()?.string() ?: "Unknown error"
+            Log.e("InviteUser", "Failed to invite user, Status Code: ${response.code()} Error $errorBody")
         }
     }
 
