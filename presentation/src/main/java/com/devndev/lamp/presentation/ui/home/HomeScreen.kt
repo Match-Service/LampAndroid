@@ -86,16 +86,16 @@ fun HomeScreen(
         "FIND_LAMP" -> {
             FindLampScreen(modifier = modifier, navController = navController)
         }
-
-        "FAILED" -> (TODO("Not yet implementation"))
-
-        "IN_PROGRESS" -> (TODO("Not yet implementation"))
-
-        "VISIT_WAITING" -> (TODO("Not yet implementation"))
-
-        "VOTE" -> (TODO("Not yet implementation"))
-
-        "FINISHED" -> (TODO("Not yet implementation"))
+//
+//        "FAILED" -> TODO("Not yet implementation")
+//
+//        "IN_PROGRESS" -> TODO("Not yet implementation")
+//
+//        "VISIT_WAITING" -> TODO("Not yet implementation")
+//
+//        "VOTE" -> TODO("Not yet implementation")
+//
+//        "FINISHED" -> TODO("Not yet implementation")
     }
 }
 //    if (isWaiting) {

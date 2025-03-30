@@ -97,6 +97,7 @@ class LoginViewModel @Inject constructor(
                     }
                 }
             } catch (e: Exception) {
+                e.printStackTrace()
                 Log.e(logTag, "authenticateWithGoogle", e)
             }
         }

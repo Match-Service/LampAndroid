@@ -18,11 +18,10 @@ class LampSocketServiceImpl @Inject constructor(
         Log.d(logTag, "Attempting to connect with token: $token")
         val options = IO.Options().apply {
             extraHeaders = mapOf("authorization" to listOf("Bearer $token"))
-            query = "debug=true"
         }
 
         try {
-            socket = IO.socket("http://dev-api.lamp-app.shop:4450/lamp", options)
+            socket = IO.socket("http://dev-api.lamp-app.xyz:4450", options)
 
             socket?.on(Socket.EVENT_CONNECT) {
                 Log.d(logTag, "Successfully connected to the socket.")
