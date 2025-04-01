@@ -222,7 +222,7 @@ fun convertLocation(selectedRegion: String): String {
         "강남·잠실" -> "GANGNAM_JAMSIL"
         "인천" -> "INCHEON"
         "경기" -> "GYEONGGI"
-        else -> throw IllegalArgumentException("Invalid region selected: $selectedRegion")
+        else -> ""
     }
 }
 
@@ -231,6 +231,6 @@ fun convertMood(selectedMood: Int): String {
         1 -> "FUNNY"
         2 -> "CASUAL"
         3 -> "SERIOUS"
-        else -> throw IllegalArgumentException("Invalid region selected: $selectedMood")
+        else -> ""
     }
 }

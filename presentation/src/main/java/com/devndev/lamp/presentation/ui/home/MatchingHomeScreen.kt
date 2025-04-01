@@ -102,10 +102,12 @@ fun MatchingHomeScreen(
         launchSingleTop = true
     }
 
+    val userStatus by homeViewModel.userStatue.collectAsState()
+
     //    var isMatching by remember { mutableStateOf(false) }
     val isMatching by remember(myLamp) {
         derivedStateOf {
-            myLamp?.lamp?.lampStatus == "MATCHING"
+            userStatus == "MATCHING"
         }
     }
 
@@ -375,7 +377,7 @@ fun convertLocation(selectedRegion: String?): String {
         "GANGNAM_JAMSIL" -> "강남·잠실"
         "INCHEON" -> "인천"
         "GYEONGGI" -> "경기"
-        else -> throw IllegalArgumentException("Invalid region selected: $selectedRegion")
+        else -> ""
     }
 }
 

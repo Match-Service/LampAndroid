@@ -114,7 +114,7 @@ class HomeViewModel @Inject constructor(
             try {
                 Log.d(logTag, "deleteLamp()")
                 myLamp.value?.lamp?.lampId?.let { deleteLampUseCase(it) }
-                getLampData()
+                getUserStatus()
             } catch (e: HttpException) {
                 Log.e(logTag, "deleteLamp HttpException", e)
             } catch (e: Exception) {
@@ -208,7 +208,6 @@ class HomeViewModel @Inject constructor(
             try {
                 connectSocketUseCase(
                     onConnected = {
-                        // 연결 완료 후의 작업
                         Log.d(logTag, "Connected to socket")
                     },
                     onMessage = { message ->

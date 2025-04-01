@@ -30,7 +30,8 @@ class LampDataSourceImpl @Inject constructor(
         if (response.isSuccessful) {
             Log.d("deleteLamp", "deleteLamp successfully, Status Code: ${response.code()}")
         } else {
-            Log.e("deleteLamp", "Failed to deleteLamp, Status Code: ${response.code()}")
+            val errorBody = response.errorBody()?.string() ?: "Unknown error"
+            Log.e("deleteLamp", "Failed to deleteLamp, Status Code: ${response.code()} $errorBody")
         }
         return response
     }

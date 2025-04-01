@@ -4,6 +4,7 @@ import android.util.Log
 import com.devndev.lamp.data.datsource.local.LocalDataSource
 import io.socket.client.IO
 import io.socket.client.Socket
+import org.json.JSONObject
 import javax.inject.Inject
 
 class LampSocketServiceImpl @Inject constructor(
@@ -21,7 +22,7 @@ class LampSocketServiceImpl @Inject constructor(
         }
 
         try {
-            socket = IO.socket("http://dev-api.lamp-app.xyz:4450", options)
+            socket = IO.socket("http://dev-api.lamp-app.xyz:4450/lamp", options)
 
             socket?.on(Socket.EVENT_CONNECT) {
                 Log.d(logTag, "Successfully connected to the socket.")
@@ -34,9 +35,14 @@ class LampSocketServiceImpl @Inject constructor(
 
             socket?.on("status") { args ->
                 if (args.isNotEmpty()) {
-                    val status = args[0] as String
-                    Log.d(logTag, "Received status: $status")
-                    onMessage(status)
+                    try {
+                        val jsonObject = JSONObject(args[0].toString())
+                        val status = jsonObject.getString("userLampStatus")
+                        Log.d(logTag, "Received status: $status")
+                        onMessage(status)
+                    } catch (e: Exception) {
+                        Log.e(logTag, "Error parsing JSON: ${e.message}")
+                    }
                 }
             }
 
