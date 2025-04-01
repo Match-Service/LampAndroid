@@ -45,10 +45,8 @@ fun HomeScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
-        // 화면이 보일 때 연결
+//        viewModel.getUserStatus()
         viewModel.connectSocket()
-        Log.d(logTag, "Connecting to socket")
-        // 화면이 사라질 때 연결 해제
         onDispose {
             viewModel.disconnectSocket()
         }
