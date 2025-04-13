@@ -11,8 +11,12 @@ data class ModifyUserParam(
     val birth: String,
     val instagramId: String,
     val bio: String,
-    val profileImages: List<String>,
+    var profileImages: List<String>,
     val alarmSetting: AlarmSetting,
     val bioQuestions: List<BioQuestion>,
     var pushToken: String
+)
+
+data class EditImageParam(
+    val profileImages: List<String?>
 )

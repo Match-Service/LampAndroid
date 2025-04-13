@@ -1,5 +1,6 @@
 package com.devndev.lamp.data.service
 
+import com.devndev.lamp.data.dto.request.user.EditImageRequest
 import com.devndev.lamp.data.dto.request.user.ModifyUserRequest
 import com.devndev.lamp.data.dto.request.user.PushTokenRequest
 import com.devndev.lamp.data.dto.response.user.MyInfoResponse
@@ -26,6 +27,15 @@ interface UserService {
     @PATCH("/api/v1/user")
     suspend fun modifyUser(
         @Body modifyUserRequest: ModifyUserRequest
+    ): Response<Void>
+
+//    @PUT("/api/v1/user/me/profile-images")
+//    suspend fun editImages(
+//        @Body editImagesRequest: List<MultipartBody.Part>
+//    ): List<ProfileImageResponse>
+    @PUT("/api/v1/user/me/profile-images")
+    suspend fun editImages(
+        @Body editImagesRequest: EditImageRequest
     ): Response<Void>
 
     @GET("api/v1/user/me")

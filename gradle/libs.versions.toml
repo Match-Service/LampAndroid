@@ -32,6 +32,7 @@ moshi = "1.14.0"
 coil = "2.4.0"
 
 googleGmsGoogleServices = "4.4.2"
+lifecycleViewmodelAndroid = "2.8.7"
 
 socket = "2.0.0"
 
@@ -82,6 +83,7 @@ kakao-login = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoLogin" }
 google-login = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "googleLogin" }
 
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
 
 socket-io-client = { module = "io.socket:socket.io-client", version.ref = "socket" }
 
