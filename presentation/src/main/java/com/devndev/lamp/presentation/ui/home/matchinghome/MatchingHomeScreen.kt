@@ -1,6 +1,7 @@
 package com.devndev.lamp.presentation.ui.home.matchinghome
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
@@ -34,6 +35,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -79,6 +81,7 @@ import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import com.devndev.lamp.presentation.ui.search.navigation.navigateInvite
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @SuppressLint("RememberReturnType")
@@ -90,7 +93,6 @@ fun MatchingHomeScreen(
 ) {
     val myLamp by homeViewModel.myLamp.collectAsState()
     val myInfo by homeViewModel.myInfo.collectAsState()
-    val myLampForProfile by homeViewModel.myLampForProfile.collectAsState()
     val isOwner = myLamp?.lamp?.owner?.userId == myInfo?.userId
     var isDeletePopupShow by remember { mutableStateOf(false) }
     var isExitPopupShow by remember { mutableStateOf(false) }
@@ -101,6 +103,19 @@ fun MatchingHomeScreen(
     val screenHeight = configuration.screenHeightDp.dp
     val navOption = navOptions {
         launchSingleTop = true
+    }
+
+    LaunchedEffect(Unit) {
+        Log.d("MatchingHomeScreen", "LaunchedEffect")
+        repeat(3) {
+            if (myLamp?.lamp?.owner?.profileImageUrl == null) {
+                Log.d("MatchingHomeScreen", "myLamp == null")
+                homeViewModel.getLampData()
+                delay(1000)
+            } else {
+                return@LaunchedEffect
+            }
+        }
     }
 
     val userStatus by homeViewModel.userStatue.collectAsState()
@@ -279,7 +294,7 @@ fun MatchingHomeScreen(
                     )
                     LampInfo(
                         painter = painterResource(id = R.drawable.people_icon),
-                        text = "${myLamp?.lamp?.hopeMatchNumber}:${myLamp?.lamp?.hopeMatchNumber}"
+                        text = "${myLamp?.lamp?.hopeMatchNumber ?: "0"}:${myLamp?.lamp?.hopeMatchNumber ?: "0"}"
                     )
                     LampInfo(painter = painterResource(id = R.drawable.heart), text = mood)
                 }
@@ -296,7 +311,7 @@ fun MatchingHomeScreen(
                 }
                 Spacer(modifier = Modifier.height(5.dp))
 
-                myLampForProfile?.let { myLamp ->
+                myLamp?.let { myLamp ->
                     ProfileInfoList(
                         myLamp = myLamp,
                         isOwner = isOwner,
@@ -455,21 +470,23 @@ fun ProfileInfo(
             contentAlignment = Alignment.TopEnd,
             modifier = Modifier.size(40.dp)
         ) {
-            AsyncImage(
-                model = url,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clip(CircleShape)
-                    .then(
-                        if (isOwnerProfile) {
-                            Modifier.border(0.5.dp, Color.White, CircleShape)
-                        } else {
-                            Modifier
-                        }
-                    )
-            )
+            key(url) {
+                AsyncImage(
+                    model = url,
+                    contentDescription = null,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(40.dp)
+                        .clip(CircleShape)
+                        .then(
+                            if (isOwnerProfile) {
+                                Modifier.border(0.5.dp, Color.White, CircleShape)
+                            } else {
+                                Modifier
+                            }
+                        )
+                )
+            }
             if (isOwnerProfile) {
                 Box() {
                     Icon(
