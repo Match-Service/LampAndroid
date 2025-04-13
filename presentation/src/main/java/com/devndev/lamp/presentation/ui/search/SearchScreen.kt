@@ -32,7 +32,6 @@ import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.SearchStatus
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
-import com.devndev.lamp.presentation.ui.home.TempStatus
 import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
 
 @Composable
@@ -106,10 +105,10 @@ fun SearchScreen(
             SearchList(
                 profileList = users,
                 onEnterButtonClick = { profile ->
-                    TempStatus.updateIsWaiting(true)
-                    TempStatus.updateProfileName(profile.name)
+//                    TempStatus.updateIsWaiting(true)
+//                    TempStatus.updateProfileName(profile.name)
+                    profile.lampId?.let { viewModel.requestVisit(it) }
                     navController.navigateMain(MainScreenPage.HOME)
-                    // todo 램프 입장 버튼 click
                 }
             )
         }

@@ -2,9 +2,12 @@ package com.devndev.lamp.data.datsource.lamp
 
 import android.util.Log
 import com.devndev.lamp.data.dto.request.lamp.AcceptInviteRequest
+import com.devndev.lamp.data.dto.request.lamp.AcceptVisitRequest
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest
 import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.data.dto.request.lamp.KickUserRequest
+import com.devndev.lamp.data.dto.request.lamp.RejectInviteRequest
+import com.devndev.lamp.data.dto.request.lamp.RejectVisitRequest
 import com.devndev.lamp.data.dto.response.lamp.CreateLampResponse
 import com.devndev.lamp.data.dto.response.lamp.LampResponse
 import com.devndev.lamp.data.service.LampService
@@ -27,7 +30,8 @@ class LampDataSourceImpl @Inject constructor(
         if (response.isSuccessful) {
             Log.d("deleteLamp", "deleteLamp successfully, Status Code: ${response.code()}")
         } else {
-            Log.e("deleteLamp", "Failed to deleteLamp, Status Code: ${response.code()}")
+            val errorBody = response.errorBody()?.string() ?: "Unknown error"
+            Log.e("deleteLamp", "Failed to deleteLamp, Status Code: ${response.code()} $errorBody")
         }
         return response
     }
@@ -44,6 +48,31 @@ class LampDataSourceImpl @Inject constructor(
         acceptInviteRequest: AcceptInviteRequest
     ): Response<Unit> {
         return lampService.acceptInvite(lampId, acceptInviteRequest)
+    }
+
+    override suspend fun rejectInvite(
+        lampId: Int,
+        rejectInviteRequest: RejectInviteRequest
+    ): Response<Unit> {
+        return lampService.rejectInvite(lampId, rejectInviteRequest)
+    }
+
+    override suspend fun requestVisit(lampId: Int): Response<Unit> {
+        return lampService.requestVisit(lampId)
+    }
+
+    override suspend fun acceptVisit(
+        lampId: Int,
+        acceptVisitRequest: AcceptVisitRequest
+    ): Response<Unit> {
+        return lampService.acceptVisit(lampId, acceptVisitRequest)
+    }
+
+    override suspend fun rejectVisit(
+        lampId: Int,
+        rejectVisitRequest: RejectVisitRequest
+    ): Response<Unit> {
+        return lampService.rejectVisit(lampId, rejectVisitRequest)
     }
 
     override suspend fun exitLamp(lampId: Int): Response<Unit> {

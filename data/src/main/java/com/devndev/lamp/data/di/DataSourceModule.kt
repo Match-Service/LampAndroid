@@ -4,12 +4,16 @@ import com.devndev.lamp.data.datsource.alarm.AlarmDataSource
 import com.devndev.lamp.data.datsource.alarm.AlarmDataSourceImpl
 import com.devndev.lamp.data.datsource.lamp.LampDataSource
 import com.devndev.lamp.data.datsource.lamp.LampDataSourceImpl
+import com.devndev.lamp.data.datsource.lampmatach.LampMatchDataSource
+import com.devndev.lamp.data.datsource.lampmatach.LampMatchDataSourceImpl
 import com.devndev.lamp.data.datsource.local.LocalDataSource
 import com.devndev.lamp.data.datsource.local.LocalDataSourceImpl
 import com.devndev.lamp.data.datsource.login.GoogleTokenDataSource
 import com.devndev.lamp.data.datsource.login.GoogleTokenDataSourceImpl
 import com.devndev.lamp.data.datsource.signup.SignUpDataSource
 import com.devndev.lamp.data.datsource.signup.SignUpDataSourceImpl
+import com.devndev.lamp.data.datsource.socket.LampSocketDataSource
+import com.devndev.lamp.data.datsource.socket.LampSocketDataSourceImpl
 import com.devndev.lamp.data.datsource.user.UserDataSource
 import com.devndev.lamp.data.datsource.user.UserDataSourceImpl
 import dagger.Binds
@@ -44,4 +48,12 @@ interface DataSourceModule {
     @Singleton
     @Binds
     fun bindAlarmDataSource(alarmDataSourceImpl: AlarmDataSourceImpl): AlarmDataSource
+
+    @Singleton
+    @Binds
+    fun bindLampMatchDataSource(lampMatchDataSourceImpl: LampMatchDataSourceImpl): LampMatchDataSource
+
+    @Singleton
+    @Binds
+    fun bindLampSocketDataSource(lampSocketDataSourceImpl: LampSocketDataSourceImpl): LampSocketDataSource
 }

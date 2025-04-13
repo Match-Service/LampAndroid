@@ -28,11 +28,16 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -40,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -56,9 +62,11 @@ import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
+import kotlinx.coroutines.delay
 import java.time.Duration
 import java.time.Instant
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AlarmScreen(
     modifier: Modifier,
@@ -77,19 +85,60 @@ fun AlarmScreen(
 
     val alarms by viewModel.alarms.collectAsState()
 
-    val inviteList = alarms.filter { it.type == "INVITE" }
-    val visitList = alarms.filter { it.type == "VISIT" }
+    val inviteList by remember { derivedStateOf { alarms.filter { it.type == "INVITE" } } }
+    val visitList by remember { derivedStateOf { alarms.filter { it.type == "VISIT" } } }
 
     var isInvitationExpanded by remember { mutableStateOf(false) }
     var isVisitExpanded by remember { mutableStateOf(false) }
 
+    var isRefreshing by remember { mutableStateOf(false) }
+
+    LaunchedEffect(inviteList) {
+        if (inviteList.isEmpty() && isInvitationExpanded) {
+            isInvitationExpanded = false
+        }
+    }
+
+    LaunchedEffect(visitList) {
+        if (visitList.isEmpty() && isVisitExpanded) {
+            isVisitExpanded = false
+        }
+    }
+
+    val pullRefreshState = rememberPullToRefreshState()
+
     Column(
         modifier = modifier
+            .nestedScroll(pullRefreshState.nestedScrollConnection)
             .fillMaxSize()
             .background(LampBlack)
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
+        if (pullRefreshState.isRefreshing) {
+            LaunchedEffect(true) {
+                isRefreshing = true
+                delay(1500)
+                viewModel.getAlarm()
+                isRefreshing = false
+            }
+        }
+
+        LaunchedEffect(isRefreshing) {
+            if (isRefreshing) {
+                pullRefreshState.startRefresh()
+            } else {
+                pullRefreshState.endRefresh()
+            }
+        }
+
+        LaunchedEffect(isRefreshing) {
+            if (isRefreshing) {
+                pullRefreshState.startRefresh()
+            } else {
+                pullRefreshState.endRefresh()
+            }
+        }
         Column(
             verticalArrangement = Arrangement.spacedBy(18.dp),
             modifier = Modifier.weight(1f)
@@ -105,37 +154,71 @@ fun AlarmScreen(
                     }
                 }
             )
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(8.dp)
-            ) {
-                item {
-                    AlarmSection(
-                        title = stringResource(id = R.string.invite_notification),
-                        isExpanded = isInvitationExpanded,
-                        onToggleExpand = { isInvitationExpanded = !isInvitationExpanded },
-                        alarms = inviteList,
-                        color = WomanColor,
-                        onAcceptClick = {
-                            viewModel.acceptInvite(
-                                lampId = it.lampId,
-                                inviteUserId = 4,
-                                alarmId = it.id
-                            )
-                        }
+            Box(modifier = Modifier.fillMaxSize()) {
+                if (isRefreshing) {
+                    PullToRefreshContainer(
+                        state = pullRefreshState,
+                        modifier = Modifier.align(Alignment.Center)
                     )
                 }
-                item { Spacer(modifier = Modifier.height(70.dp)) }
-                item {
-                    AlarmSection(
-                        title = stringResource(id = R.string.visit_notification),
-                        isExpanded = isVisitExpanded,
-                        onToggleExpand = { isVisitExpanded = !isVisitExpanded },
-                        alarms = visitList,
-                        color = ManColor,
-                        onAcceptClick = {}
-                    )
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(8.dp)
+                ) {
+                    item {
+                        AlarmSection(
+                            title = stringResource(id = R.string.invite_notification),
+                            isExpanded = isInvitationExpanded,
+                            onToggleExpand = {
+                                isInvitationExpanded = !isInvitationExpanded
+                            },
+                            alarms = inviteList,
+                            color = WomanColor,
+                            onAcceptClick = {
+                                viewModel.acceptInvite(
+                                    lampId = it.lampId,
+                                    inviteRequestUserId = it.inviteUserId ?: 0,
+                                    alarmId = it.id
+                                )
+                            },
+                            onRejectClick = {
+                                viewModel.rejectInvite(
+                                    lampId = it.lampId,
+                                    inviteRequestUserId = it.inviteUserId ?: 0,
+                                    alarmId = it.id
+                                )
+                            }
+                        )
+                    }
+                    item {
+                        Spacer(modifier = Modifier.height(70.dp))
+                    }
+                    item {
+                        AlarmSection(
+                            title = stringResource(id = R.string.visit_notification),
+                            isExpanded = isVisitExpanded,
+                            onToggleExpand = {
+                                isVisitExpanded = !isVisitExpanded
+                            },
+                            alarms = visitList,
+                            color = ManColor,
+                            onAcceptClick = {
+                                viewModel.acceptVisit(
+                                    lampId = it.lampId,
+                                    visitUserId = it.visitUserId ?: 0,
+                                    alarmId = it.id
+                                )
+                            },
+                            onRejectClick = {
+                                viewModel.rejectVisit(
+                                    lampId = it.lampId,
+                                    visitUserId = it.visitUserId ?: 0,
+                                    alarmId = it.id
+                                )
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -149,7 +232,8 @@ fun AlarmSection(
     onToggleExpand: () -> Unit,
     alarms: List<AlarmDomainModel>,
     color: Color,
-    onAcceptClick: (AlarmDomainModel) -> Unit
+    onAcceptClick: (AlarmDomainModel) -> Unit,
+    onRejectClick: (AlarmDomainModel) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -192,7 +276,8 @@ fun AlarmSection(
                 alarms.forEachIndexed { index, alarmData ->
                     AlarmItem(
                         alarmData = alarmData,
-                        onAcceptClick = { onAcceptClick(alarmData) }
+                        onAcceptClick = { onAcceptClick(alarmData) },
+                        onRejectClick = { onRejectClick(alarmData) }
                     )
                     if (index < alarms.size - 1) {
                         HorizontalDivider(
@@ -209,7 +294,8 @@ fun AlarmSection(
 @Composable
 fun AlarmItem(
     alarmData: AlarmDomainModel,
-    onAcceptClick: (AlarmDomainModel) -> Unit
+    onAcceptClick: (AlarmDomainModel) -> Unit,
+    onRejectClick: (AlarmDomainModel) -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -247,7 +333,9 @@ fun AlarmItem(
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 modifier = Modifier.height(40.dp),
-                onClick = { },
+                onClick = {
+                    onRejectClick(alarmData)
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Gray,
                     contentColor = Color.White

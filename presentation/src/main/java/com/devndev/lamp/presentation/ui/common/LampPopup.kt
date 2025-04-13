@@ -123,7 +123,8 @@ fun TwoButtonPopup(
                 Text(
                     text = mainText,
                     color = Color.White,
-                    style = Typography.semiBold20
+                    style = Typography.semiBold20,
+                    textAlign = TextAlign.Center
                 )
                 if (hintText.isNotEmpty()) {
                     Text(

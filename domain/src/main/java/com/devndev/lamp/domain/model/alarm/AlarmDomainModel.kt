@@ -6,5 +6,6 @@ data class AlarmDomainModel(
     val content: String,
     val lampId: Int,
     val inviteUserId: Int?,
+    val visitUserId: Int?,
     val createdAt: String
 )

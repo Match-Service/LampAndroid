@@ -5,8 +5,8 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class AcceptInviteRequest(
-    @Json(name = "inviteUserId")
-    val inviteUserId: Int,
+    @Json(name = "inviteRequestUserId")
+    val inviteRequestUserId: Int,
     @Json(name = "alarmId")
     val alarmId: Int
 )

@@ -2,14 +2,18 @@ package com.devndev.lamp.data.di
 
 import android.content.Context
 import com.devndev.lamp.data.BuildConfig
+import com.devndev.lamp.data.datsource.local.LocalDataSource
 import com.devndev.lamp.data.di.qualifier.DefaultClient
 import com.devndev.lamp.data.di.qualifier.DefaultRetrofit
 import com.devndev.lamp.data.interceptor.AuthInterceptor
 import com.devndev.lamp.data.service.AlarmService
+import com.devndev.lamp.data.service.LampMatchService
 import com.devndev.lamp.data.service.LampService
 import com.devndev.lamp.data.service.LoginService
 import com.devndev.lamp.data.service.SignUpService
 import com.devndev.lamp.data.service.UserService
+import com.devndev.lamp.data.socket.LampSocketService
+import com.devndev.lamp.data.socket.LampSocketServiceImpl
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -92,8 +96,20 @@ internal class NetworkModule {
         @DefaultRetrofit retrofit: Retrofit
     ): AlarmService = retrofit.create()
 
+    @Singleton
+    @Provides
+    fun provideLampMatchService(
+        @DefaultRetrofit retrofit: Retrofit
+    ): LampMatchService = retrofit.create()
+
+    @Singleton
+    @Provides
+    fun provideLampSocketService(
+        localDataSource: LocalDataSource // DI에서 LocalDataSource 제공
+    ): LampSocketService = LampSocketServiceImpl(localDataSource)
+
     companion object {
-        private const val BASE_URL = "https://dev-api.lamp-app.shop/"
-//        private const val BASE_URL = "http://192.168.0.25:3000/"
+        private const val BASE_URL = "https://dev-api.lamp-app.xyz/"
+//        private const val BASE_URL = "http://192.168.0.9:3000"
     }
 }

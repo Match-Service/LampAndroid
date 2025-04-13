@@ -16,6 +16,8 @@ data class AlarmResponse(
     val lampId: Int,
     @Json(name = "inviteUserId")
     val inviteUserId: Int?,
+    @Json(name = "visitUserId")
+    val visitUserId: Int?,
     @Json(name = "createdAt")
     val createdAt: String
 )
@@ -27,6 +29,7 @@ fun AlarmResponse.toDomainModel(): AlarmDomainModel {
         content = content,
         lampId = lampId,
         inviteUserId = inviteUserId,
+        visitUserId = visitUserId,
         createdAt = createdAt
     )
 }

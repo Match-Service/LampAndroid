@@ -6,12 +6,19 @@ import androidx.lifecycle.viewModelScope
 import coil.network.HttpException
 import com.devndev.lamp.domain.model.lamp.KickUserParam
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
+import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.usecase.lamp.DeleteLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.ExitLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.GetMyLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.KickUserUseCase
+import com.devndev.lamp.domain.usecase.lampmatch.GetMatchSuggestionUseCase
+import com.devndev.lamp.domain.usecase.lampmatch.StartMatchUseCase
+import com.devndev.lamp.domain.usecase.lampmatch.StopMatchUseCase
+import com.devndev.lamp.domain.usecase.socket.ConnectSocketUseCase
+import com.devndev.lamp.domain.usecase.socket.DisconnectSocketUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
+import com.devndev.lamp.domain.usecase.user.GetUserStatusUseCase
 import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +32,13 @@ class HomeViewModel @Inject constructor(
     private val getMyLampUseCase: GetMyLampUseCase,
     private val deleteLampUseCase: DeleteLampUseCase,
     private val exitLampUseCase: ExitLampUseCase,
-    private val kickUserUseCase: KickUserUseCase
+    private val kickUserUseCase: KickUserUseCase,
+    private val startMatchUseCase: StartMatchUseCase,
+    private val stopMatchUseCase: StopMatchUseCase,
+    private val getMatchSuggestionUseCase: GetMatchSuggestionUseCase,
+    private val getUserStatusUseCase: GetUserStatusUseCase,
+    private val connectSocketUseCase: ConnectSocketUseCase,
+    private val disconnectSocketUseCase: DisconnectSocketUseCase
 ) : ViewModel() {
     private val logTag = "HomeViewModel"
 
@@ -35,9 +48,20 @@ class HomeViewModel @Inject constructor(
     private val _myLamp = MutableStateFlow<LampDomainModel?>(null)
     val myLamp: StateFlow<LampDomainModel?> = _myLamp
 
+    private val _myLampForProfile = MutableStateFlow<LampDomainModel?>(null)
+    val myLampForProfile: StateFlow<LampDomainModel?> = _myLampForProfile
+
+    private val _matchSuggestion = MutableStateFlow<MatchSuggestionDomainModel?>(null)
+    val matchSuggestion: StateFlow<MatchSuggestionDomainModel?> = _matchSuggestion
+
+    private val _userStatus = MutableStateFlow<String>("")
+    val userStatue: StateFlow<String> = _userStatus
+
     init {
         fetchData()
         getLampData()
+        getUserStatus()
+        getLampDataForProfile()
     }
 
     private fun fetchData() {
@@ -53,6 +77,20 @@ class HomeViewModel @Inject constructor(
                 Log.e(logTag, "fetchData HttpException", e)
             } catch (e: Exception) {
                 Log.e(logTag, "fetchData Exception", e)
+            }
+        }
+    }
+
+    private fun getLampDataForProfile() {
+        viewModelScope.launch {
+            try {
+                Log.d(logTag, "getLampDataForProfile")
+                _myLampForProfile.value = getMyLampUseCase()
+                Log.d(logTag, "My Lamp ${myLampForProfile.value}")
+            } catch (e: HttpException) {
+                Log.e(logTag, "getLampDataForProfile HttpException", e)
+            } catch (e: Exception) {
+                Log.e(logTag, "getLampDataForProfile Exception", e)
             }
         }
     }
@@ -76,7 +114,7 @@ class HomeViewModel @Inject constructor(
             try {
                 Log.d(logTag, "deleteLamp()")
                 myLamp.value?.lamp?.lampId?.let { deleteLampUseCase(it) }
-                getLampData()
+                getUserStatus()
             } catch (e: HttpException) {
                 Log.e(logTag, "deleteLamp HttpException", e)
             } catch (e: Exception) {
@@ -105,10 +143,88 @@ class HomeViewModel @Inject constructor(
                     kickUserUseCase(it, KickUserParam(kickUserId))
                     Log.d(logTag, "kickUser lampId $it, kickUserId $kickUserId")
                 }
+                getLampDataForProfile()
                 getLampData()
             } catch (e: Exception) {
                 Log.e(logTag, "kickUser Exception", e)
             }
+        }
+    }
+
+    fun startMatch() {
+        viewModelScope.launch {
+            try {
+                Log.d(logTag, "startMatch()")
+                startMatchUseCase()
+                getLampData()
+            } catch (e: Exception) {
+                Log.e(logTag, "startMatch Exception", e)
+            }
+        }
+    }
+
+    fun stopMatch() {
+        viewModelScope.launch {
+            try {
+                Log.d(logTag, "stopMatch")
+                stopMatchUseCase()
+                getLampData()
+            } catch (e: Exception) {
+                Log.e(logTag, "stopMatchException", e)
+            }
+        }
+    }
+
+    fun getMatchSuggestion() {
+        viewModelScope.launch {
+            try {
+                Log.d(logTag, "getMatchSuggestion")
+                _matchSuggestion.value = getMatchSuggestionUseCase()
+                Log.d(logTag, "MatchSuggestion ${matchSuggestion.value}")
+            } catch (e: HttpException) {
+                Log.e(logTag, "getMatchSuggestion HttpException", e)
+            } catch (e: Exception) {
+                Log.e(logTag, "getMatchSuggestion Exception", e)
+            }
+        }
+    }
+
+    fun getUserStatus() {
+        viewModelScope.launch {
+            try {
+                Log.d(logTag, "getUserStatus")
+                _userStatus.value = getUserStatusUseCase().userLampStatus
+                Log.d(logTag, "UserStatus ${userStatue.value}")
+            } catch (e: HttpException) {
+                Log.e(logTag, "getUserStatus HttpException", e)
+            } catch (e: Exception) {
+                Log.e(logTag, "getUserStatus Exception", e)
+            }
+        }
+    }
+
+    fun connectSocket() {
+        viewModelScope.launch {
+            try {
+                connectSocketUseCase(
+                    onConnected = {
+                        Log.d(logTag, "Connected to socket")
+                    },
+                    onMessage = { message ->
+                        _userStatus.value = message
+                        Log.d(logTag, "status: ${userStatue.value}")
+                    }
+                )
+            } catch (e: Exception) {
+                Log.e(logTag, "Socket connection failed", e)
+            }
+        }
+    }
+
+    fun disconnectSocket() {
+        viewModelScope.launch {
+            disconnectSocketUseCase()
+            Log.d(logTag, "Disconnect socket")
         }
     }
 }
