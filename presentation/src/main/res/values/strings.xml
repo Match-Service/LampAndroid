@@ -81,6 +81,11 @@
     <string name="casual_mood">캐주얼한 분위기</string>
     <string name="serious_mood">진지한 분위기</string>
 
+    <string name="konda_seongsu">건대・성수</string>
+    <string name="sinchon_hongdae">신촌・홍대</string>
+    <string name="gangnam_jamsil">강남・잠실</string>
+    <string name="incheon">인천</string>
+    <string name="gyeonggi">경기</string>
 
     <string name="input_profile">마지막으로 프로필 입력하고\n회원님의 매력을 보여주세요</string>
     <string name="guide_profile">본인 모습이 잘 나타난 사진을 최소 1장 등록해주세요</string>

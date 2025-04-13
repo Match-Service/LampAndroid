@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
+import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
@@ -51,7 +52,8 @@ import com.devndev.lamp.presentation.ui.home.navigation.navigateVote
 fun FindLampScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     modifier: Modifier,
-    navController: NavController
+    navController: NavController,
+    matchSuggestion: MatchSuggestionDomainModel?
 ) {
     val myInfo by viewModel.myInfo.collectAsState()
     val navOption = navOptions {
@@ -112,7 +114,9 @@ fun FindLampScreen(
                         )
                     )
                     .clickable {
-                        navController.navigateVote(navOptions = navOption)
+                        navController.navigateVote(
+                            navOptions = navOption
+                        )
                     },
                 contentAlignment = Alignment.Center
             ) {

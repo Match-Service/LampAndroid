@@ -38,7 +38,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -67,7 +66,6 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -75,7 +73,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Gray3
@@ -89,7 +87,6 @@ import com.devndev.lamp.presentation.theme.MoodYellow
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
-import com.devndev.lamp.presentation.ui.main.TempDB
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit
 
@@ -98,10 +95,9 @@ import java.util.concurrent.TimeUnit
 fun MatchingVoteScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     modifier: Modifier,
-    navController: NavController?
+    navController: NavController?,
+    matchSuggestion: MatchSuggestionDomainModel?
 ) {
-    val matchSuggestion by viewModel.matchSuggestion.collectAsState()
-
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
     val bottomNaviBarHeight = getNavigationBarHeight(context)
@@ -126,48 +122,36 @@ fun MatchingVoteScreen(
     // 선택된 이미지 추적
     var selectedImage by remember { mutableIntStateOf(0) }
 
-    // lamp 임시 데이터
-    val lampProfile = listOf("트와이수더", "신촌,홍대", "4명", "신나는 분위기", "안녕하세요")
+    // lamp 데이터
+    val lampCnt = matchSuggestion?.participants?.size?.plus(1)
+    val lampProfile = listOf(matchSuggestion?.name, matchSuggestion?.location, lampCnt.toString() + "명", matchSuggestion?.color, matchSuggestion?.description)
+//    val lampProfile = listOf("트와이수더", "신촌,홍대", "4명", "신나는 분위기", "안녕하세요")
 
-    // profile 임시 데이터
+    // profile 데이터
     val profiles = listOf(
+        // 방장
         listOf(
-            "Profile1",
-            4,
-            28,
-            "한국대학교",
-            listOf(10, 20, 30, 40),
-            "글자수100글자수100글자수100",
-            listOf(1, 1, 1)
-        ),
-        listOf(
-            "Profile2",
-            2,
-            27,
-            "한국대학교",
-            listOf(80, 70, 100, 10),
-            "글자수100글자수100글자수100글자수100글자수100글자수100",
-            listOf(2, 2, 2)
-        ),
-        listOf(
-            "Profile3",
-            3,
-            26,
-            "한국대학교",
-            listOf(50, 50, 50, 50),
-            "글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100",
-            listOf(3, 3, 3)
-        ),
-        listOf(
-            "Profile4",
-            1,
-            25,
-            "한국대학교",
-            listOf(100, 100, 100, 100),
-            "글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100글자수100",
-            listOf(4, 4, 4)
+            matchSuggestion?.owner?.name,
+            matchSuggestion?.owner?.profileImageUrl, // 임시. 이미지 리스트로 수정필요
+            28, // 임시
+            "한국대학교", // 임시
+            listOf(matchSuggestion?.owner?.individuality),
+            "글자수100글자수100글자수100", // 임시
+            listOf(1, 1, 1) // 임시. 흠연/음주 등
         )
-    )
+    ) + (
+        matchSuggestion?.participants?.map { participant -> // 참여자
+            listOf(
+                participant.name,
+                participant.profileImageUrl, // 임시. 이미지 리스트로 수정필요
+                28, // 임시
+                "한국대학교", // 임시
+                listOf(participant.individuality),
+                "자기소개", // 임시
+                listOf(1, 1, 1) // 임시. 흠연/음주 등
+            )
+        } ?: emptyList()
+        )
 
     val shouldScrollToTop = rememberSaveable { mutableStateOf(false) }
 
@@ -212,7 +196,7 @@ fun MatchingVoteScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            ShadowCircleBackground(itemIndex, yOffset, yOffsetHigh)
+            ShadowCircleBackground(itemIndex, yOffset, yOffsetHigh, lampProfile)
         }
 
         LazyColumn(
@@ -605,7 +589,7 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
 
 // 무드 및 정보 섹션
 @Composable
-fun MoodInfoSection(lampProfile: List<String>, onHeightChange: (Dp) -> Unit) {
+fun MoodInfoSection(lampProfile: List<String?>, onHeightChange: (Dp) -> Unit) {
     val density = LocalDensity.current
     Column(
         modifier = Modifier
@@ -621,15 +605,23 @@ fun MoodInfoSection(lampProfile: List<String>, onHeightChange: (Dp) -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = lampProfile[0],
+            text = lampProfile[0]!!,
             color = Color.White,
             style = Typography.medium25,
             textAlign = TextAlign.Center
         )
-        val mood = when (TempDB.mood) {
-            1 -> stringResource(id = R.string.funny_mood)
-            2 -> stringResource(id = R.string.casual_mood)
-            3 -> stringResource(id = R.string.serious_mood)
+        val location = when (lampProfile[1]) {
+            "KONDA_SEOUNGSU" -> stringResource(id = R.string.konda_seongsu)
+            "SINCHON_HONGDAE" -> stringResource(id = R.string.sinchon_hongdae)
+            "GANGNAM_JAMSIL" -> stringResource(id = R.string.gangnam_jamsil)
+            "INCHEON" -> stringResource(id = R.string.incheon)
+            "GYEONGGI" -> stringResource(id = R.string.gyeonggi)
+            else -> ""
+        }
+        val mood = when (lampProfile[3]) {
+            "FUNNY" -> stringResource(id = R.string.funny_mood)
+            "CASUAL" -> stringResource(id = R.string.casual_mood)
+            "SERIOUS" -> stringResource(id = R.string.serious_mood)
             else -> ""
         }
         Row(
@@ -638,16 +630,16 @@ fun MoodInfoSection(lampProfile: List<String>, onHeightChange: (Dp) -> Unit) {
         ) {
             OtherLampInfo(
                 painter = painterResource(id = R.drawable.region_icon),
-                text = lampProfile[1]
+                text = location
             )
             OtherLampInfo(
                 painter = painterResource(id = R.drawable.people_icon),
-                text = lampProfile[2]
+                text = lampProfile[2]!!
             )
-            OtherLampInfo(painter = painterResource(id = R.drawable.heart), text = lampProfile[3])
+            OtherLampInfo(painter = painterResource(id = R.drawable.heart), text = mood)
         }
         Text(
-            text = lampProfile[4],
+            text = lampProfile[4]!!,
             color = Gray3,
             style = Typography.medium10,
             textAlign = TextAlign.Center
@@ -678,7 +670,7 @@ fun SecondSection(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         Spacer(modifier = Modifier.height(41.dp))
-        OtherProfileInfo(null, "닉네임입니다", selectedImage, onImageSelected)
+        OtherProfileInfo(null, selectedImage, onImageSelected)
         Spacer(modifier = Modifier.height(50.dp))
     }
 }
@@ -838,7 +830,6 @@ fun OtherProfileInfoList() {
 @Composable
 fun OtherProfileInfo(
     image: Image? = null,
-    text: String,
     selectedImage: Int,
     onImageSelected: (Int) -> Unit
 ) {
@@ -929,13 +920,14 @@ fun SelectableImage(
 fun ShadowCircleBackground(
     itemIndex: MutableState<Int>,
     yOffset: MutableState<Float>,
-    yOffsetHigh: MutableState<Float>
+    yOffsetHigh: MutableState<Float>,
+    lampProfile: List<String?>
 ) {
     // mood에 따라 색상 변경
-    val shadowColor = when (TempDB.mood) {
-        1 -> MoodRed.copy(alpha = 0.4f)
-        2 -> MoodYellow.copy(alpha = 0.4f)
-        3 -> MoodBlue.copy(alpha = 0.4f)
+    val shadowColor = when (lampProfile[3]) {
+        "FUNNY" -> MoodRed.copy(alpha = 0.4f)
+        "CASUAL" -> MoodYellow.copy(alpha = 0.4f)
+        "SERIOUS" -> MoodBlue.copy(alpha = 0.4f)
         else -> MoodRed.copy(alpha = 0.4f)
     }
     val fillColor = shadowColor.copy(alpha = 0.5f)
@@ -998,10 +990,4 @@ fun getNavigationBarHeight(context: Context): Int {
     } else {
         0
     }
-}
-
-@Preview
-@Composable
-fun A() {
-    MatchingVoteScreen(modifier = Modifier, navController = rememberNavController())
 }

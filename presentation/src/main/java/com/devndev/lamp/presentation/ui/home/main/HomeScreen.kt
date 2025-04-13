@@ -29,6 +29,7 @@ import com.devndev.lamp.presentation.theme.getMainColor
 import com.devndev.lamp.presentation.ui.home.findlamp.FindLampScreen
 import com.devndev.lamp.presentation.ui.home.matchinghome.MatchingHomeScreen
 import com.devndev.lamp.presentation.ui.home.normal.NormalHomeScreen
+import com.devndev.lamp.presentation.ui.home.vote.MatchingVoteScreen
 import com.devndev.lamp.presentation.ui.home.waiting.WaitingHomeScreen
 import kotlin.system.exitProcess
 
@@ -83,37 +84,27 @@ fun HomeScreen(
         }
 
         "FIND_LAMP" -> {
-            FindLampScreen(modifier = modifier, navController = navController)
+            val matchSuggestion by viewModel.matchSuggestion.collectAsState()
+            FindLampScreen(modifier = Modifier, navController = navController, matchSuggestion = matchSuggestion)
         }
 
         "VISIT_WAITING" -> {
             WaitingHomeScreen(modifier = modifier, navController = navController)
+        }
+
+        "VOTE" -> {
+            val matchSuggestion by viewModel.matchSuggestion.collectAsState()
+            MatchingVoteScreen(modifier = Modifier, navController = navController, matchSuggestion = matchSuggestion)
         }
 //
 //        "FAILED" -> TODO("Not yet implementation")
 //
 //        "IN_PROGRESS" -> TODO("Not yet implementation")
 //
-//        "VOTE" -> TODO("Not yet implementation")
 //
 //        "FINISHED" -> TODO("Not yet implementation")
     }
 }
-//    if (isWaiting) {
-//        WaitingHomeScreen(modifier = modifier, navController = navController)
-//    } else if (myLamp?.lamp != null) {
-//        MatchingHomeScreen(modifier = modifier, navController = navController)
-//    } else {
-//        // 기존 소스
-//        NormalHomeScreen(modifier = modifier, navController = navController)
-//
-//        // FindLampScreen 테스트 용
-//        FindLampScreen(modifier = Modifier, navController = navController)
-//
-//        // MatchingVoteScreen 테스트 용
-//        MatchingVoteScreen(modifier = modifier, navController = navController)
-//    }
-//    }
 
 @Composable
 fun HomeTextArea(
