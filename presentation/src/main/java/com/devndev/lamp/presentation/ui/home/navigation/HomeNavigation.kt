@@ -8,8 +8,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.devndev.lamp.presentation.ui.common.Route
-import com.devndev.lamp.presentation.ui.home.HomeScreen
-import com.devndev.lamp.presentation.ui.home.MatchingVoteScreen
+import com.devndev.lamp.presentation.ui.home.main.HomeScreen
+import com.devndev.lamp.presentation.ui.home.vote.MatchingVoteScreen
 
 fun NavController.navigateHome(navOptions: NavOptions? = null) {
     this.navigate(Route.HOME, navOptions)

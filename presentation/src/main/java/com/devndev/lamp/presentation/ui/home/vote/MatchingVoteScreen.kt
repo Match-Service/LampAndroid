@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.home
+package com.devndev.lamp.presentation.ui.home.vote
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -85,6 +85,7 @@ import com.devndev.lamp.presentation.theme.MoodRed
 import com.devndev.lamp.presentation.theme.MoodYellow
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
+import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import com.devndev.lamp.presentation.ui.main.TempDB
 import kotlinx.coroutines.delay
 import java.util.concurrent.TimeUnit

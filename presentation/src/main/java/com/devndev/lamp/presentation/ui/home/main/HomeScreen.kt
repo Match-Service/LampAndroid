@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.home
+package com.devndev.lamp.presentation.ui.home.main
 
 import android.os.Handler
 import android.os.Looper
@@ -26,6 +26,9 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.IncTypography
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.getMainColor
+import com.devndev.lamp.presentation.ui.home.findlamp.FindLampScreen
+import com.devndev.lamp.presentation.ui.home.normal.NormalHomeScreen
+import com.devndev.lamp.presentation.ui.home.matchinghome.MatchingHomeScreen
 import kotlin.system.exitProcess
 
 @Composable
@@ -38,14 +41,11 @@ fun HomeScreen(
     val context = LocalContext.current
     val handler = remember { Handler(Looper.getMainLooper()) }
     var backPressedOnce = remember { false }
-    val myLamp by viewModel.myLamp.collectAsState()
-    val isWaiting by TempStatus.isWaiting.collectAsState()
-    val isMatching by TempStatus.isMatching.collectAsState()
+
     val userStatus by viewModel.userStatue.collectAsState()
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
-//        viewModel.getUserStatus()
         viewModel.connectSocket()
         onDispose {
             viewModel.disconnectSocket()

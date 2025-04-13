@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.home
+package com.devndev.lamp.presentation.ui.home.matchinghome
 
 import android.annotation.SuppressLint
 import androidx.compose.animation.animateContentSize
@@ -76,6 +76,7 @@ import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
+import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import com.devndev.lamp.presentation.ui.search.navigation.navigateInvite
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
