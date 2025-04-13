@@ -33,3 +33,8 @@ data class ModifyUser(
     @Json(name = "alarmSetting") val alarmSetting: AlarmSetting,
     @Json(name = "bioQuestions") val bioQuestions: List<BioQuestion>
 )
+
+@JsonClass(generateAdapter = true)
+data class EditImageRequest(
+    @Json(name = "profileImages") val profileImages: List<String?>
+)

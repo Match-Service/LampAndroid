@@ -32,6 +32,7 @@ moshi = "1.14.0"
 coil = "2.4.0"
 
 googleGmsGoogleServices = "4.4.2"
+lifecycleViewmodelAndroid = "2.8.7"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
@@ -80,6 +81,7 @@ kakao-login = { module = "com.kakao.sdk:v2-user", version.ref = "kakaoLogin" }
 google-login = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "googleLogin" }
 
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
+androidx-lifecycle-viewmodel-android = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-android", version.ref = "lifecycleViewmodelAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

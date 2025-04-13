@@ -4,9 +4,11 @@ import android.util.Log
 import com.devndev.lamp.data.datsource.user.UserDataSource
 import com.devndev.lamp.data.dto.request.signup.AlarmSetting
 import com.devndev.lamp.data.dto.request.signup.BioQuestion
+import com.devndev.lamp.data.dto.request.user.EditImageRequest
 import com.devndev.lamp.data.dto.request.user.ModifyUserRequest
 import com.devndev.lamp.data.dto.request.user.PushTokenRequest
 import com.devndev.lamp.data.dto.response.user.toDomainModel
+import com.devndev.lamp.domain.model.user.EditImageParam
 import com.devndev.lamp.domain.model.user.ModifyUserParam
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.model.user.PushTokenParam
@@ -63,6 +65,15 @@ class UserRepositoryImpl @Inject constructor(private val userDataSource: UserDat
         )
         val code = userDataSource.modifyUser(modifyUserRequest).code()
         return code == 200
+    }
+
+//    override suspend fun editImage(files: List<MultipartBody.Part>): List<ProfileImageDomainModel> {
+//        val response = userDataSource.editImage(files)
+//        return response.toDomainModel()
+//    }
+    override suspend fun editImage(files: EditImageParam): Boolean {
+        val response = userDataSource.editImage(EditImageRequest(files.profileImages)).code()
+        return response == 200
     }
 
     override suspend fun getMyInfo(): MyInfoDomainModel {

@@ -1,5 +1,6 @@
 package com.devndev.lamp.data.datsource.user
 
+import com.devndev.lamp.data.dto.request.user.EditImageRequest
 import com.devndev.lamp.data.dto.request.user.ModifyUserRequest
 import com.devndev.lamp.data.dto.request.user.PushTokenRequest
 import com.devndev.lamp.data.dto.response.user.MyInfoResponse
@@ -21,6 +22,13 @@ class UserDataSourceImpl @Inject constructor(
 
     override suspend fun modifyUser(modifyUserRequest: ModifyUserRequest): Response<Void> {
         return userService.modifyUser(modifyUserRequest)
+    }
+
+//    override suspend fun editImage(files: List<MultipartBody.Part>): List<ProfileImageResponse> {
+//        return userService.editImages(files)
+//    }
+    override suspend fun editImage(editImageRequest: EditImageRequest): Response<Void> {
+        return userService.editImages(editImageRequest)
     }
 
     override suspend fun getMyInfo(): MyInfoResponse {

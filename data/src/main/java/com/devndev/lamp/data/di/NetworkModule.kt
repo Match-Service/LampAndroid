@@ -94,5 +94,6 @@ internal class NetworkModule {
 
     companion object {
         private const val BASE_URL = "https://dev-api.lamp-app.shop/"
+//        private const val BASE_URL = "http://192.168.0.25:3000/"
     }
 }

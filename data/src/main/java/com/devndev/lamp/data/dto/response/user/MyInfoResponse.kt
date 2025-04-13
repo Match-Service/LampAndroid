@@ -1,5 +1,6 @@
 package com.devndev.lamp.data.dto.response.user
 
+import com.devndev.lamp.domain.model.signup.ProfileImageDomainModel
 import com.devndev.lamp.domain.model.user.AlarmSettingForMyInfo
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.model.user.ProfileImageForMyInfo
@@ -76,6 +77,12 @@ data class BioQuestion(
     }
 }
 
+@JsonClass(generateAdapter = true)
+data class editProfileImageResponse(
+    @Json(name = "imageUrl")
+    val imageUrl: String
+)
+
 fun MyInfoResponse.toDomainModel(): MyInfoDomainModel {
     return MyInfoDomainModel(
         userId = userId,
@@ -90,4 +97,14 @@ fun MyInfoResponse.toDomainModel(): MyInfoDomainModel {
         alarmSetting = alarmSetting.toDomainModel(),
         bioQuestions = bioQuestions.map { it.toDomainModel() }
     )
+}
+
+fun editProfileImageResponse.toDomainModel(): ProfileImageDomainModel {
+    return ProfileImageDomainModel(
+        imageUrl = imageUrl
+    )
+}
+
+fun List<editProfileImageResponse>.toDomainModel(): List<ProfileImageDomainModel> {
+    return map { it.toDomainModel() }
 }
