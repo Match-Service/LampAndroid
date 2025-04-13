@@ -105,8 +105,6 @@ fun SearchScreen(
             SearchList(
                 profileList = users,
                 onEnterButtonClick = { profile ->
-//                    TempStatus.updateIsWaiting(true)
-//                    TempStatus.updateProfileName(profile.name)
                     profile.lampId?.let { viewModel.requestVisit(it) }
                     navController.navigateMain(MainScreenPage.HOME)
                 }
