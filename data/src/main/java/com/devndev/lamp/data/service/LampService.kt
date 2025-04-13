@@ -14,7 +14,6 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
-import retrofit2.http.Path
 
 interface LampService {
     @POST("api/v1/lamp")
@@ -25,54 +24,42 @@ interface LampService {
     @GET("api/v1/lamp")
     suspend fun getMyLamp(): LampResponse
 
-    @DELETE("api/v1/lamp/{lampId}")
-    suspend fun deleteLamp(
-        @Path("lampId") lampId: Int
-    ): Response<Unit>
+    @DELETE("api/v1/lamp")
+    suspend fun deleteLamp(): Response<Unit>
 
-    @POST("api/v1/lamp/{lampId}/invite/request")
+    @POST("api/v1/lamp/invite/request")
     suspend fun inviteUsers(
-        @Path("lampId") lampId: Int,
         @Body inviteUserRequest: InviteUsersRequest
     ): Response<Unit>
 
-    @POST("api/v1/lamp/{lampId}/invite/accept")
+    @POST("api/v1/lamp/invite/accept")
     suspend fun acceptInvite(
-        @Path("lampId") lampId: Int,
         @Body acceptInviteRequest: AcceptInviteRequest
     ): Response<Unit>
 
-    @POST("api/v1/lamp/{lampId}/invite/reject")
+    @POST("api/v1/lamp/invite/reject")
     suspend fun rejectInvite(
-        @Path("lampId") lampId: Int,
         @Body rejectInviteRequest: RejectInviteRequest
     ): Response<Unit>
 
-    @POST("api/v1/lamp/{lampId}/out")
-    suspend fun exitLamp(
-        @Path("lampId") lampId: Int
-    ): Response<Unit>
+    @POST("api/v1/lamp/out")
+    suspend fun exitLamp(): Response<Unit>
 
-    @POST("api/v1/lamp/{lampId}/kick")
+    @POST("api/v1/lamp/kick")
     suspend fun kickUser(
-        @Path("lampId") lampId: Int,
         @Body kickUserRequest: KickUserRequest
     ): Response<Unit>
 
-    @POST("api/v1/lamp/{lampId}/visit/request")
-    suspend fun requestVisit(
-        @Path("lampId") lampId: Int
-    ): Response<Unit>
+    @POST("api/v1/lamp/visit/request")
+    suspend fun requestVisit(): Response<Unit>
 
-    @POST("api/v1/lamp/{lampId}/visit/accept")
+    @POST("api/v1/lamp/visit/accept")
     suspend fun acceptVisit(
-        @Path("lampId") lampId: Int,
         @Body acceptVisitRequest: AcceptVisitRequest
     ): Response<Unit>
 
-    @POST("api/v1/lamp/{lampId}/visit/reject")
+    @POST("api/v1/lamp/visit/reject")
     suspend fun rejectVisit(
-        @Path("lampId") lampId: Int,
         @Body rejectVisitRequest: RejectVisitRequest
     ): Response<Unit>
 }

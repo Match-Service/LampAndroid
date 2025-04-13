@@ -48,15 +48,14 @@ class AlarmViewModel @Inject constructor(
         }
     }
 
-    fun acceptInvite(lampId: Int, inviteRequestUserId: Int, alarmId: Int) {
+    fun acceptInvite(inviteRequestUserId: Int, alarmId: Int) {
         viewModelScope.launch {
             try {
                 Log.d(
                     logTag,
-                    "acceptInvite, lampId: $lampId, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId"
+                    "acceptInvite, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId"
                 )
                 acceptInviteUseCase(
-                    lampId = lampId,
                     acceptInviteParam = AcceptInviteParam(
                         inviteRequestUserId = inviteRequestUserId,
                         alarmId = alarmId
@@ -69,15 +68,14 @@ class AlarmViewModel @Inject constructor(
         }
     }
 
-    fun rejectInvite(lampId: Int, inviteRequestUserId: Int, alarmId: Int) {
+    fun rejectInvite(inviteRequestUserId: Int, alarmId: Int) {
         viewModelScope.launch {
             try {
                 Log.d(
                     logTag,
-                    "rejectInvite, lampId: $lampId inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId"
+                    "rejectInvite, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId"
                 )
                 rejectInviteUseCase(
-                    lampId = lampId,
                     rejectInviteParam = RejectInviteParam(
                         inviteRequestUserId = inviteRequestUserId,
                         alarmId = alarmId
@@ -98,7 +96,6 @@ class AlarmViewModel @Inject constructor(
                     "acceptVisit, lampId: $lampId visitUserId: $visitUserId alarmId: $alarmId"
                 )
                 acceptVisitUseCase(
-                    lampId = lampId,
                     AcceptVisitParam(visitUserId, alarmId)
                 )
                 getAlarm()
@@ -116,7 +113,6 @@ class AlarmViewModel @Inject constructor(
                     "rejectVisit, lampId: $lampId visitUserId: $visitUserId alarmId: $alarmId"
                 )
                 rejectVisitUseCase(
-                    lampId = lampId,
                     RejectVisitParam(visitUserId, alarmId)
                 )
                 getAlarm()

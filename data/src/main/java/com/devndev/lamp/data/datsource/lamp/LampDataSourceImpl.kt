@@ -25,8 +25,8 @@ class LampDataSourceImpl @Inject constructor(
         return lampService.getMyLamp()
     }
 
-    override suspend fun deleteLamp(lampId: Int): Response<Unit> {
-        val response = lampService.deleteLamp(lampId)
+    override suspend fun deleteLamp(): Response<Unit> {
+        val response = lampService.deleteLamp()
         if (response.isSuccessful) {
             Log.d("deleteLamp", "deleteLamp successfully, Status Code: ${response.code()}")
         } else {
@@ -37,46 +37,41 @@ class LampDataSourceImpl @Inject constructor(
     }
 
     override suspend fun inviteUser(
-        lampId: Int,
         inviteUsersRequest: InviteUsersRequest
     ): Response<Unit> {
-        return lampService.inviteUsers(lampId, inviteUsersRequest)
+        return lampService.inviteUsers(inviteUsersRequest)
     }
 
     override suspend fun acceptInvite(
-        lampId: Int,
         acceptInviteRequest: AcceptInviteRequest
     ): Response<Unit> {
-        return lampService.acceptInvite(lampId, acceptInviteRequest)
+        return lampService.acceptInvite(acceptInviteRequest)
     }
 
     override suspend fun rejectInvite(
-        lampId: Int,
         rejectInviteRequest: RejectInviteRequest
     ): Response<Unit> {
-        return lampService.rejectInvite(lampId, rejectInviteRequest)
+        return lampService.rejectInvite(rejectInviteRequest)
     }
 
-    override suspend fun requestVisit(lampId: Int): Response<Unit> {
-        return lampService.requestVisit(lampId)
+    override suspend fun requestVisit(): Response<Unit> {
+        return lampService.requestVisit()
     }
 
     override suspend fun acceptVisit(
-        lampId: Int,
         acceptVisitRequest: AcceptVisitRequest
     ): Response<Unit> {
-        return lampService.acceptVisit(lampId, acceptVisitRequest)
+        return lampService.acceptVisit(acceptVisitRequest)
     }
 
     override suspend fun rejectVisit(
-        lampId: Int,
         rejectVisitRequest: RejectVisitRequest
     ): Response<Unit> {
-        return lampService.rejectVisit(lampId, rejectVisitRequest)
+        return lampService.rejectVisit(rejectVisitRequest)
     }
 
-    override suspend fun exitLamp(lampId: Int): Response<Unit> {
-        val response = lampService.exitLamp(lampId)
+    override suspend fun exitLamp(): Response<Unit> {
+        val response = lampService.exitLamp()
         if (response.isSuccessful) {
             Log.d("exitLamp", "exitLamp successfully, Status Code: ${response.code()}")
         } else {
@@ -85,8 +80,8 @@ class LampDataSourceImpl @Inject constructor(
         return response
     }
 
-    override suspend fun kickUser(lampId: Int, kickUserRequest: KickUserRequest): Response<Unit> {
-        val response = lampService.kickUser(lampId, kickUserRequest)
+    override suspend fun kickUser(kickUserRequest: KickUserRequest): Response<Unit> {
+        val response = lampService.kickUser(kickUserRequest)
         if (response.isSuccessful) {
             Log.d("kickUser", "kickUser successfully, Status Code: ${response.code()}")
         } else {

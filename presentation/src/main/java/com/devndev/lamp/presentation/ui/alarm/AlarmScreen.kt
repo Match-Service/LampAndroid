@@ -177,14 +177,12 @@ fun AlarmScreen(
                             color = WomanColor,
                             onAcceptClick = {
                                 viewModel.acceptInvite(
-                                    lampId = it.lampId,
                                     inviteRequestUserId = it.inviteUserId ?: 0,
                                     alarmId = it.id
                                 )
                             },
                             onRejectClick = {
                                 viewModel.rejectInvite(
-                                    lampId = it.lampId,
                                     inviteRequestUserId = it.inviteUserId ?: 0,
                                     alarmId = it.id
                                 )

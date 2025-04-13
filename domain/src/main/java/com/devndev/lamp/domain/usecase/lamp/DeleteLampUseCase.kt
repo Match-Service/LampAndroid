@@ -6,7 +6,7 @@ import javax.inject.Inject
 class DeleteLampUseCase @Inject constructor(
     private val lampRepository: LampRepository
 ) {
-    suspend operator fun invoke(lampId: Int) {
-        lampRepository.deleteLamp(lampId)
+    suspend operator fun invoke() {
+        lampRepository.deleteLamp()
     }
 }
