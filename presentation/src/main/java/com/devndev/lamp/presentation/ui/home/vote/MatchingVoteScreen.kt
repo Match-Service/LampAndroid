@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -26,6 +27,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
@@ -37,6 +39,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -290,26 +293,96 @@ fun MatchingVoteScreen(
 // 프로필 상단부분
 @Composable
 fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
-    LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(bottom = 10.dp),
-        horizontalArrangement = Arrangement.spacedBy(5.dp)
-    ) {
-        items(1) {
-            Spacer(modifier = Modifier.width(16.dp))
+//    val listState = rememberLazyListState()
+    val listState = remember { LazyListState() }
+
+    // 프로필 사진 갯수 2개 이하일 경우
+    if ((profiles[index][1] as Int) <= 2) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            repeat(profiles[index][1] as Int) {
+                Image(
+                    painter = painterResource(id = R.drawable.testimage),
+                    contentDescription = "testimage",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .size(120.dp)
+                        .padding(horizontal = 5.dp)
+                )
+            }
         }
-        items(profiles[index][1] as Int) {
-            Image(
-                painter = painterResource(id = R.drawable.testimage),
-                contentDescription = "testimage",
-                contentScale = ContentScale.Crop,
+    } else {
+        Box(modifier = Modifier.height(120.dp)) {
+            LazyRow(
+                state = listState,
                 modifier = Modifier
-                    .size(120.dp)
-            )
-        }
-        items(1) {
-            Spacer(modifier = Modifier.width(16.dp))
+                    .fillMaxWidth()
+                    .padding(bottom = 10.dp)
+                    .zIndex(0f),
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+            ) {
+                items(1) {
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
+                items(profiles[index][1] as Int) {
+                    Image(
+                        painter = painterResource(id = R.drawable.testimage),
+                        contentDescription = "testimage",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(120.dp)
+                    )
+                }
+                items(1) {
+                    Spacer(modifier = Modifier.width(16.dp))
+                }
+            }
+
+            val isAtStart by remember {
+                derivedStateOf {
+                    listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
+                }
+            }
+
+            val isAtEnd by remember {
+                derivedStateOf {
+                    val layoutInfo = listState.layoutInfo
+                    val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
+                    lastVisibleItem != null && lastVisibleItem.index == layoutInfo.totalItemsCount - 1
+                }
+            }
+
+            if (isAtStart) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(70.dp)
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f))
+                            )
+                        )
+                        .align(Alignment.CenterEnd)
+                )
+            }
+
+            if (isAtEnd) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(70.dp)
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(Color.Black.copy(alpha = 0.8f), Color.Transparent)
+                            )
+                        )
+                        .align(Alignment.CenterStart)
+                )
+            }
         }
     }
     Spacer(modifier = Modifier.height(20.dp))

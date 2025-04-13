@@ -27,8 +27,8 @@ import com.devndev.lamp.presentation.theme.IncTypography
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.getMainColor
 import com.devndev.lamp.presentation.ui.home.findlamp.FindLampScreen
-import com.devndev.lamp.presentation.ui.home.normal.NormalHomeScreen
 import com.devndev.lamp.presentation.ui.home.matchinghome.MatchingHomeScreen
+import com.devndev.lamp.presentation.ui.home.vote.MatchingVoteScreen
 import kotlin.system.exitProcess
 
 @Composable
@@ -73,7 +73,8 @@ fun HomeScreen(
 
     when (userStatus) {
         "ON_BOARDING" -> {
-            NormalHomeScreen(modifier = modifier, navController = navController)
+//            NormalHomeScreen(modifier = modifier, navController = navController)
+            MatchingVoteScreen(modifier = modifier, navController = navController)
         }
 
         "PREPARE",
