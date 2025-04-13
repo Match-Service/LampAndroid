@@ -48,9 +48,6 @@ class HomeViewModel @Inject constructor(
     private val _myLamp = MutableStateFlow<LampDomainModel?>(null)
     val myLamp: StateFlow<LampDomainModel?> = _myLamp
 
-    private val _myLampForProfile = MutableStateFlow<LampDomainModel?>(null)
-    val myLampForProfile: StateFlow<LampDomainModel?> = _myLampForProfile
-
     private val _matchSuggestion = MutableStateFlow<MatchSuggestionDomainModel?>(null)
     val matchSuggestion: StateFlow<MatchSuggestionDomainModel?> = _matchSuggestion
 
@@ -58,13 +55,12 @@ class HomeViewModel @Inject constructor(
     val userStatue: StateFlow<String> = _userStatus
 
     init {
-        fetchData()
+        getMyInfo()
         getLampData()
         getUserStatus()
-        getLampDataForProfile()
     }
 
-    private fun fetchData() {
+    private fun getMyInfo() {
         viewModelScope.launch {
             try {
                 Log.d(logTag, "fetchData")
@@ -81,21 +77,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun getLampDataForProfile() {
-        viewModelScope.launch {
-            try {
-                Log.d(logTag, "getLampDataForProfile")
-                _myLampForProfile.value = getMyLampUseCase()
-                Log.d(logTag, "My Lamp ${myLampForProfile.value}")
-            } catch (e: HttpException) {
-                Log.e(logTag, "getLampDataForProfile HttpException", e)
-            } catch (e: Exception) {
-                Log.e(logTag, "getLampDataForProfile Exception", e)
-            }
-        }
-    }
-
-    private fun getLampData() {
+    fun getLampData() {
         viewModelScope.launch {
             try {
                 Log.d(logTag, "getLampData")
@@ -143,7 +125,6 @@ class HomeViewModel @Inject constructor(
                     kickUserUseCase(it, KickUserParam(kickUserId))
                     Log.d(logTag, "kickUser lampId $it, kickUserId $kickUserId")
                 }
-                getLampDataForProfile()
                 getLampData()
             } catch (e: Exception) {
                 Log.e(logTag, "kickUser Exception", e)
@@ -189,7 +170,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getUserStatus() {
+    private fun getUserStatus() {
         viewModelScope.launch {
             try {
                 Log.d(logTag, "getUserStatus")

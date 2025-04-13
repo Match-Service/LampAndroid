@@ -102,6 +102,7 @@ fun WaitingHomeScreen(
                     onClick = {},
                     icon = painterResource(id = R.drawable.x_button_big),
                     onIconClick = {
+                        // TODO 입장 취소 api
                     },
                     enabled = false
                 )
