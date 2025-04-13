@@ -95,7 +95,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 Log.d(logTag, "deleteLamp()")
-                myLamp.value?.lamp?.lampId?.let { deleteLampUseCase(it) }
+                deleteLampUseCase()
                 getUserStatus()
             } catch (e: HttpException) {
                 Log.e(logTag, "deleteLamp HttpException", e)
@@ -109,7 +109,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 Log.d(logTag, "exitLamp()")
-                myLamp.value?.lamp?.lampId?.let { exitLampUseCase(it) }
+                exitLampUseCase()
                 getLampData()
             } catch (e: Exception) {
                 Log.e(logTag, "exitLamp Exception", e)
@@ -121,10 +121,8 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 Log.d(logTag, "kickUser()")
-                myLamp.value?.lamp?.lampId?.let {
-                    kickUserUseCase(it, KickUserParam(kickUserId))
-                    Log.d(logTag, "kickUser lampId $it, kickUserId $kickUserId")
-                }
+                kickUserUseCase(KickUserParam(kickUserId))
+                Log.d(logTag, "kickUser kickUserId $kickUserId")
                 getLampData()
             } catch (e: Exception) {
                 Log.e(logTag, "kickUser Exception", e)

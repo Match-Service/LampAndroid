@@ -7,7 +7,7 @@ import javax.inject.Inject
 class InviteUsersUseCase @Inject constructor(
     private val lampRepository: LampRepository
 ) {
-    suspend operator fun invoke(lampId: Int, inviteUsersParam: InviteUsersParam) {
-        lampRepository.inviteUser(lampId, inviteUsersParam)
+    suspend operator fun invoke(inviteUsersParam: InviteUsersParam) {
+        lampRepository.inviteUser(inviteUsersParam)
     }
 }

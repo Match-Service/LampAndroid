@@ -12,13 +12,13 @@ import com.devndev.lamp.domain.model.lamp.RejectVisitParam
 interface LampRepository {
     suspend fun createLamp(createLampParam: CreateLampParam): Int
     suspend fun getMyLamp(): LampDomainModel
-    suspend fun deleteLamp(lampId: Int)
-    suspend fun inviteUser(lampId: Int, inviteUsersParam: InviteUsersParam)
-    suspend fun acceptInvite(lampId: Int, acceptInviteParam: AcceptInviteParam)
-    suspend fun rejectInvite(lampId: Int, rejectInviteParam: RejectInviteParam)
-    suspend fun exitLamp(lampId: Int)
-    suspend fun kickUser(lampId: Int, kickUserParam: KickUserParam)
-    suspend fun visitRequest(lampId: Int)
-    suspend fun acceptVisit(lampId: Int, acceptVisitParam: AcceptVisitParam)
-    suspend fun rejectVisit(lampId: Int, rejectVisitParam: RejectVisitParam)
+    suspend fun deleteLamp()
+    suspend fun inviteUser(inviteUsersParam: InviteUsersParam)
+    suspend fun acceptInvite(acceptInviteParam: AcceptInviteParam)
+    suspend fun rejectInvite(rejectInviteParam: RejectInviteParam)
+    suspend fun exitLamp()
+    suspend fun kickUser(kickUserParam: KickUserParam)
+    suspend fun visitRequest()
+    suspend fun acceptVisit(acceptVisitParam: AcceptVisitParam)
+    suspend fun rejectVisit(rejectVisitParam: RejectVisitParam)
 }

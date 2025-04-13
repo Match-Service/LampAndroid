@@ -38,15 +38,15 @@ class LampRepositoryImpl @Inject constructor(
         return lampDataSource.getMyInfo().toDomainModel()
     }
 
-    override suspend fun deleteLamp(lampId: Int) {
-        lampDataSource.deleteLamp(lampId)
+    override suspend fun deleteLamp() {
+        lampDataSource.deleteLamp()
     }
 
-    override suspend fun inviteUser(lampId: Int, inviteUsersParam: InviteUsersParam) {
+    override suspend fun inviteUser(inviteUsersParam: InviteUsersParam) {
         val inviteUsersRequest = InviteUsersRequest(
             inviteUserIds = inviteUsersParam.inviteUserIds
         )
-        val response = lampDataSource.inviteUser(lampId, inviteUsersRequest)
+        val response = lampDataSource.inviteUser(inviteUsersRequest)
         if (response.isSuccessful) {
             Log.d("InviteUser", "User invited successfully, Status Code: ${response.code()}")
         } else {
@@ -55,12 +55,12 @@ class LampRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun acceptInvite(lampId: Int, acceptInviteParam: AcceptInviteParam) {
+    override suspend fun acceptInvite(acceptInviteParam: AcceptInviteParam) {
         val acceptUserRequest = AcceptInviteRequest(
             inviteRequestUserId = acceptInviteParam.inviteRequestUserId,
             alarmId = acceptInviteParam.alarmId
         )
-        val response = lampDataSource.acceptInvite(lampId, acceptUserRequest)
+        val response = lampDataSource.acceptInvite(acceptUserRequest)
 
         if (response.isSuccessful) {
             Log.d("AcceptInvite", "AcceptInvite successfully, Status Code: ${response.code()}")
@@ -72,12 +72,12 @@ class LampRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun rejectInvite(lampId: Int, rejectInviteParam: RejectInviteParam) {
+    override suspend fun rejectInvite(rejectInviteParam: RejectInviteParam) {
         val rejectInviteRequest = RejectInviteRequest(
             inviteRequestUserId = rejectInviteParam.inviteRequestUserId,
             alarmId = rejectInviteParam.alarmId
         )
-        val response = lampDataSource.rejectInvite(lampId, rejectInviteRequest)
+        val response = lampDataSource.rejectInvite(rejectInviteRequest)
 
         if (response.isSuccessful) {
             Log.d("RejectInvite", "RejectInvite successfully, Status Code: ${response.code()}")
@@ -89,27 +89,27 @@ class LampRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun exitLamp(lampId: Int) {
-        lampDataSource.exitLamp(lampId)
+    override suspend fun exitLamp() {
+        lampDataSource.exitLamp()
     }
 
-    override suspend fun kickUser(lampId: Int, kickUserParam: KickUserParam) {
+    override suspend fun kickUser(kickUserParam: KickUserParam) {
         val kickUserRequest = KickUserRequest(
             kickUserId = kickUserParam.kickUserId
         )
-        lampDataSource.kickUser(lampId, kickUserRequest)
+        lampDataSource.kickUser(kickUserRequest)
     }
 
-    override suspend fun visitRequest(lampId: Int) {
-        lampDataSource.requestVisit(lampId)
+    override suspend fun visitRequest() {
+        lampDataSource.requestVisit()
     }
 
-    override suspend fun acceptVisit(lampId: Int, acceptVisitParam: AcceptVisitParam) {
+    override suspend fun acceptVisit(acceptVisitParam: AcceptVisitParam) {
         val acceptVisitRequest = AcceptVisitRequest(
             visitUserId = acceptVisitParam.visitUserId,
             alarmId = acceptVisitParam.alarmId
         )
-        val response = lampDataSource.acceptVisit(lampId, acceptVisitRequest)
+        val response = lampDataSource.acceptVisit(acceptVisitRequest)
 
         if (response.isSuccessful) {
             Log.d("AcceptVisit", "AcceptVisit successfully, Status Code: ${response.code()}")
@@ -121,12 +121,12 @@ class LampRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun rejectVisit(lampId: Int, rejectVisitParam: RejectVisitParam) {
+    override suspend fun rejectVisit(rejectVisitParam: RejectVisitParam) {
         val rejectVisitRequest = RejectVisitRequest(
             visitUserId = rejectVisitParam.visitUserId,
             alarmId = rejectVisitParam.alarmId
         )
-        val response = lampDataSource.rejectVisit(lampId, rejectVisitRequest)
+        val response = lampDataSource.rejectVisit(rejectVisitRequest)
 
         if (response.isSuccessful) {
             Log.d("RejectVisit", "RejectVisit successfully, Status Code: ${response.code()}")

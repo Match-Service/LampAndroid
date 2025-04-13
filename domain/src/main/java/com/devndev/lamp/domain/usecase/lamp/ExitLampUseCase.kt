@@ -6,7 +6,7 @@ import javax.inject.Inject
 class ExitLampUseCase @Inject constructor(
     private val lampRepository: LampRepository
 ) {
-    suspend operator fun invoke(lampId: Int) {
-        lampRepository.exitLamp(lampId)
+    suspend operator fun invoke() {
+        lampRepository.exitLamp()
     }
 }
