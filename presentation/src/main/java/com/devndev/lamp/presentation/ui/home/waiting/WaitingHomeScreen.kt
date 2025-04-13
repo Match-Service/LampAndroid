@@ -102,7 +102,6 @@ fun WaitingHomeScreen(
                     onClick = {},
                     icon = painterResource(id = R.drawable.x_button_big),
                     onIconClick = {
-
                     },
                     enabled = false
                 )
