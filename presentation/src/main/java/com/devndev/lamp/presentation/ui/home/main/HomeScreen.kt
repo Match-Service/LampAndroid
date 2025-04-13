@@ -27,8 +27,9 @@ import com.devndev.lamp.presentation.theme.IncTypography
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.getMainColor
 import com.devndev.lamp.presentation.ui.home.findlamp.FindLampScreen
-import com.devndev.lamp.presentation.ui.home.normal.NormalHomeScreen
 import com.devndev.lamp.presentation.ui.home.matchinghome.MatchingHomeScreen
+import com.devndev.lamp.presentation.ui.home.normal.NormalHomeScreen
+import com.devndev.lamp.presentation.ui.home.waiting.WaitingHomeScreen
 import kotlin.system.exitProcess
 
 @Composable
@@ -84,12 +85,14 @@ fun HomeScreen(
         "FIND_LAMP" -> {
             FindLampScreen(modifier = modifier, navController = navController)
         }
+
+        "VISIT_WAITING" -> {
+            WaitingHomeScreen(modifier = modifier, navController = navController)
+        }
 //
 //        "FAILED" -> TODO("Not yet implementation")
 //
 //        "IN_PROGRESS" -> TODO("Not yet implementation")
-//
-//        "VISIT_WAITING" -> TODO("Not yet implementation")
 //
 //        "VOTE" -> TODO("Not yet implementation")
 //
