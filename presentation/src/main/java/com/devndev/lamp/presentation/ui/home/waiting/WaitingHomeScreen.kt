@@ -41,7 +41,6 @@ import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.LampButtonWithIcon
-import com.devndev.lamp.presentation.ui.home.TempStatus
 import com.devndev.lamp.presentation.ui.home.main.HomeTextArea
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import kotlinx.coroutines.delay
@@ -64,13 +63,11 @@ fun WaitingHomeScreen(
         label = ""
     )
 
-    val profileName by TempStatus.profileName.collectAsState()
-
     Box(
         modifier = modifier.fillMaxSize()
     ) {
         BreathingCircleAnimation()
-//        GradientBackground(animationProgress = animationProgress)
+        GradientBackground(animationProgress = animationProgress)
         Column(
             modifier = modifier
                 .fillMaxSize(),
@@ -89,7 +86,7 @@ fun WaitingHomeScreen(
                 HomeTextArea(
                     nameText = "${myInfo?.name ?: ""} " + stringResource(id = R.string.sir),
                     middleText = stringResource(id = R.string.waiting_header),
-                    bottomText = profileName + stringResource(id = R.string.waiting_guide),
+                    bottomText = "temp" + stringResource(id = R.string.waiting_guide),
                     gender = myInfo?.gender ?: "MALE"
                 )
             }
@@ -105,8 +102,7 @@ fun WaitingHomeScreen(
                     onClick = {},
                     icon = painterResource(id = R.drawable.x_button_big),
                     onIconClick = {
-                        TempStatus.updateIsWaiting(false)
-                        TempStatus.updateProfileName("")
+
                     },
                     enabled = false
                 )
