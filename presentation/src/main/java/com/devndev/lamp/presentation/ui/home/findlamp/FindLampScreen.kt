@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.home
+package com.devndev.lamp.presentation.ui.home.findlamp
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -43,6 +43,8 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
+import com.devndev.lamp.presentation.ui.home.main.HomeTextArea
+import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import com.devndev.lamp.presentation.ui.home.navigation.navigateVote
 
 @Composable

@@ -8,7 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.ui.chatting.ChattingScreen
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
-import com.devndev.lamp.presentation.ui.home.HomeScreen
+import com.devndev.lamp.presentation.ui.home.main.HomeScreen
 import com.devndev.lamp.presentation.ui.mypage.MyPageScreen
 
 @Composable

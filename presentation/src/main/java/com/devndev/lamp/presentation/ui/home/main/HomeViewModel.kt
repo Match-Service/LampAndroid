@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.home
+package com.devndev.lamp.presentation.ui.home.main
 
 import android.util.Log
 import androidx.lifecycle.ViewModel

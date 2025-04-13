@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.home
+package com.devndev.lamp.presentation.ui.home.waiting
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
@@ -41,6 +41,9 @@ import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.LampButtonWithIcon
+import com.devndev.lamp.presentation.ui.home.TempStatus
+import com.devndev.lamp.presentation.ui.home.main.HomeTextArea
+import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import kotlinx.coroutines.delay
 
 @Composable

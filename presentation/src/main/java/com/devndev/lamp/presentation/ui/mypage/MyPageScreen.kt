@@ -64,7 +64,7 @@ import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
-import com.devndev.lamp.presentation.ui.home.ProgressBar
+import com.devndev.lamp.presentation.ui.home.vote.ProgressBar
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateProfileEdit
 import java.text.SimpleDateFormat
 import java.util.Calendar

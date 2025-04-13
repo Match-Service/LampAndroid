@@ -1,4 +1,4 @@
-package com.devndev.lamp.presentation.ui.home
+package com.devndev.lamp.presentation.ui.home.normal
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,6 +20,8 @@ import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButtonWithIcon
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
+import com.devndev.lamp.presentation.ui.home.main.HomeTextArea
+import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import com.devndev.lamp.presentation.ui.search.navigation.navigateSearch
 
 @Composable
