@@ -9,6 +9,7 @@ import com.devndev.lamp.data.dto.request.lamp.RejectInviteRequest
 import com.devndev.lamp.data.dto.request.lamp.RejectVisitRequest
 import com.devndev.lamp.data.dto.response.lamp.CreateLampResponse
 import com.devndev.lamp.data.dto.response.lamp.LampResponse
+import com.devndev.lamp.data.dto.response.lamp.VisitRequestLampInfoResponse
 import retrofit2.Response
 
 interface LampDataSource {
@@ -23,4 +24,6 @@ interface LampDataSource {
     suspend fun rejectVisit(rejectVisitRequest: RejectVisitRequest): Response<Unit>
     suspend fun exitLamp(): Response<Unit>
     suspend fun kickUser(kickUserRequest: KickUserRequest): Response<Unit>
+    suspend fun getVisitRequestLampInfo(): VisitRequestLampInfoResponse
+    suspend fun cancelVisitRequest(): Response<Unit>
 }

@@ -10,6 +10,7 @@ import com.devndev.lamp.data.dto.request.lamp.RejectInviteRequest
 import com.devndev.lamp.data.dto.request.lamp.RejectVisitRequest
 import com.devndev.lamp.data.dto.response.lamp.CreateLampResponse
 import com.devndev.lamp.data.dto.response.lamp.LampResponse
+import com.devndev.lamp.data.dto.response.lamp.VisitRequestLampInfoResponse
 import com.devndev.lamp.data.service.LampService
 import retrofit2.Response
 import javax.inject.Inject
@@ -88,5 +89,13 @@ class LampDataSourceImpl @Inject constructor(
             Log.e("kickUser", "Failed to kickUser, Status Code: ${response.code()}")
         }
         return response
+    }
+
+    override suspend fun getVisitRequestLampInfo(): VisitRequestLampInfoResponse {
+        return lampService.getVisitRequestLampInfo()
+    }
+
+    override suspend fun cancelVisitRequest(): Response<Unit> {
+        return lampService.cancelVisitRequest()
     }
 }

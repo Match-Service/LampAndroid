@@ -52,6 +52,8 @@ fun WaitingHomeScreen(
     navController: NavController
 ) {
     val myInfo by viewModel.myInfo.collectAsState()
+    val ownerName by viewModel.visitLampOwnerName.collectAsState()
+
     val infiniteTransition = rememberInfiniteTransition(label = "")
     val animationProgress by infiniteTransition.animateFloat(
         initialValue = 0.3f,
@@ -62,6 +64,10 @@ fun WaitingHomeScreen(
         ),
         label = ""
     )
+
+    LaunchedEffect(Unit) {
+        viewModel.getVisitLampOwnerName()
+    }
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -86,7 +92,7 @@ fun WaitingHomeScreen(
                 HomeTextArea(
                     nameText = "${myInfo?.name ?: ""} " + stringResource(id = R.string.sir),
                     middleText = stringResource(id = R.string.waiting_header),
-                    bottomText = "temp" + stringResource(id = R.string.waiting_guide),
+                    bottomText = ownerName + stringResource(id = R.string.waiting_guide),
                     gender = myInfo?.gender ?: "MALE"
                 )
             }
@@ -102,7 +108,7 @@ fun WaitingHomeScreen(
                     onClick = {},
                     icon = painterResource(id = R.drawable.x_button_big),
                     onIconClick = {
-                        // TODO 입장 취소 api
+                        viewModel.cancelVisitRequest()
                     },
                     enabled = false
                 )

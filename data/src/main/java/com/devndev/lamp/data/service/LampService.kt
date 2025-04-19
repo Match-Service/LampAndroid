@@ -9,6 +9,7 @@ import com.devndev.lamp.data.dto.request.lamp.RejectInviteRequest
 import com.devndev.lamp.data.dto.request.lamp.RejectVisitRequest
 import com.devndev.lamp.data.dto.response.lamp.CreateLampResponse
 import com.devndev.lamp.data.dto.response.lamp.LampResponse
+import com.devndev.lamp.data.dto.response.lamp.VisitRequestLampInfoResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -62,4 +63,10 @@ interface LampService {
     suspend fun rejectVisit(
         @Body rejectVisitRequest: RejectVisitRequest
     ): Response<Unit>
+
+    @GET("api/v1/lamp/visit/request")
+    suspend fun getVisitRequestLampInfo(): VisitRequestLampInfoResponse
+
+    @DELETE("api/vq/lamp/visit/request")
+    suspend fun cancelVisitRequest(): Response<Unit>
 }
