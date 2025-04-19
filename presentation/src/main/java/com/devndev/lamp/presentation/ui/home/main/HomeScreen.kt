@@ -94,7 +94,7 @@ fun HomeScreen(
 
         "VOTE" -> {
             val matchSuggestion by viewModel.matchSuggestion.collectAsState()
-            MatchingVoteScreen(modifier = Modifier, navController = navController, matchSuggestion = matchSuggestion)
+            MatchingVoteScreen(modifier = Modifier, navController = navController)
         }
 //
 //        "FAILED" -> TODO("Not yet implementation")

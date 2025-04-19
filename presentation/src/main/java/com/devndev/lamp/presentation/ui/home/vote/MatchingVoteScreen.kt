@@ -95,8 +95,7 @@ import java.util.concurrent.TimeUnit
 fun MatchingVoteScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     modifier: Modifier,
-    navController: NavController?,
-    matchSuggestion: MatchSuggestionDomainModel?
+    navController: NavController?
 ) {
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
@@ -111,12 +110,15 @@ fun MatchingVoteScreen(
     var moodInfoSectionHeight by remember { mutableStateOf(0.dp) }
     var secondSectionHeight by remember { mutableStateOf(0.dp) }
     var bottomSectionHeight by remember { mutableStateOf(0) }
-
     var itemIndex = remember { mutableStateOf(0) }
     var yOffset = remember { mutableStateOf(0f) }
     var yOffsetHigh = remember { mutableStateOf(0f) }
     var prevYOffset = remember { mutableStateOf(0f) }
     var curYOffset = remember { mutableStateOf(0f) }
+
+    // 임시 처리 바꿔주세요 어진Lee
+    var matchSuggestion: MatchSuggestionDomainModel? = null
+
     // stickyHeader가 최상단에 위치했는지 여부를 저장하는 상태
 //    val isStickyHeaderAtTop = remember { mutableStateOf(false) }
     // 선택된 이미지 추적
