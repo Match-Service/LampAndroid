@@ -198,6 +198,9 @@ class HomeViewModel @Inject constructor(
                     onMessage = { message ->
                         _userStatus.value = message
                         Log.d(TAG, "status: ${userStatue.value}")
+                    },
+                    onUpdatedMessage = {
+                        getLampData()
                     }
                 )
             } catch (e: Exception) {
