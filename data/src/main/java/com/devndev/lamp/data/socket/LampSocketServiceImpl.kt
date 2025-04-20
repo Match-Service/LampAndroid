@@ -14,7 +14,11 @@ class LampSocketServiceImpl @Inject constructor(
     private var socket: Socket? = null
     private val logTag = "LampSocketService"
 
-    override fun connect(onConnected: () -> Unit, onMessage: (String) -> Unit) {
+    override fun connect(
+        onConnected: () -> Unit,
+        onMessage: (String) -> Unit,
+        onUpdatedMessage: () -> Unit
+    ) {
         val token = localDataSource.getToken()
         Log.d(logTag, "Attempting to connect with token: $token")
         val options = IO.Options().apply {
@@ -34,12 +38,22 @@ class LampSocketServiceImpl @Inject constructor(
             }
 
             socket?.on("status") { args ->
+                Log.d("LampSocketServiceImpl", "socket on status")
                 if (args.isNotEmpty()) {
                     try {
                         val jsonObject = JSONObject(args[0].toString())
-                        val status = jsonObject.getString("userLampStatus")
-                        Log.d(logTag, "Received status: $status")
-                        onMessage(status)
+                        when {
+                            jsonObject.has("userLampStatus") -> {
+                                val status = jsonObject.getString("userLampStatus")
+                                Log.d("LampSocketServiceImpl", "Received userLampStatus: $status")
+                                onMessage(status)
+                            }
+
+                            jsonObject.has("updated") -> {
+                                onUpdatedMessage()
+                                Log.d("LampSocketServiceImpl", "Received updated")
+                            }
+                        }
                     } catch (e: Exception) {
                         Log.e(logTag, "Error parsing JSON: ${e.message}")
                     }

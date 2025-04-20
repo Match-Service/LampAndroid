@@ -6,8 +6,12 @@ import javax.inject.Inject
 class LampSocketDataSourceImpl @Inject constructor(
     private val lampSocketService: LampSocketService
 ) : LampSocketDataSource {
-    override fun connect(onConnected: () -> Unit, onMessage: (String) -> Unit) {
-        lampSocketService.connect(onConnected, onMessage)
+    override fun connect(
+        onConnected: () -> Unit,
+        onMessage: (String) -> Unit,
+        onUpdatedMessage: () -> Unit
+    ) {
+        lampSocketService.connect(onConnected, onMessage, onUpdatedMessage)
     }
 
     override fun disconnect() {
