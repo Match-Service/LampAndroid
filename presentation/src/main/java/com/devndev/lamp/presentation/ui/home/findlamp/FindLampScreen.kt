@@ -39,9 +39,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
-import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.ManColor
+import com.devndev.lamp.presentation.theme.MoodBlue
+import com.devndev.lamp.presentation.theme.MoodRed
+import com.devndev.lamp.presentation.theme.MoodYellow
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.home.main.HomeTextArea
@@ -52,10 +54,10 @@ import com.devndev.lamp.presentation.ui.home.navigation.navigateVote
 fun FindLampScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     modifier: Modifier,
-    navController: NavController,
-    matchSuggestion: MatchSuggestionDomainModel?
+    navController: NavController
 ) {
     val myInfo by viewModel.myInfo.collectAsState()
+    val matchSuggestion by viewModel.matchSuggestion.collectAsState()
     val navOption = navOptions {
         launchSingleTop = true
     }
@@ -73,7 +75,7 @@ fun FindLampScreen(
         ) {
             Spacer(modifier = Modifier.height(149.dp))
             HomeTextArea(
-                nameText = "트와이수더",
+                nameText = matchSuggestion?.name!!,
                 middleText = stringResource(id = R.string.matching_header_find_lamp),
                 bottomText = stringResource(id = R.string.matching_sub_header_find_lamp),
                 gender = if (myInfo?.gender == "MALE") {
@@ -92,7 +94,7 @@ fun FindLampScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            BreathingAnimation()
+            BreathingAnimation(matchSuggestion?.color!!)
         }
 
         Column(
@@ -131,7 +133,7 @@ fun FindLampScreen(
 }
 
 @Composable
-fun BreathingAnimation() {
+fun BreathingAnimation(color: String) {
     val transition = rememberInfiniteTransition()
     val animatedBlur by transition.animateFloat(
         initialValue = 50f,
@@ -157,14 +159,21 @@ fun BreathingAnimation() {
             drawBreathing(
                 blur = animatedBlur,
                 alpha = 1f,
-                center = center
+                center = center,
+                color
             )
         }
     }
 }
 
-fun DrawScope.drawBreathing(blur: Float, alpha: Float, center: Offset) {
+fun DrawScope.drawBreathing(blur: Float, alpha: Float, center: Offset, mood: String) {
     val radius = size.minDimension / 2
+    val moodColor = when (mood) {
+        "FUNNY" -> MoodRed
+        "CASUAL" -> MoodYellow
+        "SERIOUS" -> MoodBlue
+        else -> MoodRed
+    }
 
     drawIntoCanvas { canvas ->
         val paint = android.graphics.Paint().apply {
@@ -174,7 +183,7 @@ fun DrawScope.drawBreathing(blur: Float, alpha: Float, center: Offset) {
                 blur,
                 0f,
                 0f,
-                WomanColor.copy(alpha = alpha + 0.5f).toArgb()
+                moodColor.copy(alpha = alpha + 0.5f).toArgb()
             )
         }
         canvas.nativeCanvas.drawCircle(center.x, center.y, radius + blur, paint)

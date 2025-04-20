@@ -38,6 +38,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -73,7 +74,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Gray3
@@ -97,6 +97,8 @@ fun MatchingVoteScreen(
     modifier: Modifier,
     navController: NavController?
 ) {
+    val matchSuggestion by viewModel.matchSuggestion.collectAsState()
+
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
     val bottomNaviBarHeight = getNavigationBarHeight(context)
@@ -142,13 +144,13 @@ fun MatchingVoteScreen(
             listOf(1, 1, 1) // 임시. 흠연/음주 등
         )
     ) + (
-        matchSuggestion?.participants?.map { participant -> // 참여자
+        matchSuggestion?.participants?.map { participants -> // 참여자
             listOf(
-                participant.name,
-                participant.profileImageUrl, // 임시. 이미지 리스트로 수정필요
+                participants.name,
+                participants.profileImageUrl, // 임시. 이미지 리스트로 수정필요
                 28, // 임시
                 "한국대학교", // 임시
-                listOf(participant.individuality),
+                listOf(participants.individuality),
                 "자기소개", // 임시
                 listOf(1, 1, 1) // 임시. 흠연/음주 등
             )
