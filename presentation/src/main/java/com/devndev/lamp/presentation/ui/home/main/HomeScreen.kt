@@ -84,8 +84,7 @@ fun HomeScreen(
         }
 
         "FIND_LAMP" -> {
-            val matchSuggestion by viewModel.matchSuggestion.collectAsState()
-            FindLampScreen(modifier = Modifier, navController = navController, matchSuggestion = matchSuggestion)
+            FindLampScreen(modifier = Modifier, navController = navController)
         }
 
         "VISIT_WAITING" -> {
@@ -93,8 +92,7 @@ fun HomeScreen(
         }
 
         "VOTE" -> {
-            val matchSuggestion by viewModel.matchSuggestion.collectAsState()
-            MatchingVoteScreen(modifier = Modifier, navController = navController, matchSuggestion = matchSuggestion)
+            MatchingVoteScreen(modifier = Modifier, navController = navController)
         }
 //
 //        "FAILED" -> TODO("Not yet implementation")
