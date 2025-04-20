@@ -48,10 +48,10 @@ class LampRepositoryImpl @Inject constructor(
         )
         val response = lampDataSource.inviteUser(inviteUsersRequest)
         if (response.isSuccessful) {
-            Log.d("InviteUser", "User invited successfully, Status Code: ${response.code()}")
+            Log.d(TAG, "User invited successfully, Status Code: ${response.code()}")
         } else {
             val errorBody = response.errorBody()?.string() ?: "Unknown error"
-            Log.e("InviteUser", "Failed to invite user, Status Code: ${response.code()} Error $errorBody")
+            Log.e(TAG, "Failed to invite user, Status Code: ${response.code()} Error $errorBody")
         }
     }
 
@@ -63,10 +63,10 @@ class LampRepositoryImpl @Inject constructor(
         val response = lampDataSource.acceptInvite(acceptUserRequest)
 
         if (response.isSuccessful) {
-            Log.d("AcceptInvite", "AcceptInvite successfully, Status Code: ${response.code()}")
+            Log.d(TAG, "AcceptInvite successfully, Status Code: ${response.code()}")
         } else {
             Log.e(
-                "AcceptInvite",
+                TAG,
                 "Failed to AcceptInvite, Status Code: ${response.code()} ${response.raw()}"
             )
         }
@@ -80,10 +80,10 @@ class LampRepositoryImpl @Inject constructor(
         val response = lampDataSource.rejectInvite(rejectInviteRequest)
 
         if (response.isSuccessful) {
-            Log.d("RejectInvite", "RejectInvite successfully, Status Code: ${response.code()}")
+            Log.d(TAG, "RejectInvite successfully, Status Code: ${response.code()}")
         } else {
             Log.e(
-                "RejectInvite",
+                TAG,
                 "Failed to RejectInvite, Status Code: ${response.code()} ${response.raw()}"
             )
         }
@@ -112,10 +112,10 @@ class LampRepositoryImpl @Inject constructor(
         val response = lampDataSource.acceptVisit(acceptVisitRequest)
 
         if (response.isSuccessful) {
-            Log.d("AcceptVisit", "AcceptVisit successfully, Status Code: ${response.code()}")
+            Log.d(TAG, "AcceptVisit successfully, Status Code: ${response.code()}")
         } else {
             Log.e(
-                "AcceptVisit",
+                TAG,
                 "Failed to AcceptVisit, Status Code: ${response.code()} ${response.raw()}"
             )
         }
@@ -129,12 +129,32 @@ class LampRepositoryImpl @Inject constructor(
         val response = lampDataSource.rejectVisit(rejectVisitRequest)
 
         if (response.isSuccessful) {
-            Log.d("RejectVisit", "RejectVisit successfully, Status Code: ${response.code()}")
+            Log.d(TAG, "RejectVisit successfully, Status Code: ${response.code()}")
         } else {
             Log.e(
-                "RejectVisit",
+                TAG,
                 "Failed to RejectVisit, Status Code: ${response.code()} ${response.raw()}"
             )
         }
+    }
+
+    override suspend fun getVisitRequestLampInfo(): String {
+        return lampDataSource.getVisitRequestLampInfo().name
+    }
+
+    override suspend fun cancelVisitRequest() {
+        val response = lampDataSource.cancelVisitRequest()
+        if (response.isSuccessful) {
+            Log.d(TAG, "CancelVisitRequest Success, Status Code: ${response.code()}")
+        } else {
+            Log.d(
+                TAG,
+                "CancelVisitRequest Failure, Status Code: ${response.code()} ${response.raw()}"
+            )
+        }
+    }
+
+    companion object {
+        const val TAG = "LampRepositoryImpl"
     }
 }

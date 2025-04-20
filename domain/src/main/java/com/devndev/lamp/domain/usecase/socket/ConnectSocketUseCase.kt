@@ -6,7 +6,11 @@ import javax.inject.Inject
 class ConnectSocketUseCase @Inject constructor(
     private val lampSocketRepository: LampSocketRepository
 ) {
-    suspend operator fun invoke(onConnected: () -> Unit, onMessage: (String) -> Unit) {
-        lampSocketRepository.connect(onConnected, onMessage)
+    suspend operator fun invoke(
+        onConnected: () -> Unit,
+        onMessage: (String) -> Unit,
+        onUpdatedMessage: () -> Unit
+    ) {
+        lampSocketRepository.connect(onConnected, onMessage, onUpdatedMessage)
     }
 }

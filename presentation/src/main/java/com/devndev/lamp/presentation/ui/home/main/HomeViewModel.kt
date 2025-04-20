@@ -8,9 +8,11 @@ import com.devndev.lamp.domain.model.lamp.KickUserParam
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
+import com.devndev.lamp.domain.usecase.lamp.CancelVisitRequestUseCase
 import com.devndev.lamp.domain.usecase.lamp.DeleteLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.ExitLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.GetMyLampUseCase
+import com.devndev.lamp.domain.usecase.lamp.GetVisitRequestLampInfoUseCase
 import com.devndev.lamp.domain.usecase.lamp.KickUserUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.GetMatchSuggestionUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.StartMatchUseCase
@@ -38,9 +40,10 @@ class HomeViewModel @Inject constructor(
     private val getMatchSuggestionUseCase: GetMatchSuggestionUseCase,
     private val getUserStatusUseCase: GetUserStatusUseCase,
     private val connectSocketUseCase: ConnectSocketUseCase,
-    private val disconnectSocketUseCase: DisconnectSocketUseCase
+    private val disconnectSocketUseCase: DisconnectSocketUseCase,
+    private val getVisitRequestLampInfoUseCase: GetVisitRequestLampInfoUseCase,
+    private val cancelVisitRequestUseCase: CancelVisitRequestUseCase
 ) : ViewModel() {
-    private val logTag = "HomeViewModel"
 
     private val _myInfo = MutableStateFlow<MyInfoDomainModel?>(null)
     val myInfo: StateFlow<MyInfoDomainModel?> = _myInfo
@@ -54,6 +57,9 @@ class HomeViewModel @Inject constructor(
     private val _userStatus = MutableStateFlow<String>("")
     val userStatue: StateFlow<String> = _userStatus
 
+    private val _visitLampOwnerName = MutableStateFlow<String>("")
+    val visitLampOwnerName = _visitLampOwnerName
+
     init {
         getMyInfo()
         getLampData()
@@ -63,16 +69,16 @@ class HomeViewModel @Inject constructor(
     private fun getMyInfo() {
         viewModelScope.launch {
             try {
-                Log.d(logTag, "fetchData")
+                Log.d(TAG, "fetchData")
                 _myInfo.value = getMyInfoUseCase()
-                Log.d(logTag, "My Info ${myInfo.value}")
+                Log.d(TAG, "My Info ${myInfo.value}")
                 _myInfo.value?.gender?.let {
                     IconStatusManager.setIconStatus(it)
                 }
             } catch (e: HttpException) {
-                Log.e(logTag, "fetchData HttpException", e)
+                Log.e(TAG, "fetchData HttpException", e)
             } catch (e: Exception) {
-                Log.e(logTag, "fetchData Exception", e)
+                Log.e(TAG, "fetchData Exception", e)
             }
         }
     }
@@ -80,13 +86,13 @@ class HomeViewModel @Inject constructor(
     fun getLampData() {
         viewModelScope.launch {
             try {
-                Log.d(logTag, "getLampData")
+                Log.d(TAG, "getLampData")
                 _myLamp.value = getMyLampUseCase()
-                Log.d(logTag, "My Lamp ${myLamp.value}")
+                Log.d(TAG, "My Lamp ${myLamp.value}")
             } catch (e: HttpException) {
-                Log.e(logTag, "getLampData HttpException", e)
+                Log.e(TAG, "getLampData HttpException", e)
             } catch (e: Exception) {
-                Log.e(logTag, "getLampData Exception", e)
+                Log.e(TAG, "getLampData Exception", e)
             }
         }
     }
@@ -94,13 +100,13 @@ class HomeViewModel @Inject constructor(
     fun deleteLamp() {
         viewModelScope.launch {
             try {
-                Log.d(logTag, "deleteLamp()")
+                Log.d(TAG, "deleteLamp()")
                 deleteLampUseCase()
                 getUserStatus()
             } catch (e: HttpException) {
-                Log.e(logTag, "deleteLamp HttpException", e)
+                Log.e(TAG, "deleteLamp HttpException", e)
             } catch (e: Exception) {
-                Log.e(logTag, "deleteLamp Exception", e)
+                Log.e(TAG, "deleteLamp Exception", e)
             }
         }
     }
@@ -108,11 +114,11 @@ class HomeViewModel @Inject constructor(
     fun exitLamp() {
         viewModelScope.launch {
             try {
-                Log.d(logTag, "exitLamp()")
+                Log.d(TAG, "exitLamp()")
                 exitLampUseCase()
                 getLampData()
             } catch (e: Exception) {
-                Log.e(logTag, "exitLamp Exception", e)
+                Log.e(TAG, "exitLamp Exception", e)
             }
         }
     }
@@ -120,12 +126,12 @@ class HomeViewModel @Inject constructor(
     fun kickUser(kickUserId: Int) {
         viewModelScope.launch {
             try {
-                Log.d(logTag, "kickUser()")
+                Log.d(TAG, "kickUser()")
                 kickUserUseCase(KickUserParam(kickUserId))
-                Log.d(logTag, "kickUser kickUserId $kickUserId")
+                Log.d(TAG, "kickUser kickUserId $kickUserId")
                 getLampData()
             } catch (e: Exception) {
-                Log.e(logTag, "kickUser Exception", e)
+                Log.e(TAG, "kickUser Exception", e)
             }
         }
     }
@@ -133,11 +139,11 @@ class HomeViewModel @Inject constructor(
     fun startMatch() {
         viewModelScope.launch {
             try {
-                Log.d(logTag, "startMatch()")
+                Log.d(TAG, "startMatch()")
                 startMatchUseCase()
                 getLampData()
             } catch (e: Exception) {
-                Log.e(logTag, "startMatch Exception", e)
+                Log.e(TAG, "startMatch Exception", e)
             }
         }
     }
@@ -145,11 +151,11 @@ class HomeViewModel @Inject constructor(
     fun stopMatch() {
         viewModelScope.launch {
             try {
-                Log.d(logTag, "stopMatch")
+                Log.d(TAG, "stopMatch")
                 stopMatchUseCase()
                 getLampData()
             } catch (e: Exception) {
-                Log.e(logTag, "stopMatchException", e)
+                Log.e(TAG, "stopMatchException", e)
             }
         }
     }
@@ -157,13 +163,13 @@ class HomeViewModel @Inject constructor(
     fun getMatchSuggestion() {
         viewModelScope.launch {
             try {
-                Log.d(logTag, "getMatchSuggestion")
+                Log.d(TAG, "getMatchSuggestion")
                 _matchSuggestion.value = getMatchSuggestionUseCase()
-                Log.d(logTag, "MatchSuggestion ${matchSuggestion.value}")
+                Log.d(TAG, "MatchSuggestion ${matchSuggestion.value}")
             } catch (e: HttpException) {
-                Log.e(logTag, "getMatchSuggestion HttpException", e)
+                Log.e(TAG, "getMatchSuggestion HttpException", e)
             } catch (e: Exception) {
-                Log.e(logTag, "getMatchSuggestion Exception", e)
+                Log.e(TAG, "getMatchSuggestion Exception", e)
             }
         }
     }
@@ -171,13 +177,13 @@ class HomeViewModel @Inject constructor(
     private fun getUserStatus() {
         viewModelScope.launch {
             try {
-                Log.d(logTag, "getUserStatus")
+                Log.d(TAG, "getUserStatus")
                 _userStatus.value = getUserStatusUseCase().userLampStatus
-                Log.d(logTag, "UserStatus ${userStatue.value}")
+                Log.d(TAG, "UserStatus ${userStatue.value}")
             } catch (e: HttpException) {
-                Log.e(logTag, "getUserStatus HttpException", e)
+                Log.e(TAG, "getUserStatus HttpException", e)
             } catch (e: Exception) {
-                Log.e(logTag, "getUserStatus Exception", e)
+                Log.e(TAG, "getUserStatus Exception", e)
             }
         }
     }
@@ -187,15 +193,18 @@ class HomeViewModel @Inject constructor(
             try {
                 connectSocketUseCase(
                     onConnected = {
-                        Log.d(logTag, "Connected to socket")
+                        Log.d(TAG, "Connected to socket")
                     },
                     onMessage = { message ->
                         _userStatus.value = message
-                        Log.d(logTag, "status: ${userStatue.value}")
+                        Log.d(TAG, "status: ${userStatue.value}")
+                    },
+                    onUpdatedMessage = {
+                        getLampData()
                     }
                 )
             } catch (e: Exception) {
-                Log.e(logTag, "Socket connection failed", e)
+                Log.e(TAG, "Socket connection failed", e)
             }
         }
     }
@@ -203,7 +212,26 @@ class HomeViewModel @Inject constructor(
     fun disconnectSocket() {
         viewModelScope.launch {
             disconnectSocketUseCase()
-            Log.d(logTag, "Disconnect socket")
+            Log.d(TAG, "Disconnect socket")
         }
+    }
+
+    fun getVisitLampOwnerName() {
+        viewModelScope.launch {
+            val name = getVisitRequestLampInfoUseCase()
+            _visitLampOwnerName.value = name
+            Log.d(TAG, "getVisitLampOwnerName $name")
+        }
+    }
+
+    fun cancelVisitRequest() {
+        viewModelScope.launch {
+            cancelVisitRequestUseCase()
+            Log.d(TAG, "cancelVisitRequest")
+        }
+    }
+
+    companion object {
+        const val TAG = "HomeViewModel"
     }
 }
