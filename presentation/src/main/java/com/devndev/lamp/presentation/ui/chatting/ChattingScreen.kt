@@ -12,8 +12,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,20 +24,30 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.IncTypography
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.ui.chatting.navigation.navigateChat
+import java.text.SimpleDateFormat
+import java.util.Locale
+import java.util.TimeZone
 import kotlin.system.exitProcess
 
 @Composable
-fun ChattingScreen(modifier: Modifier) {
+fun ChattingScreen(
+    modifier: Modifier,
+    navController: NavController,
+    viewModel: ChatViewModel = hiltViewModel()
+) {
     val logTag = "ChattingScreen"
+    val chatList by viewModel.chatList.collectAsState()
 
     val context = LocalContext.current
     val handler = remember { Handler(Looper.getMainLooper()) }
     var backPressedOnce = remember { false }
-    var isChattingExist = true
     BackHandler {
         Log.d(logTag, "back button clicked")
         if (backPressedOnce) {
@@ -53,19 +66,27 @@ fun ChattingScreen(modifier: Modifier) {
             }, 2000)
         }
     }
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        item {
-            if (isChattingExist) {
-                ChatScreen()
-            } else {
-                EmptyChatScreen()
+
+    if (chatList.isNotEmpty()) {
+        LazyColumn(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(15.dp),
+            reverseLayout = true
+        ) {
+            items(chatList) { chat ->
+                Chat(
+                    onChatClick = {
+                        navController.navigateChat(chat.chatRoomId)
+                    },
+                    chat = chat
+                )
             }
         }
+    } else {
+        EmptyChatScreen()
     }
 }
 
@@ -99,17 +120,12 @@ fun EmptyChatScreen() {
     }
 }
 
-@Composable
-fun ChatScreen() {
-    Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
-        Evaluation()
-        Chat()
-        Chat()
-        Chat()
-        Chat()
-        Chat()
-        Chat()
-        Chat()
-        Chat()
-    }
+fun formatToMonthDay(dateString: String): String {
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+    inputFormat.timeZone = TimeZone.getTimeZone("UTC")
+
+    val date = inputFormat.parse(dateString)
+
+    val outputFormat = SimpleDateFormat("M월 d일", Locale.KOREAN)
+    return date?.let { outputFormat.format(it) } ?: ""
 }

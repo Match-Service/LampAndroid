@@ -15,6 +15,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface LampService {
     @POST("api/v1/lamp")
@@ -51,8 +52,10 @@ interface LampService {
         @Body kickUserRequest: KickUserRequest
     ): Response<Unit>
 
-    @POST("api/v1/lamp/visit/request")
-    suspend fun requestVisit(): Response<Unit>
+    @POST("api/v1/lamp/{lampId}/visit/request")
+    suspend fun requestVisit(
+        @Path("lampId") lampId: Int
+    ): Response<Unit>
 
     @POST("api/v1/lamp/visit/accept")
     suspend fun acceptVisit(

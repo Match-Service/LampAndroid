@@ -55,8 +55,8 @@ class LampDataSourceImpl @Inject constructor(
         return lampService.rejectInvite(rejectInviteRequest)
     }
 
-    override suspend fun requestVisit(): Response<Unit> {
-        return lampService.requestVisit()
+    override suspend fun requestVisit(lampId: Int): Response<Unit> {
+        return lampService.requestVisit(lampId)
     }
 
     override suspend fun acceptVisit(

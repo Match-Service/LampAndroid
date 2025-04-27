@@ -129,7 +129,7 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 Log.d(logTag, "requestVisit, lampId $lampId")
-                requestVisitUseCase()
+                requestVisitUseCase(lampId)
             } catch (e: HttpException) {
                 Log.e(logTag, "requestVisit HttpException", e)
             } catch (e: Exception) {

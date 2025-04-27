@@ -8,6 +8,7 @@ import com.devndev.lamp.domain.model.lamp.KickUserParam
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
+import com.devndev.lamp.domain.usecase.chat.TestChatUseCase
 import com.devndev.lamp.domain.usecase.lamp.CancelVisitRequestUseCase
 import com.devndev.lamp.domain.usecase.lamp.DeleteLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.ExitLampUseCase
@@ -42,7 +43,8 @@ class HomeViewModel @Inject constructor(
     private val connectSocketUseCase: ConnectSocketUseCase,
     private val disconnectSocketUseCase: DisconnectSocketUseCase,
     private val getVisitRequestLampInfoUseCase: GetVisitRequestLampInfoUseCase,
-    private val cancelVisitRequestUseCase: CancelVisitRequestUseCase
+    private val cancelVisitRequestUseCase: CancelVisitRequestUseCase,
+    private val testChatUseCase: TestChatUseCase
 ) : ViewModel() {
 
     private val _myInfo = MutableStateFlow<MyInfoDomainModel?>(null)
@@ -142,6 +144,7 @@ class HomeViewModel @Inject constructor(
                 Log.d(TAG, "startMatch()")
                 startMatchUseCase()
                 getLampData()
+                testChat(myLamp.value?.lamp?.lampId ?: 0)
             } catch (e: Exception) {
                 Log.e(TAG, "startMatch Exception", e)
             }
@@ -219,15 +222,22 @@ class HomeViewModel @Inject constructor(
     fun getVisitLampOwnerName() {
         viewModelScope.launch {
             val name = getVisitRequestLampInfoUseCase()
-            _visitLampOwnerName.value = name
             Log.d(TAG, "getVisitLampOwnerName $name")
+            _visitLampOwnerName.value = name
         }
     }
 
     fun cancelVisitRequest() {
         viewModelScope.launch {
-            cancelVisitRequestUseCase()
             Log.d(TAG, "cancelVisitRequest")
+            cancelVisitRequestUseCase()
+        }
+    }
+
+    fun testChat(lampId: Int) {
+        viewModelScope.launch {
+            Log.d(TAG, "testChat")
+            testChatUseCase(lampId)
         }
     }
 

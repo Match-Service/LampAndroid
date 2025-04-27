@@ -7,6 +7,7 @@ import com.devndev.lamp.data.di.qualifier.DefaultClient
 import com.devndev.lamp.data.di.qualifier.DefaultRetrofit
 import com.devndev.lamp.data.interceptor.AuthInterceptor
 import com.devndev.lamp.data.service.AlarmService
+import com.devndev.lamp.data.service.ChatService
 import com.devndev.lamp.data.service.LampMatchService
 import com.devndev.lamp.data.service.LampService
 import com.devndev.lamp.data.service.LoginService
@@ -101,6 +102,12 @@ internal class NetworkModule {
     fun provideLampMatchService(
         @DefaultRetrofit retrofit: Retrofit
     ): LampMatchService = retrofit.create()
+
+    @Singleton
+    @Provides
+    fun provideChatService(
+        @DefaultRetrofit retrofit: Retrofit
+    ): ChatService = retrofit.create()
 
     @Singleton
     @Provides

@@ -1,6 +1,7 @@
 package com.devndev.lamp.data.di
 
 import com.devndev.lamp.data.repository.AlarmRepositoryImpl
+import com.devndev.lamp.data.repository.ChatRepositoryImpl
 import com.devndev.lamp.data.repository.LampMatchRepositoryImpl
 import com.devndev.lamp.data.repository.LampRepositoryImpl
 import com.devndev.lamp.data.repository.LampSocketRepositoryImpl
@@ -8,6 +9,7 @@ import com.devndev.lamp.data.repository.LoginRepositoryImpl
 import com.devndev.lamp.data.repository.SignUpRepositoryImpl
 import com.devndev.lamp.data.repository.UserRepositoryImpl
 import com.devndev.lamp.domain.repository.AlarmRepository
+import com.devndev.lamp.domain.repository.ChatRepository
 import com.devndev.lamp.domain.repository.LampMatchRepository
 import com.devndev.lamp.domain.repository.LampRepository
 import com.devndev.lamp.domain.repository.LampSocketRepository
@@ -50,4 +52,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindLampSocketRepository(lampSocketRepositoryImpl: LampSocketRepositoryImpl): LampSocketRepository
+
+    @Singleton
+    @Binds
+    fun bindChatRepository(chatRepositoryImpl: ChatRepositoryImpl): ChatRepository
 }
