@@ -31,7 +31,7 @@ fun MainPagerScreen(
             }
 
             MainScreenPage.CHATTING -> {
-                ChattingScreen(modifier = modifier)
+                ChattingScreen(modifier = modifier, navController = navController)
             }
 
             MainScreenPage.MY_PAGE -> {

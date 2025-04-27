@@ -20,4 +20,5 @@ object Route {
     const val FORGOT_PASSWORD = "forgot_password"
     const val VOTE = "vote"
     const val FIND = "find"
+    const val CHAT = "chat"
 }

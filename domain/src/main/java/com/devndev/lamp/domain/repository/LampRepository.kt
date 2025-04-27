@@ -18,7 +18,7 @@ interface LampRepository {
     suspend fun rejectInvite(rejectInviteParam: RejectInviteParam)
     suspend fun exitLamp()
     suspend fun kickUser(kickUserParam: KickUserParam)
-    suspend fun visitRequest()
+    suspend fun visitRequest(lampId: Int)
     suspend fun acceptVisit(acceptVisitParam: AcceptVisitParam)
     suspend fun rejectVisit(rejectVisitParam: RejectVisitParam)
     suspend fun getVisitRequestLampInfo(): String

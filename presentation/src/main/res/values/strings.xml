@@ -224,4 +224,10 @@
     <string name="visit_lamp_status_full">"램프에 빈자리가 없어요</string>
 
     <string name="enter_popup_main">"%s 램프에\n입장 하시겠습니까?"</string>
+
+    <string name="input_chat_message">"메시지를 입력하세요"</string>
+
+    <string name="say_hi">"반가운 인사로 대화를 시작해보세요"</string>
+    <string name="register_appointment">"약속을 등록 해보세요"</string>
+    <string name="send">"전송"</string>
 </resources>

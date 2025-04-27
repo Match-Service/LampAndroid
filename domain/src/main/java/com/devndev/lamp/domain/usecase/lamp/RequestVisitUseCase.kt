@@ -6,7 +6,7 @@ import javax.inject.Inject
 class RequestVisitUseCase @Inject constructor(
     private val lampRepository: LampRepository
 ) {
-    suspend operator fun invoke() {
-        lampRepository.visitRequest()
+    suspend operator fun invoke(lampId: Int) {
+        lampRepository.visitRequest(lampId)
     }
 }

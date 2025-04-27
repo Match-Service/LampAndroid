@@ -2,6 +2,7 @@ package com.devndev.lamp.presentation.ui.chatting
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,7 +12,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,8 +21,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.devndev.lamp.domain.model.chat.ChatRoomDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray3
 import com.devndev.lamp.presentation.theme.LightGray
@@ -30,9 +30,13 @@ import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 
 @Composable
-fun Chat() {
-    val isChatExist = (0..1).random() == 1
-    val isScheduleExist = (0..1).random() == 1
+fun Chat(
+    onChatClick: () -> Unit = {},
+    chat: ChatRoomDomainModel
+) {
+    val isChatExist = chat.lastMessageInfo != null
+    val isScheduleExist = chat.appointment != null
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -42,28 +46,29 @@ fun Chat() {
                 color = LightGray,
                 shape = RoundedCornerShape(15.dp)
             )
-            .padding(vertical = 15.dp, horizontal = 20.dp),
+            .padding(vertical = 15.dp, horizontal = 20.dp)
+            .clickable { onChatClick() },
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(5.dp)
         ) {
-            ChatTopSection()
+            ChatTopSection(chat)
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = "멋쟁이신사들", color = Color.White, style = Typography.medium18)
+                Text(text = chat.myLampName, color = Color.White, style = Typography.medium18)
                 Icon(
                     modifier = Modifier.size(16.dp),
                     painter = painterResource(id = R.drawable.heart),
                     contentDescription = null,
                     tint = Color.White
                 )
-                Text(text = "이쁜2들", color = Color.White, style = Typography.medium18)
+                Text(text = chat.otherLampName, color = Color.White, style = Typography.medium18)
             }
 
             if (isChatExist) {
@@ -74,7 +79,9 @@ fun Chat() {
                 ) {
                     Text(
                         modifier = Modifier.width(220.dp),
-                        text = "닉네임 : 네네! 그 날짜 좋아요! 다들 언제가 괜찮으실까요?",
+                        text = chat.lastMessageInfo?.userName
+                            ?: (": " + chat.lastMessageInfo?.message)
+                            ?: "",
                         color = Color.White,
                         style = Typography.medium15,
                         maxLines = 1,
@@ -114,34 +121,34 @@ fun Chat() {
                 )
             }
         }
-        if (isScheduleExist) {
-            Box() {
-                HorizontalDivider(thickness = 1.dp, color = LightGray)
-                Row(
-                    modifier = Modifier.padding(top = 10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.calendar),
-                            contentDescription = null,
-                            tint = ManColor
-                        )
-                        Text(text = "D-1", color = ManColor, style = Typography.normal12)
-                    }
-                    Text(
-                        text = "7월 30일 19:00 강남역 1번 출구 앞",
-                        color = ManColor,
-                        style = Typography.normal12
-                    )
-                }
-            }
-        }
+//        if (isScheduleExist) {
+//            Box() {
+//                HorizontalDivider(thickness = 1.dp, color = LightGray)
+//                Row(
+//                    modifier = Modifier.padding(top = 10.dp),
+//                    horizontalArrangement = Arrangement.spacedBy(10.dp)
+//                ) {
+//                    Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
+//                        Icon(
+//                            painter = painterResource(id = R.drawable.calendar),
+//                            contentDescription = null,
+//                            tint = ManColor
+//                        )
+//                        Text(text = "D-1", color = ManColor, style = Typography.normal12)
+//                    }
+//                    Text(
+//                        text = chat.appointment?.appointmentPlace,
+//                        color = ManColor,
+//                        style = Typography.normal12
+//                    )
+//                }
+//            }
+//        }
     }
 }
 
 @Composable
-fun ChatTopSection() {
+fun ChatTopSection(chat: ChatRoomDomainModel) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -156,7 +163,7 @@ fun ChatTopSection() {
                 tint = Color.Unspecified
             )
             Text(
-                "8월 8일 " + stringResource(id = R.string.lamp_on),
+                formatToMonthDay(chat.startDate) + " " + stringResource(id = R.string.lamp_on),
                 color = Gray3,
                 style = Typography.normal12
             )
@@ -171,16 +178,10 @@ fun ChatTopSection() {
                 tint = Gray3
             )
             Text(
-                "5 : 5",
+                "${chat.inviteUserCount + 1} : ${chat.inviteUserCount + 1}",
                 color = Gray3,
                 style = Typography.normal12
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun ChatPreview() {
-    Chat()
 }

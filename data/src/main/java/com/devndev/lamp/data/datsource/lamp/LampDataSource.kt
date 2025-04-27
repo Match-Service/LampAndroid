@@ -19,7 +19,7 @@ interface LampDataSource {
     suspend fun inviteUser(inviteUsersRequest: InviteUsersRequest): Response<Unit>
     suspend fun acceptInvite(acceptInviteRequest: AcceptInviteRequest): Response<Unit>
     suspend fun rejectInvite(rejectInviteRequest: RejectInviteRequest): Response<Unit>
-    suspend fun requestVisit(): Response<Unit>
+    suspend fun requestVisit(lampId: Int): Response<Unit>
     suspend fun acceptVisit(acceptVisitRequest: AcceptVisitRequest): Response<Unit>
     suspend fun rejectVisit(rejectVisitRequest: RejectVisitRequest): Response<Unit>
     suspend fun exitLamp(): Response<Unit>
