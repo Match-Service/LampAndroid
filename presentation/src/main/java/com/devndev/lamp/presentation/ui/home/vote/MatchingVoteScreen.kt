@@ -74,6 +74,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Gray3
@@ -119,7 +120,7 @@ fun MatchingVoteScreen(
     var curYOffset = remember { mutableStateOf(0f) }
 
     // 임시 처리 바꿔주세요 어진Lee
-    var matchSuggestion: MatchSuggestionDomainModel? = null
+ //   var matchSuggestion: MatchSuggestionDomainModel? = null
 
     // stickyHeader가 최상단에 위치했는지 여부를 저장하는 상태
 //    val isStickyHeaderAtTop = remember { mutableStateOf(false) }

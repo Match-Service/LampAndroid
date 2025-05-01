@@ -64,6 +64,9 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import java.text.ParseException
 import java.text.SimpleDateFormat
+import java.time.OffsetDateTime
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @Composable
@@ -338,17 +341,20 @@ fun formatDate(dateString: String?): String {
         return ""
     }
 
-    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-    val outputFormat = SimpleDateFormat("yyyy년 MM월 dd일", Locale.getDefault())
+    // ISO 8601 형식에 맞는 DateTimeFormatter
+    val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
 
     return try {
-        val date = inputFormat.parse(dateString)
-        if (date != null) {
-            outputFormat.format(date)
-        } else {
-            ""
-        }
-    } catch (e: ParseException) {
+        // ZonedDateTime으로 파싱
+        val zonedDateTime = ZonedDateTime.parse(dateString, formatter)
+
+        // 출력 형식 정의 (yyyy년 MM월 dd일)
+        val outputFormatter = DateTimeFormatter.ofPattern("yyyy년 MM월 dd일", Locale.KOREAN)
+
+        // 포맷팅 후 반환
+        zonedDateTime.format(outputFormatter)
+    } catch (e: Exception) {
+        // 파싱 오류가 있을 경우 빈 문자열 반환
         ""
     }
 }
@@ -358,18 +364,19 @@ fun formatChatDate(dateString: String?): String {
         return ""
     }
 
-    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+    // Define the input format with the timezone offset
+    val inputFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX")
 
-    val outputFormat = SimpleDateFormat("a hh:mm", Locale.getDefault())
+    // Define the output format
+    val outputFormatter = DateTimeFormatter.ofPattern("a hh:mm", Locale.getDefault())
 
     return try {
-        val date = inputFormat.parse(dateString)
-        if (date != null) {
-            outputFormat.format(date)
-        } else {
-            ""
-        }
-    } catch (e: ParseException) {
+        // Parse the input string as OffsetDateTime
+        val date = OffsetDateTime.parse(dateString, inputFormatter)
+
+        // Format the date to the required output format
+        date.format(outputFormatter)
+    } catch (e: Exception) {
         ""
     }
 }

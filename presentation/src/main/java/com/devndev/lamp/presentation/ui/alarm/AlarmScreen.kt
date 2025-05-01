@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.alarm
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -65,6 +66,9 @@ import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
 import kotlinx.coroutines.delay
 import java.time.Duration
 import java.time.Instant
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -362,15 +366,15 @@ fun StartCircle(color: Color) {
 }
 
 fun getTimeAgo(isoTime: String): String {
-    // Parsing the ISO time string to Instant
-    val time = Instant.parse(isoTime)
+    // Parsing the ISO time string to ZonedDateTime with the original offset
+    val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+    val zonedDateTime = ZonedDateTime.parse(isoTime, formatter)
 
-    val adjustedTime = time.plus(Duration.ofHours(9))
-    // Getting the current time
-    val now = Instant.now()
+    // Getting the current time in Korean Standard Time (KST) explicitly (UTC+9)
+    val now = ZonedDateTime.now(ZoneOffset.ofHours(9)).minusHours(9)
 
     // Calculating the duration between the provided time and now
-    val duration = Duration.between(adjustedTime, now)
+    val duration = Duration.between(zonedDateTime, now)
 
     // Converting duration to minutes and hours
     val minutes = duration.toMinutes()
