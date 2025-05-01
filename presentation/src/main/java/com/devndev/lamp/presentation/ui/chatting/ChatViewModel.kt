@@ -37,13 +37,14 @@ class ChatViewModel @Inject constructor(
     val chatList: StateFlow<List<ChatRoomDomainModel>> = _chatList
 
     private val _chatMessage = MutableStateFlow<List<ChatMessageDomainModel>>(emptyList())
-    val chatMessage: StateFlow<List<ChatMessageDomainModel>> = _chatMessage
 
     private val _chatInfo = MutableStateFlow<ChatInfoDomainModel?>(null)
-    val chatInfo: StateFlow<ChatInfoDomainModel?> = _chatInfo
 
     private val _chatUiState = MutableStateFlow(ChatUiState())
     val chatUiState: StateFlow<ChatUiState> = _chatUiState
+
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
 
     init {
         getChatList()
@@ -53,10 +54,13 @@ class ChatViewModel @Inject constructor(
     private fun getChatList() {
         viewModelScope.launch {
             try {
+                _isLoading.value = true
                 Log.d(TAG, "getChatList")
                 _chatList.value = getChatListUseCase()
             } catch (e: Exception) {
                 Log.e(TAG, "getChatList Exception", e)
+            } finally {
+                _isLoading.value = false
             }
         }
     }
@@ -67,6 +71,7 @@ class ChatViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
+                _isLoading.value = true
                 val chatMessageDeferred = async { getChatMessageUseCase(lastMessageId, chatRoomId) }
                 val chatInfoDeferred = async { getChatInfoUseCase(chatRoomId) }
 
@@ -80,6 +85,8 @@ class ChatViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e(TAG, "fetchChatData Exception", e)
                 Log.e(TAG, "fetchChatData Exception ${e.cause}")
+            } finally {
+                _isLoading.value = false
             }
         }
     }
