@@ -62,8 +62,6 @@ import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
-import java.text.ParseException
-import java.text.SimpleDateFormat
 import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter

@@ -1,6 +1,5 @@
 package com.devndev.lamp.presentation.ui.alarm
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -65,7 +64,6 @@ import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
 import kotlinx.coroutines.delay
 import java.time.Duration
-import java.time.Instant
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
