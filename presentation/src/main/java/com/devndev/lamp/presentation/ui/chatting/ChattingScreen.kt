@@ -121,11 +121,17 @@ fun EmptyChatScreen() {
 }
 
 fun formatToMonthDay(dateString: String): String {
-    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
-    inputFormat.timeZone = TimeZone.getTimeZone("UTC")
+    // 'yyyy-MM-dd'T'HH:mm:ssXXX' 형식으로 변경하여 시간대 처리
+    val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
 
+    // 입력 날짜를 파싱
     val date = inputFormat.parse(dateString)
 
+    // 출력 형식은 "M월 d일"
     val outputFormat = SimpleDateFormat("M월 d일", Locale.KOREAN)
+
+    // 한국 시간대(KST)로 변환하기 위해 outputFormat에 TimeZone 설정
+    outputFormat.timeZone = TimeZone.getTimeZone("Asia/Seoul")
+
     return date?.let { outputFormat.format(it) } ?: ""
 }
