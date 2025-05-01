@@ -84,6 +84,9 @@ fun MainScreen(modifier: Modifier, signOut: () -> Unit) {
                     Route.SIGNUP, Route.EMAIL_LOGIN, Route.FORGOT_PASSWORD -> {
                         LampTopBar(navController = navController, isAlarmIconNeed = false)
                     }
+//                    "${Route.CHAT}/{chatRoomId}" -> {
+//                        LampTopBar(navController = navController, isAlarmIconNeed = true, color = Gray)
+//                    }
                     else -> {
                         LampTopBar(navController = navController, isAlarmIconNeed = true)
                     }
@@ -154,6 +157,11 @@ fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean, color: Co
         painterResource(id = R.drawable.alarm_icon)
     }
 
+    val logoColor = if (color != LampBlack) {
+        Color.White
+    } else {
+        LightGray
+    }
     val isFromMain = currentRoute?.startsWith(Route.MAIN) == true
     Row(
         modifier = Modifier
@@ -167,7 +175,7 @@ fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean, color: Co
         Icon(
             painterResource(id = R.drawable.app_logo),
             contentDescription = "AppLogo",
-            tint = LightGray,
+            tint = logoColor,
             modifier = Modifier
                 .height(30.dp)
                 .width(72.dp)

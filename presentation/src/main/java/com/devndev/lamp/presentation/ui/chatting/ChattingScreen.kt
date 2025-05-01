@@ -5,7 +5,9 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -28,6 +30,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.IncTypography
+import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.chatting.navigation.navigateChat
@@ -44,7 +47,7 @@ fun ChattingScreen(
 ) {
     val logTag = "ChattingScreen"
     val chatList by viewModel.chatList.collectAsState()
-
+    val isLoading by viewModel.isLoading.collectAsState()
     val context = LocalContext.current
     val handler = remember { Handler(Looper.getMainLooper()) }
     var backPressedOnce = remember { false }
@@ -67,26 +70,30 @@ fun ChattingScreen(
         }
     }
 
-    if (chatList.isNotEmpty()) {
-        LazyColumn(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(15.dp),
-            reverseLayout = true
-        ) {
-            items(chatList) { chat ->
-                Chat(
-                    onChatClick = {
-                        navController.navigateChat(chat.chatRoomId)
-                    },
-                    chat = chat
-                )
-            }
-        }
+    if (isLoading) {
+        Box(modifier = Modifier.fillMaxSize().background(LampBlack))
     } else {
-        EmptyChatScreen()
+        if (chatList.isNotEmpty()) {
+            LazyColumn(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(15.dp),
+                reverseLayout = true
+            ) {
+                items(chatList) { chat ->
+                    Chat(
+                        onChatClick = {
+                            navController.navigateChat(chat.chatRoomId)
+                        },
+                        chat = chat
+                    )
+                }
+            }
+        } else {
+            EmptyChatScreen()
+        }
     }
 }
 

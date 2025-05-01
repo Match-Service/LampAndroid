@@ -1,6 +1,12 @@
 package com.devndev.lamp.presentation.ui.chatting
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,8 +19,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -24,7 +32,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -41,9 +49,15 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
@@ -52,6 +66,7 @@ import com.devndev.lamp.domain.model.chat.UserInfo
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Gray3
+import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
@@ -76,157 +91,210 @@ fun ChatScreen(
 ) {
     val chat = viewModel.chatUiState.collectAsState()
     val myInfo = viewModel.myInfo.collectAsState()
-    var isLoading by remember { mutableStateOf(true) }
+    val topBarVisible = remember { mutableStateOf(true) }
+    var shouldNavigate by remember { mutableStateOf(false) }
+    val isLoading = viewModel.isLoading.collectAsState()
 
     BackHandler {
-        navController.navigateMain(MainScreenPage.CHATTING)
+        topBarVisible.value = false
+        shouldNavigate = true
+    }
+
+    LaunchedEffect(shouldNavigate) {
+        if (shouldNavigate) {
+            delay(200) // Wait for the animation to finish
+            navController.navigateMain(MainScreenPage.CHATTING) // Navigate to the next screen
+        }
     }
 
     LaunchedEffect(Unit) {
         viewModel.fetchChatData(lastMessageId = null, chatRoomId = chatRoomId)
         delay(300)
-        isLoading = false
+        topBarVisible.value = true
     }
     val lazyListState = rememberLazyListState()
 
     var currentMessage by remember { mutableStateOf("") }
 
-    if (!isLoading) {
-        Column(
-            modifier = modifier
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.SpaceBetween
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(LampBlack)
+            .imePadding(),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
+        LampTopBar(navController = navController, isAlarmIconNeed = true, color = Gray)
+        AnimatedVisibility(
+            visible = topBarVisible.value,
+            enter = EnterTransition.None,
+            exit = slideOutVertically(animationSpec = tween(200)) + shrinkVertically() + fadeOut()
         ) {
-            LampTopBar(navController = navController, isAlarmIconNeed = true, Gray)
-            LazyColumn(
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxWidth(),
-                state = lazyListState
-            ) {
-                item {
-                    Spacer(modifier = Modifier.height(20.dp))
-                    Box(
-                        modifier = Modifier.fillMaxWidth(),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(22.dp))
-                                .background(Gray)
-                                .padding(horizontal = 10.dp, vertical = 5.dp),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                text = formatDate(chat.value.chatInfo?.startDate),
-                                color = Color.White,
-                                style = Typography.normal12
-                            )
-                        }
-                    }
-                }
+            ChatTopBar(
+                chat = chat.value,
+                onBackClick = {
+                    topBarVisible.value = false
+                    shouldNavigate = true
+                },
+                onCalendarClick = {}
+            )
+        }
 
-                items(chat.value.chatItems) { chat ->
-                    ChatBubble(
-                        message = chat.message,
-                        userInfo = chat.userInfo,
-                        isMine = (chat.userInfo.userId == myInfo.value?.userId)
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                }
-            }
-
-            LaunchedEffect(chat.value.chatItems.size) {
-                if (chat.value.chatItems.isNotEmpty()) {
-                    snapshotFlow { lazyListState.layoutInfo.totalItemsCount }
-                        .filter { it > 0 }
-                        .first()
-
-                    lazyListState.scrollToItem(chat.value.chatItems.size)
-                }
-            }
-
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier
-                    .background(color = Gray)
-                    .padding(start = 16.dp, end = 16.dp, top = 15.dp, bottom = 20.dp)
-            ) {
-                BasicTextField(
-                    modifier = Modifier
-                        .background(Gray)
-                        .weight(1f)
-                        .clip(RoundedCornerShape(27.dp))
-                        .border(1.dp, LightGray, RoundedCornerShape(27.dp))
-                        .padding(horizontal = 12.dp, vertical = 5.dp),
-                    value = currentMessage,
-                    onValueChange = { currentMessage = it },
-                    textStyle = Typography.medium15.copy(color = Gray3),
-                    singleLine = true,
-                    cursorBrush = SolidColor(Color.White),
-                    keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send),
-                    keyboardActions = KeyboardActions(
-                        onSend = {
-                            if (currentMessage.isNotBlank()) {
-                                viewModel.sendChat(chatRoomId, currentMessage)
-                                viewModel.fetchChatData(null, chatRoomId)
-                                currentMessage = ""
-                            }
-                        }
-                    )
-                ) { innerTextField ->
-                    if (currentMessage.isEmpty()) {
-                        Text(
-                            text = stringResource(id = R.string.input_chat_message),
-                            color = Gray3,
-                            style = Typography.medium15
-                        )
-                    }
-                    innerTextField()
-                }
-
+        LazyColumn(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth(),
+            state = lazyListState
+        ) {
+            item {
+                Spacer(modifier = Modifier.height(20.dp))
                 Box(
-                    modifier = Modifier
-                        .height(30.dp)
-                        .background(
-                            brush = if (currentMessage.isNotBlank()) {
-                                Brush.horizontalGradient(colors = listOf(WomanColor, ManColor))
-                            } else {
-                                Brush.horizontalGradient(colors = listOf(LightGray, LightGray))
-                            },
-                            shape = RoundedCornerShape(31.dp)
-                        )
-                        .clickable(onClick = {
-                            if (currentMessage.isNotBlank()) {
-                                viewModel.sendChat(chatRoomId, currentMessage)
-                                viewModel.fetchChatData(null, chatRoomId)
-                                currentMessage = ""
-                            }
-                        })
-                        .padding(horizontal = 14.dp, vertical = 7.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    val textColor = if (currentMessage.isNotBlank()) {
-                        Color.White
-                    } else {
-                        Gray3
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(22.dp))
+                            .background(Gray)
+                            .padding(horizontal = 10.dp, vertical = 5.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = formatDate(chat.value.chatInfo?.startDate),
+                            color = Color.White,
+                            style = Typography.normal12
+                        )
                     }
+                }
+                if (!isLoading.value && chat.value.chatMessage.isEmpty()) {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(
+                            text = stringResource(id = R.string.chat_created) +
+                                    "\n" +
+                                    stringResource(id = R.string.say_hi),
+                            textAlign = TextAlign.Center,
+                            color = Color.White,
+                            style = Typography.normal12
+                        )
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Text(
+                            text = buildAnnotatedString {
+                                val text = stringResource(id = R.string.register_appointment)
+                                val startIndex = text.indexOf(text)
+                                val endIndex = startIndex + text.length
+                                append(text)
 
-                    Text(
-                        text = stringResource(id = R.string.send),
-                        color = textColor,
-                        style = Typography.normal12
-                    )
+                                addStyle(
+                                    style = SpanStyle(textDecoration = TextDecoration.Underline),
+                                    start = startIndex,
+                                    end = endIndex
+                                )
+                            },
+                            color = Color.White,
+                            fontSize = 14.sp
+                        )
+                    }
+                } else {
+                    Spacer(modifier = Modifier.height(20.dp))
                 }
             }
+
+            items(chat.value.chatItems) { chat ->
+                ChatBubble(
+                    message = chat.message,
+                    userInfo = chat.userInfo,
+                    isMine = (chat.userInfo.userId == myInfo.value?.userId)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+            }
         }
-    } else {
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
+
+        LaunchedEffect(chat.value.chatItems.size) {
+            if (chat.value.chatItems.isNotEmpty()) {
+                snapshotFlow { lazyListState.layoutInfo.totalItemsCount }
+                    .filter { it > 0 }
+                    .first()
+
+                lazyListState.scrollToItem(chat.value.chatItems.size)
+            }
+        }
+
+        Row(
+            verticalAlignment = Alignment.Bottom,
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            modifier = Modifier
+                .background(color = Gray)
+                .padding(start = 16.dp, end = 16.dp, top = 15.dp, bottom = 20.dp)
         ) {
-            CircularProgressIndicator(color = Gray)
+            BasicTextField(
+                modifier = Modifier
+                    .background(Gray)
+                    .weight(1f)
+                    .clip(RoundedCornerShape(27.dp))
+                    .border(1.dp, LightGray, RoundedCornerShape(27.dp))
+                    .padding(horizontal = 12.dp, vertical = 5.dp),
+                value = currentMessage,
+                onValueChange = { currentMessage = it },
+                textStyle = Typography.medium15.copy(color = Gray3),
+                singleLine = true,
+                cursorBrush = SolidColor(Color.White),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send),
+                keyboardActions = KeyboardActions(
+                    onSend = {
+                        if (currentMessage.isNotBlank()) {
+                            viewModel.sendChat(chatRoomId, currentMessage)
+                            viewModel.fetchChatData(null, chatRoomId)
+                            currentMessage = ""
+                        }
+                    }
+                )
+            ) { innerTextField ->
+                if (currentMessage.isEmpty()) {
+                    Text(
+                        text = stringResource(id = R.string.input_chat_message),
+                        color = Gray3,
+                        style = Typography.medium15
+                    )
+                }
+                innerTextField()
+            }
+
+            Box(
+                modifier = Modifier
+                    .height(30.dp)
+                    .background(
+                        brush = if (currentMessage.isNotBlank()) {
+                            Brush.horizontalGradient(colors = listOf(WomanColor, ManColor))
+                        } else {
+                            Brush.horizontalGradient(colors = listOf(LightGray, LightGray))
+                        },
+                        shape = RoundedCornerShape(31.dp)
+                    )
+                    .clickable(onClick = {
+                        if (currentMessage.isNotBlank()) {
+                            viewModel.sendChat(chatRoomId, currentMessage)
+                            viewModel.fetchChatData(null, chatRoomId)
+                            currentMessage = ""
+                        }
+                    })
+                    .padding(horizontal = 14.dp, vertical = 7.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                val textColor = if (currentMessage.isNotBlank()) {
+                    Color.White
+                } else {
+                    Gray3
+                }
+
+                Text(
+                    text = stringResource(id = R.string.send),
+                    color = textColor,
+                    style = Typography.normal12
+                )
+            }
         }
     }
 }
@@ -334,6 +402,97 @@ fun ChatBubble(
     }
 }
 
+@Composable
+fun ChatTopBar(
+    chat: ChatUiState,
+    onBackClick: () -> Unit,
+    onCalendarClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(bottomStart = 25.dp, bottomEnd = 25.dp))
+            .background(Gray)
+            .padding(start = 16.dp, end = 16.dp, bottom = 15.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            modifier = Modifier,
+            horizontalArrangement = Arrangement.spacedBy(20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(
+                painterResource(id = R.drawable.back_arrow),
+                contentDescription = "뒤로가기",
+                tint = Color.White,
+                modifier = Modifier.clickable {
+                    onBackClick()
+                }
+            )
+            Column(
+                verticalArrangement = Arrangement.spacedBy(2.dp)
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(3.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.bulb),
+                        contentDescription = null,
+                        tint = Gray3,
+                        modifier = Modifier.height(10.dp)
+                    )
+                    Text(
+                        text = formatDateExceptYear(chat.chatInfo?.startDate) + stringResource(id = R.string.lamp_on),
+                        color = Gray3,
+                        style = Typography.normal12
+                    )
+                    Spacer(modifier = Modifier.width(7.dp))
+                    Icon(
+                        painter = painterResource(id = R.drawable.mypage),
+                        contentDescription = null,
+                        tint = Gray3,
+                        modifier = Modifier.height(10.dp)
+                    )
+                    // todo ? 뭔가 이상함 숫자가 추후 램프 정상 매칭 가능할때 살펴보기
+                    Text(
+                        text = "${((chat.chatInfo?.inviteUserCount ?: 0) + 1) / 2} : ${((chat.chatInfo?.inviteUserCount ?: 0) + 1) / 2}",
+                        color = Gray3,
+                        style = Typography.normal12
+                    )
+                }
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(5.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = chat.chatInfo?.myLampName ?: "",
+                        color = Color.White,
+                        style = Typography.medium15
+                    )
+                    Icon(
+                        modifier = Modifier.size(10.dp),
+                        painter = painterResource(id = R.drawable.heart),
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                    Text(
+                        text = chat.chatInfo?.otherLampName ?: "",
+                        color = Color.White,
+                        style = Typography.medium15
+                    )
+                }
+            }
+        }
+        Icon(
+            painter = painterResource(id = R.drawable.calendar),
+            contentDescription = "calendar",
+            tint = Color.White,
+            modifier = Modifier.size(24.dp)
+        )
+    }
+}
+
 fun formatDate(dateString: String?): String {
     if (dateString.isNullOrEmpty()) {
         return ""
@@ -353,6 +512,24 @@ fun formatDate(dateString: String?): String {
         zonedDateTime.format(outputFormatter)
     } catch (e: Exception) {
         // 파싱 오류가 있을 경우 빈 문자열 반환
+        ""
+    }
+}
+
+fun formatDateExceptYear(dateString: String?): String {
+    if (dateString.isNullOrEmpty()) {
+        return ""
+    }
+
+    val formatter = DateTimeFormatter.ISO_OFFSET_DATE_TIME
+
+    return try {
+        val zonedDateTime = ZonedDateTime.parse(dateString, formatter)
+        val month = zonedDateTime.monthValue
+        val day = zonedDateTime.dayOfMonth
+
+        "${month}월 ${day}일"
+    } catch (e: Exception) {
         ""
     }
 }
