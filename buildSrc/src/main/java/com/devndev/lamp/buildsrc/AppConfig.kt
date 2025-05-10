@@ -6,7 +6,7 @@ object AppConfig {
     const val compileSdk = 34
     const val minSdk = 26
     const val targetSdk = 34
-    const val kotlinCompilerExtension = "1.5.1"
+    const val kotlinCompilerExtension = "1.5.13"
 
     const val applicationId = "com.devndev.lamp"
     const val appNameSpace = "com.devndev.lamp"
