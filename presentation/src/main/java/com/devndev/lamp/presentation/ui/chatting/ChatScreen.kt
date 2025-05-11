@@ -35,6 +35,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -59,6 +60,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
@@ -94,6 +96,14 @@ fun ChatScreen(
     val topBarVisible = remember { mutableStateOf(true) }
     var shouldNavigate by remember { mutableStateOf(false) }
     val isLoading = viewModel.isLoading.collectAsState()
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        viewModel.connectSocket()
+        onDispose {
+            viewModel.disconnectSocket()
+        }
+    }
 
     BackHandler {
         topBarVisible.value = false
@@ -173,8 +183,8 @@ fun ChatScreen(
                         Spacer(modifier = Modifier.height(10.dp))
                         Text(
                             text = stringResource(id = R.string.chat_created) +
-                                    "\n" +
-                                    stringResource(id = R.string.say_hi),
+                                "\n" +
+                                stringResource(id = R.string.say_hi),
                             textAlign = TextAlign.Center,
                             color = Color.White,
                             style = Typography.normal12
@@ -246,7 +256,6 @@ fun ChatScreen(
                     onSend = {
                         if (currentMessage.isNotBlank()) {
                             viewModel.sendChat(chatRoomId, currentMessage)
-                            viewModel.fetchChatData(null, chatRoomId)
                             currentMessage = ""
                         }
                     }
@@ -276,7 +285,6 @@ fun ChatScreen(
                     .clickable(onClick = {
                         if (currentMessage.isNotBlank()) {
                             viewModel.sendChat(chatRoomId, currentMessage)
-                            viewModel.fetchChatData(null, chatRoomId)
                             currentMessage = ""
                         }
                     })

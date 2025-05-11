@@ -13,6 +13,8 @@ import com.devndev.lamp.domain.usecase.chat.GetChatInfoUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatListUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatMessageUseCase
 import com.devndev.lamp.domain.usecase.chat.SendChatUseCase
+import com.devndev.lamp.domain.usecase.socket.ConnectSocketUseCase
+import com.devndev.lamp.domain.usecase.socket.DisconnectSocketUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -28,7 +30,9 @@ class ChatViewModel @Inject constructor(
     private val getChatListUseCase: GetChatListUseCase,
     private val getChatMessageUseCase: GetChatMessageUseCase,
     private val getChatInfoUseCase: GetChatInfoUseCase,
-    private val sendChatUseCase: SendChatUseCase
+    private val sendChatUseCase: SendChatUseCase,
+    private val connectSocketUseCase: ConnectSocketUseCase,
+    private val disconnectSocketUseCase: DisconnectSocketUseCase
 ) : ViewModel() {
     private val _myInfo = MutableStateFlow<MyInfoDomainModel?>(null)
     val myInfo: StateFlow<MyInfoDomainModel?> = _myInfo
@@ -134,6 +138,37 @@ class ChatViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e(HomeViewModel.TAG, "fetchData Exception", e)
             }
+        }
+    }
+
+    fun connectSocket() {
+        viewModelScope.launch {
+            try {
+                connectSocketUseCase(
+                    onConnected = {
+                        Log.d(TAG, "Connected to socket")
+                    },
+                    onMessage = {
+                    },
+                    onUpdatedMessage = {
+                    },
+                    onChat = { chatMessage ->
+                        val updatedMessages = _chatMessage.value + chatMessage
+                        _chatMessage.value = updatedMessages
+
+                        updateChatItems()
+                    }
+                )
+            } catch (e: Exception) {
+                Log.e(HomeViewModel.TAG, "Socket connection failed", e)
+            }
+        }
+    }
+
+    fun disconnectSocket() {
+        viewModelScope.launch {
+            disconnectSocketUseCase()
+            Log.d(HomeViewModel.TAG, "Disconnect socket")
         }
     }
 

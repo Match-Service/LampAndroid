@@ -1,6 +1,7 @@
 package com.devndev.lamp.data.datsource.socket
 
 import com.devndev.lamp.data.socket.LampSocketService
+import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
 import javax.inject.Inject
 
 class LampSocketDataSourceImpl @Inject constructor(
@@ -9,9 +10,10 @@ class LampSocketDataSourceImpl @Inject constructor(
     override fun connect(
         onConnected: () -> Unit,
         onMessage: (String) -> Unit,
-        onUpdatedMessage: () -> Unit
+        onUpdatedMessage: () -> Unit,
+        onChat: (ChatMessageDomainModel) -> Unit
     ) {
-        lampSocketService.connect(onConnected, onMessage, onUpdatedMessage)
+        lampSocketService.connect(onConnected, onMessage, onUpdatedMessage, onChat)
     }
 
     override fun disconnect() {

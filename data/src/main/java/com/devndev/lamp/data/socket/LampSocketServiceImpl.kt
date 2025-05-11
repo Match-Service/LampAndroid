@@ -2,6 +2,7 @@ package com.devndev.lamp.data.socket
 
 import android.util.Log
 import com.devndev.lamp.data.datsource.local.LocalDataSource
+import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
 import io.socket.client.IO
 import io.socket.client.Socket
 import org.json.JSONObject
@@ -12,15 +13,15 @@ class LampSocketServiceImpl @Inject constructor(
 ) : LampSocketService {
 
     private var socket: Socket? = null
-    private val logTag = "LampSocketService"
 
     override fun connect(
         onConnected: () -> Unit,
         onMessage: (String) -> Unit,
-        onUpdatedMessage: () -> Unit
+        onUpdatedMessage: () -> Unit,
+        onChat: (ChatMessageDomainModel) -> Unit
     ) {
         val token = localDataSource.getToken()
-        Log.d(logTag, "Attempting to connect with token: $token")
+        Log.d(TAG, "Attempting to connect with token: $token")
         val options = IO.Options().apply {
             extraHeaders = mapOf("authorization" to listOf("Bearer $token"))
         }
@@ -29,49 +30,77 @@ class LampSocketServiceImpl @Inject constructor(
             socket = IO.socket("http://dev-api.lamp-app.xyz:4450/lamp", options)
 
             socket?.on(Socket.EVENT_CONNECT) {
-                Log.d(logTag, "Successfully connected to the socket.")
+                Log.d(TAG, "Successfully connected to the socket.")
                 onConnected()
             }
 
             socket?.on(Socket.EVENT_CONNECT_ERROR) { args ->
-                Log.e(logTag, "Socket connection error: ${args.joinToString()}")
+                Log.e(TAG, "Socket connection error: ${args.joinToString()}")
             }
 
             socket?.on("status") { args ->
-                Log.d("LampSocketServiceImpl", "socket on status")
+                Log.d(TAG, "socket on status")
                 if (args.isNotEmpty()) {
                     try {
                         val jsonObject = JSONObject(args[0].toString())
                         when {
                             jsonObject.has("userLampStatus") -> {
                                 val status = jsonObject.getString("userLampStatus")
-                                Log.d("LampSocketServiceImpl", "Received userLampStatus: $status")
+                                Log.d(TAG, "Received userLampStatus: $status")
                                 onMessage(status)
                             }
 
                             jsonObject.has("updated") -> {
                                 onUpdatedMessage()
-                                Log.d("LampSocketServiceImpl", "Received updated")
+                                Log.d(TAG, "Received updated")
                             }
                         }
                     } catch (e: Exception) {
-                        Log.e(logTag, "Error parsing JSON: ${e.message}")
+                        Log.e(TAG, "Error parsing JSON: ${e.message}")
+                    }
+                }
+            }
+
+            socket?.on("message") { args ->
+                Log.d(TAG, "socket on message")
+                if (args.isNotEmpty()) {
+                    try {
+                        val jsonObject = JSONObject(args[0].toString())
+                        val chatRoomId = jsonObject.getString("chatRoomId")
+                        val message = jsonObject.getString("message")
+                        val userId = jsonObject.getInt("userId")
+                        val createdAt = jsonObject.getString("createdAt")
+
+                        Log.d(TAG, "Received message from $userId in $chatRoomId: $message at $createdAt")
+                        val chatMessage = ChatMessageDomainModel(
+                            id = chatRoomId,
+                            message = message,
+                            userId = userId,
+                            createdAt = createdAt
+                        )
+                        onChat(chatMessage)
+                    } catch (e: Exception) {
+                        Log.e(TAG, "Error parsing JSON: ${e.message}")
                     }
                 }
             }
 
             socket?.connect()
         } catch (e: Exception) {
-            Log.e(logTag, "Error during socket connection", e)
+            Log.e(TAG, "Error during socket connection", e)
         }
     }
 
     override fun disconnect() {
         try {
             socket?.disconnect()
-            Log.d(logTag, "Socket disconnected")
+            Log.d(TAG, "Socket disconnected")
         } catch (e: Exception) {
-            Log.e(logTag, "Error during socket disconnection", e)
+            Log.e(TAG, "Error during socket disconnection", e)
         }
+    }
+
+    companion object {
+        const val TAG = "LampSocketServiceImpl"
     }
 }
