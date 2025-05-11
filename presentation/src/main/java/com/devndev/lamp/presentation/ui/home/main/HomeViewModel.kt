@@ -204,6 +204,8 @@ class HomeViewModel @Inject constructor(
                     },
                     onUpdatedMessage = {
                         getLampData()
+                    },
+                    onChat = {
                     }
                 )
             } catch (e: Exception) {
