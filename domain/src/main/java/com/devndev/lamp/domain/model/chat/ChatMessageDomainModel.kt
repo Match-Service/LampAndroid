@@ -4,5 +4,6 @@ data class ChatMessageDomainModel(
     val id: String,
     val createdAt: String,
     val message: String,
-    val userId: Int
+    val userId: Int,
+    val chatRoomId: Int = 0
 )

@@ -66,17 +66,18 @@ class LampSocketServiceImpl @Inject constructor(
                 if (args.isNotEmpty()) {
                     try {
                         val jsonObject = JSONObject(args[0].toString())
-                        val chatRoomId = jsonObject.getString("chatRoomId")
+                        val chatRoomId = jsonObject.getInt("chatRoomId")
                         val message = jsonObject.getString("message")
                         val userId = jsonObject.getInt("userId")
                         val createdAt = jsonObject.getString("createdAt")
-
+                        val id = jsonObject.getString("messageId")
                         Log.d(TAG, "Received message from $userId in $chatRoomId: $message at $createdAt")
                         val chatMessage = ChatMessageDomainModel(
-                            id = chatRoomId,
+                            id = id,
                             message = message,
                             userId = userId,
-                            createdAt = createdAt
+                            createdAt = createdAt,
+                            chatRoomId = chatRoomId
                         )
                         onChat(chatMessage)
                     } catch (e: Exception) {

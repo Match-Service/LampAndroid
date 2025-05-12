@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.chatting
 
+import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
@@ -78,7 +79,6 @@ import com.devndev.lamp.presentation.ui.main.LampTopBar
 import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
 import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -96,10 +96,13 @@ fun ChatScreen(
     val topBarVisible = remember { mutableStateOf(true) }
     var shouldNavigate by remember { mutableStateOf(false) }
     val isLoading = viewModel.isLoading.collectAsState()
+    val needScrollDown = viewModel.needScrollDown.collectAsState()
+
+    var previousItemCount by remember { mutableStateOf(0) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
-        viewModel.connectSocket()
+        viewModel.connectSocketForChatRoom(chatRoomId)
         onDispose {
             viewModel.disconnectSocket()
         }
@@ -117,12 +120,21 @@ fun ChatScreen(
         }
     }
 
+    val lazyListState = rememberLazyListState()
+
+    LaunchedEffect(needScrollDown.value) {
+        if (needScrollDown.value) {
+            lazyListState.scrollToItem(chat.value.chatItems.size)
+            viewModel.setNeedScrollDown(false)
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.fetchChatData(lastMessageId = null, chatRoomId = chatRoomId)
         delay(300)
         topBarVisible.value = true
+        lazyListState.scrollToItem(chat.value.chatItems.size)
     }
-    val lazyListState = rememberLazyListState()
 
     var currentMessage by remember { mutableStateOf("") }
 
@@ -222,14 +234,22 @@ fun ChatScreen(
             }
         }
 
-        LaunchedEffect(chat.value.chatItems.size) {
-            if (chat.value.chatItems.isNotEmpty()) {
-                snapshotFlow { lazyListState.layoutInfo.totalItemsCount }
-                    .filter { it > 0 }
-                    .first()
+        LaunchedEffect(lazyListState) {
+            snapshotFlow { lazyListState.firstVisibleItemIndex }
+                .filter { it == 0 } // 최상단에 도달했을 때만
+                .collect { index ->
+                    val firstVisibleMessage = chat.value.chatItems.getOrNull(index)?.message
+                    val firstMessageId = firstVisibleMessage?.id
+                    Log.d("----", firstMessageId.toString())
+                    Log.d("----", firstVisibleMessage?.message?:"")
 
-                lazyListState.scrollToItem(chat.value.chatItems.size)
-            }
+                    if (firstMessageId != null) {
+                        viewModel.fetchChatData(
+                            lastMessageId = firstMessageId,
+                            chatRoomId = chatRoomId
+                        )
+                    }
+                }
         }
 
         Row(
