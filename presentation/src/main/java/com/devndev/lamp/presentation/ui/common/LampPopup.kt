@@ -2,6 +2,7 @@ package com.devndev.lamp.presentation.ui.common
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -26,18 +29,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import coil.compose.AsyncImage
+import com.devndev.lamp.domain.model.chat.UserInfo
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Gray3
+import com.devndev.lamp.presentation.theme.IncTypography
 import com.devndev.lamp.presentation.theme.LightGray
+import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
+import com.devndev.lamp.presentation.ui.home.vote.ProgressBar
+import com.devndev.lamp.presentation.ui.mypage.calculateManAge
 
 @Composable
 fun OneButtonPopup(onDismissRequest: () -> Unit) {
@@ -267,6 +278,166 @@ fun EditPopup(
                 onClick = { onEditButtonClick(query) },
                 enabled = true
             )
+        }
+    }
+}
+
+@Composable
+fun ProfilePopup(
+    userInfo: UserInfo? = null,
+    onXButtonClick: () -> Unit
+) {
+    val nameColor = if (userInfo?.gender == "MALE") {
+        ManColor
+    } else {
+        WomanColor
+    }
+
+    val attractive = userInfo?.individuality?.let {
+        listOf(it.personality, it.voice, it.fashion, it.conversation)
+    } ?: listOf(0, 0, 0, 0)
+
+    val avgAttractive = attractive.average().toInt()
+
+    Dialog(onDismissRequest = {}, properties = DialogProperties(usePlatformDefaultWidth = false)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(vertical = 20.dp, horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Spacer(modifier = Modifier.height(50.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Color.Transparent),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp)
+                ) {
+                    Icon(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd)
+                            .padding(end = 15.dp)
+                            .clickable {
+                                onXButtonClick()
+                            },
+                        painter = painterResource(id = R.drawable.x_button_big),
+                        contentDescription = null,
+                        tint = Color.White
+                    )
+                }
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Gray, shape = RoundedCornerShape(15.dp))
+                        .padding(vertical = 25.dp, horizontal = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        modifier = Modifier.horizontalScroll(rememberScrollState()),
+                        horizontalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
+                        userInfo?.profileImages?.forEach { imageUrl ->
+                            AsyncImage(
+                                model = imageUrl,
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(120.dp),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                    }
+
+                    Row(
+                        modifier = Modifier.height(56.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = userInfo?.name ?: "",
+                            color = nameColor,
+                            style = IncTypography.normal42
+                        )
+                        Text(
+                            text = stringResource(id = R.string.sir),
+                            color = nameColor,
+                            style = IncTypography.normal42
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Icon(
+                            painter = painterResource(id = R.drawable.instagram_icon),
+                            tint = Color.White,
+                            contentDescription = "instagram",
+                            modifier = Modifier
+                                .size(24.dp)
+                                .clickable {
+                                    // todo insta 접근
+                                }
+                        )
+                    }
+                    Row() {
+                        Text(
+                            text = calculateManAge(
+                                userInfo?.birth ?: ""
+                            ) + stringResource(id = R.string.age),
+
+                            fontSize = 18.sp,
+                            color = Color.White
+                        )
+                        if (!userInfo?.jobName.isNullOrEmpty()) {
+                            Text(
+                                text = (", " + userInfo?.jobName),
+                                fontSize = 18.sp,
+                                color = Color.White
+                            )
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.heart),
+                                contentDescription = "Heart",
+                                tint = Color.White,
+                                modifier = Modifier
+                                    .size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "${stringResource(id = R.string.attractiveness)} $avgAttractive",
+                                color = Color.White,
+                                style = Typography.medium18.copy(lineHeight = 20.sp),
+                                fontSize = 18.sp,
+                                textAlign = TextAlign.Center
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.height(9.dp))
+
+                        ProgressBar(attractive)
+                    }
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Text(
+                        text = userInfo?.bio ?: "",
+                        textAlign = TextAlign.Center,
+                        style = Typography.normal12,
+                        color = Color.White
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                }
+            }
         }
     }
 }
