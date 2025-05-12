@@ -486,7 +486,7 @@ fun ProgressBar(
                         drawCircle(
                             color = Gray,
                             radius = radius,
-                            style = Stroke(width = 20f) // 회색 원 스트로크
+                            style = Stroke(width = 15f) // 회색 원 스트로크
                         )
 
                         // 흰색 원 주위의 비율을 채우는 아크 그리기
@@ -495,7 +495,7 @@ fun ProgressBar(
                             startAngle = -90f, // 12시부터 그리게끔
                             sweepAngle = 360f * percentage, // 비율에 따른 각도
                             useCenter = false, // 중심을 사용하지 않음 (경계선만 그리기)
-                            style = Stroke(width = 20f) // 스트로크 두께
+                            style = Stroke(width = 15f) // 스트로크 두께
                         )
                     }
                     Text(

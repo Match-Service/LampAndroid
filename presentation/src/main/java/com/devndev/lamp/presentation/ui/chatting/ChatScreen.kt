@@ -75,6 +75,7 @@ import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
+import com.devndev.lamp.presentation.ui.common.ProfilePopup
 import com.devndev.lamp.presentation.ui.main.LampTopBar
 import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
 import kotlinx.coroutines.delay
@@ -97,6 +98,9 @@ fun ChatScreen(
     var shouldNavigate by remember { mutableStateOf(false) }
     val isLoading = viewModel.isLoading.collectAsState()
     val needScrollDown = viewModel.needScrollDown.collectAsState()
+
+    var isProfilePopupShow by remember { mutableStateOf(false) }
+    var selectedUserInfo by remember { mutableStateOf<UserInfo?>(null) }
 
     var previousItemCount by remember { mutableStateOf(0) }
 
@@ -137,6 +141,12 @@ fun ChatScreen(
     }
 
     var currentMessage by remember { mutableStateOf("") }
+
+    if (isProfilePopupShow) {
+        ProfilePopup(userInfo = selectedUserInfo) {
+            isProfilePopupShow = false
+        }
+    }
 
     Column(
         modifier = modifier
@@ -228,7 +238,11 @@ fun ChatScreen(
                 ChatBubble(
                     message = chat.message,
                     userInfo = chat.userInfo,
-                    isMine = (chat.userInfo.userId == myInfo.value?.userId)
+                    isMine = (chat.userInfo.userId == myInfo.value?.userId),
+                    onProfileClick = {
+                        selectedUserInfo = it
+                        isProfilePopupShow = true
+                    }
                 )
                 Spacer(modifier = Modifier.height(10.dp))
             }
@@ -241,7 +255,7 @@ fun ChatScreen(
                     val firstVisibleMessage = chat.value.chatItems.getOrNull(index)?.message
                     val firstMessageId = firstVisibleMessage?.id
                     Log.d("----", firstMessageId.toString())
-                    Log.d("----", firstVisibleMessage?.message?:"")
+                    Log.d("----", firstVisibleMessage?.message ?: "")
 
                     if (firstMessageId != null) {
                         viewModel.fetchChatData(
@@ -331,7 +345,8 @@ fun ChatScreen(
 fun ChatBubble(
     message: ChatMessageDomainModel,
     userInfo: UserInfo,
-    isMine: Boolean
+    isMine: Boolean,
+    onProfileClick: (UserInfo) -> Unit = {}
 ) {
     Row(
         modifier = Modifier
@@ -381,6 +396,9 @@ fun ChatBubble(
                     modifier = Modifier
                         .size(30.dp)
                         .clip(CircleShape)
+                        .clickable {
+                            onProfileClick(userInfo)
+                        }
                 )
                 Row(
                     verticalAlignment = Alignment.Bottom,
