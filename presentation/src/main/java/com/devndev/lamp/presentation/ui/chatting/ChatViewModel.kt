@@ -47,6 +47,9 @@ class ChatViewModel @Inject constructor(
     private val _chatUiState = MutableStateFlow(ChatUiState())
     val chatUiState: StateFlow<ChatUiState> = _chatUiState
 
+    private val _needScrollDown = MutableStateFlow(false)
+    val needScrollDown: StateFlow<Boolean> = _needScrollDown
+
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
 
@@ -79,10 +82,15 @@ class ChatViewModel @Inject constructor(
                 val chatMessageDeferred = async { getChatMessageUseCase(lastMessageId, chatRoomId) }
                 val chatInfoDeferred = async { getChatInfoUseCase(chatRoomId) }
 
-                val chatMessage = chatMessageDeferred.await()
+                val newMessages = chatMessageDeferred.await()
                 val chatInfo = chatInfoDeferred.await()
 
-                _chatMessage.value = chatMessage
+                _chatMessage.value = if (lastMessageId == null) {
+                    newMessages
+                } else {
+                    newMessages + _chatMessage.value
+                }
+
                 _chatInfo.value = chatInfo
 
                 updateChatItems()
@@ -141,7 +149,7 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    fun connectSocket() {
+    fun connectSocketForChatRoom(chatRoomId: Int) {
         viewModelScope.launch {
             try {
                 connectSocketUseCase(
@@ -153,10 +161,15 @@ class ChatViewModel @Inject constructor(
                     onUpdatedMessage = {
                     },
                     onChat = { chatMessage ->
-                        val updatedMessages = _chatMessage.value + chatMessage
-                        _chatMessage.value = updatedMessages
+                        if (chatMessage.chatRoomId == chatRoomId) {
+                            val updatedMessages = _chatMessage.value + chatMessage
+                            _chatMessage.value = updatedMessages
 
-                        updateChatItems()
+                            updateChatItems()
+                            if (chatMessage.userId == myInfo.value?.userId) {
+                                _needScrollDown.value = true
+                            }
+                        }
                     }
                 )
             } catch (e: Exception) {
@@ -170,6 +183,10 @@ class ChatViewModel @Inject constructor(
             disconnectSocketUseCase()
             Log.d(HomeViewModel.TAG, "Disconnect socket")
         }
+    }
+
+    fun setNeedScrollDown(needScrollDown: Boolean) {
+        _needScrollDown.value = needScrollDown
     }
 
     companion object {
