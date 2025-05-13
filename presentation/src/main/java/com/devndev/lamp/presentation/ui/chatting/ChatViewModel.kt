@@ -53,6 +53,8 @@ class ChatViewModel @Inject constructor(
     private val _isLoading = MutableStateFlow(true)
     val isLoading: StateFlow<Boolean> = _isLoading
 
+    private var lastFetchedMessageId: String? = null
+
     init {
         getChatList()
         getMyInfo()
@@ -74,16 +76,27 @@ class ChatViewModel @Inject constructor(
 
     fun fetchChatData(
         lastMessageId: String?,
-        chatRoomId: Int
+        chatRoomId: Int,
+        onPrependComplete: ((newItemCount: Int) -> Unit)? = null
     ) {
+        // 중복 요청 방지
+        if (lastMessageId != null && lastMessageId == lastFetchedMessageId) {
+            return
+        }
+
         viewModelScope.launch {
             try {
+                Log.d(TAG, "fetchChatData lastMessageId $lastMessageId")
                 _isLoading.value = true
+                lastFetchedMessageId = lastMessageId
+
                 val chatMessageDeferred = async { getChatMessageUseCase(lastMessageId, chatRoomId) }
                 val chatInfoDeferred = async { getChatInfoUseCase(chatRoomId) }
 
                 val newMessages = chatMessageDeferred.await()
                 val chatInfo = chatInfoDeferred.await()
+
+                val previousSize = _chatMessage.value.size
 
                 _chatMessage.value = if (lastMessageId == null) {
                     newMessages
@@ -92,11 +105,11 @@ class ChatViewModel @Inject constructor(
                 }
 
                 _chatInfo.value = chatInfo
-
                 updateChatItems()
+
+                onPrependComplete?.invoke(_chatMessage.value.size - previousSize)
             } catch (e: Exception) {
                 Log.e(TAG, "fetchChatData Exception", e)
-                Log.e(TAG, "fetchChatData Exception ${e.cause}")
             } finally {
                 _isLoading.value = false
             }
