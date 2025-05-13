@@ -42,6 +42,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
@@ -80,6 +81,7 @@ import com.devndev.lamp.presentation.ui.main.LampTopBar
 import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -140,6 +142,34 @@ fun ChatScreen(
         lazyListState.scrollToItem(chat.value.chatItems.size)
     }
 
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(lazyListState) {
+        snapshotFlow {
+            lazyListState.firstVisibleItemIndex to lazyListState.firstVisibleItemScrollOffset
+        }.collect { (index, offset) ->
+            if (index == 0) {
+                val firstVisibleMessageId = chat.value.chatItems.getOrNull(index)?.message?.id
+
+                if (firstVisibleMessageId != null) {
+                    viewModel.fetchChatData(
+                        lastMessageId = firstVisibleMessageId,
+                        chatRoomId = chatRoomId,
+                        onPrependComplete = { newItemCount ->
+                            if (newItemCount > 0) {
+                                coroutineScope.launch {
+                                    lazyListState.scrollToItem(
+                                        index = newItemCount,
+                                        scrollOffset = offset
+                                    )
+                                }
+                            }
+                        }
+                    )
+                }
+            }
+        }
+    }
+
     var currentMessage by remember { mutableStateOf("") }
 
     if (isProfilePopupShow) {
@@ -175,7 +205,8 @@ fun ChatScreen(
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth(),
-            state = lazyListState
+            state = lazyListState,
+            userScrollEnabled = !isLoading.value
         ) {
             item {
                 Spacer(modifier = Modifier.height(20.dp))
@@ -246,24 +277,6 @@ fun ChatScreen(
                 )
                 Spacer(modifier = Modifier.height(10.dp))
             }
-        }
-
-        LaunchedEffect(lazyListState) {
-            snapshotFlow { lazyListState.firstVisibleItemIndex }
-                .filter { it == 0 } // 최상단에 도달했을 때만
-                .collect { index ->
-                    val firstVisibleMessage = chat.value.chatItems.getOrNull(index)?.message
-                    val firstMessageId = firstVisibleMessage?.id
-                    Log.d("----", firstMessageId.toString())
-                    Log.d("----", firstVisibleMessage?.message ?: "")
-
-                    if (firstMessageId != null) {
-                        viewModel.fetchChatData(
-                            lastMessageId = firstMessageId,
-                            chatRoomId = chatRoomId
-                        )
-                    }
-                }
         }
 
         Row(
