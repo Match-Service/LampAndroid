@@ -1,6 +1,5 @@
 package com.devndev.lamp.presentation.ui.chatting
 
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.EnterTransition
@@ -80,7 +79,6 @@ import com.devndev.lamp.presentation.ui.common.ProfilePopup
 import com.devndev.lamp.presentation.ui.main.LampTopBar
 import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
 import java.time.ZonedDateTime
@@ -103,8 +101,6 @@ fun ChatScreen(
 
     var isProfilePopupShow by remember { mutableStateOf(false) }
     var selectedUserInfo by remember { mutableStateOf<UserInfo?>(null) }
-
-    var previousItemCount by remember { mutableStateOf(0) }
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {

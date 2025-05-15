@@ -1,5 +1,6 @@
 package com.devndev.lamp.data.dto.response.chat
 
+import com.devndev.lamp.data.dto.response.user.BioQuestion
 import com.devndev.lamp.domain.model.chat.ChatInfoDomainModel
 import com.devndev.lamp.domain.model.chat.Individuality
 import com.devndev.lamp.domain.model.chat.UserInfo
@@ -42,6 +43,8 @@ data class UserInfoResponse(
     val instagramId: String?,
     @Json(name = "bio")
     val bio: String?,
+    @Json(name = "bioQuestions")
+    val bioQuestions: List<BioQuestion>,
     @Json(name = "profileImages")
     val profileImages: List<String>,
     @Json(name = "individuality")
@@ -84,6 +87,7 @@ fun UserInfoResponse.toDomainModel(): UserInfo {
         birth = birth,
         instagramId = instagramId,
         bio = bio,
+        bioQuestions = bioQuestions.map { it.toDomainModel() },
         profileImages = profileImages,
         individuality = individuality.toDomainModel()
     )

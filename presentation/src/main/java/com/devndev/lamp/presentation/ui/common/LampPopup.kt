@@ -436,6 +436,22 @@ fun ProfilePopup(
                         color = Color.White
                     )
                     Spacer(modifier = Modifier.height(4.dp))
+                    Row() {
+                        userInfo?.bioQuestions?.forEachIndexed { index, bioQuestion ->
+                            Text(
+                                text = "${bioQuestion.question} : ${bioQuestion.answer}",
+                                style = Typography.medium10,
+                                color = Gray3
+                            )
+                            if (index != userInfo.bioQuestions.lastIndex) {
+                                Text(
+                                    text = " | ",
+                                    style = Typography.medium10,
+                                    color = Gray3
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
