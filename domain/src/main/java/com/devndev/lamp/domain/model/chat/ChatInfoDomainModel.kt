@@ -1,5 +1,7 @@
 package com.devndev.lamp.domain.model.chat
 
+import com.devndev.lamp.domain.model.signup.BioQuestion
+
 data class ChatInfoDomainModel(
     val startDate: String,
     val inviteUserCount: Int,
@@ -19,6 +21,7 @@ data class UserInfo(
     val birth: String,
     val instagramId: String?,
     val bio: String?,
+    val bioQuestions: List<BioQuestion>,
     val profileImages: List<String>,
     val individuality: Individuality
 )
