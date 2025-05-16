@@ -74,6 +74,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.devndev.lamp.domain.model.lampmatch.IndividualityDomainModel
@@ -302,6 +303,8 @@ fun MatchingVoteScreen(
         }
 
         BottomSection(
+            viewModel = viewModel,
+            matchSuggestion = matchSuggestion,
             onHeightChange = { height ->
                 bottomSectionHeight = height
             }
@@ -755,7 +758,7 @@ fun SecondSection(
 // 바닥 섹션
 @SuppressLint("DefaultLocale")
 @Composable
-fun BottomSection(onHeightChange: (Int) -> Unit) {
+fun BottomSection(viewModel: HomeViewModel, matchSuggestion: MatchSuggestionDomainModel?, onHeightChange: (Int) -> Unit) {
     // 초기 시간을 3시간(03:00:00)으로 설정
     var totalSeconds by remember { mutableStateOf(3 * 60 * 60) }
 
@@ -818,7 +821,11 @@ fun BottomSection(onHeightChange: (Int) -> Unit) {
                     modifier = Modifier
                         .weight(1f)
                         .height(54.dp),
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        if (matchSuggestion != null) {
+                            viewModel.accept(matchSuggestion.lampSuggestionId)
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LightGray,
                         contentColor = Color.White
