@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -62,71 +63,73 @@ fun FindLampScreen(
         launchSingleTop = true
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    LaunchedEffect(Unit) {
+        viewModel.getMatchSuggestion()
+    }
+
+    if (matchSuggestion != null) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 30.dp),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(149.dp))
-            HomeTextArea(
-                nameText = matchSuggestion?.name!!,
-                middleText = stringResource(id = R.string.matching_header_find_lamp),
-                bottomText = stringResource(id = R.string.matching_sub_header_find_lamp),
-                gender = if (myInfo?.gender == "MALE") {
-                    "FEMALE"
-                } else {
-                    "MALE"
-                }
-            )
-        }
-
-        // BreathingAnimation 텍스트와 버튼 사이에 배치
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            BreathingAnimation(matchSuggestion?.color!!)
-        }
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 159.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            // 버튼 역할 대신함
-            Box(
+            Column(
                 modifier = Modifier
-                    .width(190.dp)
-                    .height(54.dp)
-                    .clip(RoundedCornerShape(50.dp))
-                    .background(
-                        Brush.horizontalGradient(
-                            colors = listOf(WomanColor, ManColor)
-                        )
-                    )
-                    .clickable {
-                        navController.navigateVote(
-                            navOptions = navOption
-                        )
-                    },
-                contentAlignment = Alignment.Center
+                    .fillMaxWidth()
+                    .padding(horizontal = 30.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
-                    text = stringResource(id = R.string.find_other_lamp),
-                    color = Color.White,
-                    style = Typography.medium18
+                Spacer(modifier = Modifier.height(149.dp))
+                HomeTextArea(
+                    nameText = matchSuggestion!!.name,
+                    middleText = stringResource(id = R.string.matching_header_find_lamp),
+                    bottomText = stringResource(id = R.string.matching_sub_header_find_lamp),
+                    gender = matchSuggestion!!.gender
                 )
+            }
+
+            // BreathingAnimation 텍스트와 버튼 사이에 배치
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                BreathingAnimation(matchSuggestion!!.color)
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 159.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Bottom
+            ) {
+                // 버튼 역할 대신함
+                Box(
+                    modifier = Modifier
+                        .width(190.dp)
+                        .height(54.dp)
+                        .clip(RoundedCornerShape(50.dp))
+                        .background(
+                            Brush.horizontalGradient(
+                                colors = listOf(WomanColor, ManColor)
+                            )
+                        )
+                        .clickable {
+                            navController.navigateVote(
+                                navOptions = navOption
+                            )
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.find_other_lamp),
+                        color = Color.White,
+                        style = Typography.medium18
+                    )
+                }
             }
         }
     }

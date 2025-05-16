@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.LazyRow
@@ -74,12 +75,16 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
+import com.devndev.lamp.domain.model.lampmatch.IndividualityDomainModel
+import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Gray3
 import com.devndev.lamp.presentation.theme.IncTypography
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.LightGray
+import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.MoodBlue
 import com.devndev.lamp.presentation.theme.MoodGray
 import com.devndev.lamp.presentation.theme.MoodRed
@@ -88,6 +93,9 @@ import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import kotlinx.coroutines.delay
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -118,46 +126,58 @@ fun MatchingVoteScreen(
     var prevYOffset = remember { mutableStateOf(0f) }
     var curYOffset = remember { mutableStateOf(0f) }
 
-    // 임시 처리 바꿔주세요 어진Lee
-    var matchSuggestion: MatchSuggestionDomainModel? = null
-
     // stickyHeader가 최상단에 위치했는지 여부를 저장하는 상태
 //    val isStickyHeaderAtTop = remember { mutableStateOf(false) }
     // 선택된 이미지 추적
     var selectedImage by remember { mutableIntStateOf(0) }
 
     // lamp 데이터
-    val lampCnt = matchSuggestion?.participants?.size?.plus(1)
-    val lampProfile = listOf(matchSuggestion?.name, matchSuggestion?.location, lampCnt.toString() + "명", matchSuggestion?.color, matchSuggestion?.description)
-//    val lampProfile = listOf("트와이수더", "신촌,홍대", "4명", "신나는 분위기", "안녕하세요")
+    val lampCnt = if (matchSuggestion != null) {
+        matchSuggestion!!.participants.size.plus(1)
+    } else {
+        null
+    }
+
+    val lampProfile = if (matchSuggestion != null) {
+        listOf(matchSuggestion!!.name, matchSuggestion!!.location, lampCnt.toString() + "명", matchSuggestion!!.color, matchSuggestion!!.description)
+    } else {
+        null
+    }
 
     // profile 데이터
-    val profiles = listOf(
-        // 방장
+    val profiles = if (matchSuggestion != null) {
         listOf(
-            matchSuggestion?.owner?.name,
-            matchSuggestion?.owner?.profileImageUrl, // 임시. 이미지 리스트로 수정필요
-            28, // 임시
-            "한국대학교", // 임시
-            listOf(matchSuggestion?.owner?.individuality),
-            "글자수100글자수100글자수100", // 임시
-            listOf(1, 1, 1) // 임시. 흠연/음주 등
-        )
-    ) + (
-        matchSuggestion?.participants?.map { participants -> // 참여자
+            // 방장
+            listOf(
+                matchSuggestion!!.owner.name,
+                listOf(matchSuggestion!!.owner.profileImageUrls),
+                calculateManAge(matchSuggestion!!.owner.birth),
+                matchSuggestion!!.owner.jobName,
+                matchSuggestion!!.owner.individuality,
+                matchSuggestion!!.owner.bio,
+                listOf(matchSuggestion!!.owner.bioQuestion[1])
+            )
+        ) + matchSuggestion!!.participants.map { participants -> // 참여자
             listOf(
                 participants.name,
-                participants.profileImageUrl, // 임시. 이미지 리스트로 수정필요
-                28, // 임시
-                "한국대학교", // 임시
-                listOf(participants.individuality),
-                "자기소개", // 임시
-                listOf(1, 1, 1) // 임시. 흠연/음주 등
+                listOf(participants.profileImageUrls),
+                calculateManAge(participants.birth),
+                participants.jobName,
+                participants.individuality,
+                participants.bio,
+                listOf(participants.bioQuestion[1])
             )
-        } ?: emptyList()
-        )
+        }
+    } else {
+        null
+    }
 
     val shouldScrollToTop = rememberSaveable { mutableStateOf(false) }
+
+    // 상대방 lamp 데이터 가져오기
+    LaunchedEffect(Unit) {
+        viewModel.getMatchSuggestion()
+    }
 
     // Track scroll offset
     LaunchedEffect(listState) {
@@ -200,7 +220,9 @@ fun MatchingVoteScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            ShadowCircleBackground(itemIndex, yOffset, yOffsetHigh, lampProfile)
+            if (lampProfile != null) {
+                ShadowCircleBackground(itemIndex, yOffset, yOffsetHigh, lampProfile)
+            }
         }
 
         LazyColumn(
@@ -225,10 +247,12 @@ fun MatchingVoteScreen(
 //                        .background(if (isStickyHeaderAtTop.value) Color(0xFF6E2126) else Color.Transparent) // 배경 색상 변경
                         .zIndex(10f)
                 ) {
-                    MoodInfoSection(
-                        lampProfile = lampProfile,
-                        onHeightChange = { height -> moodInfoSectionHeight = height }
-                    )
+                    if (lampProfile != null) {
+                        MoodInfoSection(
+                            lampProfile = lampProfile,
+                            onHeightChange = { height -> moodInfoSectionHeight = height }
+                        )
+                    }
                 }
             }
 
@@ -242,7 +266,8 @@ fun MatchingVoteScreen(
                     SecondSection(
                         onHeightChange = { height -> secondSectionHeight = height },
                         selectedImage = selectedImage,
-                        onImageSelected = { selectedImage = it }
+                        onImageSelected = { selectedImage = it },
+                        profiles = profiles
                     )
                 }
             }
@@ -256,11 +281,17 @@ fun MatchingVoteScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    ProfileTop(profiles = profiles, index = selectedImage)
+                    if (profiles != null) {
+                        ProfileTop(matchSuggestion = matchSuggestion, index = selectedImage)
+                    }
                     Spacer(modifier = Modifier.height(35.dp))
-                    ProfileAttractive(profiles = profiles, index = selectedImage)
+                    if (profiles != null) {
+                        ProfileAttractive(profiles = profiles, index = selectedImage)
+                    }
                     Spacer(modifier = Modifier.height(35.dp))
-                    ProfileDescription(profiles = profiles, index = selectedImage)
+                    if (profiles != null) {
+                        ProfileDescription(matchSuggestion = matchSuggestion, index = selectedImage)
+                    }
 
                     val density = context.resources.displayMetrics.density
                     val naviBarHeightPx = getNavigationBarHeight(context)
@@ -280,22 +311,43 @@ fun MatchingVoteScreen(
 
 // 프로필 상단부분
 @Composable
-fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
-//    val listState = rememberLazyListState()
+fun ProfileTop(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
     val listState = remember { LazyListState() }
 
+    // 대학교 list
+    val jobNameList = listOf(
+        matchSuggestion?.owner?.jobName
+    ) + matchSuggestion?.participants?.map { it.jobName }
+
+    // 나이 list
+    val ageList = listOf(
+        matchSuggestion?.owner?.birth?.let { calculateManAge(it) }
+    ) + (matchSuggestion?.participants?.map { it.birth.let { birth -> calculateManAge(birth) } } ?: emptyList())
+
+    // 이름 list
+    val nameList = listOf(
+        matchSuggestion?.owner?.name
+    ) + matchSuggestion?.participants?.map { it.name }
+
+    // 프로필 이미지 url list
+    val imageUrlList = listOf(
+        matchSuggestion?.owner?.profileImageUrls
+    ) + matchSuggestion?.participants?.map { it.profileImageUrls }
+
+    val imageCnt = imageUrlList.size
+
     // 프로필 사진 갯수 2개 이하일 경우
-    if ((profiles[index][1] as Int) <= 2) {
+    if (imageCnt <= 2) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 10.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            repeat(profiles[index][1] as Int) {
+            for (i in imageUrlList.indices) {
                 Image(
-                    painter = painterResource(id = R.drawable.testimage),
-                    contentDescription = "testimage",
+                    painter = rememberImagePainter(imageUrlList[i]),
+                    contentDescription = "Profile Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(120.dp)
@@ -316,10 +368,10 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
                 items(1) {
                     Spacer(modifier = Modifier.width(16.dp))
                 }
-                items(profiles[index][1] as Int) {
+                items(imageUrlList.size) { i ->
                     Image(
-                        painter = painterResource(id = R.drawable.testimage),
-                        contentDescription = "testimage",
+                        painter = rememberImagePainter(imageUrlList[i]),
+                        contentDescription = "Profile Image",
                         contentScale = ContentScale.Crop,
                         modifier = Modifier
                             .size(120.dp)
@@ -381,9 +433,8 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "${profiles[index][0]} " + stringResource(id = R.string.sir),
-            // TODO: 텍스트 컬러 추가
-            color = Color.White,
+            text = "${nameList[index]} " + stringResource(id = R.string.sir),
+            color = if (matchSuggestion?.gender == "MALE") ManColor else WomanColor,
             style = IncTypography.normal42.copy(lineHeight = 56.sp),
             textAlign = TextAlign.Center
         )
@@ -403,7 +454,7 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = "${profiles[index][2]}" + stringResource(id = R.string.age) + ", " + "${profiles[index][3]}",
+            text = ageList[index] + stringResource(id = R.string.age) + ", " + jobNameList[index],
             color = Color.White,
             style = Typography.medium18.copy(lineHeight = 20.sp),
             textAlign = TextAlign.Center
@@ -416,9 +467,9 @@ fun ProfileTop(profiles: List<List<Any?>>, index: Int) {
 fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
     // MutableState to hold the button's width
     var buttonWidth by remember { mutableStateOf(0) }
-    val attractive = profiles[index][4] as? List<Int>
-    attractive?.let {
-        val attractiveAvg = attractive.sum() / attractive.size
+    val attractive = profiles[index][4] as IndividualityDomainModel
+    attractive.let {
+//        val attractiveAvg = total / attractive.size
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -438,7 +489,7 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
                 )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = "${stringResource(id = R.string.attractiveness)} $attractiveAvg",
+                    text = "${stringResource(id = R.string.attractiveness)} ${attractive.attractiveness}",
                     color = Color.White,
                     style = Typography.medium18.copy(lineHeight = 20.sp),
                     fontSize = 18.sp,
@@ -455,7 +506,7 @@ fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
 
 @Composable
 fun ProgressBar(
-    attractive: List<Int>,
+    attractive: IndividualityDomainModel,
     barColor: Color = WomanColor,
     isMyPage: Boolean = false
 ) {
@@ -473,8 +524,15 @@ fun ProgressBar(
             horizontalArrangement = Arrangement.spacedBy(15.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            for (i in attractive.indices) {
-                val percentage = attractive[i].coerceIn(0, 100) / 100f
+            for (i in 0..3) {
+//                val percentage = attractive[i].coerceIn(0, 100) / 100f
+                val percentage = when (i) {
+                    0 -> attractive.personality
+                    1 -> attractive.voice
+                    2 -> attractive.fashion
+                    3 -> attractive.conversation
+                    else -> 0
+                }.coerceIn(0, 100) / 100f
                 Box(
                     modifier = Modifier
                         .wrapContentSize()
@@ -521,9 +579,20 @@ fun ProgressBar(
 
 // 프로필 설명
 @Composable
-fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
+fun ProfileDescription(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
+    val bioList = listOfNotNull(
+        matchSuggestion?.owner?.bio
+    ) + (matchSuggestion?.participants?.mapNotNull { it.bio } ?: emptyList())
+
+    val bioQuestionList = listOfNotNull(
+        matchSuggestion?.owner?.bioQuestion?.map { it.answer }
+    ) + (matchSuggestion?.participants?.map { it.bioQuestion.map { question -> question.answer } } ?: emptyList())
+
+    Log.d("123", bioList.toString())
+    Log.d("123", bioQuestionList.toString())
+
     Text(
-        text = "${profiles[index][5]}",
+        text = bioList[index],
         color = Color.White,
         style = Typography.normal12.copy(lineHeight = 16.sp),
         maxLines = 3
@@ -535,38 +604,41 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        val profileInfo = profiles[index][6] as List<Int>
-        for (i in profileInfo.indices) {
+//        val profileInfo = profiles[index][6] as List<String>
+        for (i in bioQuestionList.indices) {
             Text(
                 text = when (i) {
                     0 -> {
-                        "${stringResource(id = R.string.drink)} : " + when (profileInfo[i]) {
-                            1 -> stringResource(id = R.string.drink_often)
-                            2 -> stringResource(id = R.string.drink_sometimes)
-                            3 -> stringResource(id = R.string.drink_never)
-                            4 -> stringResource(id = R.string.drink_stop)
-                            else -> {}
-                        }
+                        "${stringResource(id = R.string.drink)} : " + bioQuestionList[i][0]
+//                                when (profileInfo[i]) {
+//                            1 -> stringResource(id = R.string.drink_often)
+//                            2 -> stringResource(id = R.string.drink_sometimes)
+//                            3 -> stringResource(id = R.string.drink_never)
+//                            4 -> stringResource(id = R.string.drink_stop)
+//                            else -> {}
+//                        }
                     }
 
                     1 -> {
-                        "${stringResource(id = R.string.smoke)} : " + when (profileInfo[i]) {
-                            1 -> stringResource(id = R.string.smoke_often)
-                            2 -> stringResource(id = R.string.smoke_sometimes)
-                            3 -> stringResource(id = R.string.smoke_never)
-                            4 -> stringResource(id = R.string.smoke_stop)
-                            else -> {}
-                        }
+                        "${stringResource(id = R.string.smoke)} : " + bioQuestionList[i][1]
+//                                when (profileInfo[i]) {
+//                            1 -> stringResource(id = R.string.smoke_often)
+//                            2 -> stringResource(id = R.string.smoke_sometimes)
+//                            3 -> stringResource(id = R.string.smoke_never)
+//                            4 -> stringResource(id = R.string.smoke_stop)
+//                            else -> {}
+//                        }
                     }
 
                     2 -> {
-                        "${stringResource(id = R.string.exercise)} : " + when (profileInfo[i]) {
-                            1 -> stringResource(id = R.string.exercise_often)
-                            2 -> stringResource(id = R.string.exercise_sometimes)
-                            3 -> stringResource(id = R.string.exercise_never)
-                            4 -> stringResource(id = R.string.exercise_stop)
-                            else -> {}
-                        }
+                        "${stringResource(id = R.string.exercise)} : " + bioQuestionList[i][2]
+//                                when (profileInfo[i]) {
+//                            1 -> stringResource(id = R.string.exercise_often)
+//                            2 -> stringResource(id = R.string.exercise_sometimes)
+//                            3 -> stringResource(id = R.string.exercise_never)
+//                            4 -> stringResource(id = R.string.exercise_stop)
+//                            else -> {}
+//                        }
                     }
 
                     else -> "" // nothing
@@ -575,7 +647,7 @@ fun ProfileDescription(profiles: List<List<Any?>>, index: Int) {
                 style = Typography.medium10.copy(lineHeight = 12.sp),
                 textAlign = TextAlign.Center
             )
-            if (i < profileInfo.size - 1) {
+            if (i < bioQuestionList.size - 1) {
                 Spacer(modifier = Modifier.width(3.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.seperate),
@@ -656,7 +728,8 @@ fun MoodInfoSection(lampProfile: List<String?>, onHeightChange: (Dp) -> Unit) {
 fun SecondSection(
     onHeightChange: (Dp) -> Unit,
     selectedImage: Int,
-    onImageSelected: (Int) -> Unit
+    onImageSelected: (Int) -> Unit,
+    profiles: List<List<Any?>>?
 ) {
     val density = LocalDensity.current
     Column(
@@ -674,7 +747,7 @@ fun SecondSection(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         Spacer(modifier = Modifier.height(41.dp))
-        OtherProfileInfo(null, selectedImage, onImageSelected)
+        OtherProfileInfo(null, selectedImage, onImageSelected, profiles)
         Spacer(modifier = Modifier.height(50.dp))
     }
 }
@@ -835,14 +908,15 @@ fun OtherProfileInfoList() {
 fun OtherProfileInfo(
     image: Image? = null,
     selectedImage: Int,
-    onImageSelected: (Int) -> Unit
+    onImageSelected: (Int) -> Unit,
+    profiles: List<List<Any?>>?
 ) {
 //    // 선택된 이미지 추적
 //    var selectedImage by remember { mutableStateOf(0) }
 
     Row(
         modifier = Modifier
-            .width(225.dp)
+            .wrapContentWidth()
             .height(60.dp)
             .clip(CircleShape)
             .background(Gray)
@@ -850,33 +924,22 @@ fun OtherProfileInfo(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        SelectableImage(
-            imageRes = R.drawable.testimage,
-            isSelected = selectedImage == 0,
-            onClick = { onImageSelected(0) }
-        )
-        SelectableImage(
-            imageRes = R.drawable.testimage,
-            isSelected = selectedImage == 1,
-            onClick = { onImageSelected(1) }
-        )
-        SelectableImage(
-            imageRes = R.drawable.testimage,
-            isSelected = selectedImage == 2,
-            onClick = { onImageSelected(2) }
-        )
-        SelectableImage(
-            imageRes = R.drawable.testimage,
-            isSelected = selectedImage == 3,
-            onClick = { onImageSelected(3) }
-        )
+        Log.d("profiles", profiles.toString())
+        if (profiles != null) {
+            for (i in profiles.indices)
+                SelectableImage(
+                    imageUrl = (profiles[i][1] as List<List<String>>)[0][0],
+                    isSelected = selectedImage == i,
+                    onClick = { onImageSelected(i) }
+                )
+        }
     }
 }
 
 // Profile 선택 시 효과
 @Composable
 fun SelectableImage(
-    imageRes: Int,
+    imageUrl: String,
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
@@ -898,7 +961,7 @@ fun SelectableImage(
             )
     ) {
         Image(
-            painter = painterResource(id = R.drawable.testimage),
+            painter = rememberImagePainter(imageUrl),
             contentDescription = null,
             modifier = Modifier
                 .fillMaxSize()
@@ -994,4 +1057,36 @@ fun getNavigationBarHeight(context: Context): Int {
     } else {
         0
     }
+}
+
+fun calculateManAge(birthdate: String): String {
+    // Check if the birthdate string is valid
+    Log.d("MatchingVoteScreen", "birthDate = $birthdate")
+    if (birthdate == "00000000") {
+        return "0"
+    }
+
+    // Parse the birthdate string to a Date object (using the "yyyyMMdd" format)
+    val formatter = SimpleDateFormat("yyyyMMdd", Locale.getDefault()) // Format "19970530"
+    val birthDate =
+        formatter.parse(birthdate) ?: throw IllegalArgumentException("Invalid birthdate format")
+
+    // Get current date and year
+    val birthCalendar = Calendar.getInstance().apply { time = birthDate }
+
+    // Calculate age based on year difference
+    var age = Calendar.getInstance().get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR)
+
+    // Check if birthday has occurred this year
+    if (
+        Calendar.getInstance().get(Calendar.MONTH) < birthCalendar.get(Calendar.MONTH) ||
+        (
+            Calendar.getInstance().get(Calendar.MONTH) == birthCalendar.get(Calendar.MONTH) &&
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH) < birthCalendar.get(Calendar.DAY_OF_MONTH)
+            )
+    ) {
+        age -= 1
+    }
+    Log.d("MyPageScreen", "만 나이: $age")
+    return age.toString()
 }

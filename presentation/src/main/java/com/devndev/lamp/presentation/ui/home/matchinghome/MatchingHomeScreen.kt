@@ -79,6 +79,7 @@ import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
+import com.devndev.lamp.presentation.ui.home.navigation.navigateFind
 import com.devndev.lamp.presentation.ui.search.navigation.navigateInvite
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -124,6 +125,12 @@ fun MatchingHomeScreen(
     val isMatching by remember(myLamp) {
         derivedStateOf {
             userStatus == "MATCHING"
+        }
+    }
+
+    when (userStatus) {
+        "FIND_LAMP" -> {
+            navController.navigateFind()
         }
     }
 

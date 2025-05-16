@@ -12,6 +12,7 @@ data class MatchSuggestionDomainModel(
     val approveCount: Int,
     val rejectCount: Int,
     val matchCompleteTime: String,
+    val gender: String,
     val owner: MatchSuggestionUserDomainModel,
     val participants: List<MatchSuggestionUserDomainModel>
 )
@@ -19,8 +20,13 @@ data class MatchSuggestionDomainModel(
 data class MatchSuggestionUserDomainModel(
     val userId: Int,
     val name: String,
-    val profileImageUrl: String,
-    val individuality: IndividualityDomainModel?
+    val job: String?,
+    val jobName: String?,
+    val birth: String,
+    val bio: String?,
+    val profileImageUrls: List<String>,
+    val individuality: IndividualityDomainModel?,
+    val bioQuestion: List<BioDomainModel>
 )
 
 data class IndividualityDomainModel(
@@ -29,4 +35,9 @@ data class IndividualityDomainModel(
     val voice: Int,
     val fashion: Int,
     val conversation: Int
+)
+
+data class BioDomainModel(
+    val question: String,
+    val answer: String
 )
