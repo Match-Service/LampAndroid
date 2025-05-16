@@ -22,6 +22,9 @@ import com.devndev.lamp.domain.usecase.socket.ConnectSocketUseCase
 import com.devndev.lamp.domain.usecase.socket.DisconnectSocketUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.domain.usecase.user.GetUserStatusUseCase
+import com.devndev.lamp.domain.usecase.vote.AcceptVoteUseCase
+import com.devndev.lamp.domain.usecase.vote.RejectVoteUseCase
+import com.devndev.lamp.presentation.ui.chatting.ChatViewModel
 import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,7 +47,9 @@ class HomeViewModel @Inject constructor(
     private val disconnectSocketUseCase: DisconnectSocketUseCase,
     private val getVisitRequestLampInfoUseCase: GetVisitRequestLampInfoUseCase,
     private val cancelVisitRequestUseCase: CancelVisitRequestUseCase,
-    private val testChatUseCase: TestChatUseCase
+    private val testChatUseCase: TestChatUseCase,
+    private val acceptUseCase: AcceptVoteUseCase,
+    private val rejectUseCase: RejectVoteUseCase
 ) : ViewModel() {
 
     private val _myInfo = MutableStateFlow<MyInfoDomainModel?>(null)
@@ -240,6 +245,32 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             Log.d(TAG, "testChat")
             testChatUseCase(lampId)
+        }
+    }
+
+    fun accept(
+        lampSuggestionId: Int
+    ) {
+        viewModelScope.launch {
+            try {
+                Log.d(ChatViewModel.TAG, "acceptVote")
+                acceptUseCase(lampSuggestionId)
+            } catch (e: Exception) {
+                Log.e(ChatViewModel.TAG, "accept Exception", e)
+            }
+        }
+    }
+
+    fun reject(
+        lampSuggestionId: Int
+    ) {
+        viewModelScope.launch {
+            try {
+                Log.d(ChatViewModel.TAG, "rejectVote")
+                rejectUseCase(lampSuggestionId)
+            } catch (e: Exception) {
+                Log.e(ChatViewModel.TAG, "reject Exception", e)
+            }
         }
     }
 

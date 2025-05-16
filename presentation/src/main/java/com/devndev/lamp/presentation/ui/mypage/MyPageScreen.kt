@@ -56,6 +56,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
+import com.devndev.lamp.domain.model.lampmatch.IndividualityDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray3
 import com.devndev.lamp.presentation.theme.IncTypography
@@ -89,9 +90,11 @@ fun MyPageScreen(
 
     val attractive by remember(myInfo) {
         derivedStateOf {
-            myInfo?.individualityDomainModel?.let {
-                listOf(it.personality, it.voice, it.fashion, it.conversation)
-            } ?: listOf(0, 0, 0, 0) // 기본값
+            myInfo?.individualityDomainModel
+                ?: IndividualityDomainModel(attractiveness = 0, personality = 0, voice = 0, fashion = 0, conversation = 0)
+//            myInfo?.individualityDomainModel?.let {
+//                listOf(it.personality, it.voice, it.fashion, it.conversation)
+//            } ?: listOf(0, 0, 0, 0) // 기본값
         }
     }
 
@@ -155,7 +158,7 @@ fun MyPageScreen(
             Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
                 AttractiveSection(
                     modifier = outlineModifier,
-                    avgAttractive = avgAttractive.toInt(),
+                    avgAttractive = avgAttractive,
                     attractive = attractive
                 )
                 AlarmSettingsSection(modifier = outlineModifier, alarmsState = alarmsState)
@@ -244,7 +247,7 @@ fun UserInfoSection(
 }
 
 @Composable
-fun AttractiveSection(modifier: Modifier, avgAttractive: Int, attractive: List<Int>) {
+fun AttractiveSection(modifier: Modifier, avgAttractive: Int, attractive: IndividualityDomainModel) {
     Column(modifier = modifier.padding(top = 15.dp, bottom = 7.dp)) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(5.dp),

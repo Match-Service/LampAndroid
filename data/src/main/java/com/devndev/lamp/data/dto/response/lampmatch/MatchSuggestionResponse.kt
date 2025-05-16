@@ -1,5 +1,6 @@
 package com.devndev.lamp.data.dto.response.lampmatch
 
+import com.devndev.lamp.domain.model.lampmatch.BioDomainModel
 import com.devndev.lamp.domain.model.lampmatch.IndividualityDomainModel
 import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionUserDomainModel
@@ -30,6 +31,8 @@ data class MatchSuggestionResponse(
     val rejectCount: Int,
     @Json(name = "matchCompleteTime")
     val matchCompleteTime: String,
+    @Json(name = "gender")
+    val gender: String,
     @Json(name = "owner")
     val owner: MatchSuggestionUser,
     @Json(name = "participants")
@@ -48,6 +51,7 @@ data class MatchSuggestionResponse(
             approveCount = approveCount,
             rejectCount = rejectCount,
             matchCompleteTime = matchCompleteTime,
+            gender = gender,
             owner = owner.toDomainModel(),
             participants = participants.map { it.toDomainModel() }
         )
@@ -60,17 +64,47 @@ data class MatchSuggestionUser(
     val userId: Int,
     @Json(name = "name")
     val name: String,
-    @Json(name = "profileImageUrl")
-    val profileImageUrl: String,
+    @Json(name = "job")
+    val job: String?,
+    @Json(name = "jobName")
+    val jobName: String?,
+    @Json(name = "birth")
+    val birth: String,
+    @Json(name = "bio")
+    val bio: String?,
+    @Json(name = "profileImageUrls")
+    val profileImageUrls: List<String>,
     @Json(name = "individuality")
-    val individuality: Individuality?
+    val individuality: Individuality?,
+    @Json(name = "bioQuestion")
+    val bioQuestion: List<BioQuestion>
 ) {
     fun toDomainModel(): MatchSuggestionUserDomainModel {
         return MatchSuggestionUserDomainModel(
             userId = userId,
             name = name,
-            profileImageUrl = profileImageUrl,
-            individuality = individuality?.toDomainModel()
+            job = job.orEmpty(),
+            jobName = jobName.orEmpty(),
+            birth = birth,
+            bio = bio.orEmpty(),
+            profileImageUrls = profileImageUrls,
+            individuality = individuality?.toDomainModel(),
+            bioQuestion = bioQuestion.map { it.toDomainModel() }
+        )
+    }
+}
+
+@JsonClass(generateAdapter = true)
+data class BioQuestion(
+    @Json(name = "question")
+    val question: String,
+    @Json(name = "answer")
+    val answer: String
+) {
+    fun toDomainModel(): BioDomainModel {
+        return BioDomainModel(
+            question = question,
+            answer = answer
         )
     }
 }

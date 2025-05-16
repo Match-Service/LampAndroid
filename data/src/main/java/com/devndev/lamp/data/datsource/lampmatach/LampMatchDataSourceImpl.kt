@@ -15,6 +15,18 @@ class LampMatchDataSourceImpl @Inject constructor(
         lampMatchService.stopMatch()
     }
 
+    override suspend fun accept(lampSuggestionId: Int) {
+        lampMatchService.accept(
+            lampSuggestionId = lampSuggestionId
+        )
+    }
+
+    override suspend fun reject(lampSuggestionId: Int) {
+        lampMatchService.reject(
+            lampSuggestionId = lampSuggestionId
+        )
+    }
+
     override suspend fun getMatchSuggestion(): MatchSuggestionResponse {
         return lampMatchService.getMatchSuggestion()
     }
