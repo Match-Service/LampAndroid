@@ -268,7 +268,7 @@ fun MatchingVoteScreen(
                         onHeightChange = { height -> secondSectionHeight = height },
                         selectedImage = selectedImage,
                         onImageSelected = { selectedImage = it },
-                        profiles = profiles
+                        matchSuggestion = matchSuggestion
                     )
                 }
             }
@@ -333,7 +333,7 @@ fun ProfileTop(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
     ) + matchSuggestion?.participants?.map { it.name }
 
     // 프로필 이미지 url list
-    val imageUrlList = listOf(
+    val imageUrlList = listOfNotNull(
         matchSuggestion?.owner?.profileImageUrls
     ) + matchSuggestion?.participants?.map { it.profileImageUrls }
 
@@ -347,9 +347,9 @@ fun ProfileTop(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
                 .padding(bottom = 10.dp),
             horizontalArrangement = Arrangement.Center
         ) {
-            for (i in imageUrlList.indices) {
+            for (i in imageUrlList[index]?.indices!!) {
                 Image(
-                    painter = rememberImagePainter(imageUrlList[i]),
+                    painter = rememberImagePainter(imageUrlList[index]?.get(i)),
                     contentDescription = "Profile Image",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -371,14 +371,16 @@ fun ProfileTop(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
                 items(1) {
                     Spacer(modifier = Modifier.width(16.dp))
                 }
-                items(imageUrlList.size) { i ->
-                    Image(
-                        painter = rememberImagePainter(imageUrlList[i]),
-                        contentDescription = "Profile Image",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier
-                            .size(120.dp)
-                    )
+                imageUrlList[index]?.let {
+                    items(it.size) { i ->
+                        Image(
+                            painter = rememberImagePainter(imageUrlList[index]?.get(i)),
+                            contentDescription = "Profile Image",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(120.dp)
+                        )
+                    }
                 }
                 items(1) {
                     Spacer(modifier = Modifier.width(16.dp))
@@ -591,8 +593,8 @@ fun ProfileDescription(matchSuggestion: MatchSuggestionDomainModel?, index: Int)
         matchSuggestion?.owner?.bioQuestion?.map { it.answer }
     ) + (matchSuggestion?.participants?.map { it.bioQuestion.map { question -> question.answer } } ?: emptyList())
 
-    Log.d("123", bioList.toString())
-    Log.d("123", bioQuestionList.toString())
+    Log.d("bioList", bioList.toString())
+    Log.d("bioQuestionList", bioQuestionList.toString())
 
     Text(
         text = bioList[index],
@@ -607,41 +609,19 @@ fun ProfileDescription(matchSuggestion: MatchSuggestionDomainModel?, index: Int)
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-//        val profileInfo = profiles[index][6] as List<String>
-        for (i in bioQuestionList.indices) {
+        for (i in bioQuestionList[index].indices) {
             Text(
                 text = when (i) {
                     0 -> {
-                        "${stringResource(id = R.string.drink)} : " + bioQuestionList[i][0]
-//                                when (profileInfo[i]) {
-//                            1 -> stringResource(id = R.string.drink_often)
-//                            2 -> stringResource(id = R.string.drink_sometimes)
-//                            3 -> stringResource(id = R.string.drink_never)
-//                            4 -> stringResource(id = R.string.drink_stop)
-//                            else -> {}
-//                        }
+                        "${stringResource(id = R.string.drink)} : " + bioQuestionList[index][i]
                     }
 
                     1 -> {
-                        "${stringResource(id = R.string.smoke)} : " + bioQuestionList[i][1]
-//                                when (profileInfo[i]) {
-//                            1 -> stringResource(id = R.string.smoke_often)
-//                            2 -> stringResource(id = R.string.smoke_sometimes)
-//                            3 -> stringResource(id = R.string.smoke_never)
-//                            4 -> stringResource(id = R.string.smoke_stop)
-//                            else -> {}
-//                        }
+                        "${stringResource(id = R.string.smoke)} : " + bioQuestionList[index][i]
                     }
 
                     2 -> {
-                        "${stringResource(id = R.string.exercise)} : " + bioQuestionList[i][2]
-//                                when (profileInfo[i]) {
-//                            1 -> stringResource(id = R.string.exercise_often)
-//                            2 -> stringResource(id = R.string.exercise_sometimes)
-//                            3 -> stringResource(id = R.string.exercise_never)
-//                            4 -> stringResource(id = R.string.exercise_stop)
-//                            else -> {}
-//                        }
+                        "${stringResource(id = R.string.exercise)} : " + bioQuestionList[index][i]
                     }
 
                     else -> "" // nothing
@@ -650,7 +630,7 @@ fun ProfileDescription(matchSuggestion: MatchSuggestionDomainModel?, index: Int)
                 style = Typography.medium10.copy(lineHeight = 12.sp),
                 textAlign = TextAlign.Center
             )
-            if (i < bioQuestionList.size - 1) {
+            if (i < bioQuestionList[index].size - 1) {
                 Spacer(modifier = Modifier.width(3.dp))
                 Icon(
                     painter = painterResource(id = R.drawable.seperate),
@@ -732,7 +712,7 @@ fun SecondSection(
     onHeightChange: (Dp) -> Unit,
     selectedImage: Int,
     onImageSelected: (Int) -> Unit,
-    profiles: List<List<Any?>>?
+    matchSuggestion: MatchSuggestionDomainModel?
 ) {
     val density = LocalDensity.current
     Column(
@@ -750,7 +730,7 @@ fun SecondSection(
         verticalArrangement = Arrangement.spacedBy(15.dp)
     ) {
         Spacer(modifier = Modifier.height(41.dp))
-        OtherProfileInfo(null, selectedImage, onImageSelected, profiles)
+        OtherProfileInfo(null, selectedImage, onImageSelected, matchSuggestion)
         Spacer(modifier = Modifier.height(50.dp))
     }
 }
@@ -916,10 +896,15 @@ fun OtherProfileInfo(
     image: Image? = null,
     selectedImage: Int,
     onImageSelected: (Int) -> Unit,
-    profiles: List<List<Any?>>?
+    matchSuggestion: MatchSuggestionDomainModel?
 ) {
 //    // 선택된 이미지 추적
 //    var selectedImage by remember { mutableStateOf(0) }
+
+    // 대표 프로필 이미지 url list
+    val repImageUrlList = listOf(
+        matchSuggestion?.owner?.profileImageUrls?.firstOrNull()
+    ) + (matchSuggestion?.participants?.map { it.profileImageUrls.firstOrNull() } ?: emptyList())
 
     Row(
         modifier = Modifier
@@ -931,14 +916,16 @@ fun OtherProfileInfo(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(15.dp)
     ) {
-        Log.d("profiles", profiles.toString())
-        if (profiles != null) {
-            for (i in profiles.indices)
-                SelectableImage(
-                    imageUrl = (profiles[i][1] as List<List<String>>)[0][0],
-                    isSelected = selectedImage == i,
-                    onClick = { onImageSelected(i) }
-                )
+        if (matchSuggestion != null) {
+            for (i in repImageUrlList.indices) {
+                repImageUrlList[i]?.let { imageUrl ->
+                    SelectableImage(
+                        imageUrl = imageUrl,
+                        isSelected = selectedImage == i,
+                        onClick = { onImageSelected(i) }
+                    )
+                }
+            }
         }
     }
 }
