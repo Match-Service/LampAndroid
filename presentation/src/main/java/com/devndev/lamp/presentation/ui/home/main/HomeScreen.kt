@@ -5,8 +5,10 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -72,34 +74,35 @@ fun HomeScreen(
             }, 2000)
         }
     }
+    Box(modifier = Modifier.fillMaxSize()) {
+        when (userStatus) {
+            "ON_BOARDING" -> {
+                NormalHomeScreen(modifier = modifier, navController = navController)
+            }
 
-    when (userStatus) {
-        "ON_BOARDING" -> {
-            NormalHomeScreen(modifier = modifier, navController = navController)
-        }
+            "PREPARE",
+            "MATCHING" -> {
+                MatchingHomeScreen(modifier = modifier, navController = navController)
+            }
 
-        "PREPARE",
-        "MATCHING" -> {
-            MatchingHomeScreen(modifier = modifier, navController = navController)
-        }
+            "FIND_LAMP" -> {
+                FindLampScreen(modifier = Modifier, navController = navController)
+            }
 
-        "FIND_LAMP" -> {
-            FindLampScreen(modifier = Modifier, navController = navController)
-        }
+            "VISIT_WAITING" -> {
+                WaitingHomeScreen(modifier = modifier, navController = navController)
+            }
 
-        "VISIT_WAITING" -> {
-            WaitingHomeScreen(modifier = modifier, navController = navController)
-        }
-
-        "VOTE" -> {
-            MatchingVoteScreen(modifier = Modifier, navController = navController)
-        }
+            "VOTE" -> {
+                MatchingVoteScreen(modifier = Modifier, navController = navController)
+            }
 //        "FAILED" -> TODO("Not yet implementation")
 //
 //        "IN_PROGRESS" -> TODO("Not yet implementation")
 //
 //
 //        "FINISHED" -> TODO("Not yet implementation")
+        }
     }
 }
 
