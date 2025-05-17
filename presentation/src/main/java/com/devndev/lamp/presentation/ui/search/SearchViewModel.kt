@@ -16,6 +16,7 @@ import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.domain.usecase.user.SearchInviteUserUseCase
 import com.devndev.lamp.domain.usecase.user.SearchVisitUserUseCase
 import com.devndev.lamp.presentation.ui.common.SearchStatus
+import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -56,14 +57,15 @@ class SearchViewModel @Inject constructor(
 
     private fun getMyInfo() {
         viewModelScope.launch {
-            try {
-                Log.d(logTag, "fetchData")
-                _myInfo.value = getMyInfoUseCase()
-            } catch (e: HttpException) {
-                Log.e(logTag, "fetchData HttpException", e)
-            } catch (e: Exception) {
-                Log.e(logTag, "fetchData Exception", e)
-            }
+            getMyInfoUseCase()
+                .onSuccess { userInfo ->
+                    Log.d(HomeViewModel.TAG, "getMyInfo")
+                    _myInfo.value = userInfo
+                    Log.d(HomeViewModel.TAG, "My Info ${myInfo.value}")
+                }
+                .onFailure { throwable ->
+                    Log.e(HomeViewModel.TAG, "Failed to fetch user info", throwable)
+                }
         }
     }
 

@@ -15,6 +15,7 @@ import com.devndev.lamp.domain.usecase.user.EditImageUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.domain.usecase.user.ModifyUserUseCase
 import com.devndev.lamp.presentation.ui.common.InstagramAuth
+import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,19 +53,21 @@ class ProfileEditViewModel @Inject constructor(
     }
 
     init {
-        fetchData()
+        getMyInfo()
         getFcmToken()
     }
 
-    private fun fetchData() {
+    private fun getMyInfo() {
         viewModelScope.launch {
-            try {
-                Log.d(logTag, "fetchData")
-                _myInfo.value = getMyInfoUseCase()
-                Log.d(logTag, "My Info ${myInfo.value}")
-            } catch (e: Exception) {
-                Log.e(logTag, "fetchData Exception", e)
-            }
+            getMyInfoUseCase()
+                .onSuccess { userInfo ->
+                    Log.d(HomeViewModel.TAG, "getMyInfo")
+                    _myInfo.value = userInfo
+                    Log.d(HomeViewModel.TAG, "My Info ${myInfo.value}")
+                }
+                .onFailure { throwable ->
+                    Log.e(HomeViewModel.TAG, "Failed to fetch user info", throwable)
+                }
         }
     }
 

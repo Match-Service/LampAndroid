@@ -225,7 +225,8 @@ fun LampBottomNavigation(navController: NavController, containerColor: Color) {
             onClick = {
                 navController.navigateHome(homeNavOptions)
             },
-            modifier = Modifier.padding(top = 15.dp, bottom = 20.dp)
+            modifier = Modifier.padding(top = 15.dp, bottom = 20.dp),
+            enabled = currentRoute != Route.HOME
         )
 
         NavigationBarItem(
@@ -244,7 +245,8 @@ fun LampBottomNavigation(navController: NavController, containerColor: Color) {
             onClick = {
                 navController.navigateChatList(chattingNavOptions)
             },
-            modifier = Modifier.padding(top = 15.dp, bottom = 20.dp)
+            modifier = Modifier.padding(top = 15.dp, bottom = 20.dp),
+            enabled = currentRoute != Route.CHAT_LIST
         )
 
         NavigationBarItem(
@@ -263,7 +265,8 @@ fun LampBottomNavigation(navController: NavController, containerColor: Color) {
             onClick = {
                 navController.navigateMyPage(myPageNavOptions)
             },
-            modifier = Modifier.padding(top = 15.dp, bottom = 20.dp)
+            modifier = Modifier.padding(top = 15.dp, bottom = 20.dp),
+            enabled = currentRoute != Route.MYPAGE
         )
     }
 }
