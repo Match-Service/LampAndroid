@@ -1,12 +1,7 @@
 package com.devndev.lamp.presentation.ui.chatting
 
+import android.app.Activity
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -51,6 +46,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -74,10 +70,7 @@ import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
-import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.ProfilePopup
-import com.devndev.lamp.presentation.ui.main.LampTopBar
-import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
@@ -94,10 +87,11 @@ fun ChatScreen(
 ) {
     val chat = viewModel.chatUiState.collectAsState()
     val myInfo = viewModel.myInfo.collectAsState()
-    val topBarVisible = remember { mutableStateOf(true) }
-    var shouldNavigate by remember { mutableStateOf(false) }
     val isLoading = viewModel.isLoading.collectAsState()
     val needScrollDown = viewModel.needScrollDown.collectAsState()
+
+    val context = LocalContext.current
+    val activity = context as? Activity
 
     var isProfilePopupShow by remember { mutableStateOf(false) }
     var selectedUserInfo by remember { mutableStateOf<UserInfo?>(null) }
@@ -111,15 +105,8 @@ fun ChatScreen(
     }
 
     BackHandler {
-        topBarVisible.value = false
-        shouldNavigate = true
-    }
-
-    LaunchedEffect(shouldNavigate) {
-        if (shouldNavigate) {
-            delay(200) // Wait for the animation to finish
-            navController.navigateMain(MainScreenPage.CHATTING) // Navigate to the next screen
-        }
+        activity?.finish()
+        activity?.overridePendingTransition(R.anim.none, R.anim.slide_out_right)
     }
 
     val lazyListState = rememberLazyListState()
@@ -134,7 +121,6 @@ fun ChatScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchChatData(lastMessageId = null, chatRoomId = chatRoomId)
         delay(300)
-        topBarVisible.value = true
         lazyListState.scrollToItem(chat.value.chatItems.size)
     }
 
@@ -181,21 +167,16 @@ fun ChatScreen(
             .imePadding(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        LampTopBar(navController = navController, isAlarmIconNeed = true, color = Gray)
-        AnimatedVisibility(
-            visible = topBarVisible.value,
-            enter = EnterTransition.None,
-            exit = slideOutVertically(animationSpec = tween(200)) + shrinkVertically() + fadeOut()
-        ) {
-            ChatTopBar(
-                chat = chat.value,
-                onBackClick = {
-                    topBarVisible.value = false
-                    shouldNavigate = true
-                },
-                onCalendarClick = {}
-            )
-        }
+//        LampTopBar(navController = navController, isAlarmIconNeed = true, color = Gray)
+
+        ChatTopBar(
+            chat = chat.value,
+            onBackClick = {
+                activity?.finish()
+                activity?.overridePendingTransition(R.anim.none, R.anim.slide_out_right)
+            },
+            onCalendarClick = {}
+        )
 
         LazyColumn(
             modifier = Modifier

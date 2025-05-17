@@ -39,7 +39,6 @@ import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.ui.alarm.navigation.alarmNavGraph
 import com.devndev.lamp.presentation.ui.alarm.navigation.navigateAlarm
-import com.devndev.lamp.presentation.ui.chatting.navigation.chatNavGraph
 import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.creation.navigation.creationNavGraph
@@ -77,16 +76,12 @@ fun MainScreen(modifier: Modifier, signOut: () -> Unit) {
                 currentRoute != Route.START_LAMP &&
                 currentRoute != Route.CREATION &&
                 currentRoute != Route.REVIEW &&
-                currentRoute != Route.VOTE &&
-                currentRoute != "${Route.CHAT}/{chatRoomId}"
+                currentRoute != Route.VOTE
             ) {
                 when (currentRoute) {
                     Route.SIGNUP, Route.EMAIL_LOGIN, Route.FORGOT_PASSWORD -> {
                         LampTopBar(navController = navController, isAlarmIconNeed = false)
                     }
-//                    "${Route.CHAT}/{chatRoomId}" -> {
-//                        LampTopBar(navController = navController, isAlarmIconNeed = true, color = Gray)
-//                    }
                     else -> {
                         LampTopBar(navController = navController, isAlarmIconNeed = true)
                     }
@@ -105,8 +100,7 @@ fun MainScreen(modifier: Modifier, signOut: () -> Unit) {
                 currentRoute != Route.PROFILE_EDIT &&
                 currentRoute != Route.EMAIL_LOGIN &&
                 currentRoute != Route.FORGOT_PASSWORD &&
-                currentRoute != Route.REVIEW &&
-                currentRoute != "${Route.CHAT}/{chatRoomId}"
+                currentRoute != Route.REVIEW
             ) {
                 if (currentRoute != Route.VOTE) {
                     LampBottomNavigation(pagerState, LampBlack)
@@ -143,7 +137,6 @@ fun MainScreen(modifier: Modifier, signOut: () -> Unit) {
             forgotPasswordNavGraph(padding = innerPadding, navController = navController)
             reviewNavGraph(padding = innerPadding, navController = navController)
             voteNavGraph(padding = innerPadding, navController = navController)
-            chatNavGraph(padding = innerPadding, navController = navController)
         }
     }
 }
