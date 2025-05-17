@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.devndev.lamp.presentation.theme.BackGroundColor
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.LampTheme
 import com.devndev.lamp.presentation.ui.chatting.navigation.ChatNavHost
@@ -29,20 +30,23 @@ class ChatActivity : ComponentActivity() {
 
             LampTheme() {
                 Scaffold(
+                    containerColor = BackGroundColor,
                     topBar = {
                         when (currentRoute) {
                             Route.CHAT -> {
                                 LampTopBar(
                                     navController = navController,
                                     isAlarmIconNeed = true,
-                                    color = Gray
+                                    color = Gray,
+                                    needAlarmUpdate = true
                                 )
                             }
 
                             else -> {
                                 LampTopBar(
                                     navController = navController,
-                                    isAlarmIconNeed = true
+                                    isAlarmIconNeed = true,
+                                    needAlarmUpdate = false
                                 )
                             }
                         }

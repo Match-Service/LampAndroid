@@ -7,8 +7,12 @@ import android.content.Context
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.devndev.lamp.domain.eventbus.AlarmEventBus
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class FirebaseMessagingService : FirebaseMessagingService() {
     private val logTag = "FCMService"
@@ -17,7 +21,9 @@ class FirebaseMessagingService : FirebaseMessagingService() {
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         Log.d(logTag, "onMessageReceived")
-
+        CoroutineScope(Dispatchers.Default).launch {
+            AlarmEventBus.postEvent()
+        }
         with(remoteMessage) {
             notification?.let {
                 sendNotification(it.title, it.body)
