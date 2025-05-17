@@ -7,7 +7,9 @@ import javax.inject.Inject
 class GetAlarmUseCase @Inject constructor(
     private val alarmRepository: AlarmRepository
 ) {
-    suspend operator fun invoke(): List<AlarmDomainModel> {
-        return alarmRepository.getAlarm()
+    suspend operator fun invoke(): Result<List<AlarmDomainModel>> {
+        return runCatching {
+            alarmRepository.getAlarm()
+        }
     }
 }

@@ -3,7 +3,6 @@ package com.devndev.lamp.presentation.ui.alarm
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devndev.lamp.domain.model.alarm.AlarmDomainModel
 import com.devndev.lamp.domain.model.lamp.AcceptInviteParam
 import com.devndev.lamp.domain.model.lamp.AcceptVisitParam
 import com.devndev.lamp.domain.model.lamp.RejectInviteParam
@@ -13,9 +12,12 @@ import com.devndev.lamp.domain.usecase.lamp.AcceptInviteUseCase
 import com.devndev.lamp.domain.usecase.lamp.AcceptVisitUseCase
 import com.devndev.lamp.domain.usecase.lamp.RejectInviteUseCase
 import com.devndev.lamp.domain.usecase.lamp.RejectVisitUseCase
+import com.devndev.lamp.presentation.ui.home.main.HomeViewModel.Companion.TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -28,9 +30,8 @@ class AlarmViewModel @Inject constructor(
     private val rejectVisitUseCase: RejectVisitUseCase
 ) : ViewModel() {
     private val logTag = "AlarmViewModel"
-
-    private val _alarms = MutableStateFlow<List<AlarmDomainModel>>(emptyList())
-    val alarms: StateFlow<List<AlarmDomainModel>> = _alarms
+    private val _uiState = MutableStateFlow(AlarmUiState())
+    val uiState: StateFlow<AlarmUiState> = _uiState.asStateFlow()
 
     init {
         getAlarm()
@@ -38,13 +39,20 @@ class AlarmViewModel @Inject constructor(
 
     fun getAlarm() {
         viewModelScope.launch {
-            try {
-                Log.d(logTag, "getAlarm")
-                _alarms.value = getAlarmUseCase()
-                Log.d(logTag, "Alarms ${alarms.value}")
-            } catch (e: Exception) {
-                Log.e(logTag, "getAlarm Exception", e)
-            }
+            getAlarmUseCase()
+                .onSuccess { alarms ->
+                    Log.d(logTag, "getAlarm")
+                    _uiState.update { it.copy(alarms = alarms) }
+                    if (uiState.value.alarms.isNotEmpty())  {
+                        _uiState.update { it.copy(alarmExist = true) }
+                    } else {
+                        _uiState.update { it.copy(alarmExist = false) }
+                    }
+                    Log.d(logTag, "Alarms ${uiState.value.alarms}")
+                }
+                .onFailure { throwable ->
+                    Log.e(TAG, "Failed to fetch user info", throwable)
+                }
         }
     }
 

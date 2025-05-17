@@ -49,6 +49,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.devndev.lamp.domain.model.alarm.AlarmDomainModel
 import com.devndev.lamp.presentation.R
@@ -77,10 +78,10 @@ fun AlarmScreen(
         navController.popBackStack()
     }
 
-    val alarms by viewModel.alarms.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
-    val inviteList by remember { derivedStateOf { alarms.filter { it.type == "INVITE" } } }
-    val visitList by remember { derivedStateOf { alarms.filter { it.type == "VISIT" } } }
+    val inviteList by remember { derivedStateOf { state.alarms.filter { it.type == "INVITE" } } }
+    val visitList by remember { derivedStateOf { state.alarms.filter { it.type == "VISIT" } } }
 
     var isInvitationExpanded by remember { mutableStateOf(false) }
     var isVisitExpanded by remember { mutableStateOf(false) }
