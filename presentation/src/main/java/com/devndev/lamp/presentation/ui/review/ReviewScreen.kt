@@ -39,10 +39,9 @@ import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
-import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.ReviewScreen
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
-import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
+import com.devndev.lamp.presentation.ui.home.navigation.navigateHome
 
 @Composable
 fun ReviewScreen(
@@ -178,7 +177,7 @@ fun ReviewScreen(
                             currentStep = ReviewScreen.PERSONAL
                         } else if (currentStep == ReviewScreen.PERSONAL) {
                             if (personalStep == tmpProfileSize) {
-                                navController.navigateMain(MainScreenPage.HOME)
+                                navController.navigateHome()
                             } else {
                                 personalStep++
                             }
@@ -202,7 +201,7 @@ fun ReviewScreen(
                             currentStep = ReviewScreen.PERSONAL
                         } else if (currentStep == ReviewScreen.PERSONAL) {
                             if (personalStep == tmpProfileSize) {
-                                navController.navigateMain(MainScreenPage.HOME)
+                                navController.navigateHome()
                             } else {
                                 personalStep++
                             }

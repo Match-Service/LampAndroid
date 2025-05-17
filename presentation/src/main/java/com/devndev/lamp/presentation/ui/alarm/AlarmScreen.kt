@@ -25,7 +25,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.PagerState
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -61,7 +60,6 @@ import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
-import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
 import kotlinx.coroutines.delay
 import java.time.Duration
 import java.time.ZoneOffset
@@ -73,16 +71,10 @@ import java.time.format.DateTimeFormatter
 fun AlarmScreen(
     modifier: Modifier,
     navController: NavController,
-    pagerState: PagerState,
-    isFromMain: Boolean,
     viewModel: AlarmViewModel = hiltViewModel()
 ) {
     BackHandler {
-        if (isFromMain) {
-            navController.navigateMain(pagerState.currentPage)
-        } else {
-            navController.popBackStack()
-        }
+        navController.popBackStack()
     }
 
     val alarms by viewModel.alarms.collectAsState()
@@ -149,11 +141,7 @@ fun AlarmScreen(
                 text = stringResource(id = R.string.notification),
                 isNeedXButton = false,
                 onBackButtonClick = {
-                    if (isFromMain) {
-                        navController.navigateMain(pagerState.currentPage)
-                    } else {
-                        navController.popBackStack()
-                    }
+                    navController.popBackStack()
                 }
             )
             Box(modifier = Modifier.fillMaxSize()) {
