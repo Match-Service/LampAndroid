@@ -3,7 +3,6 @@ package com.devndev.lamp.presentation.ui.chatting
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.network.HttpException
 import com.devndev.lamp.domain.model.chat.ChatInfoDomainModel
 import com.devndev.lamp.domain.model.chat.ChatItem
 import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
@@ -151,14 +150,15 @@ class ChatViewModel @Inject constructor(
 
     private fun getMyInfo() {
         viewModelScope.launch {
-            try {
-                _myInfo.value = getMyInfoUseCase()
-                Log.d(HomeViewModel.TAG, "My Info ${myInfo.value}")
-            } catch (e: HttpException) {
-                Log.e(HomeViewModel.TAG, "fetchData HttpException", e)
-            } catch (e: Exception) {
-                Log.e(HomeViewModel.TAG, "fetchData Exception", e)
-            }
+            getMyInfoUseCase()
+                .onSuccess { userInfo ->
+                    Log.d(HomeViewModel.TAG, "getMyInfo")
+                    _myInfo.value = userInfo
+                    Log.d(HomeViewModel.TAG, "My Info ${myInfo.value}")
+                }
+                .onFailure { throwable ->
+                    Log.e(HomeViewModel.TAG, "Failed to fetch user info", throwable)
+                }
         }
     }
 

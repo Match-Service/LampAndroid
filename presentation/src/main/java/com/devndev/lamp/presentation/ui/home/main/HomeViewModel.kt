@@ -51,7 +51,6 @@ class HomeViewModel @Inject constructor(
     private val acceptUseCase: AcceptVoteUseCase,
     private val rejectUseCase: RejectVoteUseCase
 ) : ViewModel() {
-
     private val _myInfo = MutableStateFlow<MyInfoDomainModel?>(null)
     val myInfo: StateFlow<MyInfoDomainModel?> = _myInfo
 
@@ -75,18 +74,18 @@ class HomeViewModel @Inject constructor(
 
     private fun getMyInfo() {
         viewModelScope.launch {
-            try {
-                Log.d(TAG, "fetchData")
-                _myInfo.value = getMyInfoUseCase()
-                Log.d(TAG, "My Info ${myInfo.value}")
-                _myInfo.value?.gender?.let {
-                    IconStatusManager.setIconStatus(it)
+            getMyInfoUseCase()
+                .onSuccess { userInfo ->
+                    Log.d(TAG, "fetchData")
+                    _myInfo.value = userInfo
+                    Log.d(TAG, "My Info ${myInfo.value}")
+                    _myInfo.value?.gender?.let {
+                        IconStatusManager.setIconStatus(it)
+                    }
                 }
-            } catch (e: HttpException) {
-                Log.e(TAG, "fetchData HttpException", e)
-            } catch (e: Exception) {
-                Log.e(TAG, "fetchData Exception", e)
-            }
+                .onFailure { throwable ->
+                    Log.e(TAG, "Failed to fetch user info", throwable)
+                }
         }
     }
 

@@ -7,7 +7,9 @@ import javax.inject.Inject
 class GetMyInfoUseCase @Inject constructor(
     private val userRepository: UserRepository
 ) {
-    suspend operator fun invoke(): MyInfoDomainModel {
-        return userRepository.getMyInfo()
+    suspend operator fun invoke(): Result<MyInfoDomainModel> {
+        return kotlin.runCatching {
+            userRepository.getMyInfo()
+        }
     }
 }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -15,22 +14,24 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.ui.common.LampButtonWithIcon
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.home.main.HomeTextArea
-import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
+import com.devndev.lamp.presentation.ui.home.normal.viewmodel.NormalHomeViewModel
 import com.devndev.lamp.presentation.ui.search.navigation.navigateSearch
 
 @Composable
 fun NormalHomeScreen(
-    viewModel: HomeViewModel = hiltViewModel(),
+    viewModel: NormalHomeViewModel = hiltViewModel(),
     modifier: Modifier,
     navController: NavController
 ) {
-    val myInfo by viewModel.myInfo.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
     Column(
         modifier = modifier
             .fillMaxSize(),
@@ -47,10 +48,10 @@ fun NormalHomeScreen(
                 .weight(1f)
         ) {
             HomeTextArea(
-                nameText = "${myInfo?.name ?: ""} " + stringResource(id = R.string.sir),
+                nameText = "${state.myInfo?.name ?: ""} " + stringResource(id = R.string.sir),
                 middleText = stringResource(id = R.string.main_header),
                 bottomText = stringResource(id = R.string.meet_with_lamp),
-                gender = myInfo?.gender ?: "MALE"
+                gender = state.myInfo?.gender ?: "MALE"
             )
         }
         Column(
