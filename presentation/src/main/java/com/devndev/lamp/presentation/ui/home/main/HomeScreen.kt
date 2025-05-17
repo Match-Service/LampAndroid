@@ -94,7 +94,6 @@ fun HomeScreen(
         "VOTE" -> {
             MatchingVoteScreen(modifier = Modifier, navController = navController)
         }
-//
 //        "FAILED" -> TODO("Not yet implementation")
 //
 //        "IN_PROGRESS" -> TODO("Not yet implementation")

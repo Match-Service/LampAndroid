@@ -45,12 +45,12 @@ import java.util.TimeZone
 import kotlin.system.exitProcess
 
 @Composable
-fun ChattingScreen(
+fun ChatListScreen(
     modifier: Modifier,
     navController: NavController,
     viewModel: ChatViewModel = hiltViewModel()
 ) {
-    val logTag = "ChattingScreen"
+    val logTag = "ChatListScreen"
     val chatList by viewModel.chatList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val context = LocalContext.current

@@ -80,13 +80,11 @@ fun NormalHomeScreen(
                 guideButtonText = stringResource(id = R.string.guide_find_friend),
                 onClick = {
                     navController.navigateSearch(navOption)
-//                    navController.navigateReview(navOption)
                 },
                 icon = painterResource(id = R.drawable.arrow),
                 enabled = true,
                 onIconClick = {
                     navController.navigateSearch(navOption)
-//                    navController.navigateReview(navOption)
                 }
             )
         }

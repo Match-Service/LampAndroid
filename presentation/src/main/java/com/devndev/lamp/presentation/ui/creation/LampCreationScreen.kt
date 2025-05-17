@@ -38,9 +38,8 @@ import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.ui.common.CreationScreen
 import com.devndev.lamp.presentation.ui.common.LampButton
-import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
-import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
+import com.devndev.lamp.presentation.ui.home.navigation.navigateHome
 
 @Composable
 fun LampCreationScreen(
@@ -60,7 +59,7 @@ fun LampCreationScreen(
         if (currentStep > 1) {
             currentStep--
         } else {
-            navController.navigateMain(MainScreenPage.HOME)
+            navController.navigateHome()
         }
     }
 
@@ -99,11 +98,11 @@ fun LampCreationScreen(
                     if (currentStep > 1) {
                         currentStep--
                     } else {
-                        navController.navigateMain(MainScreenPage.HOME)
+                        navController.navigateHome()
                     }
                 },
                 onXButtonClick = {
-                    navController.navigateMain(MainScreenPage.HOME)
+                    navController.navigateHome()
                 }
             )
 
@@ -195,7 +194,7 @@ fun LampCreationScreen(
                                 color = convertMood(selectedMood)
                             )
                         )
-                        navController.navigateMain(MainScreenPage.HOME)
+                        navController.navigateHome()
                     }
                 },
                 enabled = when (currentStep) {

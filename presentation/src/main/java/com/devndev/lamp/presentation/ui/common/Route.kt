@@ -4,7 +4,7 @@ object Route {
     const val MAIN = "main"
     const val SPLASH = "splash"
     const val HOME = "home"
-    const val CHATTING = "chatting"
+    const val CHAT_LIST = "chat_list"
     const val LOGIN = "login"
     const val EMAIL_LOGIN = "email_login"
     const val MYPAGE = "mypage"

@@ -1,7 +1,6 @@
 package com.devndev.lamp.presentation.ui.chatting.navigation
 
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -15,7 +14,6 @@ fun ChatNavHost(
     startDestination: String,
     chatRoomId: Int
 ) {
-    val pagerState = rememberPagerState(initialPage = 2, pageCount = { 1 })
     NavHost(
         modifier = modifier,
         navController = navController,
@@ -28,8 +26,7 @@ fun ChatNavHost(
         )
         alarmNavGraph(
             padding = PaddingValues(),
-            navController = navController,
-            pagerState = pagerState
+            navController = navController
         )
     }
 }

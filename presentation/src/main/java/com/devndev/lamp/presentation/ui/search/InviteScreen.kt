@@ -37,10 +37,9 @@ import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.CircleProfile
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampTextField
-import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.SearchStatus
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
-import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
+import com.devndev.lamp.presentation.ui.home.navigation.navigateHome
 
 @Composable
 fun InviteScreen(
@@ -50,7 +49,7 @@ fun InviteScreen(
 ) {
     val logTag = "InviteScreen"
     BackHandler {
-        navController.navigateMain(MainScreenPage.HOME)
+        navController.navigateHome()
     }
 
     val searchStatus by searchViewModel.searchStatus.collectAsState()
@@ -88,7 +87,7 @@ fun InviteScreen(
             TopNavigationBar(
                 text = stringResource(id = R.string.invite_friend),
                 isNeedXButton = false,
-                onBackButtonClick = { navController.navigateMain(MainScreenPage.HOME) }
+                onBackButtonClick = { navController.navigateHome() }
             )
 
             var rowVisible by remember { mutableStateOf(false) }

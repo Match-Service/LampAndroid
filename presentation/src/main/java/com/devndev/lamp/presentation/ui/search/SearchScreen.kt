@@ -28,11 +28,10 @@ import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampTextField
-import com.devndev.lamp.presentation.ui.common.MainScreenPage
 import com.devndev.lamp.presentation.ui.common.SearchStatus
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
-import com.devndev.lamp.presentation.ui.main.navigation.navigateMain
+import com.devndev.lamp.presentation.ui.home.navigation.navigateHome
 
 @Composable
 fun SearchScreen(
@@ -41,7 +40,7 @@ fun SearchScreen(
     navController: NavController
 ) {
     BackHandler {
-        navController.navigateMain(MainScreenPage.HOME)
+        navController.navigateHome()
     }
 
     val searchStatus by viewModel.searchStatus.collectAsState()
@@ -71,7 +70,7 @@ fun SearchScreen(
             TopNavigationBar(
                 text = stringResource(id = R.string.find_friend),
                 isNeedXButton = false,
-                onBackButtonClick = { navController.navigateMain(MainScreenPage.HOME) }
+                onBackButtonClick = { navController.navigateHome() }
             )
 
             LampTextField(
@@ -106,7 +105,7 @@ fun SearchScreen(
                 profileList = users,
                 onEnterButtonClick = { profile ->
                     profile.lampId?.let { viewModel.requestVisit(it) }
-                    navController.navigateMain(MainScreenPage.HOME)
+                    navController.navigateHome()
                 }
             )
         }
