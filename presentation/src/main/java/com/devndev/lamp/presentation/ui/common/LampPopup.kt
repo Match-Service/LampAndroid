@@ -39,6 +39,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.devndev.lamp.domain.model.chat.UserInfo
+import com.devndev.lamp.domain.model.lampmatch.IndividualityDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Gray3
@@ -299,6 +300,14 @@ fun ProfilePopup(
 
     val avgAttractive = attractive.average().toInt()
 
+    val attractiveDomainModel = IndividualityDomainModel(
+        avgAttractive,
+        attractive[0],
+        attractive[1],
+        attractive[2],
+        attractive[3]
+    )
+
     Dialog(onDismissRequest = {}, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Column(
             modifier = Modifier
@@ -426,7 +435,7 @@ fun ProfilePopup(
 
                         Spacer(modifier = Modifier.height(9.dp))
 
-                        ProgressBar(attractive)
+                        ProgressBar(attractiveDomainModel)
                     }
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(

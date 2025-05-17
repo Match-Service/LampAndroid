@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.chatting
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -28,6 +29,7 @@ import com.devndev.lamp.presentation.theme.Gray3
 import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.ui.alarm.getTimeAgo
 
 @Composable
 fun Chat(
@@ -79,9 +81,7 @@ fun Chat(
                 ) {
                     Text(
                         modifier = Modifier.width(220.dp),
-                        text = chat.lastMessageInfo?.userName
-                            ?: (": " + chat.lastMessageInfo?.message)
-                            ?: "",
+                        text = "${chat.lastMessageInfo?.userName} : ${chat.lastMessageInfo?.message}",
                         color = Color.White,
                         style = Typography.medium15,
                         maxLines = 1,
@@ -92,7 +92,7 @@ fun Chat(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "21분 전",
+                            text = getTimeAgo(chat.lastMessageInfo?.createdAt ?: ""),
                             color = Gray3,
                             style = Typography.normal9
                         )
