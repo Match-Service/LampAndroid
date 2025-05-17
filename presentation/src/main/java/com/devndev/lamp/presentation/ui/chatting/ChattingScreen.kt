@@ -1,5 +1,7 @@
 package com.devndev.lamp.presentation.ui.chatting
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -17,6 +19,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -27,13 +30,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.IncTypography
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
-import com.devndev.lamp.presentation.ui.chatting.navigation.navigateChat
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -49,8 +54,25 @@ fun ChattingScreen(
     val chatList by viewModel.chatList.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
     val context = LocalContext.current
+    val activity = context as? Activity
     val handler = remember { Handler(Looper.getMainLooper()) }
     var backPressedOnce = remember { false }
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.getChatList()
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     BackHandler {
         Log.d(logTag, "back button clicked")
         if (backPressedOnce) {
@@ -85,7 +107,11 @@ fun ChattingScreen(
                 items(chatList) { chat ->
                     Chat(
                         onChatClick = {
-                            navController.navigateChat(chat.chatRoomId)
+                            val intent = Intent(context, ChatActivity::class.java).apply {
+                                putExtra("chatRoomId", chat.chatRoomId)
+                            }
+                            context.startActivity(intent)
+                            activity?.overridePendingTransition(R.anim.slide_in_right, R.anim.none)
                         },
                         chat = chat
                     )

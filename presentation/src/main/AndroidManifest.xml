@@ -35,6 +35,13 @@
             android:screenOrientation="portrait"
             tools:ignore="DiscouragedApi" />
 
+        <activity
+            android:name=".ui.chatting.ChatActivity"
+            android:exported="false"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            tools:ignore="DiscouragedApi" />
+
         <activity android:name="com.canhub.cropper.CropImageActivity"
             android:theme="@style/Theme.AppCompat"/>
 

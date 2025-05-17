@@ -60,7 +60,7 @@ class ChatViewModel @Inject constructor(
         getMyInfo()
     }
 
-    private fun getChatList() {
+    fun getChatList() {
         viewModelScope.launch {
             try {
                 _isLoading.value = true
