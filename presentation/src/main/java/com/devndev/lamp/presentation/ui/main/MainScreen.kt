@@ -17,7 +17,11 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -25,6 +29,8 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -35,6 +41,7 @@ import com.devndev.lamp.presentation.theme.BackGroundColor
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.LightGray
+import com.devndev.lamp.presentation.ui.alarm.AlarmViewModel
 import com.devndev.lamp.presentation.ui.alarm.navigation.alarmNavGraph
 import com.devndev.lamp.presentation.ui.alarm.navigation.navigateAlarm
 import com.devndev.lamp.presentation.ui.chatting.navigation.chatListNavGraph
@@ -56,12 +63,35 @@ import com.devndev.lamp.presentation.ui.signup.navigation.signUpNavGraph
 import com.devndev.lamp.presentation.ui.signup.navigation.startLampNavGraph
 
 @Composable
-fun MainScreen(modifier: Modifier, signOut: () -> Unit) {
+fun MainScreen(
+    modifier: Modifier,
+    signOut: () -> Unit
+) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    var isNeedAlarmUpdate by remember { mutableStateOf(false) }
+
+    LaunchedEffect(currentRoute) {
+        isNeedAlarmUpdate = when (currentRoute) {
+            Route.HOME,
+            Route.CHAT_LIST,
+            Route.MYPAGE,
+            Route.SEARCH,
+            Route.INVITE,
+            Route.PROFILE_EDIT,
+            Route.FIND -> {
+                true
+            }
+
+            else -> {
+                false
+            }
+        }
+    }
 
     Scaffold(
         modifier = modifier.pointerInput(Unit) {
@@ -79,10 +109,19 @@ fun MainScreen(modifier: Modifier, signOut: () -> Unit) {
             ) {
                 when (currentRoute) {
                     Route.SIGNUP, Route.EMAIL_LOGIN, Route.FORGOT_PASSWORD -> {
-                        LampTopBar(navController = navController, isAlarmIconNeed = false)
+                        LampTopBar(
+                            navController = navController,
+                            isAlarmIconNeed = false,
+                            needAlarmUpdate = isNeedAlarmUpdate
+                        )
                     }
+
                     else -> {
-                        LampTopBar(navController = navController, isAlarmIconNeed = true)
+                        LampTopBar(
+                            navController = navController,
+                            isAlarmIconNeed = true,
+                            needAlarmUpdate = isNeedAlarmUpdate
+                        )
                     }
                 }
             } else {
@@ -134,9 +173,23 @@ fun MainScreen(modifier: Modifier, signOut: () -> Unit) {
 }
 
 @Composable
-fun LampTopBar(navController: NavController, isAlarmIconNeed: Boolean, color: Color = LampBlack) {
+fun LampTopBar(
+    navController: NavController,
+    isAlarmIconNeed: Boolean,
+    color: Color = LampBlack,
+    needAlarmUpdate: Boolean,
+    alarmViewModel: AlarmViewModel = hiltViewModel()
+) {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
-    val alarmIcon = if (currentRoute?.startsWith(Route.ALARM) == true) {
+    val state by alarmViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(needAlarmUpdate) {
+        if (needAlarmUpdate) {
+            alarmViewModel.getAlarm()
+        }
+    }
+
+    val alarmIcon = if (currentRoute == Route.ALARM || state.alarmExist) {
         painterResource(id = R.drawable.alarm_icon_on)
     } else {
         painterResource(id = R.drawable.alarm_icon)

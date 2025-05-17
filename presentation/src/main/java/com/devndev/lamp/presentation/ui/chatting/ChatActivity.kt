@@ -37,14 +37,16 @@ class ChatActivity : ComponentActivity() {
                                 LampTopBar(
                                     navController = navController,
                                     isAlarmIconNeed = true,
-                                    color = Gray
+                                    color = Gray,
+                                    needAlarmUpdate = true
                                 )
                             }
 
                             else -> {
                                 LampTopBar(
                                     navController = navController,
-                                    isAlarmIconNeed = true
+                                    isAlarmIconNeed = true,
+                                    needAlarmUpdate = false
                                 )
                             }
                         }

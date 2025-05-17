@@ -3,6 +3,7 @@ package com.devndev.lamp.presentation.ui.alarm
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devndev.lamp.domain.eventbus.AlarmEventBus
 import com.devndev.lamp.domain.model.lamp.AcceptInviteParam
 import com.devndev.lamp.domain.model.lamp.AcceptVisitParam
 import com.devndev.lamp.domain.model.lamp.RejectInviteParam
@@ -34,7 +35,16 @@ class AlarmViewModel @Inject constructor(
     val uiState: StateFlow<AlarmUiState> = _uiState.asStateFlow()
 
     init {
+        observeAlarmEvents()
         getAlarm()
+    }
+
+    private fun observeAlarmEvents() {
+        viewModelScope.launch {
+            AlarmEventBus.events.collect {
+                _uiState.update { it.copy(alarmExist = true) }
+            }
+        }
     }
 
     fun getAlarm() {
@@ -43,10 +53,11 @@ class AlarmViewModel @Inject constructor(
                 .onSuccess { alarms ->
                     Log.d(logTag, "getAlarm")
                     _uiState.update { it.copy(alarms = alarms) }
-                    if (uiState.value.alarms.isNotEmpty())  {
+                    if (uiState.value.alarms.isNotEmpty()) {
                         _uiState.update { it.copy(alarmExist = true) }
                     } else {
                         _uiState.update { it.copy(alarmExist = false) }
+                        Log.d(logTag, uiState.value.alarmExist.toString())
                     }
                     Log.d(logTag, "Alarms ${uiState.value.alarms}")
                 }
