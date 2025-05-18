@@ -105,7 +105,8 @@ fun MainScreen(
                 currentRoute != Route.START_LAMP &&
                 currentRoute != Route.CREATION &&
                 currentRoute != Route.REVIEW &&
-                currentRoute != Route.VOTE
+                currentRoute != Route.VOTE &&
+                currentRoute != Route.CHAT_LIST
             ) {
                 when (currentRoute) {
                     Route.SIGNUP, Route.EMAIL_LOGIN, Route.FORGOT_PASSWORD -> {
@@ -178,11 +179,15 @@ fun LampTopBar(
     isAlarmIconNeed: Boolean,
     color: Color = LampBlack,
     needAlarmUpdate: Boolean,
+    isChatExist: Boolean = false,
     alarmViewModel: AlarmViewModel = hiltViewModel()
 ) {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
     val state by alarmViewModel.uiState.collectAsStateWithLifecycle()
 
+    if (needAlarmUpdate) {
+        alarmViewModel.getAlarm()
+    }
     LaunchedEffect(needAlarmUpdate) {
         if (needAlarmUpdate) {
             alarmViewModel.getAlarm()
@@ -195,7 +200,7 @@ fun LampTopBar(
         painterResource(id = R.drawable.alarm_icon)
     }
 
-    val logoColor = if (color != LampBlack) {
+    val logoColor = if (color != LampBlack || isChatExist) {
         Color.White
     } else {
         LightGray
