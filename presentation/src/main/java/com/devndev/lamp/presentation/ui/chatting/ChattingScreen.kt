@@ -39,6 +39,7 @@ import com.devndev.lamp.presentation.theme.IncTypography
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.ui.main.LampTopBar
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -93,28 +94,43 @@ fun ChatListScreen(
     }
 
     if (isLoading) {
-        Box(modifier = Modifier.fillMaxSize().background(LampBlack))
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(LampBlack)
+        )
     } else {
         if (chatList.isNotEmpty()) {
-            LazyColumn(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(horizontal = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(15.dp),
-                reverseLayout = true
-            ) {
-                items(chatList) { chat ->
-                    Chat(
-                        onChatClick = {
-                            val intent = Intent(context, ChatActivity::class.java).apply {
-                                putExtra("chatRoomId", chat.chatRoomId)
-                            }
-                            context.startActivity(intent)
-                            activity?.overridePendingTransition(R.anim.slide_in_right, R.anim.none)
-                        },
-                        chat = chat
-                    )
+            Column() {
+                LampTopBar(
+                    navController = navController,
+                    isAlarmIconNeed = true,
+                    needAlarmUpdate = true,
+                    isChatExist = chatList.isNotEmpty()
+                )
+                LazyColumn(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .padding(horizontal = 16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(15.dp),
+                    reverseLayout = true
+                ) {
+                    items(chatList) { chat ->
+                        Chat(
+                            onChatClick = {
+                                val intent = Intent(context, ChatActivity::class.java).apply {
+                                    putExtra("chatRoomId", chat.chatRoomId)
+                                }
+                                context.startActivity(intent)
+                                activity?.overridePendingTransition(
+                                    R.anim.slide_in_right,
+                                    R.anim.none
+                                )
+                            },
+                            chat = chat
+                        )
+                    }
                 }
             }
         } else {
