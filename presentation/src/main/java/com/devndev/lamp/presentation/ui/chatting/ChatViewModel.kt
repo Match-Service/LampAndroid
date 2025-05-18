@@ -55,6 +55,7 @@ class ChatViewModel @Inject constructor(
     private var lastFetchedMessageId: String? = null
 
     init {
+        getChatList()
         getMyInfo()
     }
 

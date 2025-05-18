@@ -22,7 +22,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -60,10 +62,16 @@ fun ChatListScreen(
     var backPressedOnce = remember { false }
     val lifecycleOwner = LocalLifecycleOwner.current
 
+    var isFirstLaunch by remember { mutableStateOf(true) }
+
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
-                viewModel.getChatList()
+                if (!isFirstLaunch) {
+                    Log.d("---", "--asdf")
+                    viewModel.getChatList()
+                }
+                isFirstLaunch = false
             }
         }
 
