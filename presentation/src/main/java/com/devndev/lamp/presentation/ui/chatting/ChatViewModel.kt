@@ -46,7 +46,7 @@ class ChatViewModel @Inject constructor(
             getChatListUseCase()
                 .onSuccess { chatList ->
                     Log.d(TAG, "getChatList Success")
-                    val sortedList = chatList.sortedBy { chatRoom ->
+                    val sortedList = chatList.sortedByDescending { chatRoom ->
                         val dateString = chatRoom.lastMessageInfo?.createdAt ?: chatRoom.startDate
                         parseDate(dateString)
                     }
@@ -179,8 +179,14 @@ class ChatViewModel @Inject constructor(
                             _uiState.update { it.copy(chatMessage = updatedMessages) }
 
                             updateChatItems()
-                            if (chatMessage.userId == uiState.value.myInfo?.userId) {
+                            val isMine = chatMessage.userId == uiState.value.myInfo?.userId
+                            val isAtBottom = uiState.value.isAtBottom
+
+                            if (isMine || isAtBottom) {
                                 setNeedScrollDown(true)
+                                setShowNewMessageBadge(false)
+                            } else {
+                                setShowNewMessageBadge(true)
                             }
                         }
                     }
@@ -220,6 +226,14 @@ class ChatViewModel @Inject constructor(
 
     fun setNeedScrollDown(needScrollDown: Boolean) {
         _uiState.update { it.copy(needScrollDown = needScrollDown) }
+    }
+
+    fun setAtBottom(isAtBottom: Boolean) {
+        _uiState.update { it.copy(isAtBottom = isAtBottom) }
+    }
+
+    fun setShowNewMessageBadge(showNewMessage: Boolean) {
+        _uiState.update { it.copy(showNewMessageBadge = showNewMessage) }
     }
 
     private fun parseDate(dateStr: String): Date {

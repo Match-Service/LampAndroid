@@ -122,8 +122,7 @@ fun ChatListScreen(
                         .fillMaxSize()
                         .padding(horizontal = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(15.dp),
-                    reverseLayout = true
+                    verticalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
                     items(state.chatList) { chat ->
                         Chat(
