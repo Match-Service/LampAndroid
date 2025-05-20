@@ -230,4 +230,6 @@
     <string name="say_hi">"반가운 인사로 대화를 시작해보세요"</string>
     <string name="register_appointment">"약속을 등록 해보세요"</string>
     <string name="send">"전송"</string>
+
+    <string name="new_message">"새 메세지"</string>
 </resources>

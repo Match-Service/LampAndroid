@@ -14,5 +14,7 @@ data class ChatUiState(
     val chatMessage: List<ChatMessageDomainModel> = emptyList(),
     val chatItems: List<ChatItem> = emptyList(),
     val isLoading: Boolean = true,
-    val lastFetchedMessageId: String? = null
+    val lastFetchedMessageId: String? = null,
+    val isAtBottom: Boolean = true,
+    val showNewMessageBadge: Boolean = false
 )

@@ -31,6 +31,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -70,6 +71,7 @@ import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.ProfilePopup
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
 import java.time.ZonedDateTime
@@ -101,6 +103,28 @@ fun ChatScreen(
     }
 
     val lazyListState = rememberLazyListState()
+
+    val isAtBottom = remember {
+        derivedStateOf {
+            val layoutInfo = lazyListState.layoutInfo
+            val totalItemsCount = layoutInfo.totalItemsCount
+            val lastVisibleItemIndex = layoutInfo.visibleItemsInfo.lastOrNull()?.index ?: -1
+
+            lastVisibleItemIndex >= totalItemsCount - 2
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        snapshotFlow { isAtBottom.value }
+            .distinctUntilChanged()
+            .collect { atBottom ->
+                viewModel.setAtBottom(atBottom)
+
+                if (atBottom) {
+                    viewModel.setShowNewMessageBadge(false)
+                }
+            }
+    }
 
     LaunchedEffect(state.needScrollDown) {
         if (state.needScrollDown) {
@@ -158,8 +182,6 @@ fun ChatScreen(
             .imePadding(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-//        LampTopBar(navController = navController, isAlarmIconNeed = true, color = Gray)
-
         ChatTopBar(
             chat = state,
             onBackClick = {
@@ -316,6 +338,31 @@ fun ChatScreen(
                     text = stringResource(id = R.string.send),
                     color = textColor,
                     style = Typography.normal12
+                )
+            }
+        }
+    }
+
+    if (state.showNewMessageBadge) {
+        Box(
+            Modifier.fillMaxSize().padding(bottom = 70.dp),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(22.dp))
+                    .background(Gray)
+                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                    .clickable {
+                        viewModel.setNeedScrollDown(true)
+                        viewModel.setShowNewMessageBadge(false)
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = stringResource(R.string.new_message),
+                    color = Color.White,
+                    style = Typography.normal15
                 )
             }
         }
