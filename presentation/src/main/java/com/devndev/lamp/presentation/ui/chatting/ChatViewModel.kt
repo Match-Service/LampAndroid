@@ -17,6 +17,9 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
 import javax.inject.Inject
 
 @HiltViewModel
@@ -43,12 +46,33 @@ class ChatViewModel @Inject constructor(
             getChatListUseCase()
                 .onSuccess { chatList ->
                     Log.d(TAG, "getChatList Success")
-                    _uiState.update { it.copy(chatList = chatList) }
+                    val sortedList = chatList.sortedBy { chatRoom ->
+                        val dateString = chatRoom.lastMessageInfo?.createdAt ?: chatRoom.startDate
+                        parseDate(dateString)
+                    }
+                    _uiState.update { it.copy(chatList = sortedList) }
                     _uiState.update { it.copy(isLoading = false) }
                 }
                 .onFailure { e ->
                     Log.e(TAG, "getChatList Failure", e)
                     _uiState.update { it.copy(isLoading = false) }
+                }
+        }
+    }
+
+    private fun updateChatList() {
+        viewModelScope.launch {
+            getChatListUseCase()
+                .onSuccess { chatList ->
+                    Log.d(TAG, "getChatList Success")
+                    val sortedList = chatList.sortedBy { chatRoom ->
+                        val dateString = chatRoom.lastMessageInfo?.createdAt ?: chatRoom.startDate
+                        parseDate(dateString)
+                    }
+                    _uiState.update { it.copy(chatList = sortedList) }
+                }
+                .onFailure { e ->
+                    Log.e(TAG, "getChatList Failure", e)
                 }
         }
     }
@@ -173,7 +197,7 @@ class ChatViewModel @Inject constructor(
                 addChatListenerUseCase(
                     onChat = { _ ->
                         Log.d(TAG, "onChat")
-                        getChatList()
+                        updateChatList()
                     }
                 )
             } catch (e: Exception) {
@@ -194,6 +218,15 @@ class ChatViewModel @Inject constructor(
 
     fun setNeedScrollDown(needScrollDown: Boolean) {
         _uiState.update { it.copy(needScrollDown = needScrollDown) }
+    }
+
+    private fun parseDate(dateStr: String): Date {
+        return try {
+            val odt = OffsetDateTime.parse(dateStr, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+            Date.from(odt.toInstant())
+        } catch (e: Exception) {
+            Date(0)
+        }
     }
 
     companion object {

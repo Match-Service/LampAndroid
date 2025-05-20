@@ -69,7 +69,6 @@ fun ChatListScreen(
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 if (!isFirstLaunch) {
-                    Log.d("---", "--asdf")
                     viewModel.getChatList()
                 }
                 isFirstLaunch = false
