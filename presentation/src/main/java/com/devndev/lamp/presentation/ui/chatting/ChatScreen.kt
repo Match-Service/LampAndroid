@@ -45,7 +45,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -92,6 +94,8 @@ fun ChatScreen(
 
     var isProfilePopupShow by remember { mutableStateOf(false) }
     var selectedUserInfo by remember { mutableStateOf<UserInfo?>(null) }
+
+    var textFieldHeight by remember { mutableStateOf(0) }
 
     LaunchedEffect(Unit) {
         viewModel.addChatListener(chatRoomId)
@@ -275,6 +279,9 @@ fun ChatScreen(
             modifier = Modifier
                 .background(color = Gray)
                 .padding(start = 16.dp, end = 16.dp, top = 15.dp, bottom = 20.dp)
+                .onSizeChanged { size ->
+                    textFieldHeight = size.height
+                }
         ) {
             BasicTextField(
                 modifier = Modifier
@@ -286,7 +293,8 @@ fun ChatScreen(
                 value = currentMessage,
                 onValueChange = { currentMessage = it },
                 textStyle = Typography.medium15.copy(color = Gray3),
-                singleLine = true,
+                singleLine = false,
+                maxLines = 6,
                 cursorBrush = SolidColor(Color.White),
                 keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Send),
                 keyboardActions = KeyboardActions(
@@ -343,9 +351,11 @@ fun ChatScreen(
         }
     }
 
+    val textFieldHeightDp = with(LocalDensity.current) { textFieldHeight.toDp() }
+
     if (state.showNewMessageBadge) {
         Box(
-            Modifier.fillMaxSize().padding(bottom = 70.dp),
+            Modifier.fillMaxSize().padding(bottom = textFieldHeightDp + 40.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
             Box(
