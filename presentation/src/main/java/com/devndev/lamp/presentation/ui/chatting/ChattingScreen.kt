@@ -20,7 +20,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +34,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.IncTypography
@@ -54,8 +54,8 @@ fun ChatListScreen(
     viewModel: ChatViewModel = hiltViewModel()
 ) {
     val logTag = "ChatListScreen"
-    val chatList by viewModel.chatList.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
     val context = LocalContext.current
     val activity = context as? Activity
     val handler = remember { Handler(Looper.getMainLooper()) }
@@ -101,20 +101,20 @@ fun ChatListScreen(
         }
     }
 
-    if (isLoading) {
+    if (state.isLoading) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(LampBlack)
         )
     } else {
-        if (chatList.isNotEmpty()) {
+        if (state.chatList.isNotEmpty()) {
             Column() {
                 LampTopBar(
                     navController = navController,
                     isAlarmIconNeed = true,
                     needAlarmUpdate = true,
-                    isChatExist = chatList.isNotEmpty()
+                    isChatExist = state.chatList.isNotEmpty()
                 )
                 LazyColumn(
                     modifier = modifier
@@ -124,7 +124,7 @@ fun ChatListScreen(
                     verticalArrangement = Arrangement.spacedBy(15.dp),
                     reverseLayout = true
                 ) {
-                    items(chatList) { chat ->
+                    items(state.chatList) { chat ->
                         Chat(
                             onChatClick = {
                                 val intent = Intent(context, ChatActivity::class.java).apply {

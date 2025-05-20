@@ -7,7 +7,9 @@ import javax.inject.Inject
 class GetChatMessageUseCase @Inject constructor(
     private val chatRepository: ChatRepository
 ) {
-    suspend operator fun invoke(lastMessageId: String?, chatRoomId: Int): List<ChatMessageDomainModel> {
-        return chatRepository.getChatMessage(lastMessageId, chatRoomId)
+    suspend operator fun invoke(lastMessageId: String?, chatRoomId: Int): Result<List<ChatMessageDomainModel>> {
+        return runCatching {
+            chatRepository.getChatMessage(lastMessageId, chatRoomId)
+        }
     }
 }

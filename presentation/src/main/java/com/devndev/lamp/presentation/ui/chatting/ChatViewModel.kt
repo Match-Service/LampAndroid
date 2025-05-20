@@ -3,11 +3,7 @@ package com.devndev.lamp.presentation.ui.chatting
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devndev.lamp.domain.model.chat.ChatInfoDomainModel
 import com.devndev.lamp.domain.model.chat.ChatItem
-import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
-import com.devndev.lamp.domain.model.chat.ChatRoomDomainModel
-import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.usecase.chat.GetChatInfoUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatListUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatMessageUseCase
@@ -17,9 +13,10 @@ import com.devndev.lamp.domain.usecase.socket.DisconnectSocketUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,26 +30,8 @@ class ChatViewModel @Inject constructor(
     private val connectSocketUseCase: ConnectSocketUseCase,
     private val disconnectSocketUseCase: DisconnectSocketUseCase
 ) : ViewModel() {
-    private val _myInfo = MutableStateFlow<MyInfoDomainModel?>(null)
-    val myInfo: StateFlow<MyInfoDomainModel?> = _myInfo
-
-    private val _chatList = MutableStateFlow<List<ChatRoomDomainModel>>(emptyList())
-    val chatList: StateFlow<List<ChatRoomDomainModel>> = _chatList
-
-    private val _chatMessage = MutableStateFlow<List<ChatMessageDomainModel>>(emptyList())
-
-    private val _chatInfo = MutableStateFlow<ChatInfoDomainModel?>(null)
-
-    private val _chatUiState = MutableStateFlow(ChatUiState())
-    val chatUiState: StateFlow<ChatUiState> = _chatUiState
-
-    private val _needScrollDown = MutableStateFlow(false)
-    val needScrollDown: StateFlow<Boolean> = _needScrollDown
-
-    private val _isLoading = MutableStateFlow(true)
-    val isLoading: StateFlow<Boolean> = _isLoading
-
-    private var lastFetchedMessageId: String? = null
+    private val _uiState = MutableStateFlow(ChatUiState())
+    val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
 
     init {
         getChatList()
@@ -60,16 +39,18 @@ class ChatViewModel @Inject constructor(
     }
 
     fun getChatList() {
+        _uiState.update { it.copy(isLoading = true) }
         viewModelScope.launch {
-            try {
-                _isLoading.value = true
-                Log.d(TAG, "getChatList")
-                _chatList.value = getChatListUseCase()
-            } catch (e: Exception) {
-                Log.e(TAG, "getChatList Exception", e)
-            } finally {
-                _isLoading.value = false
-            }
+            getChatListUseCase()
+                .onSuccess { chatList ->
+                    Log.d(TAG, "getChatList Success")
+                    _uiState.update { it.copy(chatList = chatList) }
+                    _uiState.update { it.copy(isLoading = false) }
+                }
+                .onFailure { e ->
+                    Log.e(TAG, "getChatList Failure", e)
+                    _uiState.update { it.copy(isLoading = false) }
+                }
         }
     }
 
@@ -79,45 +60,50 @@ class ChatViewModel @Inject constructor(
         onPrependComplete: ((newItemCount: Int) -> Unit)? = null
     ) {
         // 중복 요청 방지
-        if (lastMessageId != null && lastMessageId == lastFetchedMessageId) {
+        if (lastMessageId != null && lastMessageId == uiState.value.lastFetchedMessageId) {
             return
         }
-
+        Log.d(TAG, "fetchChatData lastMessageId $lastMessageId")
+        _uiState.update { it.copy(isLoading = true, lastFetchedMessageId = lastMessageId) }
         viewModelScope.launch {
-            try {
-                Log.d(TAG, "fetchChatData lastMessageId $lastMessageId")
-                _isLoading.value = true
-                lastFetchedMessageId = lastMessageId
+            val chatMessageResult = getChatMessageUseCase(lastMessageId, chatRoomId)
+            val chatInfoResult = getChatInfoUseCase(chatRoomId)
 
-                val chatMessageDeferred = async { getChatMessageUseCase(lastMessageId, chatRoomId) }
-                val chatInfoDeferred = async { getChatInfoUseCase(chatRoomId) }
+            val previousSize = uiState.value.chatMessage.size
 
-                val newMessages = chatMessageDeferred.await()
-                val chatInfo = chatInfoDeferred.await()
-
-                val previousSize = _chatMessage.value.size
-
-                _chatMessage.value = if (lastMessageId == null) {
-                    newMessages
-                } else {
-                    newMessages + _chatMessage.value
+            chatMessageResult
+                .onSuccess { newMessage ->
+                    Log.d(TAG, newMessage.toString())
+                    val message = if (lastMessageId == null) {
+                        newMessage
+                    } else {
+                        newMessage + uiState.value.chatMessage
+                    }
+                    _uiState.update { it.copy(chatMessage = message) }
+                }
+                .onFailure {
+                    Log.e(TAG, "getChatMessage Failure", it)
                 }
 
-                _chatInfo.value = chatInfo
-                updateChatItems()
+            chatInfoResult
+                .onSuccess { chatInfo ->
+                    _uiState.update { it.copy(chatInfo = chatInfo) }
+                }
+                .onFailure {
+                    Log.e(TAG, "getChatInfo Failure", it)
+                }
 
-                onPrependComplete?.invoke(_chatMessage.value.size - previousSize)
-            } catch (e: Exception) {
-                Log.e(TAG, "fetchChatData Exception", e)
-            } finally {
-                _isLoading.value = false
+            if (chatMessageResult.isSuccess && chatInfoResult.isSuccess) {
+                updateChatItems()
             }
+            onPrependComplete?.invoke(uiState.value.chatMessage.size - previousSize)
+            _uiState.update { it.copy(isLoading = false) }
         }
     }
 
     private fun updateChatItems() {
-        val messages = _chatMessage.value
-        val users = _chatInfo.value?.userInfos ?: return
+        val messages = uiState.value.chatMessage
+        val users = uiState.value.chatInfo?.userInfos ?: return
 
         val userMap = users.associateBy { it.userId }
 
@@ -127,11 +113,7 @@ class ChatViewModel @Inject constructor(
             }
         }
 
-        _chatUiState.value = ChatUiState(
-            chatInfo = _chatInfo.value,
-            chatMessage = _chatMessage.value,
-            chatItems = merged
-        )
+        _uiState.update { it.copy(chatItems = merged) }
     }
 
     fun sendChat(
@@ -139,12 +121,13 @@ class ChatViewModel @Inject constructor(
         message: String
     ) {
         viewModelScope.launch {
-            try {
-                Log.d(TAG, "sendChat")
-                sendChatUseCase(chatRoomId, message)
-            } catch (e: Exception) {
-                Log.e(TAG, "getChatInfo Exception", e)
-            }
+            sendChatUseCase(chatRoomId, message)
+                .onSuccess {
+                    Log.d(TAG, "sendChat Success")
+                }
+                .onFailure {
+                    Log.e(TAG, "sendChat Failure", it)
+                }
         }
     }
 
@@ -153,8 +136,8 @@ class ChatViewModel @Inject constructor(
             getMyInfoUseCase()
                 .onSuccess { userInfo ->
                     Log.d(HomeViewModel.TAG, "getMyInfo")
-                    _myInfo.value = userInfo
-                    Log.d(HomeViewModel.TAG, "My Info ${myInfo.value}")
+                    _uiState.update { it.copy(myInfo = userInfo) }
+                    Log.d(HomeViewModel.TAG, "My Info ${uiState.value.myInfo}")
                 }
                 .onFailure { throwable ->
                     Log.e(HomeViewModel.TAG, "Failed to fetch user info", throwable)
@@ -175,12 +158,12 @@ class ChatViewModel @Inject constructor(
                     },
                     onChat = { chatMessage ->
                         if (chatMessage.chatRoomId == chatRoomId) {
-                            val updatedMessages = _chatMessage.value + chatMessage
-                            _chatMessage.value = updatedMessages
+                            val updatedMessages = uiState.value.chatMessage + chatMessage
+                            _uiState.update { it.copy(chatMessage = updatedMessages) }
 
                             updateChatItems()
-                            if (chatMessage.userId == myInfo.value?.userId) {
-                                _needScrollDown.value = true
+                            if (chatMessage.userId == uiState.value.myInfo?.userId) {
+                                setNeedScrollDown(true)
                             }
                         }
                     }
@@ -199,7 +182,7 @@ class ChatViewModel @Inject constructor(
     }
 
     fun setNeedScrollDown(needScrollDown: Boolean) {
-        _needScrollDown.value = needScrollDown
+        _uiState.update { it.copy(needScrollDown = needScrollDown) }
     }
 
     companion object {

@@ -32,7 +32,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
@@ -85,10 +85,7 @@ fun ChatScreen(
     viewModel: ChatViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    val chat = viewModel.chatUiState.collectAsState()
-    val myInfo = viewModel.myInfo.collectAsState()
-    val isLoading = viewModel.isLoading.collectAsState()
-    val needScrollDown = viewModel.needScrollDown.collectAsState()
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     val context = LocalContext.current
     val activity = context as? Activity
@@ -111,9 +108,9 @@ fun ChatScreen(
 
     val lazyListState = rememberLazyListState()
 
-    LaunchedEffect(needScrollDown.value) {
-        if (needScrollDown.value) {
-            lazyListState.scrollToItem(chat.value.chatItems.size)
+    LaunchedEffect(state.needScrollDown) {
+        if (state.needScrollDown) {
+            lazyListState.scrollToItem(state.chatItems.size)
             viewModel.setNeedScrollDown(false)
         }
     }
@@ -121,7 +118,7 @@ fun ChatScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchChatData(lastMessageId = null, chatRoomId = chatRoomId)
         delay(300)
-        lazyListState.scrollToItem(chat.value.chatItems.size)
+        lazyListState.scrollToItem(state.chatItems.size)
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -130,7 +127,7 @@ fun ChatScreen(
             lazyListState.firstVisibleItemIndex to lazyListState.firstVisibleItemScrollOffset
         }.collect { (index, offset) ->
             if (index == 0) {
-                val firstVisibleMessageId = chat.value.chatItems.getOrNull(index)?.message?.id
+                val firstVisibleMessageId = state.chatItems.getOrNull(index)?.message?.id
 
                 if (firstVisibleMessageId != null) {
                     viewModel.fetchChatData(
@@ -170,7 +167,7 @@ fun ChatScreen(
 //        LampTopBar(navController = navController, isAlarmIconNeed = true, color = Gray)
 
         ChatTopBar(
-            chat = chat.value,
+            chat = state,
             onBackClick = {
                 activity?.finish()
                 activity?.overridePendingTransition(R.anim.none, R.anim.slide_out_right)
@@ -183,7 +180,7 @@ fun ChatScreen(
                 .weight(1f)
                 .fillMaxWidth(),
             state = lazyListState,
-            userScrollEnabled = !isLoading.value
+            userScrollEnabled = !state.isLoading
         ) {
             item {
                 Spacer(modifier = Modifier.height(20.dp))
@@ -199,13 +196,13 @@ fun ChatScreen(
                         contentAlignment = Alignment.Center
                     ) {
                         Text(
-                            text = formatDate(chat.value.chatInfo?.startDate),
+                            text = formatDate(state.chatInfo?.startDate),
                             color = Color.White,
                             style = Typography.normal12
                         )
                     }
                 }
-                if (!isLoading.value && chat.value.chatMessage.isEmpty()) {
+                if (!state.isLoading && state.chatMessage.isEmpty()) {
                     Column(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -242,11 +239,11 @@ fun ChatScreen(
                 }
             }
 
-            items(chat.value.chatItems) { chat ->
+            items(state.chatItems) { chat ->
                 ChatBubble(
                     message = chat.message,
                     userInfo = chat.userInfo,
-                    isMine = (chat.userInfo.userId == myInfo.value?.userId),
+                    isMine = (chat.userInfo.userId == state.myInfo?.userId),
                     onProfileClick = {
                         selectedUserInfo = it
                         isProfilePopupShow = true
