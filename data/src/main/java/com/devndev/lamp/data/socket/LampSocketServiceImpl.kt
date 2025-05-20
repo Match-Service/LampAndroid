@@ -42,6 +42,7 @@ class LampSocketServiceImpl @Inject constructor(
     }
 
     override fun addStatusListener(onMessage: (String) -> Unit, onUpdatedMessage: () -> Unit) {
+        removeStatusListener()
         socket?.on("status") { args ->
             Log.d(TAG, "socket on status")
             if (args.isNotEmpty()) {
@@ -67,6 +68,7 @@ class LampSocketServiceImpl @Inject constructor(
     }
 
     override fun addChatListener(onChat: (ChatMessageDomainModel) -> Unit) {
+        removeChatListener()
         socket?.on("message") { args ->
             Log.d(TAG, "socket on message")
             if (args.isNotEmpty()) {
