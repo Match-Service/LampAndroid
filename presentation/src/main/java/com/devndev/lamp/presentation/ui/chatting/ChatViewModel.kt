@@ -46,7 +46,7 @@ class ChatViewModel @Inject constructor(
             getChatListUseCase()
                 .onSuccess { chatList ->
                     Log.d(TAG, "getChatList Success")
-                    val sortedList = chatList.sortedBy { chatRoom ->
+                    val sortedList = chatList.sortedByDescending { chatRoom ->
                         val dateString = chatRoom.lastMessageInfo?.createdAt ?: chatRoom.startDate
                         parseDate(dateString)
                     }
