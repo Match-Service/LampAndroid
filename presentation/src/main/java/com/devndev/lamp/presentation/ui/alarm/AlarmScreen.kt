@@ -357,7 +357,7 @@ fun getTimeAgo(isoTime: String): String {
     val zonedDateTime = ZonedDateTime.parse(isoTime, formatter)
 
     // Getting the current time in Korean Standard Time (KST) explicitly (UTC+9)
-    val now = ZonedDateTime.now(ZoneOffset.ofHours(9)).minusHours(9)
+    val now = ZonedDateTime.now(ZoneOffset.ofHours(9))
 
     // Calculating the duration between the provided time and now
     val duration = Duration.between(zonedDateTime, now)
