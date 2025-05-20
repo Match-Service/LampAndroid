@@ -7,7 +7,9 @@ import javax.inject.Inject
 class GetChatListUseCase @Inject constructor(
     private val chatRepository: ChatRepository
 ) {
-    suspend operator fun invoke(): List<ChatRoomDomainModel> {
-        return chatRepository.getChatList()
+    suspend operator fun invoke(): Result<List<ChatRoomDomainModel>> {
+        return runCatching {
+            chatRepository.getChatList()
+        }
     }
 }

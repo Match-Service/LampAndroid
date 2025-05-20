@@ -18,8 +18,8 @@ import com.devndev.lamp.domain.usecase.lamp.KickUserUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.GetMatchSuggestionUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.StartMatchUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.StopMatchUseCase
-import com.devndev.lamp.domain.usecase.socket.ConnectSocketUseCase
-import com.devndev.lamp.domain.usecase.socket.DisconnectSocketUseCase
+import com.devndev.lamp.domain.usecase.socket.AddStatusListenerUseCase
+import com.devndev.lamp.domain.usecase.socket.RemoveStatueListenerUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.domain.usecase.user.GetUserStatusUseCase
 import com.devndev.lamp.domain.usecase.vote.AcceptVoteUseCase
@@ -43,13 +43,13 @@ class HomeViewModel @Inject constructor(
     private val stopMatchUseCase: StopMatchUseCase,
     private val getMatchSuggestionUseCase: GetMatchSuggestionUseCase,
     private val getUserStatusUseCase: GetUserStatusUseCase,
-    private val connectSocketUseCase: ConnectSocketUseCase,
-    private val disconnectSocketUseCase: DisconnectSocketUseCase,
     private val getVisitRequestLampInfoUseCase: GetVisitRequestLampInfoUseCase,
     private val cancelVisitRequestUseCase: CancelVisitRequestUseCase,
     private val testChatUseCase: TestChatUseCase,
     private val acceptUseCase: AcceptVoteUseCase,
-    private val rejectUseCase: RejectVoteUseCase
+    private val rejectUseCase: RejectVoteUseCase,
+    private val addStatusListenerUseCase: AddStatusListenerUseCase,
+    private val removeStatueListenerUseCase: RemoveStatueListenerUseCase
 ) : ViewModel() {
     private val _myInfo = MutableStateFlow<MyInfoDomainModel?>(null)
     val myInfo: StateFlow<MyInfoDomainModel?> = _myInfo
@@ -195,33 +195,28 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun connectSocket() {
+    fun addStatusListener() {
         viewModelScope.launch {
             try {
-                connectSocketUseCase(
-                    onConnected = {
-                        Log.d(TAG, "Connected to socket")
-                    },
+                addStatusListenerUseCase(
                     onMessage = { message ->
                         _userStatus.value = message
                         Log.d(TAG, "status: ${userStatue.value}")
                     },
                     onUpdatedMessage = {
                         getLampData()
-                    },
-                    onChat = {
                     }
                 )
             } catch (e: Exception) {
-                Log.e(TAG, "Socket connection failed", e)
+                Log.e(TAG, "addStatusListener failed", e)
             }
         }
     }
 
-    fun disconnectSocket() {
+    fun removeStatusListener() {
         viewModelScope.launch {
-            disconnectSocketUseCase()
-            Log.d(TAG, "Disconnect socket")
+            removeStatueListenerUseCase()
+            Log.d(TAG, "removeStatusListener")
         }
     }
 

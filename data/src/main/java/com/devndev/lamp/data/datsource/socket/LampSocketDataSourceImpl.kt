@@ -7,16 +7,19 @@ import javax.inject.Inject
 class LampSocketDataSourceImpl @Inject constructor(
     private val lampSocketService: LampSocketService
 ) : LampSocketDataSource {
-    override fun connect(
-        onConnected: () -> Unit,
-        onMessage: (String) -> Unit,
-        onUpdatedMessage: () -> Unit,
-        onChat: (ChatMessageDomainModel) -> Unit
-    ) {
-        lampSocketService.connect(onConnected, onMessage, onUpdatedMessage, onChat)
+    override fun addStatusListener(onMessage: (String) -> Unit, onUpdatedMessage: () -> Unit) {
+        lampSocketService.addStatusListener(onMessage, onUpdatedMessage)
     }
 
-    override fun disconnect() {
-        lampSocketService.disconnect()
+    override fun addChatListener(onChat: (ChatMessageDomainModel) -> Unit) {
+        lampSocketService.addChatListener(onChat)
+    }
+
+    override fun removeStatusListener() {
+        lampSocketService.removeStatusListener()
+    }
+
+    override fun removeChatListener() {
+        lampSocketService.removeChatListener()
     }
 }

@@ -3,12 +3,16 @@ package com.devndev.lamp.data.datsource.socket
 import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
 
 interface LampSocketDataSource {
-    fun connect(
-        onConnected: () -> Unit,
+    fun addStatusListener(
         onMessage: (String) -> Unit,
-        onUpdatedMessage: () -> Unit,
+        onUpdatedMessage: () -> Unit
+    )
+
+    fun addChatListener(
         onChat: (ChatMessageDomainModel) -> Unit
     )
 
-    fun disconnect()
+    fun removeStatusListener()
+
+    fun removeChatListener()
 }

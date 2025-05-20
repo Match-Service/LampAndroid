@@ -4,15 +4,12 @@ import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
 import com.devndev.lamp.domain.repository.LampSocketRepository
 import javax.inject.Inject
 
-class ConnectSocketUseCase @Inject constructor(
+class AddChatListenerUseCase @Inject constructor(
     private val lampSocketRepository: LampSocketRepository
 ) {
-    suspend operator fun invoke(
-        onConnected: () -> Unit,
-        onMessage: (String) -> Unit,
-        onUpdatedMessage: () -> Unit,
+    operator fun invoke(
         onChat: (ChatMessageDomainModel) -> Unit
     ) {
-        lampSocketRepository.connect(onConnected, onMessage, onUpdatedMessage, onChat)
+        lampSocketRepository.addChatListener(onChat)
     }
 }

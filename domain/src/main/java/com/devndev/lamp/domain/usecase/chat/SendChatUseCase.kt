@@ -6,7 +6,9 @@ import javax.inject.Inject
 class SendChatUseCase @Inject constructor(
     private val chatRepository: ChatRepository
 ) {
-    suspend operator fun invoke(chatRoomId: Int, message: String) {
-        chatRepository.sendChat(chatRoomId, message)
+    suspend operator fun invoke(chatRoomId: Int, message: String): Result<Unit> {
+        return runCatching {
+            chatRepository.sendChat(chatRoomId, message)
+        }
     }
 }
