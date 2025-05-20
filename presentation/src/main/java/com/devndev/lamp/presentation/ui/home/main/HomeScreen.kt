@@ -50,9 +50,9 @@ fun HomeScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
-        viewModel.connectSocket()
+        viewModel.addStatusListener()
         onDispose {
-            viewModel.disconnectSocket()
+            viewModel.removeStatusListener()
         }
     }
 

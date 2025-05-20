@@ -95,9 +95,9 @@ fun ChatScreen(
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
-        viewModel.connectSocketForChatRoom(chatRoomId)
+        viewModel.addChatListener(chatRoomId)
         onDispose {
-            viewModel.disconnectSocket()
+            viewModel.removeChatListener()
         }
     }
 

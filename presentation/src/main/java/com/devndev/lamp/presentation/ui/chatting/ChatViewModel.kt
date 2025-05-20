@@ -8,10 +8,9 @@ import com.devndev.lamp.domain.usecase.chat.GetChatInfoUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatListUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatMessageUseCase
 import com.devndev.lamp.domain.usecase.chat.SendChatUseCase
-import com.devndev.lamp.domain.usecase.socket.ConnectSocketUseCase
-import com.devndev.lamp.domain.usecase.socket.DisconnectSocketUseCase
+import com.devndev.lamp.domain.usecase.socket.AddChatListenerUseCase
+import com.devndev.lamp.domain.usecase.socket.RemoveChatListenerUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
-import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -27,8 +26,8 @@ class ChatViewModel @Inject constructor(
     private val getChatMessageUseCase: GetChatMessageUseCase,
     private val getChatInfoUseCase: GetChatInfoUseCase,
     private val sendChatUseCase: SendChatUseCase,
-    private val connectSocketUseCase: ConnectSocketUseCase,
-    private val disconnectSocketUseCase: DisconnectSocketUseCase
+    private val addChatListenerUseCase: AddChatListenerUseCase,
+    private val removeChatListenerUseCase: RemoveChatListenerUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
@@ -135,28 +134,22 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             getMyInfoUseCase()
                 .onSuccess { userInfo ->
-                    Log.d(HomeViewModel.TAG, "getMyInfo")
+                    Log.d(TAG, "getMyInfo")
                     _uiState.update { it.copy(myInfo = userInfo) }
-                    Log.d(HomeViewModel.TAG, "My Info ${uiState.value.myInfo}")
+                    Log.d(TAG, "My Info ${uiState.value.myInfo}")
                 }
                 .onFailure { throwable ->
-                    Log.e(HomeViewModel.TAG, "Failed to fetch user info", throwable)
+                    Log.e(TAG, "Failed to fetch user info", throwable)
                 }
         }
     }
 
-    fun connectSocketForChatRoom(chatRoomId: Int) {
+    fun addChatListener(chatRoomId: Int) {
         viewModelScope.launch {
             try {
-                connectSocketUseCase(
-                    onConnected = {
-                        Log.d(TAG, "Connected to socket")
-                    },
-                    onMessage = {
-                    },
-                    onUpdatedMessage = {
-                    },
+                addChatListenerUseCase(
                     onChat = { chatMessage ->
+                        Log.d(TAG, "onChat")
                         if (chatMessage.chatRoomId == chatRoomId) {
                             val updatedMessages = uiState.value.chatMessage + chatMessage
                             _uiState.update { it.copy(chatMessage = updatedMessages) }
@@ -169,15 +162,33 @@ class ChatViewModel @Inject constructor(
                     }
                 )
             } catch (e: Exception) {
-                Log.e(HomeViewModel.TAG, "Socket connection failed", e)
+                Log.e(TAG, "addChatListener failed", e)
             }
         }
     }
 
-    fun disconnectSocket() {
+    fun addChatListenerForChatList() {
         viewModelScope.launch {
-            disconnectSocketUseCase()
-            Log.d(HomeViewModel.TAG, "Disconnect socket")
+            try {
+                addChatListenerUseCase(
+                    onChat = { _ ->
+                        Log.d(TAG, "onChat")
+                        getChatList()
+                    }
+                )
+            } catch (e: Exception) {
+                Log.e(TAG, "addChatListener failed", e)
+            }
+        }
+    }
+
+    fun removeChatListener() {
+        viewModelScope.launch {
+            try {
+                removeChatListenerUseCase()
+            } catch (e: Exception) {
+                Log.e(TAG, "removeChatListener error", e)
+            }
         }
     }
 

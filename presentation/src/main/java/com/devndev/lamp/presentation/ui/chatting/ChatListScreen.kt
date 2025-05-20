@@ -65,6 +65,7 @@ fun ChatListScreen(
     var isFirstLaunch by remember { mutableStateOf(true) }
 
     DisposableEffect(lifecycleOwner) {
+        viewModel.addChatListenerForChatList()
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
                 if (!isFirstLaunch) {
@@ -78,6 +79,7 @@ fun ChatListScreen(
         lifecycleOwner.lifecycle.addObserver(observer)
 
         onDispose {
+            viewModel.removeChatListener()
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
