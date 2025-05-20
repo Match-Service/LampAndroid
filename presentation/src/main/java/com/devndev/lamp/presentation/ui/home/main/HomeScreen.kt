@@ -49,6 +49,7 @@ fun HomeScreen(
     val userStatus by viewModel.userStatue.collectAsState()
 
     val lifecycleOwner = LocalLifecycleOwner.current
+
     DisposableEffect(lifecycleOwner) {
         viewModel.addStatusListener()
         onDispose {

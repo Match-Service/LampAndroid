@@ -13,19 +13,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.devndev.lamp.data.socket.LampSocketService
 import com.devndev.lamp.presentation.theme.LampTheme
 import com.devndev.lamp.presentation.ui.login.LoginActivity
 import com.devndev.lamp.presentation.ui.mypage.MyPageViewModel
 import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val logTag = "MainActivity"
+
+    @Inject
+    lateinit var lampSocketService: LampSocketService
+
     private val mainViewModel by viewModels<MainViewModel>()
     private val myPageViewModel by viewModels<MyPageViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        lampSocketService.connect {
+            Log.d(logTag, "Connect Socket")
+        }
         mainViewModel.putPushToken()
         setContent {
             val state by myPageViewModel.uiState.collectAsStateWithLifecycle()

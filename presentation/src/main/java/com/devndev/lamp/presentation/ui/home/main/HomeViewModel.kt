@@ -196,14 +196,18 @@ class HomeViewModel @Inject constructor(
     }
 
     fun addStatusListener() {
+        getUserStatus()
+        getLampData()
         viewModelScope.launch {
             try {
+                Log.d(TAG, "addStatusListener")
                 addStatusListenerUseCase(
                     onMessage = { message ->
                         _userStatus.value = message
                         Log.d(TAG, "status: ${userStatue.value}")
                     },
                     onUpdatedMessage = {
+                        Log.d(TAG, "getLampData: ${myLamp.value}")
                         getLampData()
                     }
                 )

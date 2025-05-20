@@ -65,9 +65,9 @@ fun ChatListScreen(
     var isFirstLaunch by remember { mutableStateOf(true) }
 
     DisposableEffect(lifecycleOwner) {
-        viewModel.addChatListenerForChatList()
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_RESUME) {
+                viewModel.addChatListenerForChatList()
                 if (!isFirstLaunch) {
                     viewModel.getChatList()
                 }

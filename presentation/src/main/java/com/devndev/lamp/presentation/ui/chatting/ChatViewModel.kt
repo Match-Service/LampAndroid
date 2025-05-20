@@ -193,6 +193,7 @@ class ChatViewModel @Inject constructor(
 
     fun addChatListenerForChatList() {
         viewModelScope.launch {
+            Log.d(TAG, "addChatListenerForChatList")
             try {
                 addChatListenerUseCase(
                     onChat = { _ ->
@@ -209,6 +210,7 @@ class ChatViewModel @Inject constructor(
     fun removeChatListener() {
         viewModelScope.launch {
             try {
+                Log.d(TAG, "removeChatListener")
                 removeChatListenerUseCase()
             } catch (e: Exception) {
                 Log.e(TAG, "removeChatListener error", e)
