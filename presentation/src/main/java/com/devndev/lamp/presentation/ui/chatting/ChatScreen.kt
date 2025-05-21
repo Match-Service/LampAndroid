@@ -71,6 +71,7 @@ import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
+import com.devndev.lamp.presentation.ui.appointment.navigation.navigateAppointment
 import com.devndev.lamp.presentation.ui.common.ProfilePopup
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -192,7 +193,9 @@ fun ChatScreen(
                 activity?.finish()
                 activity?.overridePendingTransition(R.anim.none, R.anim.slide_out_right)
             },
-            onCalendarClick = {}
+            onCalendarClick = {
+                navController.navigateAppointment()
+            }
         )
 
         LazyColumn(
@@ -355,7 +358,9 @@ fun ChatScreen(
 
     if (state.showNewMessageBadge) {
         Box(
-            Modifier.fillMaxSize().padding(bottom = textFieldHeightDp + 40.dp),
+            Modifier
+                .fillMaxSize()
+                .padding(bottom = textFieldHeightDp + 40.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
             Box(
@@ -568,11 +573,16 @@ fun ChatTopBar(
                 }
             }
         }
+
         Icon(
             painter = painterResource(id = R.drawable.calendar),
             contentDescription = "calendar",
             tint = Color.White,
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier
+                .size(24.dp)
+                .clickable {
+                    onCalendarClick()
+                }
         )
     }
 }

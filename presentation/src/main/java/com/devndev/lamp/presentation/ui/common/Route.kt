@@ -21,4 +21,5 @@ object Route {
     const val VOTE = "vote"
     const val FIND = "find"
     const val CHAT = "chat"
+    const val APPOINTMENT = "appointment"
 }

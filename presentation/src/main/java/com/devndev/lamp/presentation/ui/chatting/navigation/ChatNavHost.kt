@@ -6,13 +6,15 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.devndev.lamp.presentation.ui.alarm.navigation.alarmNavGraph
+import com.devndev.lamp.presentation.ui.appointment.navigation.appointmentNavGraph
 
 @Composable
 fun ChatNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     startDestination: String,
-    chatRoomId: Int
+    chatRoomId: Int,
+    padding: PaddingValues
 ) {
     NavHost(
         modifier = modifier,
@@ -26,6 +28,11 @@ fun ChatNavHost(
         )
         alarmNavGraph(
             padding = PaddingValues(),
+            navController = navController
+        )
+        appointmentNavGraph(
+            padding = padding,
+            modifier = modifier,
             navController = navController
         )
     }
