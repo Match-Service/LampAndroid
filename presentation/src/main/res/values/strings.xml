@@ -232,4 +232,10 @@
     <string name="send">"전송"</string>
 
     <string name="new_message">"새 메세지"</string>
+
+    <string name="make_appointment">"약속 만들기"</string>
+    <string name="no_registered_appointment">"등록된 약속이 없어요"</string>
+    <string name="guide_make_appointment">"약속 장소와 날짜를 등록하고\n투표를 진행해 보세요"</string>
+    <string name="register_appointment_button">"약속 등록하기"</string>
+    <string name="ready_vote">"투표 준비하기"</string>
 </resources>

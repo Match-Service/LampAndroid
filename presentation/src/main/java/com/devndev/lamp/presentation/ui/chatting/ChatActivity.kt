@@ -56,7 +56,8 @@ class ChatActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding),
                         navController = navController,
                         startDestination = Route.CHAT,
-                        chatRoomId = chatRoomId
+                        chatRoomId = chatRoomId,
+                        padding = innerPadding
                     )
                 }
             }
