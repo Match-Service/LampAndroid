@@ -10,6 +10,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.devndev.lamp.presentation.ui.appointment.AppointmentScreen
+import com.devndev.lamp.presentation.ui.appointment.register.RegisterAppointmentScreen
 import com.devndev.lamp.presentation.ui.common.Route
 
 fun NavController.navigateAppointment(navOptions: NavOptions? = null) {
@@ -23,9 +24,42 @@ fun NavGraphBuilder.appointmentNavGraph(
 ) {
     composable(
         route = Route.APPOINTMENT,
+        enterTransition = {
+            if (initialState.destination.route == Route.REGISTER_APPOINTMENT) {
+                null
+            } else {
+                slideInHorizontally(initialOffsetX = { it })
+            }
+        },
+        exitTransition = {
+            if (targetState.destination.route != Route.REGISTER_APPOINTMENT) {
+                slideOutHorizontally(targetOffsetX = { it })
+            } else {
+                null
+            }
+        }
+    ) {
+        AppointmentScreen(modifier = modifier.padding(padding), navController = navController)
+    }
+}
+
+fun NavController.navigateRegisterAppointment(navOptions: NavOptions? = null) {
+    this.navigate(Route.REGISTER_APPOINTMENT, navOptions)
+}
+
+fun NavGraphBuilder.registerAppointmentNavGraph(
+    padding: PaddingValues,
+    modifier: Modifier = Modifier,
+    navController: NavController
+) {
+    composable(
+        route = Route.REGISTER_APPOINTMENT,
         enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
         exitTransition = { slideOutHorizontally(targetOffsetX = { it }) }
     ) {
-        AppointmentScreen(modifier = modifier.padding(padding), navController = navController)
+        RegisterAppointmentScreen(
+            modifier = modifier.padding(padding),
+            navController = navController
+        )
     }
 }
