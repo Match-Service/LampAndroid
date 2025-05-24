@@ -1,6 +1,7 @@
 package com.devndev.lamp.data.datsource.chat
 
 import com.devndev.lamp.data.dto.request.chat.ChatRequest
+import com.devndev.lamp.data.dto.request.chat.RegisterAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
 import com.devndev.lamp.data.dto.response.chat.ChatInfoResponse
 import com.devndev.lamp.data.dto.response.chat.ChatMessageResponse
@@ -13,4 +14,5 @@ interface ChatDataSource {
     suspend fun getChatMessage(lastMessageId: String?, chatRoomId: Int): List<ChatMessageResponse>
     suspend fun getChatInfo(chatRoomId: Int): ChatInfoResponse
     suspend fun sendChat(chatRoomId: Int, chatRequest: ChatRequest)
+    suspend fun registerAppointment(registerAppointmentRequest: RegisterAppointmentRequest)
 }

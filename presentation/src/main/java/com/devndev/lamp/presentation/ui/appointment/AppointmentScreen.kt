@@ -23,6 +23,7 @@ import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.IncTypography
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.ui.appointment.navigation.navigateRegisterAppointment
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 
@@ -70,7 +71,9 @@ fun AppointmentScreen(
             LampButton(
                 isGradient = true,
                 buttonText = buttonString,
-                onClick = {},
+                onClick = {
+                    navController.navigateRegisterAppointment()
+                },
                 enabled = true
             )
         }

@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import com.devndev.lamp.presentation.ui.alarm.navigation.alarmNavGraph
 import com.devndev.lamp.presentation.ui.appointment.navigation.appointmentNavGraph
+import com.devndev.lamp.presentation.ui.appointment.navigation.registerAppointmentNavGraph
 
 @Composable
 fun ChatNavHost(
@@ -31,6 +32,13 @@ fun ChatNavHost(
             navController = navController
         )
         appointmentNavGraph(
+            chatRoomId = chatRoomId,
+            padding = padding,
+            modifier = modifier,
+            navController = navController
+        )
+        registerAppointmentNavGraph(
+            chatRoomId = chatRoomId,
             padding = padding,
             modifier = modifier,
             navController = navController
