@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -43,6 +44,7 @@ import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 fun RegisterAppointmentScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    chatRoomId: Int,
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
     val state by appointmentViewModel.uiState.collectAsStateWithLifecycle()
@@ -59,6 +61,12 @@ fun RegisterAppointmentScreen(
                 isDatePickerShow = false
             }
         )
+    }
+
+    LaunchedEffect(state.needNavBack) {
+        if (state.needNavBack) {
+            navController.popBackStack()
+        }
     }
 
     Column(
@@ -142,15 +150,6 @@ fun RegisterAppointmentScreen(
                     )
                 }
             }
-//            LampTextField(
-//                width = 300,
-//                query = state.location,
-//                onQueryChange = {},
-//                hintText = stringResource(R.string.hint_appointment_date),
-//                modifier = Modifier.clickable {
-//                    datePickerDialog.show()
-//                }
-//            )
         }
         Box(
             modifier = Modifier
@@ -161,7 +160,7 @@ fun RegisterAppointmentScreen(
                 isGradient = true,
                 buttonText = stringResource(R.string.register_appointment_button),
                 onClick = {
-                    navController.popBackStack()
+                    appointmentViewModel.registerAppointment(chatRoomId)
                 },
                 enabled = state.location.isNotEmpty() && state.date.isNotEmpty()
             )

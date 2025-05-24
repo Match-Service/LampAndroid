@@ -1,6 +1,7 @@
 package com.devndev.lamp.data.service
 
 import com.devndev.lamp.data.dto.request.chat.ChatRequest
+import com.devndev.lamp.data.dto.request.chat.RegisterAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
 import com.devndev.lamp.data.dto.response.chat.ChatInfoResponse
 import com.devndev.lamp.data.dto.response.chat.ChatMessageResponse
@@ -36,5 +37,10 @@ interface ChatService {
     suspend fun sendChat(
         @Path("chatRoomId") chatRoomId: Int,
         @Body chatRequest: ChatRequest
+    )
+
+    @POST("api/v1/chat/appointment")
+    suspend fun registerAppointment(
+        @Body registerAppointmentRequest: RegisterAppointmentRequest
     )
 }

@@ -18,6 +18,7 @@ fun NavController.navigateAppointment(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.appointmentNavGraph(
+    chatRoomId: Int,
     padding: PaddingValues,
     modifier: Modifier = Modifier,
     navController: NavController
@@ -48,6 +49,7 @@ fun NavController.navigateRegisterAppointment(navOptions: NavOptions? = null) {
 }
 
 fun NavGraphBuilder.registerAppointmentNavGraph(
+    chatRoomId: Int,
     padding: PaddingValues,
     modifier: Modifier = Modifier,
     navController: NavController
@@ -59,7 +61,8 @@ fun NavGraphBuilder.registerAppointmentNavGraph(
     ) {
         RegisterAppointmentScreen(
             modifier = modifier.padding(padding),
-            navController = navController
+            navController = navController,
+            chatRoomId = chatRoomId
         )
     }
 }

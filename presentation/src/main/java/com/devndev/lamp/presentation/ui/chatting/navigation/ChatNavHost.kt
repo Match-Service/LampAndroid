@@ -32,11 +32,13 @@ fun ChatNavHost(
             navController = navController
         )
         appointmentNavGraph(
+            chatRoomId = chatRoomId,
             padding = padding,
             modifier = modifier,
             navController = navController
         )
         registerAppointmentNavGraph(
+            chatRoomId = chatRoomId,
             padding = padding,
             modifier = modifier,
             navController = navController
