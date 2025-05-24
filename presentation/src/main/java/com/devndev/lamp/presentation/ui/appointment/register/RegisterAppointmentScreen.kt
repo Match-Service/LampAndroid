@@ -39,6 +39,7 @@ import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.LampDateTimePicker
 import com.devndev.lamp.presentation.ui.common.LampTextField
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
+import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 
 @Composable
 fun RegisterAppointmentScreen(
@@ -50,7 +51,22 @@ fun RegisterAppointmentScreen(
     val state by appointmentViewModel.uiState.collectAsStateWithLifecycle()
 
     var isDatePickerShow by remember { mutableStateOf(false) }
+    var isConfirmPopupShow by remember { mutableStateOf(false) }
+
     val focusManager = LocalFocusManager.current
+
+    if (isConfirmPopupShow) {
+        TwoButtonPopup(
+            mainText = "${state.location}\n${state.date}\n ${stringResource(R.string.appointment_confirm)}",
+            startButtonText = stringResource(id = R.string.no),
+            endButtonText = stringResource(id = R.string.yes),
+            onStartButtonClick = { isConfirmPopupShow = false },
+            onEndButtonClick = {
+                isConfirmPopupShow = false
+                appointmentViewModel.registerAppointment(chatRoomId)
+            }
+        )
+    }
 
     if (isDatePickerShow) {
         LampDateTimePicker(
@@ -160,7 +176,7 @@ fun RegisterAppointmentScreen(
                 isGradient = true,
                 buttonText = stringResource(R.string.register_appointment_button),
                 onClick = {
-                    appointmentViewModel.registerAppointment(chatRoomId)
+                    isConfirmPopupShow = true
                 },
                 enabled = state.location.isNotEmpty() && state.date.isNotEmpty()
             )

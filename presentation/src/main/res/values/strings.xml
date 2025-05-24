@@ -244,4 +244,5 @@
     <string name = "date">"일정"</string>
     <string name = "hint_appointment_date">"일정을 선택해주세요</string>
     <string name = "confirm">"확인"</string>
+    <string name = "appointment_confirm">"약속을 확정 하시겠어요?"</string>
 </resources>
