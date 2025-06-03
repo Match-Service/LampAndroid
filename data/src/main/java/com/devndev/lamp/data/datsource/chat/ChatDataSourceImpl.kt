@@ -3,6 +3,7 @@ package com.devndev.lamp.data.datsource.chat
 import com.devndev.lamp.data.dto.request.chat.ChatRequest
 import com.devndev.lamp.data.dto.request.chat.RegisterAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
+import com.devndev.lamp.data.dto.response.chat.AppointmentListResponse
 import com.devndev.lamp.data.dto.response.chat.ChatInfoResponse
 import com.devndev.lamp.data.dto.response.chat.ChatMessageResponse
 import com.devndev.lamp.data.dto.response.chat.ChatRoomResponse
@@ -46,5 +47,9 @@ class ChatDataSourceImpl @Inject constructor(
         chatService.registerAppointment(
             registerAppointmentRequest = registerAppointmentRequest
         )
+    }
+
+    override suspend fun getAppointmentList(chatRoomId: Int): AppointmentListResponse {
+        return chatService.getAppointmentList(chatRoomId)
     }
 }

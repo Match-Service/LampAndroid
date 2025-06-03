@@ -1,6 +1,6 @@
 package com.devndev.lamp.data.dto.response.chat
 
-import com.devndev.lamp.domain.model.chat.Appointment
+import com.devndev.lamp.domain.model.chat.ChatAppointment
 import com.devndev.lamp.domain.model.chat.ChatRoomDomainModel
 import com.devndev.lamp.domain.model.chat.LastMessageInfo
 import com.squareup.moshi.Json
@@ -25,7 +25,7 @@ data class ChatRoomResponse(
     @Json(name = "lastMessageInfo")
     val lastMessageInfo: LastMessageInfoResponse?,
     @Json(name = "appointment")
-    val appointment: AppointmentResponse?
+    val appointment: ChatAppointmentResponse?
 )
 
 @JsonClass(generateAdapter = true)
@@ -39,7 +39,7 @@ data class LastMessageInfoResponse(
 )
 
 @JsonClass(generateAdapter = true)
-data class AppointmentResponse(
+data class ChatAppointmentResponse(
     @Json(name = "appointmentDate")
     val appointmentDate: String,
     @Json(name = "appointmentPlace")
@@ -68,8 +68,8 @@ fun LastMessageInfoResponse.toDomainModel(): LastMessageInfo {
     )
 }
 
-fun AppointmentResponse.toDomainModel(): Appointment {
-    return Appointment(
+fun ChatAppointmentResponse.toDomainModel(): ChatAppointment {
+    return ChatAppointment(
         appointmentDate = appointmentDate,
         appointmentPlace = appointmentPlace
     )

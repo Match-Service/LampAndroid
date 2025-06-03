@@ -241,8 +241,12 @@
     <string name="hint_appointment_location">"약속 장소를 입력해주세요"</string>
     <string name="location">"장소"</string>
 
-    <string name = "date">"일정"</string>
-    <string name = "hint_appointment_date">"일정을 선택해주세요</string>
-    <string name = "confirm">"확인"</string>
-    <string name = "appointment_confirm">"약속을 확정 하시겠어요?"</string>
+    <string name="date">"일정"</string>
+    <string name="hint_appointment_date">"일정을 선택해주세요</string>
+    <string name="confirm">"확인"</string>
+    <string name="appointment_confirm">"약속을 확정 하시겠어요?"</string>
+
+    <string name="register_appointment_ready_vote">"약속을 등록하고 투표를 준비해 주세요</string>
+    <string name="vote_ready_count_message">%d명이 투표 준비가 완료되 었어요</string>
+    <string name="appointment_suggestion">%s님의 일정 제안</string>
 </resources>

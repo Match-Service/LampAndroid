@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -31,9 +32,14 @@ import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 fun AppointmentScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    chatRoomId: Int,
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
     val state by appointmentViewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        appointmentViewModel.getChatInfo(chatRoomId)
+    }
 
     Column(
         modifier = Modifier
@@ -56,7 +62,9 @@ fun AppointmentScreen(
             )
             if (state.isEmpty) {
                 EmptyAppointmentScreen()
-            } else { }
+            } else {
+                AppointmentList(state.appointmentList)
+            }
         }
         Box(
             modifier = Modifier

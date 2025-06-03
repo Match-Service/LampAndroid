@@ -9,7 +9,7 @@ data class ChatRoomDomainModel(
     val otherLampName: String,
     val otherLampId: Int,
     val lastMessageInfo: LastMessageInfo?,
-    val appointment: Appointment?
+    val appointment: ChatAppointment?
 )
 
 data class LastMessageInfo(
@@ -18,7 +18,7 @@ data class LastMessageInfo(
     val createdAt: String
 )
 
-data class Appointment(
+data class ChatAppointment(
     val appointmentDate: String,
     val appointmentPlace: String
 )

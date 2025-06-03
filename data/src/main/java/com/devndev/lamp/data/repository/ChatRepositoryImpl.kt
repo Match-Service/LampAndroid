@@ -5,6 +5,7 @@ import com.devndev.lamp.data.dto.request.chat.ChatRequest
 import com.devndev.lamp.data.dto.request.chat.RegisterAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
 import com.devndev.lamp.data.dto.response.chat.toDomainModel
+import com.devndev.lamp.domain.model.chat.AppointmentListDomainModel
 import com.devndev.lamp.domain.model.chat.ChatInfoDomainModel
 import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
 import com.devndev.lamp.domain.model.chat.ChatRoomDomainModel
@@ -48,5 +49,9 @@ class ChatRepositoryImpl @Inject constructor(
             meetingTime = registerAppointmentParam.meetingTime
         )
         chatDataSource.registerAppointment(registerAppointmentRequest)
+    }
+
+    override suspend fun getAppointmentList(chatRoomId: Int): AppointmentListDomainModel {
+        return chatDataSource.getAppointmentList(chatRoomId).toDomainModel()
     }
 }

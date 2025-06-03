@@ -1,5 +1,6 @@
 package com.devndev.lamp.domain.repository
 
+import com.devndev.lamp.domain.model.chat.AppointmentListDomainModel
 import com.devndev.lamp.domain.model.chat.ChatInfoDomainModel
 import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
 import com.devndev.lamp.domain.model.chat.ChatRoomDomainModel
@@ -12,4 +13,5 @@ interface ChatRepository {
     suspend fun getChatInfo(chatRoomId: Int): ChatInfoDomainModel
     suspend fun sendChat(chatRoomId: Int, message: String)
     suspend fun registerAppointment(registerAppointmentParam: RegisterAppointmentParam)
+    suspend fun getAppointmentList(chatRoomId: Int): AppointmentListDomainModel
 }

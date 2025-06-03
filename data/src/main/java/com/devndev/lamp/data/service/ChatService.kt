@@ -3,6 +3,7 @@ package com.devndev.lamp.data.service
 import com.devndev.lamp.data.dto.request.chat.ChatRequest
 import com.devndev.lamp.data.dto.request.chat.RegisterAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
+import com.devndev.lamp.data.dto.response.chat.AppointmentListResponse
 import com.devndev.lamp.data.dto.response.chat.ChatInfoResponse
 import com.devndev.lamp.data.dto.response.chat.ChatMessageResponse
 import com.devndev.lamp.data.dto.response.chat.ChatRoomResponse
@@ -43,4 +44,9 @@ interface ChatService {
     suspend fun registerAppointment(
         @Body registerAppointmentRequest: RegisterAppointmentRequest
     )
+
+    @GET("api/v1/chat/{chatRoomId}/appointment")
+    suspend fun getAppointmentList(
+        @Path("chatRoomId") chatRoomId: Int
+    ): AppointmentListResponse
 }
