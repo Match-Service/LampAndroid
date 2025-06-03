@@ -40,7 +40,11 @@ fun NavGraphBuilder.appointmentNavGraph(
             }
         }
     ) {
-        AppointmentScreen(modifier = modifier.padding(padding), navController = navController)
+        AppointmentScreen(
+            modifier = modifier.padding(padding),
+            navController = navController,
+            chatRoomId = chatRoomId
+        )
     }
 }
 
