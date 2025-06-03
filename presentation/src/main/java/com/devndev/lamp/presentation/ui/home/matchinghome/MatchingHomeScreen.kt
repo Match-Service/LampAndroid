@@ -248,16 +248,18 @@ fun MatchingHomeScreen(
                             )
                         }
                         if (state.isOwner) {
-                            Icon(
-                                painter = painterResource(
-                                    id = R.drawable.edit_icon
-                                ),
-                                contentDescription = null,
-                                tint = Color.White,
-                                modifier = Modifier.clickable {
-                                    navController.navigateCreation(navOption)
-                                }
-                            )
+                            if (!state.isMatching) {
+                                Icon(
+                                    painter = painterResource(
+                                        id = R.drawable.edit_icon
+                                    ),
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.clickable {
+                                        navController.navigateCreation(navOption)
+                                    }
+                                )
+                            }
                         }
                     }
                     var mood = ""
