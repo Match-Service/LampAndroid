@@ -20,7 +20,9 @@ import com.devndev.lamp.domain.usecase.vote.RejectVoteUseCase
 import com.devndev.lamp.presentation.ui.chatting.ChatViewModel
 import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -52,6 +54,9 @@ class HomeViewModel @Inject constructor(
 
     private val _visitLampOwnerName = MutableStateFlow<String>("")
     val visitLampOwnerName = _visitLampOwnerName
+
+    private val _updateEvent = MutableSharedFlow<Unit>()
+    val updateEvent: SharedFlow<Unit> = _updateEvent
 
     init {
         getMyInfo()
@@ -129,8 +134,9 @@ class HomeViewModel @Inject constructor(
                         Log.d(TAG, "status: ${userStatue.value}")
                     },
                     onUpdatedMessage = {
-                        Log.d(TAG, "getLampData: ${myLamp.value}")
-                        getLampData()
+                        Log.d(TAG, "onUpdatedMessage: ${myLamp.value}")
+//                        getLampData()
+                        updateEvent()
                     }
                 )
             } catch (e: Exception) {
@@ -184,6 +190,12 @@ class HomeViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e(ChatViewModel.TAG, "reject Exception", e)
             }
+        }
+    }
+
+    private fun updateEvent() {
+        viewModelScope.launch {
+            _updateEvent.emit(Unit)
         }
     }
 

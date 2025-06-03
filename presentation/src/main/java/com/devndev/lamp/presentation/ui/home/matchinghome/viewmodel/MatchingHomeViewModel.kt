@@ -3,7 +3,6 @@ package com.devndev.lamp.presentation.ui.home.matchinghome.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import coil.network.HttpException
 import com.devndev.lamp.domain.model.lamp.KickUserParam
 import com.devndev.lamp.domain.usecase.chat.TestChatUseCase
 import com.devndev.lamp.domain.usecase.lamp.DeleteLampUseCase
@@ -13,8 +12,6 @@ import com.devndev.lamp.domain.usecase.lamp.KickUserUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.StartMatchUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.StopMatchUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
-import com.devndev.lamp.domain.usecase.user.GetUserStatusUseCase
-import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import com.devndev.lamp.presentation.ui.home.matchinghome.MatchingHomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +26,6 @@ class MatchingHomeViewModel @Inject constructor(
     private val getMyInfoUseCase: GetMyInfoUseCase,
     private val getMyLampUseCase: GetMyLampUseCase,
     private val deleteLampUseCase: DeleteLampUseCase,
-    private val getUserStatusUseCase: GetUserStatusUseCase,
     private val exitLampUseCase: ExitLampUseCase,
     private val kickUserUseCase: KickUserUseCase,
     private val startMatchUseCase: StartMatchUseCase,
@@ -58,7 +54,7 @@ class MatchingHomeViewModel @Inject constructor(
         }
     }
 
-    private fun getMyLamp() {
+    fun getMyLamp() {
         viewModelScope.launch {
             getMyLampUseCase()
                 .onSuccess { myLamp ->
@@ -70,7 +66,6 @@ class MatchingHomeViewModel @Inject constructor(
                     val isFullPersonnel =
                         uiState.value.myLamp?.lamp?.participants?.size?.plus(1) == uiState.value.myLamp?.lamp?.hopeMatchNumber
                     _uiState.update { it.copy(isOwner = isOwner, isFullPersonnel = isFullPersonnel) }
-
                 }
                 .onFailure {
                     Log.e(TAG, "getMyLamp Failure")
@@ -108,18 +103,11 @@ class MatchingHomeViewModel @Inject constructor(
             kickUserUseCase(KickUserParam(kickUserId))
                 .onSuccess {
                     Log.d(TAG, "kickUser Success")
+                    getMyLamp()
                 }
                 .onFailure {
                     Log.e(TAG, "kickUseFailure")
                 }
-//            try {
-//                Log.d(TAG, "kickUser()")
-//                kickUserUseCase(KickUserParam(kickUserId))
-//                Log.d(TAG, "kickUser kickUserId $kickUserId")
-//            //    getLampData()
-//            } catch (e: Exception) {
-//                Log.e(TAG, "kickUser Exception", e)
-//            }
         }
     }
 
@@ -133,14 +121,6 @@ class MatchingHomeViewModel @Inject constructor(
                 .onFailure {
                     Log.d(TAG, "startMatch Failure")
                 }
-//            try {
-//                Log.d(TAG, "startMatch()")
-//                startMatchUseCase()
-//            //    getLampData()
-//                testChat(uiState.value.myLamp?.lamp?.lampId ?: 0)
-//            } catch (e: Exception) {
-//                Log.e(TAG, "startMatch Exception", e)
-//            }
         }
     }
 
@@ -154,28 +134,6 @@ class MatchingHomeViewModel @Inject constructor(
                 .onFailure {
                     Log.e(TAG, "stopMatch Failure")
                 }
-//            try {
-//                Log.d(TAG, "stopMatch")
-//                stopMatchUseCase()
-//            //    getLampData()
-//            } catch (e: Exception) {
-//                Log.e(TAG, "stopMatchException", e)
-//            }
-        }
-    }
-
-    private fun getUserStatus() {
-        viewModelScope.launch {
-            try {
-                Log.d(HomeViewModel.TAG, "getUserStatus")
-//                _userStatus.value = getUserStatusUseCase().userLampStatus
-//                Log.d(HomeViewModel.TAG, "UserStatus ${userStatue.value}")
-                _uiState.update { it.copy(userStatus = getUserStatusUseCase().userLampStatus) }
-            } catch (e: HttpException) {
-                Log.e(HomeViewModel.TAG, "getUserStatus HttpException", e)
-            } catch (e: Exception) {
-                Log.e(HomeViewModel.TAG, "getUserStatus Exception", e)
-            }
         }
     }
 

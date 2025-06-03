@@ -1,7 +1,6 @@
 package com.devndev.lamp.presentation.ui.home.matchinghome
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
@@ -56,13 +55,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
@@ -80,6 +77,7 @@ import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.home.matchinghome.viewmodel.MatchingHomeViewModel
 import com.devndev.lamp.presentation.ui.search.navigation.navigateInvite
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 @SuppressLint("RememberReturnType")
@@ -87,6 +85,7 @@ import kotlinx.coroutines.launch
 fun MatchingHomeScreen(
     modifier: Modifier,
     navController: NavController,
+    updateEvent: SharedFlow<Unit>,
     viewModel: MatchingHomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -101,40 +100,11 @@ fun MatchingHomeScreen(
         launchSingleTop = true
     }
 
-//    DisposableEffect(lifecycleOwner) {
-//        viewModel.addStatusListener()
-//        onDispose {
-//            viewModel.removeStatusListener()
-//        }
-//    }
-
-//    LaunchedEffect(Unit) {
-//        Log.d("MatchingHomeScreen", "LaunchedEffect")
-//        repeat(3) {
-//            if (myLamp?.lamp?.owner?.profileImageUrl == null) {
-//                Log.d("MatchingHomeScreen", "myLamp == null")
-//                homeViewModel.getLampData()
-//                delay(1000)
-//            } else {
-//                return@LaunchedEffect
-//            }
-//        }
-//    }
-
-//    val userStatus by viewModel.userStatue.collectAsState()
-
-    //    var isMatching by remember { mutableStateOf(false) }
-//    val isMatching by remember(myLamp) {
-//        derivedStateOf {
-//            userStatus == "MATCHING"
-//        }
-//    }
-//
-//    when (userStatus) {
-//        "FIND_LAMP" -> {
-//            navController.navigateFind()
-//        }
-//    }
+    LaunchedEffect(Unit) {
+        updateEvent.collect {
+            viewModel.getMyLamp()
+        }
+    }
 
     if (isDeletePopupShow) {
         TwoButtonPopup(
@@ -397,7 +367,6 @@ fun MatchingHomeScreen(
             }
         }
     }
-
 }
 
 fun convertLocation(selectedRegion: String?): String {
@@ -731,10 +700,4 @@ fun ShadowCircleBackground(
             size = Size(radius * 2, radius)
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun B() {
-    MatchingHomeScreen(modifier = Modifier, navController = rememberNavController())
 }
