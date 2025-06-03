@@ -7,7 +7,9 @@ import javax.inject.Inject
 class KickUserUseCase @Inject constructor(
     private val lampRepository: LampRepository
 ) {
-    suspend operator fun invoke(kickUserParam: KickUserParam) {
-        lampRepository.kickUser(kickUserParam)
+    suspend operator fun invoke(kickUserParam: KickUserParam): Result<Unit> {
+        return runCatching {
+            lampRepository.kickUser(kickUserParam)
+        }
     }
 }

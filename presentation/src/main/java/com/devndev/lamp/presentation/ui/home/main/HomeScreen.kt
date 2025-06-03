@@ -46,6 +46,8 @@ fun HomeScreen(
     val handler = remember { Handler(Looper.getMainLooper()) }
     var backPressedOnce = remember { false }
 
+    val updateEvent = viewModel.updateEvent
+
     val userStatus by viewModel.userStatue.collectAsState()
 
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -83,7 +85,11 @@ fun HomeScreen(
 
             "PREPARE",
             "MATCHING" -> {
-                MatchingHomeScreen(modifier = modifier, navController = navController)
+                MatchingHomeScreen(
+                    modifier = modifier,
+                    navController = navController,
+                    updateEvent = updateEvent
+                )
             }
 
             "FIND_LAMP" -> {

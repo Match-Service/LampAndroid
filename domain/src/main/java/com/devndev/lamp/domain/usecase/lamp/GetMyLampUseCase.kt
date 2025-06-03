@@ -7,7 +7,9 @@ import javax.inject.Inject
 class GetMyLampUseCase @Inject constructor(
     private val lampRepository: LampRepository
 ) {
-    suspend operator fun invoke(): LampDomainModel {
-        return lampRepository.getMyLamp()
+    suspend operator fun invoke(): Result<LampDomainModel> {
+        return runCatching {
+            lampRepository.getMyLamp()
+        }
     }
 }

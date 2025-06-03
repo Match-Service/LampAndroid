@@ -1,7 +1,6 @@
 package com.devndev.lamp.presentation.ui.home.matchinghome
 
 import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
@@ -32,8 +31,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
@@ -58,12 +55,11 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
@@ -78,11 +74,10 @@ import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
-import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
-import com.devndev.lamp.presentation.ui.home.navigation.navigateFind
+import com.devndev.lamp.presentation.ui.home.matchinghome.viewmodel.MatchingHomeViewModel
 import com.devndev.lamp.presentation.ui.search.navigation.navigateInvite
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
 
 @SuppressLint("RememberReturnType")
@@ -90,11 +85,10 @@ import kotlinx.coroutines.launch
 fun MatchingHomeScreen(
     modifier: Modifier,
     navController: NavController,
-    homeViewModel: HomeViewModel = hiltViewModel()
+    updateEvent: SharedFlow<Unit>,
+    viewModel: MatchingHomeViewModel = hiltViewModel()
 ) {
-    val myLamp by homeViewModel.myLamp.collectAsState()
-    val myInfo by homeViewModel.myInfo.collectAsState()
-    val isOwner = myLamp?.lamp?.owner?.userId == myInfo?.userId
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     var isDeletePopupShow by remember { mutableStateOf(false) }
     var isExitPopupShow by remember { mutableStateOf(false) }
     var isKickUserPopupShow by remember { mutableStateOf(false) }
@@ -107,42 +101,23 @@ fun MatchingHomeScreen(
     }
 
     LaunchedEffect(Unit) {
-        Log.d("MatchingHomeScreen", "LaunchedEffect")
-        repeat(3) {
-            if (myLamp?.lamp?.owner?.profileImageUrl == null) {
-                Log.d("MatchingHomeScreen", "myLamp == null")
-                homeViewModel.getLampData()
-                delay(1000)
-            } else {
-                return@LaunchedEffect
-            }
-        }
-    }
-
-    val userStatus by homeViewModel.userStatue.collectAsState()
-
-    //    var isMatching by remember { mutableStateOf(false) }
-    val isMatching by remember(myLamp) {
-        derivedStateOf {
-            userStatus == "MATCHING"
-        }
-    }
-
-    when (userStatus) {
-        "FIND_LAMP" -> {
-            navController.navigateFind()
+        updateEvent.collect {
+            viewModel.getMyLamp()
         }
     }
 
     if (isDeletePopupShow) {
         TwoButtonPopup(
-            mainText = stringResource(id = R.string.lamp_out_popup_main, myLamp!!.lamp!!.name),
+            mainText = stringResource(
+                id = R.string.lamp_out_popup_main,
+                state.myLamp!!.lamp!!.name
+            ),
             startButtonText = stringResource(id = R.string.cancel),
             endButtonText = stringResource(id = R.string.out),
             hintText = stringResource(id = R.string.lamp_out_hint),
             onStartButtonClick = { isDeletePopupShow = false },
             onEndButtonClick = {
-                homeViewModel.deleteLamp()
+                viewModel.deleteLamp()
                 isDeletePopupShow = false
             }
         )
@@ -150,12 +125,15 @@ fun MatchingHomeScreen(
 
     if (isExitPopupShow) {
         TwoButtonPopup(
-            mainText = stringResource(id = R.string.lamp_out_popup_main, myLamp!!.lamp!!.name),
+            mainText = stringResource(
+                id = R.string.lamp_out_popup_main,
+                state.myLamp!!.lamp!!.name
+            ),
             startButtonText = stringResource(id = R.string.cancel),
             endButtonText = stringResource(id = R.string.out),
             onStartButtonClick = { isExitPopupShow = false },
             onEndButtonClick = {
-                homeViewModel.exitLamp()
+                viewModel.exitLamp()
                 isExitPopupShow = false
             }
         )
@@ -168,15 +146,12 @@ fun MatchingHomeScreen(
             endButtonText = stringResource(id = R.string.kick_user),
             onStartButtonClick = { isKickUserPopupShow = false },
             onEndButtonClick = {
-                homeViewModel.kickUser(kickUserId)
+                viewModel.kickUser(kickUserId)
                 isKickUserPopupShow = false
             }
         )
     }
 
-    val currentPersonnel = myLamp?.lamp?.participants?.size?.plus(1)
-    val maxPersonnel = myLamp?.lamp?.hopeMatchNumber
-    val fullPersonnel by remember { mutableStateOf(currentPersonnel == maxPersonnel) }
     var lampTitle by remember { mutableStateOf("") }
     val inviteFriend = stringResource(id = R.string.invite_friend)
     val startMatching = stringResource(id = R.string.start_matching)
@@ -187,12 +162,12 @@ fun MatchingHomeScreen(
 
     // fullPersonnel = false : 친구 초대하기 및 스와이프 인식x
     // fullPersonnel = true : 매칭 시작하기 및 스와이프 인식o
-    val buttonText = remember(fullPersonnel, isMatching) {
-        if (!fullPersonnel) {
+    val buttonText = remember(state.isFullPersonnel, state.isMatching) {
+        if (!state.isFullPersonnel) {
             lampTitle = pleaseInviteFriend
             inviteFriend
         } else {
-            if (!isMatching) {
+            if (!state.isMatching) {
                 lampTitle = pleaseStartMatching
                 startMatching
             } else {
@@ -201,193 +176,196 @@ fun MatchingHomeScreen(
             }
         }
     }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LampBlack)
-            .clipToBounds()
-    ) {
-        VerticalSwipeGesture(
-            isOwner = isOwner,
-            fullPersonnel,
-            onSwipeUp = {
-                homeViewModel.startMatch()
-            },
-            isMatching,
-            mood = myLamp?.lamp?.color
-        )
+    if (!state.isLoading) {
         Box(
             modifier = Modifier
-                .height(100.dp)
-                .fillMaxWidth()
+                .fillMaxSize()
                 .background(LampBlack)
-                .align(Alignment.BottomCenter)
-        )
-
-        Column(
-            modifier = modifier
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(47.dp)
+                .clipToBounds()
         ) {
-            MatchingHomeTopBar(
-                onExitIconClick = {
-                    if (isOwner) {
-                        isDeletePopupShow = true
-                    } else {
-                        isExitPopupShow = true
-                    }
+            VerticalSwipeGesture(
+                isOwner = state.isOwner,
+                state.isFullPersonnel,
+                onSwipeUp = {
+                    viewModel.startMatch()
                 },
-                onShareIconClick = {}
+                state.isMatching,
+                mood = state.myLamp?.lamp?.color
             )
-            Text(
-                text = lampTitle,
-                color = Color.White,
-                style = Typography.semiBold25.copy(lineHeight = 33.sp),
-                textAlign = TextAlign.Center
+            Box(
+                modifier = Modifier
+                    .height(100.dp)
+                    .fillMaxWidth()
+                    .background(LampBlack)
+                    .align(Alignment.BottomCenter)
             )
-        }
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // 원의 최 상단 부분
-            Spacer(modifier = Modifier.height(((screenHeight / 7) * 5) - 250.dp))
-
-            Spacer(modifier = Modifier.height(70.dp))
 
             Column(
-                verticalArrangement = Arrangement.spacedBy(10.dp),
+                modifier = modifier
+                    .fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(47.dp)
+            ) {
+                MatchingHomeTopBar(
+                    onExitIconClick = {
+                        if (state.isOwner) {
+                            isDeletePopupShow = true
+                        } else {
+                            isExitPopupShow = true
+                        }
+                    },
+                    onShareIconClick = {}
+                )
+                Text(
+                    text = lampTitle,
+                    color = Color.White,
+                    style = Typography.semiBold25.copy(lineHeight = 33.sp),
+                    textAlign = TextAlign.Center
+                )
+            }
+            Column(
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                // 원의 최 상단 부분
+                Spacer(modifier = Modifier.height(((screenHeight / 7) * 5) - 250.dp))
+
+                Spacer(modifier = Modifier.height(70.dp))
+
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(10.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    myLamp?.lamp?.name?.let {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        state.myLamp?.lamp?.name?.let {
+                            Text(
+                                text = it,
+                                color = Color.White,
+                                style = Typography.semiBold20
+                            )
+                        }
+                        if (state.isOwner) {
+                            if (!state.isMatching) {
+                                Icon(
+                                    painter = painterResource(
+                                        id = R.drawable.edit_icon
+                                    ),
+                                    contentDescription = null,
+                                    tint = Color.White,
+                                    modifier = Modifier.clickable {
+                                        navController.navigateCreation(navOption)
+                                    }
+                                )
+                            }
+                        }
+                    }
+                    var mood = ""
+                    when (state.myLamp?.lamp?.color) {
+                        "FUNNY" -> mood = stringResource(id = R.string.funny_mood)
+                        "CASUAL" -> mood = stringResource(id = R.string.casual_mood)
+                        "SERIOUS" -> mood = stringResource(id = R.string.serious_mood)
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        LampInfo(
+                            painter = painterResource(id = R.drawable.region_icon),
+                            text = convertLocation(state.myLamp?.lamp?.location)
+                        )
+                        LampInfo(
+                            painter = painterResource(id = R.drawable.people_icon),
+                            text = "${state.myLamp?.lamp?.hopeMatchNumber ?: "0"}:${state.myLamp?.lamp?.hopeMatchNumber ?: "0"}"
+                        )
+                        LampInfo(painter = painterResource(id = R.drawable.heart), text = mood)
+                    }
+
+                    state.myLamp?.lamp?.description?.let {
                         Text(
                             text = it,
-                            color = Color.White,
-                            style = Typography.semiBold20
+                            modifier = Modifier.width(270.dp),
+                            maxLines = 3,
+                            style = Typography.normal9,
+                            color = Gray3,
+                            textAlign = TextAlign.Center
                         )
                     }
-                    if (isOwner) {
-                        Icon(
-                            painter = painterResource(
-                                id = R.drawable.edit_icon
-                            ),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.clickable {
-                                navController.navigateCreation(navOption)
+                    Spacer(modifier = Modifier.height(5.dp))
+
+                    state.myLamp?.let { myLamp ->
+                        ProfileInfoList(
+                            myLamp = myLamp,
+                            isOwner = state.isOwner,
+                            isMatching = state.isMatching,
+                            onKickButtonClick = { i, s ->
+                                kickUserId = i
+                                kickUserName = s
+                                isKickUserPopupShow = true
                             }
                         )
                     }
-                }
-                var mood = ""
-                when (myLamp?.lamp?.color) {
-                    "FUNNY" -> mood = stringResource(id = R.string.funny_mood)
-                    "CASUAL" -> mood = stringResource(id = R.string.casual_mood)
-                    "SERIOUS" -> mood = stringResource(id = R.string.serious_mood)
-                }
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    LampInfo(
-                        painter = painterResource(id = R.drawable.region_icon),
-                        text = convertLocation(myLamp?.lamp?.location)
-                    )
-                    LampInfo(
-                        painter = painterResource(id = R.drawable.people_icon),
-                        text = "${myLamp?.lamp?.hopeMatchNumber ?: "0"}:${myLamp?.lamp?.hopeMatchNumber ?: "0"}"
-                    )
-                    LampInfo(painter = painterResource(id = R.drawable.heart), text = mood)
-                }
 
-                myLamp?.lamp?.description?.let {
-                    Text(
-                        text = it,
-                        modifier = Modifier.width(270.dp),
-                        maxLines = 3,
-                        style = Typography.normal9,
-                        color = Gray3,
-                        textAlign = TextAlign.Center
-                    )
-                }
-                Spacer(modifier = Modifier.height(5.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
 
-                myLamp?.let { myLamp ->
-                    ProfileInfoList(
-                        myLamp = myLamp,
-                        isOwner = isOwner,
-                        isMatching = isMatching,
-                        onKickButtonClick = { i, s ->
-                            kickUserId = i
-                            kickUserName = s
-                            isKickUserPopupShow = true
+                    if (!state.isFullPersonnel) {
+                        if (state.isOwner) {
+                            Button(
+                                onClick = { navController.navigateInvite(navOption) },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Gray,
+                                    contentColor = Color.White
+                                ),
+                                modifier = Modifier.height(50.dp)
+                            ) {
+                                Text(
+                                    text = buttonText,
+                                    color = Color.White,
+                                    style = Typography.medium18,
+                                    modifier = Modifier.padding(horizontal = 12.dp)
+                                )
+                            }
                         }
-                    )
-                }
-
-                Spacer(modifier = Modifier.height(20.dp))
-
-                if (!fullPersonnel) {
-                    if (isOwner) {
-                        Button(
-                            onClick = { navController.navigateInvite(navOption) },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Gray,
-                                contentColor = Color.White
-                            ),
-                            modifier = Modifier.height(50.dp)
-                        ) {
-                            Text(
-                                text = buttonText,
-                                color = Color.White,
-                                style = Typography.medium18,
-                                modifier = Modifier.padding(horizontal = 12.dp)
+                    } else {
+                        if (state.isOwner || state.isMatching) {
+                            LampButton(
+                                isGradient = !state.isMatching,
+                                buttonWidth = 300,
+                                buttonText = buttonText,
+                                onClick = {
+                                    if (state.isMatching) {
+                                        viewModel.stopMatch()
+                                    } else {
+                                        viewModel.startMatch()
+                                    }
+                                },
+                                enabled = true
                             )
                         }
                     }
-                } else {
-                    if (isOwner || isMatching) {
-                        LampButton(
-                            isGradient = !isMatching,
-                            buttonWidth = 300,
-                            buttonText = buttonText,
-                            onClick = {
-                                if (isMatching) {
-                                    homeViewModel.stopMatch()
-                                } else {
-                                    homeViewModel.startMatch()
-                                }
-                            },
-                            enabled = true
-                        )
-                    }
                 }
             }
-        }
-        if (isOwner && !isMatching) {
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 85.dp),
-                verticalArrangement = Arrangement.spacedBy(1.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.swipe_icon),
-                    contentDescription = null,
-                    tint = Color.Unspecified
-                )
-                Text(
-                    text = stringResource(id = R.string.swipe_guide),
-                    color = Gray3,
-                    style = Typography.normal12
-                )
+            if (state.isOwner && !state.isMatching) {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 85.dp),
+                    verticalArrangement = Arrangement.spacedBy(1.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.swipe_icon),
+                        contentDescription = null,
+                        tint = Color.Unspecified
+                    )
+                    Text(
+                        text = stringResource(id = R.string.swipe_guide),
+                        color = Gray3,
+                        style = Typography.normal12
+                    )
+                }
             }
         }
     }
@@ -724,10 +702,4 @@ fun ShadowCircleBackground(
             size = Size(radius * 2, radius)
         )
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun B() {
-    MatchingHomeScreen(modifier = Modifier, navController = rememberNavController())
 }

@@ -16,7 +16,6 @@ import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.domain.usecase.user.SearchInviteUserUseCase
 import com.devndev.lamp.domain.usecase.user.SearchVisitUserUseCase
 import com.devndev.lamp.presentation.ui.common.SearchStatus
-import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -59,27 +58,26 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             getMyInfoUseCase()
                 .onSuccess { userInfo ->
-                    Log.d(HomeViewModel.TAG, "getMyInfo")
+                    Log.d(logTag, "getMyInfo")
                     _myInfo.value = userInfo
-                    Log.d(HomeViewModel.TAG, "My Info ${myInfo.value}")
+                    Log.d(logTag, "My Info ${myInfo.value}")
                 }
                 .onFailure { throwable ->
-                    Log.e(HomeViewModel.TAG, "Failed to fetch user info", throwable)
+                    Log.e(logTag, "Failed to fetch user info", throwable)
                 }
         }
     }
 
     private fun getLampData() {
         viewModelScope.launch {
-            try {
-                Log.d(logTag, "getLampData")
-                _myLamp.value = getMyLampUseCase()
-                Log.d(logTag, "My Lamp ${myLamp.value}")
-            } catch (e: HttpException) {
-                Log.e(logTag, "getLampData HttpException", e)
-            } catch (e: Exception) {
-                Log.e(logTag, "getLampData Exception", e)
-            }
+            getMyLampUseCase()
+                .onSuccess { myLamp ->
+                    Log.d(logTag, "getLampData Success")
+                    _myLamp.value = myLamp
+                }
+                .onFailure {
+                    Log.e(logTag, "getLampData Failure", it)
+                }
         }
     }
 
