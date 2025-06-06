@@ -2,6 +2,7 @@ package com.devndev.lamp.data.repository
 
 import com.devndev.lamp.data.datsource.chat.ChatDataSource
 import com.devndev.lamp.data.dto.request.chat.ChatRequest
+import com.devndev.lamp.data.dto.request.chat.EditAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.RegisterAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
 import com.devndev.lamp.data.dto.response.chat.toDomainModel
@@ -9,6 +10,7 @@ import com.devndev.lamp.domain.model.chat.AppointmentListDomainModel
 import com.devndev.lamp.domain.model.chat.ChatInfoDomainModel
 import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
 import com.devndev.lamp.domain.model.chat.ChatRoomDomainModel
+import com.devndev.lamp.domain.model.chat.EditAppointmentParam
 import com.devndev.lamp.domain.model.chat.RegisterAppointmentParam
 import com.devndev.lamp.domain.repository.ChatRepository
 import javax.inject.Inject
@@ -57,5 +59,22 @@ class ChatRepositoryImpl @Inject constructor(
 
     override suspend fun readyVote(chatRoomId: Int) {
         chatDataSource.readyVote(chatRoomId)
+    }
+
+    override suspend fun editAppointment(
+        chatAppointmentId: Int,
+        editAppointmentParam: EditAppointmentParam
+    ) {
+        chatDataSource.editAppointment(
+            chatAppointmentId,
+            EditAppointmentRequest(
+                location = editAppointmentParam.location,
+                meetingTime = editAppointmentParam.meetingTime
+            )
+        )
+    }
+
+    override suspend fun deleteAppointment(chatAppointmentId: Int) {
+        chatDataSource.deleteAppointment(chatAppointmentId)
     }
 }

@@ -6,8 +6,11 @@ import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.chat.AppointmentItem
 import com.devndev.lamp.domain.model.chat.AppointmentListDomainModel
 import com.devndev.lamp.domain.model.chat.ChatInfoDomainModel
+import com.devndev.lamp.domain.model.chat.EditAppointmentParam
 import com.devndev.lamp.domain.model.chat.RegisterAppointmentParam
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
+import com.devndev.lamp.domain.usecase.chat.DeleteAppointmentUseCase
+import com.devndev.lamp.domain.usecase.chat.EditAppointmentUseCase
 import com.devndev.lamp.domain.usecase.chat.GetAppointmentListUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatInfoUseCase
 import com.devndev.lamp.domain.usecase.chat.ReadyVoteUseCase
@@ -29,9 +32,11 @@ class AppointmentViewModel @Inject constructor(
     private val getAppointmentListUseCase: GetAppointmentListUseCase,
     private val getChatInfoUseCase: GetChatInfoUseCase,
     private val getMyInfoUseCase: GetMyInfoUseCase,
-    private val readyVoteUseCase: ReadyVoteUseCase
+    private val readyVoteUseCase: ReadyVoteUseCase,
+    private val editAppointmentUseCase: EditAppointmentUseCase,
+    private val deleteAppointmentUseCase: DeleteAppointmentUseCase
 ) : ViewModel() {
-    val _uiState = MutableStateFlow(AppointmentUiState())
+    private val _uiState = MutableStateFlow(AppointmentUiState())
     val uiState: StateFlow<AppointmentUiState> = _uiState.asStateFlow()
 
     init {
@@ -163,7 +168,38 @@ class AppointmentViewModel @Inject constructor(
                     Log.d(TAG, "readyVote Success")
                     getAppointmentList(chatRoomId)
                 }.onFailure {
-                    Log.d(TAG, "readyVote Failure")
+                    Log.e(TAG, "readyVote Failure", it)
+                }
+        }
+    }
+
+    fun editAppointment(
+        chatAppointmentId: Int,
+        editAppointmentParam: EditAppointmentParam
+    ) {
+        viewModelScope.launch {
+            editAppointmentUseCase(
+                chatAppointmentId,
+                editAppointmentParam
+            ).onSuccess {
+                Log.d(TAG, "editAppointment Success")
+            }.onFailure {
+                Log.e(TAG, "editAppointment Failure", it)
+            }
+        }
+    }
+
+    fun deleteAppointment(
+        chatRoomId: Int,
+        chatAppointmentId: Int
+    ) {
+        viewModelScope.launch {
+            deleteAppointmentUseCase(chatAppointmentId)
+                .onSuccess {
+                    Log.d(TAG, "deleteAppointment Success")
+                    getAppointmentList(chatRoomId)
+                }.onFailure {
+                    Log.e(TAG, "deleteAppointment Failure", it)
                 }
         }
     }
