@@ -24,6 +24,6 @@ interface ChatRepository {
         editAppointmentParam: EditAppointmentParam
     )
     suspend fun deleteAppointment(
-        chatAppointmentId: Int,
+        chatAppointmentId: Int
     )
 }

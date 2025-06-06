@@ -66,6 +66,6 @@ interface ChatService {
 
     @DELETE("api/v1/chat/appointment/{chatAppointmentId}")
     suspend fun deleteAppointment(
-        @Path("chatAppointmentId") chatAppointmentId: Int,
+        @Path("chatAppointmentId") chatAppointmentId: Int
     )
 }
