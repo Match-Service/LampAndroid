@@ -56,6 +56,4 @@ class ChatDataSourceImpl @Inject constructor(
     override suspend fun readyVote(chatRoomId: Int) {
         chatService.readyVote(chatRoomId)
     }
-
-
 }
