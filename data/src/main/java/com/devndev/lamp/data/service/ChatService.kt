@@ -49,4 +49,9 @@ interface ChatService {
     suspend fun getAppointmentList(
         @Path("chatRoomId") chatRoomId: Int
     ): AppointmentListResponse
+
+    @POST("api/v1/chat/{chatRoomId}/ready")
+    suspend fun readyVote(
+        @Path("chatRoomId") chatRoomId: Int
+    )
 }

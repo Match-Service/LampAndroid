@@ -17,4 +17,5 @@ interface ChatDataSource {
     suspend fun sendChat(chatRoomId: Int, chatRequest: ChatRequest)
     suspend fun registerAppointment(registerAppointmentRequest: RegisterAppointmentRequest)
     suspend fun getAppointmentList(chatRoomId: Int): AppointmentListResponse
+    suspend fun readyVote(chatRoomId: Int)
 }

@@ -1,7 +1,10 @@
 package com.devndev.lamp.presentation.ui.appointment
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -24,6 +28,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.domain.model.chat.AppointmentItem
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
@@ -33,7 +38,10 @@ import java.util.Calendar
 import java.util.Locale
 
 @Composable
-fun AppointmentList(appointmentList: List<AppointmentItem>) {
+fun AppointmentList(
+    appointmentList: List<AppointmentItem>,
+    onAddIconClick: () -> Unit
+) {
     // todo 내가 준비 했을 경우 string 변경
 //    val voteString = if (appointment.voteReadyUserCount == 0) {
 //        stringResource(R.string.register_appointment_ready_vote)
@@ -69,6 +77,20 @@ fun AppointmentList(appointmentList: List<AppointmentItem>) {
             items(appointmentList) { appointment ->
                 Appointment(appointment)
             }
+        }
+        Spacer(modifier = Modifier.height(25.dp))
+        Box(
+            modifier = Modifier
+                .size(54.dp)
+                .background(color = Gray, shape = CircleShape)
+                .clickable(onClick = onAddIconClick),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.add_icon),
+                contentDescription = "Add Appointment",
+                tint = Color.White
+            )
         }
     }
 }
@@ -117,7 +139,9 @@ fun Appointment(appointment: AppointmentItem) {
                         painter = painterResource(R.drawable.delete_icon),
                         contentDescription = "Delete Appointment",
                         tint = LightGray,
-                        modifier = Modifier.height(18.dp).width(14.dp)
+                        modifier = Modifier
+                            .height(18.dp)
+                            .width(14.dp)
                     )
                 }
             }

@@ -63,7 +63,11 @@ fun AppointmentScreen(
             if (state.isEmpty) {
                 EmptyAppointmentScreen()
             } else {
-                AppointmentList(state.appointmentList)
+                AppointmentList(
+                    state.appointmentList
+                ) {
+                    navController.navigateRegisterAppointment()
+                }
             }
         }
         Box(
