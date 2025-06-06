@@ -54,4 +54,8 @@ class ChatRepositoryImpl @Inject constructor(
     override suspend fun getAppointmentList(chatRoomId: Int): AppointmentListDomainModel {
         return chatDataSource.getAppointmentList(chatRoomId).toDomainModel()
     }
+
+    override suspend fun readyVote(chatRoomId: Int) {
+        chatDataSource.readyVote(chatRoomId)
+    }
 }

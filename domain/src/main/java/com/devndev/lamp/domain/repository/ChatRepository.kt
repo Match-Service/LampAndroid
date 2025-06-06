@@ -14,4 +14,5 @@ interface ChatRepository {
     suspend fun sendChat(chatRoomId: Int, message: String)
     suspend fun registerAppointment(registerAppointmentParam: RegisterAppointmentParam)
     suspend fun getAppointmentList(chatRoomId: Int): AppointmentListDomainModel
+    suspend fun readyVote(chatRoomId: Int)
 }

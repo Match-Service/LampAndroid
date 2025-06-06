@@ -10,6 +10,7 @@ import com.devndev.lamp.domain.model.chat.RegisterAppointmentParam
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.usecase.chat.GetAppointmentListUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatInfoUseCase
+import com.devndev.lamp.domain.usecase.chat.ReadyVoteUseCase
 import com.devndev.lamp.domain.usecase.chat.RegisterAppointmentUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -27,7 +28,8 @@ class AppointmentViewModel @Inject constructor(
     private val registerAppointmentUseCase: RegisterAppointmentUseCase,
     private val getAppointmentListUseCase: GetAppointmentListUseCase,
     private val getChatInfoUseCase: GetChatInfoUseCase,
-    private val getMyInfoUseCase: GetMyInfoUseCase
+    private val getMyInfoUseCase: GetMyInfoUseCase,
+    private val readyVoteUseCase: ReadyVoteUseCase
 ) : ViewModel() {
     val _uiState = MutableStateFlow(AppointmentUiState())
     val uiState: StateFlow<AppointmentUiState> = _uiState.asStateFlow()
@@ -150,6 +152,19 @@ class AppointmentViewModel @Inject constructor(
                     isMine = false
                 )
             }
+        }
+    }
+
+    // TODO 서버 API 투표 준비 상태 값 추가 후 isReady UiState 추가 할지 고려
+    fun readyVote(chatRoomId: Int) {
+        viewModelScope.launch {
+            readyVoteUseCase(chatRoomId)
+                .onSuccess {
+                    Log.d(TAG, "readyVote Success")
+                    getAppointmentList(chatRoomId)
+                }.onFailure {
+                    Log.d(TAG, "readyVote Failure")
+                }
         }
     }
 
