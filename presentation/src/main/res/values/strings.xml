@@ -237,6 +237,7 @@
     <string name="no_registered_appointment">"등록된 약속이 없어요"</string>
     <string name="guide_make_appointment">"약속 장소와 날짜를 등록하고\n투표를 진행해 보세요"</string>
     <string name="register_appointment_button">"약속 등록하기"</string>
+    <string name="edit_appointment">"약속 수정하기"</string>
     <string name="ready_vote">"투표 준비하기"</string>
     <string name="hint_appointment_location">"약속 장소를 입력해주세요"</string>
     <string name="location">"장소"</string>
@@ -245,6 +246,7 @@
     <string name="hint_appointment_date">"일정을 선택해주세요</string>
     <string name="confirm">"확인"</string>
     <string name="appointment_confirm">"약속을 확정 하시겠어요?"</string>
+    <string name="appointment_edit_confirm">"약속을 수정 하시겠어요?"</string>
 
     <string name="register_appointment_ready_vote">"약속을 등록하고 투표를 준비해 주세요</string>
     <string name="vote_ready_count_message">%d명이 투표 준비가 완료되 었어요</string>

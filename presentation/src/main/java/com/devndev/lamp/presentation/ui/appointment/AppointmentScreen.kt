@@ -64,10 +64,21 @@ fun AppointmentScreen(
                 EmptyAppointmentScreen()
             } else {
                 AppointmentList(
-                    state.appointmentList
-                ) {
-                    navController.navigateRegisterAppointment()
-                }
+                    appointmentList = state.appointmentList,
+                    onEditClick = {
+                        navController.navigateRegisterAppointment(
+                            isEdit = true,
+                            chatAppointmentId = it
+                        )
+                    },
+                    onDeleteClick = { appointmentViewModel.deleteAppointment(chatRoomId, it) },
+                    onAddIconClick = {
+                        navController.navigateRegisterAppointment(
+                            isEdit = false,
+                            chatAppointmentId = -1
+                        )
+                    }
+                )
             }
         }
         Box(
@@ -84,7 +95,10 @@ fun AppointmentScreen(
                 isGradient = true,
                 buttonText = buttonString,
                 onClick = {
-                    navController.navigateRegisterAppointment()
+                    navController.navigateRegisterAppointment(
+                        isEdit = false,
+                        chatAppointmentId = -1
+                    )
                 },
                 enabled = true
             )

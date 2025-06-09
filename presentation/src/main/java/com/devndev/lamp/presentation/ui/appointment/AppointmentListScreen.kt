@@ -40,7 +40,9 @@ import java.util.Locale
 @Composable
 fun AppointmentList(
     appointmentList: List<AppointmentItem>,
-    onAddIconClick: () -> Unit
+    onAddIconClick: () -> Unit,
+    onEditClick: (Int) -> Unit,
+    onDeleteClick: (Int) -> Unit
 ) {
     // todo 내가 준비 했을 경우 string 변경
 //    val voteString = if (appointment.voteReadyUserCount == 0) {
@@ -75,7 +77,11 @@ fun AppointmentList(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             items(appointmentList) { appointment ->
-                Appointment(appointment)
+                Appointment(
+                    appointment,
+                    { onEditClick(it) },
+                    { onDeleteClick(it) }
+                )
             }
         }
         Spacer(modifier = Modifier.height(25.dp))
@@ -96,7 +102,11 @@ fun AppointmentList(
 }
 
 @Composable
-fun Appointment(appointment: AppointmentItem) {
+fun Appointment(
+    appointment: AppointmentItem,
+    onEditClick: (Int) -> Unit,
+    onDeleteClick: (Int) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -133,7 +143,11 @@ fun Appointment(appointment: AppointmentItem) {
                         painter = painterResource(R.drawable.edit_icon),
                         contentDescription = "Edit Appointment",
                         tint = LightGray,
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier
+                            .size(18.dp)
+                            .clickable {
+                                onEditClick(appointment.appointment.chatAppointmentId)
+                            }
                     )
                     Icon(
                         painter = painterResource(R.drawable.delete_icon),
@@ -142,6 +156,9 @@ fun Appointment(appointment: AppointmentItem) {
                         modifier = Modifier
                             .height(18.dp)
                             .width(14.dp)
+                            .clickable {
+                                onDeleteClick(appointment.appointment.chatAppointmentId)
+                            }
                     )
                 }
             }

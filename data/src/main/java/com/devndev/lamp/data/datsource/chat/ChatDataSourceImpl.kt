@@ -1,6 +1,7 @@
 package com.devndev.lamp.data.datsource.chat
 
 import com.devndev.lamp.data.dto.request.chat.ChatRequest
+import com.devndev.lamp.data.dto.request.chat.EditAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.RegisterAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
 import com.devndev.lamp.data.dto.response.chat.AppointmentListResponse
@@ -55,5 +56,19 @@ class ChatDataSourceImpl @Inject constructor(
 
     override suspend fun readyVote(chatRoomId: Int) {
         chatService.readyVote(chatRoomId)
+    }
+
+    override suspend fun editAppointment(
+        chatAppointmentId: Int,
+        editAppointmentRequest: EditAppointmentRequest
+    ) {
+        chatService.editAppointment(
+            chatAppointmentId,
+            editAppointmentRequest
+        )
+    }
+
+    override suspend fun deleteAppointment(chatAppointmentId: Int) {
+        chatService.deleteAppointment(chatAppointmentId)
     }
 }
