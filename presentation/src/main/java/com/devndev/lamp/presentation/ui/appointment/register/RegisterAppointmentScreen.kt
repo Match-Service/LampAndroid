@@ -45,25 +45,44 @@ import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 fun RegisterAppointmentScreen(
     modifier: Modifier = Modifier,
     navController: NavController,
+    isEdit: Boolean,
     chatRoomId: Int,
+    chatAppointmentId: Int,
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
     val state by appointmentViewModel.uiState.collectAsStateWithLifecycle()
 
     var isDatePickerShow by remember { mutableStateOf(false) }
     var isConfirmPopupShow by remember { mutableStateOf(false) }
+    LaunchedEffect(Unit) {
+        if (isEdit) {
+            appointmentViewModel.getAppointmentInfo(
+                chatRoomId,
+                chatAppointmentId
+            )
+        }
+    }
 
     val focusManager = LocalFocusManager.current
 
     if (isConfirmPopupShow) {
+        val confirmString = if (isEdit) {
+            stringResource(R.string.appointment_edit_confirm)
+        } else {
+            stringResource(R.string.appointment_confirm)
+        }
         TwoButtonPopup(
-            mainText = "${state.location}\n${state.date}\n ${stringResource(R.string.appointment_confirm)}",
+            mainText = "${state.location}\n${state.date}\n $confirmString",
             startButtonText = stringResource(id = R.string.no),
             endButtonText = stringResource(id = R.string.yes),
             onStartButtonClick = { isConfirmPopupShow = false },
             onEndButtonClick = {
                 isConfirmPopupShow = false
-                appointmentViewModel.registerAppointment(chatRoomId)
+                if (!isEdit) {
+                    appointmentViewModel.registerAppointment(chatRoomId)
+                } else {
+                    appointmentViewModel.editAppointment()
+                }
             }
         )
     }
@@ -97,8 +116,13 @@ fun RegisterAppointmentScreen(
                 })
             }
     ) {
+        val topBarString = if (isEdit) {
+            stringResource(R.string.edit_appointment)
+        } else {
+            stringResource(R.string.register_appointment_button)
+        }
         TopNavigationBar(
-            text = stringResource(R.string.register_appointment_button),
+            text = topBarString,
             isNeedXButton = false,
             onBackButtonClick = { navController.popBackStack() }
         )
@@ -174,7 +198,7 @@ fun RegisterAppointmentScreen(
         ) {
             LampButton(
                 isGradient = true,
-                buttonText = stringResource(R.string.register_appointment_button),
+                buttonText = topBarString,
                 onClick = {
                     isConfirmPopupShow = true
                 },

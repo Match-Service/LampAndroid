@@ -79,7 +79,7 @@ fun AppointmentList(
             items(appointmentList) { appointment ->
                 Appointment(
                     appointment,
-                    {},
+                    { onEditClick(it) },
                     { onDeleteClick(it) }
                 )
             }
@@ -143,7 +143,11 @@ fun Appointment(
                         painter = painterResource(R.drawable.edit_icon),
                         contentDescription = "Edit Appointment",
                         tint = LightGray,
-                        modifier = Modifier.size(18.dp)
+                        modifier = Modifier
+                            .size(18.dp)
+                            .clickable {
+                                onEditClick(appointment.appointment.chatAppointmentId)
+                            }
                     )
                     Icon(
                         painter = painterResource(R.drawable.delete_icon),

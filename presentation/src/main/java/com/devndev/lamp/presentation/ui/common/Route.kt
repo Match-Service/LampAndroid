@@ -22,5 +22,5 @@ object Route {
     const val FIND = "find"
     const val CHAT = "chat"
     const val APPOINTMENT = "appointment"
-    const val REGISTER_APPOINTMENT = "register_appointment"
+    const val REGISTER_APPOINTMENT = "register_appointment/{isEdit}/{chatAppointmentId}"
 }

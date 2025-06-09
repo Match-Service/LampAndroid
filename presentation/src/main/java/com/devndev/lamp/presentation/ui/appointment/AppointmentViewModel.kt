@@ -23,7 +23,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.util.Date
 import java.util.Locale
+import java.util.TimeZone
 import javax.inject.Inject
 
 @HiltViewModel
@@ -44,10 +46,12 @@ class AppointmentViewModel @Inject constructor(
     }
 
     fun updateLocation(location: String) {
+        Log.d(TAG, "updateLocation location")
         _uiState.update { it.copy(location = location) }
     }
 
     fun updateDate(date: String) {
+        Log.d(TAG, "updateDate date")
         _uiState.update { it.copy(date = date) }
     }
 
@@ -173,16 +177,22 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
-    fun editAppointment(
-        chatAppointmentId: Int,
-        editAppointmentParam: EditAppointmentParam
-    ) {
+    fun editAppointment() {
         viewModelScope.launch {
+            val inputFormat = SimpleDateFormat("yyyy년 M월 d일 HH:mm", Locale.getDefault())
+            val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault())
+
+            val date = inputFormat.parse(uiState.value.date)
+            val meetingTimeString = outputFormat.format(date)
             editAppointmentUseCase(
-                chatAppointmentId,
-                editAppointmentParam
+                uiState.value.editAppointment?.chatAppointmentId ?: 0,
+                EditAppointmentParam(
+                    location = uiState.value.location,
+                    meetingTime = meetingTimeString
+                )
             ).onSuccess {
                 Log.d(TAG, "editAppointment Success")
+                _uiState.update { it.copy(needNavBack = true) }
             }.onFailure {
                 Log.e(TAG, "editAppointment Failure", it)
             }
@@ -201,6 +211,38 @@ class AppointmentViewModel @Inject constructor(
                 }.onFailure {
                     Log.e(TAG, "deleteAppointment Failure", it)
                 }
+        }
+    }
+
+    fun getAppointmentInfo(
+        chatRoomId: Int,
+        chatAppointmentId: Int
+    ) {
+        viewModelScope.launch {
+            getAppointmentListUseCase(
+                chatRoomId = chatRoomId
+            ).onSuccess { appointment ->
+                Log.d(TAG, "getAppointmentInfo Success")
+
+                for (a in appointment.chatAppointmentList) {
+                    if (chatAppointmentId == a.chatAppointmentId) {
+                        _uiState.update { it.copy(editAppointment = a) }
+                        uiState.value.editAppointment?.location?.let { updateLocation(it) }
+                        uiState.value.editAppointment?.meetingTime?.let {
+                            val inputFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+                            val date: Date = inputFormatter.parse(it) ?: return@let
+
+                            val outputFormatter = SimpleDateFormat("yyyy년 M월 d일 HH:mm", Locale.getDefault())
+                            outputFormatter.timeZone = TimeZone.getTimeZone("UTC") // ★ 여기 추가
+
+                            val dateTimeString = outputFormatter.format(date)
+                            updateDate(dateTimeString)
+                        }
+                    }
+                }
+            }.onFailure {
+                Log.e(TAG, "getAppointmentInfo Failure", it)
+            }
         }
     }
 
