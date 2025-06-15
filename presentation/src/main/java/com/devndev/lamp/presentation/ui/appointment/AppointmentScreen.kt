@@ -2,7 +2,6 @@ package com.devndev.lamp.presentation.ui.appointment
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -25,6 +24,7 @@ import com.devndev.lamp.presentation.theme.IncTypography
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.appointment.navigation.navigateRegisterAppointment
+import com.devndev.lamp.presentation.ui.common.AppointmentStatus
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 
@@ -36,6 +36,17 @@ fun AppointmentScreen(
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
     val state by appointmentViewModel.uiState.collectAsStateWithLifecycle()
+
+    val topSectionText = when (state.getAppointmentStatus()) {
+        AppointmentStatus.BEFORE_READY -> stringResource(R.string.register_appointment_ready_vote)
+        AppointmentStatus.WAITING_READY -> stringResource(
+            R.string.vote_ready_count_message,
+            state.appointment?.voteReadyUserCount ?: ""
+        )
+        AppointmentStatus.BEFORE_VOTE -> stringResource(R.string.do_vote)
+        AppointmentStatus.WAITING_VOTE -> stringResource(R.string.vote_count_message, state.getVoteCount())
+        else -> ""
+    }
 
     LaunchedEffect(Unit) {
         appointmentViewModel.getChatInfo(chatRoomId)
@@ -65,6 +76,7 @@ fun AppointmentScreen(
             } else {
                 AppointmentList(
                     appointmentList = state.appointmentList,
+                    topSectionText = topSectionText,
                     onEditClick = {
                         navController.navigateRegisterAppointment(
                             isEdit = true,
@@ -81,26 +93,72 @@ fun AppointmentScreen(
                 )
             }
         }
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 4.dp, end = 4.dp, bottom = 20.dp, top = 10.dp)
+                .padding(start = 4.dp, end = 4.dp, bottom = 20.dp, top = 10.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            val buttonString = if (state.isEmpty) {
-                stringResource(R.string.register_appointment_button)
-            } else {
-                stringResource(R.string.ready_vote)
+            var buttonString = ""
+            var buttonEnable = false
+            when (state.getAppointmentStatus()) {
+                AppointmentStatus.EMPTY_APPOINTMENT -> {
+                    buttonString = stringResource(R.string.register_appointment_button)
+                    buttonEnable = true
+                }
+
+                AppointmentStatus.BEFORE_READY -> {
+                    buttonString = stringResource(R.string.ready_vote)
+                    buttonEnable = true
+                }
+
+                AppointmentStatus.WAITING_READY -> {
+                    buttonString = stringResource(R.string.waiting_ready_vote)
+                    buttonEnable = false
+                }
+
+                AppointmentStatus.BEFORE_VOTE -> {
+                    buttonString = stringResource(R.string.vote)
+                    buttonEnable = true
+                }
+
+                AppointmentStatus.WAITING_VOTE -> {
+                    buttonString = stringResource(R.string.waiting_vote)
+                    buttonEnable = false
+                }
+
+                AppointmentStatus.CONFIRM_APPOINTMENT -> {
+                    buttonString = ""
+                    buttonEnable = false
+                }
+
+                else -> {}
+            }
+            if (!state.isEmpty && state.appointment?.isReady != true) {
+                Text(
+                    text = stringResource(
+                        R.string.guide_ready_vote,
+                        state.appointment?.allUserCount ?: ""
+                    ),
+                    color = Color.White,
+                    style = Typography.normal12
+                )
             }
             LampButton(
                 isGradient = true,
                 buttonText = buttonString,
                 onClick = {
-                    navController.navigateRegisterAppointment(
-                        isEdit = false,
-                        chatAppointmentId = -1
-                    )
+                    if (state.isEmpty) {
+                        navController.navigateRegisterAppointment(
+                            isEdit = false,
+                            chatAppointmentId = -1
+                        )
+                    } else {
+                        appointmentViewModel.readyVote(chatRoomId)
+                    }
                 },
-                enabled = true
+                enabled = buttonEnable
             )
         }
     }

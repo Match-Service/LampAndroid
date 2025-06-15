@@ -568,9 +568,11 @@ fun ChatBubble(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(3.dp)
                     ) {
-                        val index = message.message.indexOf("명 완료")
-                        val frontText = message.message.substring(0, message.message.lastIndexOf(' ', index - 1) + 1)
-                        val tailText = message.message.substring(frontText.length)
+                        val regex = Regex("""\((\d+명 완료)\)""")
+                        val match = regex.find(message.message)
+
+                        val tailText = match?.groupValues?.get(1) ?: ""
+                        val frontText = message.message.replace(regex, "").trim()
                         Text(
                             text = frontText,
                             color = Color.White,

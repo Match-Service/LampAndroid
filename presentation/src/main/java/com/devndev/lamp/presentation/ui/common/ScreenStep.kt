@@ -94,3 +94,12 @@ object SearchStatus {
     const val SEARCHING = 2
     const val SEARCHED = 3
 }
+
+object AppointmentStatus {
+    const val EMPTY_APPOINTMENT = 0
+    const val BEFORE_READY = 1
+    const val WAITING_READY = 2
+    const val BEFORE_VOTE = 3
+    const val WAITING_VOTE = 4
+    const val CONFIRM_APPOINTMENT = 5
+}

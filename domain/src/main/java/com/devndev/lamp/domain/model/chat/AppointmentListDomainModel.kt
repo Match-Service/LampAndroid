@@ -2,6 +2,7 @@ package com.devndev.lamp.domain.model.chat
 
 data class AppointmentListDomainModel(
     val canVote: Boolean,
+    val isReady: Boolean,
     val voteReadyUserCount: Int,
     val allUserCount: Int,
     val chatAppointmentList: List<AppointmentDomainModel>
@@ -13,7 +14,8 @@ data class AppointmentDomainModel(
     val location: String,
     val meetingTime: String,
     val agreeCount: Int,
-    val userId: Int
+    val createdUserId: Int,
+    val voted: Boolean
 )
 
 data class AppointmentItem(

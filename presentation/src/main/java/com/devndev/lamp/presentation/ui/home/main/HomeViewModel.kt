@@ -85,7 +85,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             getMyLampUseCase()
                 .onSuccess { myLamp ->
-                    Log.d(TAG, "getLampData Success")
+                    Log.d(TAG, "getLampData Success $myLamp")
                     _myLamp.value = myLamp
                 }
                 .onFailure {
