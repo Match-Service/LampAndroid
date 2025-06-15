@@ -5,5 +5,8 @@ data class ChatMessageDomainModel(
     val createdAt: String,
     val message: String,
     val userId: Int,
-    val chatRoomId: Int = 0
-)
+    val chatRoomId: Int = 0,
+    val messageType: String
+) {
+    val messageTypeEnum: MessageType? get() = MessageType.fromString(messageType)
+}

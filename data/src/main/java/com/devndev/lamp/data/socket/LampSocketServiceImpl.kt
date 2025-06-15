@@ -79,13 +79,15 @@ class LampSocketServiceImpl @Inject constructor(
                     val userId = jsonObject.getInt("userId")
                     val createdAt = jsonObject.getString("createdAt")
                     val id = jsonObject.getString("messageId")
+                    val messageType = jsonObject.getString("messageType")
                     Log.d(TAG, "Received message from $userId in $chatRoomId: $message at $createdAt")
                     val chatMessage = ChatMessageDomainModel(
                         id = id,
                         message = message,
                         userId = userId,
                         createdAt = createdAt,
-                        chatRoomId = chatRoomId
+                        chatRoomId = chatRoomId,
+                        messageType = messageType
                     )
                     onChat(chatMessage)
                 } catch (e: Exception) {

@@ -13,7 +13,9 @@ data class ChatMessageResponse(
     @Json(name = "message")
     val message: String,
     @Json(name = "userId")
-    val userId: Int
+    val userId: Int,
+    @Json(name = "messageType")
+    val messageType: String
 )
 
 fun ChatMessageResponse.toDomainModel(): ChatMessageDomainModel {
@@ -21,7 +23,8 @@ fun ChatMessageResponse.toDomainModel(): ChatMessageDomainModel {
         id = id,
         createdAt = createdAt,
         message = message,
-        userId = userId
+        userId = userId,
+        messageType = messageType
     )
 }
 

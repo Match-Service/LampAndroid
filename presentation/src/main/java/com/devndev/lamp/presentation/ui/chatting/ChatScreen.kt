@@ -62,6 +62,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
 import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
+import com.devndev.lamp.domain.model.chat.MessageType
 import com.devndev.lamp.domain.model.chat.UserInfo
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
@@ -270,6 +271,9 @@ fun ChatScreen(
                     onProfileClick = {
                         selectedUserInfo = it
                         isProfilePopupShow = true
+                    },
+                    onCreateAppointChatClick = {
+                        navController.navigateAppointment()
                     }
                 )
                 Spacer(modifier = Modifier.height(10.dp))
@@ -389,84 +393,47 @@ fun ChatBubble(
     message: ChatMessageDomainModel,
     userInfo: UserInfo,
     isMine: Boolean,
-    onProfileClick: (UserInfo) -> Unit = {}
+    onProfileClick: (UserInfo) -> Unit = {},
+    onCreateAppointChatClick: () -> Unit = {}
 ) {
+    val gradientBrush = Brush.horizontalGradient(
+        colors = listOf(WomanColor, ManColor)
+    )
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 15.dp),
-        horizontalArrangement = if (isMine) Arrangement.End else Arrangement.Start
-    ) {
-        if (isMine) {
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.spacedBy(5.dp)
-            ) {
-                Text(
-                    text = formatChatDate(message.createdAt),
-                    color = LightGray,
-                    style = Typography.normal9
-                )
-                Box(
-                    modifier = Modifier
-                        .widthIn(max = 206.dp)
-                        .background(
-                            color = Gray,
-                            shape = RoundedCornerShape(
-                                topStart = 15.dp,
-                                bottomEnd = 15.dp,
-                                bottomStart = 15.dp
-                            )
-                        )
-                        .padding(vertical = 7.dp, horizontal = 10.dp)
-                ) {
-                    Text(
-                        text = message.message,
-                        color = Color.White,
-                        style = Typography.normal14
-                    )
-                }
+        horizontalArrangement = when (message.messageTypeEnum) {
+            MessageType.MESSAGE -> {
+                if (isMine) Arrangement.End else Arrangement.Start
             }
-        } else {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(7.dp)
-            ) {
-                val image = rememberAsyncImagePainter(userInfo.profileImages[0])
-                Image(
-                    painter = image,
-                    contentDescription = "profileImage",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(30.dp)
-                        .clip(CircleShape)
-                        .clickable {
-                            onProfileClick(userInfo)
-                        }
-                )
-                Row(
-                    verticalAlignment = Alignment.Bottom,
-                    horizontalArrangement = Arrangement.spacedBy(5.dp)
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(7.dp)
+
+            else -> {
+                Arrangement.Center
+            }
+        }
+
+    ) {
+        when (message.messageTypeEnum) {
+            MessageType.MESSAGE -> {
+                if (isMine) {
+                    Row(
+                        verticalAlignment = Alignment.Bottom,
+                        horizontalArrangement = Arrangement.spacedBy(5.dp)
                     ) {
-                        val color = if (userInfo.gender == "MALE") {
-                            ManColor
-                        } else {
-                            WomanColor
-                        }
                         Text(
-                            text = userInfo.name,
-                            color = color,
-                            style = Typography.normal12
+                            text = formatChatDate(message.createdAt),
+                            color = LightGray,
+                            style = Typography.normal9
                         )
                         Box(
                             modifier = Modifier
                                 .widthIn(max = 206.dp)
                                 .background(
-                                    color = LightGray,
+                                    color = Gray,
                                     shape = RoundedCornerShape(
-                                        topEnd = 15.dp,
+                                        topStart = 15.dp,
                                         bottomEnd = 15.dp,
                                         bottomStart = 15.dp
                                     )
@@ -480,13 +447,164 @@ fun ChatBubble(
                             )
                         }
                     }
+                } else {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(7.dp)
+                    ) {
+                        val image = rememberAsyncImagePainter(userInfo.profileImages[0])
+                        Image(
+                            painter = image,
+                            contentDescription = "profileImage",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier
+                                .size(30.dp)
+                                .clip(CircleShape)
+                                .clickable {
+                                    onProfileClick(userInfo)
+                                }
+                        )
+                        Row(
+                            verticalAlignment = Alignment.Bottom,
+                            horizontalArrangement = Arrangement.spacedBy(5.dp)
+                        ) {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(7.dp)
+                            ) {
+                                val color = if (userInfo.gender == "MALE") {
+                                    ManColor
+                                } else {
+                                    WomanColor
+                                }
+                                Text(
+                                    text = userInfo.name,
+                                    color = color,
+                                    style = Typography.normal12
+                                )
+                                Box(
+                                    modifier = Modifier
+                                        .widthIn(max = 206.dp)
+                                        .background(
+                                            color = LightGray,
+                                            shape = RoundedCornerShape(
+                                                topEnd = 15.dp,
+                                                bottomEnd = 15.dp,
+                                                bottomStart = 15.dp
+                                            )
+                                        )
+                                        .padding(vertical = 7.dp, horizontal = 10.dp)
+                                ) {
+                                    Text(
+                                        text = message.message,
+                                        color = Color.White,
+                                        style = Typography.normal14
+                                    )
+                                }
+                            }
+                            Text(
+                                text = formatChatDate(message.createdAt),
+                                color = LightGray,
+                                style = Typography.normal9
+                            )
+                        }
+                    }
+                }
+            }
+
+            MessageType.RETRY_APPOINTMENT,
+            MessageType.CREATE_APPOINTMENT -> {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = Color.Transparent,
+                            shape = RoundedCornerShape(22.dp)
+                        )
+                        .border(
+                            width = 1.dp,
+                            brush = gradientBrush,
+                            shape = RoundedCornerShape(22.dp)
+                        )
+                        .padding(vertical = 5.dp, horizontal = 15.dp)
+                        .clickable {
+                            onCreateAppointChatClick()
+                        }
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(5.dp)
+                    ) {
+                        Text(
+                            text = message.message,
+                            color = Color.White,
+                            style = Typography.medium15
+                        )
+                        Icon(
+                            painter = painterResource(R.drawable.arrow),
+                            contentDescription = null,
+                            modifier = Modifier.size(10.dp),
+                            tint = Color.White
+                        )
+                    }
+                }
+            }
+
+            MessageType.READY_APPOINTMENT -> {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = Color.Transparent,
+                            shape = RoundedCornerShape(22.dp)
+                        )
+                        .border(
+                            width = 1.dp,
+                            brush = gradientBrush,
+                            shape = RoundedCornerShape(22.dp)
+                        )
+                        .padding(vertical = 5.dp, horizontal = 15.dp)
+                        .clickable {
+                            onCreateAppointChatClick()
+                        }
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(3.dp)
+                    ) {
+                        val index = message.message.indexOf("명 완료")
+                        val frontText = message.message.substring(0, message.message.lastIndexOf(' ', index - 1) + 1)
+                        val tailText = message.message.substring(frontText.length)
+                        Text(
+                            text = frontText,
+                            color = Color.White,
+                            style = Typography.medium15
+                        )
+                        Text(
+                            text = tailText,
+                            color = Gray3,
+                            style = Typography.medium10
+                        )
+                    }
+                }
+            }
+            MessageType.CONFIRM_APPOINTMENT,
+            MessageType.ALL_READY_APPOINTMENT -> {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            brush = gradientBrush,
+                            shape = RoundedCornerShape(22.dp)
+                        )
+                        .padding(vertical = 5.dp, horizontal = 15.dp)
+                        .clickable {
+                            onCreateAppointChatClick()
+                        }
+                ) {
                     Text(
-                        text = formatChatDate(message.createdAt),
-                        color = LightGray,
-                        style = Typography.normal9
+                        text = message.message,
+                        color = Color.White,
+                        style = Typography.medium15
                     )
                 }
             }
+            null -> {}
         }
     }
 }
