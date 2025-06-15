@@ -142,7 +142,7 @@ class AppointmentViewModel @Inject constructor(
         myInfo: MyInfoDomainModel
     ): List<AppointmentItem> {
         return appointmentListDomainModel.chatAppointmentList.map { appointment ->
-            val isMine = appointment.userId == myInfo.userId
+            val isMine = appointment.createdUserId == myInfo.userId
 
             if (isMine) {
                 AppointmentItem(
@@ -152,7 +152,7 @@ class AppointmentViewModel @Inject constructor(
                     isMine = true
                 )
             } else {
-                val userInfo = chatInfo.userInfos.find { it.userId == appointment.userId }
+                val userInfo = chatInfo.userInfos.find { it.userId == appointment.createdUserId }
 
                 AppointmentItem(
                     appointment = appointment,
@@ -164,7 +164,6 @@ class AppointmentViewModel @Inject constructor(
         }
     }
 
-    // TODO 서버 API 투표 준비 상태 값 추가 후 isReady UiState 추가 할지 고려
     fun readyVote(chatRoomId: Int) {
         viewModelScope.launch {
             readyVoteUseCase(chatRoomId)

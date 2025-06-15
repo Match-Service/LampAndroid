@@ -249,6 +249,14 @@
     <string name="appointment_edit_confirm">"약속을 수정 하시겠어요?"</string>
 
     <string name="register_appointment_ready_vote">"약속을 등록하고 투표를 준비해 주세요</string>
-    <string name="vote_ready_count_message">%d명이 투표 준비가 완료되 었어요</string>
+    <string name="vote_ready_count_message">%d명이 투표 준비가 완료 되었어요</string>
     <string name="appointment_suggestion">%s님의 일정 제안</string>
+    <string name="guide_ready_vote">%d명이 모두 투표 준비하기를 누르면 투표가 시작돼요</string>
+    <string name="waiting_ready_vote">투표까지 조금만 기다려주세요</string>
+    <string name="vote">투표 완료하기</string>
+    <string name="waiting_vote">투표가 완료될 때까지 기다려주세요</string>
+    <string name="guide_before_vote">투표가 종료된 이후에는 약속 수정이 불가능해요</string>
+    <string name="guide_after_vote">다수결로 완료되지 않으면 재투표를 진행할게요</string>
+    <string name="do_vote">투표를 시작해 주세요</string>
+    <string name="vote_count_message">%d명이 투표를 완료 했어요</string>
 </resources>

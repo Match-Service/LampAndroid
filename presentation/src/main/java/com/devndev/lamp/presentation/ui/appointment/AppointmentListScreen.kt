@@ -40,16 +40,11 @@ import java.util.Locale
 @Composable
 fun AppointmentList(
     appointmentList: List<AppointmentItem>,
+    topSectionText: String,
     onAddIconClick: () -> Unit,
     onEditClick: (Int) -> Unit,
     onDeleteClick: (Int) -> Unit
 ) {
-    // todo 내가 준비 했을 경우 string 변경
-//    val voteString = if (appointment.voteReadyUserCount == 0) {
-//        stringResource(R.string.register_appointment_ready_vote)
-//    } else {
-//        stringResource(R.string.vote_ready_count_message, appointment.voteReadyUserCount)
-//    }
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -65,7 +60,7 @@ fun AppointmentList(
                 tint = Color.White
             )
             Text(
-                text = stringResource(R.string.register_appointment_ready_vote),
+                text = topSectionText,
                 style = Typography.normal14,
                 color = Color.White
             )

@@ -48,8 +48,8 @@ fun Chat(
                 color = LightGray,
                 shape = RoundedCornerShape(15.dp)
             )
-            .padding(vertical = 15.dp, horizontal = 20.dp)
-            .clickable { onChatClick() },
+            .clickable { onChatClick() }
+            .padding(vertical = 15.dp, horizontal = 20.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Column(
