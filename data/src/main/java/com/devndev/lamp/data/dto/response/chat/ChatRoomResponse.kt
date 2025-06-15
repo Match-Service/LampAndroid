@@ -35,7 +35,9 @@ data class LastMessageInfoResponse(
     @Json(name = "message")
     val message: String,
     @Json(name = "createdAt")
-    val createdAt: String
+    val createdAt: String,
+    @Json(name = "messageType")
+    val messageType: String
 )
 
 @JsonClass(generateAdapter = true)
@@ -64,7 +66,8 @@ fun LastMessageInfoResponse.toDomainModel(): LastMessageInfo {
     return LastMessageInfo(
         userName = userName,
         message = message,
-        createdAt = createdAt
+        createdAt = createdAt,
+        messageType = messageType
     )
 }
 

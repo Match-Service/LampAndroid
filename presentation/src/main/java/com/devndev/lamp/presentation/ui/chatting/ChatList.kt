@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.devndev.lamp.domain.model.chat.ChatRoomDomainModel
+import com.devndev.lamp.domain.model.chat.MessageType
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray3
 import com.devndev.lamp.presentation.theme.LightGray
@@ -78,9 +79,15 @@ fun Chat(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    val text = if (chat.lastMessageInfo?.messageTypeEnum == MessageType.MESSAGE) {
+                        "${chat.lastMessageInfo?.userName} : ${chat.lastMessageInfo?.message}"
+                    } else {
+                        "${chat.lastMessageInfo?.message}"
+                    }
+
                     Text(
                         modifier = Modifier.width(220.dp),
-                        text = "${chat.lastMessageInfo?.userName} : ${chat.lastMessageInfo?.message}",
+                        text = text,
                         color = Color.White,
                         style = Typography.medium15,
                         maxLines = 1,
