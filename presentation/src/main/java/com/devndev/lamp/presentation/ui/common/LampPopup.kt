@@ -311,11 +311,10 @@ fun ProfilePopup(
     Dialog(onDismissRequest = {}, properties = DialogProperties(usePlatformDefaultWidth = false)) {
         Column(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 20.dp, horizontal = 16.dp),
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Spacer(modifier = Modifier.height(50.dp))
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -463,6 +462,7 @@ fun ProfilePopup(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }
