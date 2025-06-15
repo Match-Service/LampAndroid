@@ -510,6 +510,7 @@ fun ChatBubble(
                 }
             }
 
+            MessageType.RETRY_APPOINTMENT,
             MessageType.CREATE_APPOINTMENT -> {
                 Box(
                     modifier = Modifier
@@ -546,11 +547,64 @@ fun ChatBubble(
                 }
             }
 
-            MessageType.READY_APPOINTMENT -> TODO()
-            MessageType.ALL_READY_APPOINTMENT -> TODO()
-            MessageType.RETRY_APPOINTMENT -> TODO()
-            MessageType.CONFIRM_APPOINTMENT -> TODO()
-            null -> TODO()
+            MessageType.READY_APPOINTMENT -> {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            color = Color.Transparent,
+                            shape = RoundedCornerShape(22.dp)
+                        )
+                        .border(
+                            width = 1.dp,
+                            brush = gradientBrush,
+                            shape = RoundedCornerShape(22.dp)
+                        )
+                        .padding(vertical = 5.dp, horizontal = 15.dp)
+                        .clickable {
+                            onCreateAppointChatClick()
+                        }
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(3.dp)
+                    ) {
+                        val index = message.message.indexOf("명 완료")
+                        val frontText = message.message.substring(0, message.message.lastIndexOf(' ', index - 1) + 1)
+                        val tailText = message.message.substring(frontText.length)
+                        Text(
+                            text = frontText,
+                            color = Color.White,
+                            style = Typography.medium15
+                        )
+                        Text(
+                            text = tailText,
+                            color = Gray3,
+                            style = Typography.medium10
+                        )
+                    }
+                }
+            }
+            MessageType.CONFIRM_APPOINTMENT,
+            MessageType.ALL_READY_APPOINTMENT -> {
+                Box(
+                    modifier = Modifier
+                        .background(
+                            brush = gradientBrush,
+                            shape = RoundedCornerShape(22.dp)
+                        )
+                        .padding(vertical = 5.dp, horizontal = 15.dp)
+                        .clickable {
+                            onCreateAppointChatClick()
+                        }
+                ) {
+                    Text(
+                        text = message.message,
+                        color = Color.White,
+                        style = Typography.medium15
+                    )
+                }
+            }
+            null -> {}
         }
     }
 }
