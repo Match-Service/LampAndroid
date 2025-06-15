@@ -118,7 +118,7 @@ fun LampDateTimePicker(
             }) {
                 Text(
                     text = stringResource(R.string.confirm),
-                    color = Color.Black
+                    color = Color.White
                 )
             }
         },
@@ -126,7 +126,7 @@ fun LampDateTimePicker(
             TextButton(onClick = { onDismiss() }) {
                 Text(
                     text = stringResource(R.string.cancel),
-                    color = Color.Black
+                    color = Color.White
                 )
             }
         }
