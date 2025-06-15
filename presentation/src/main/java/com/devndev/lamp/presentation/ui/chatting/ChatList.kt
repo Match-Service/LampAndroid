@@ -33,6 +33,7 @@ import com.devndev.lamp.presentation.ui.alarm.getTimeAgo
 
 @Composable
 fun Chat(
+    modifier: Modifier,
     onChatClick: () -> Unit = {},
     chat: ChatRoomDomainModel
 ) {
@@ -40,7 +41,7 @@ fun Chat(
     val isScheduleExist = chat.appointment != null
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .background(color = Color.Transparent)
             .border(

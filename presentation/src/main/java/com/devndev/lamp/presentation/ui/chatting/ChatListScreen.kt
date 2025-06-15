@@ -7,6 +7,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -47,6 +48,7 @@ import java.util.Locale
 import java.util.TimeZone
 import kotlin.system.exitProcess
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ChatListScreen(
     modifier: Modifier,
@@ -124,8 +126,9 @@ fun ChatListScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
-                    items(state.chatList) { chat ->
+                    items(state.chatList, key = { it.chatRoomId }) { chat ->
                         Chat(
+                            modifier = Modifier.animateItemPlacement(),
                             onChatClick = {
                                 val intent = Intent(context, ChatActivity::class.java).apply {
                                     putExtra("chatRoomId", chat.chatRoomId)
