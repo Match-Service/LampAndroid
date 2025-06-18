@@ -1,7 +1,7 @@
 package com.devndev.lamp.data.interceptor
 
 import android.util.Log
-import com.devndev.lamp.data.datsource.local.LocalDataSource
+import com.devndev.lamp.data.datasource.local.LocalDataSource
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject

@@ -1,4 +1,4 @@
-package com.devndev.lamp.data.datsource.user
+package com.devndev.lamp.data.datasource.user
 
 import com.devndev.lamp.data.dto.request.user.EditImageRequest
 import com.devndev.lamp.data.dto.request.user.ModifyUserRequest

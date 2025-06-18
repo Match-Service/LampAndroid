@@ -1,4 +1,4 @@
-package com.devndev.lamp.data.datsource.local
+package com.devndev.lamp.data.datasource.local
 
 interface LocalDataSource {
     fun getIsNeedSignOut(): Boolean

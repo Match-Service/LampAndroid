@@ -1,6 +1,8 @@
 package com.devndev.lamp.data.repository
 
-import com.devndev.lamp.data.datsource.lampmatach.LampMatchDataSource
+import com.devndev.lamp.data.datasource.lampmatch.LampMatchDataSource
+import com.devndev.lamp.data.dto.request.lampmatch.AcceptVoteRequest
+import com.devndev.lamp.data.dto.request.lampmatch.RejectVoteRequest
 import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.domain.repository.LampMatchRepository
 import javax.inject.Inject
@@ -17,11 +19,11 @@ class LampMatchRepositoryImpl @Inject constructor(
     }
 
     override suspend fun accept(lampSuggestionId: Int) {
-        lampMatchDataSource.accept(lampSuggestionId)
+        lampMatchDataSource.accept(acceptVoteRequest = AcceptVoteRequest(lampSuggestionId))
     }
 
     override suspend fun reject(lampSuggestionId: Int) {
-        lampMatchDataSource.reject(lampSuggestionId)
+        lampMatchDataSource.reject(rejectVoteRequest = RejectVoteRequest(lampSuggestionId))
     }
 
     override suspend fun getMatchSuggestion(): MatchSuggestionDomainModel {

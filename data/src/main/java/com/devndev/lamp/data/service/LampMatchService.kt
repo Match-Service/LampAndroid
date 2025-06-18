@@ -1,5 +1,7 @@
 package com.devndev.lamp.data.service
 
+import com.devndev.lamp.data.dto.request.lampmatch.AcceptVoteRequest
+import com.devndev.lamp.data.dto.request.lampmatch.RejectVoteRequest
 import com.devndev.lamp.data.dto.response.lampmatch.MatchSuggestionResponse
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -14,12 +16,12 @@ interface LampMatchService {
 
     @POST("api/v1/lamp-match/accept")
     suspend fun accept(
-        @Body lampSuggestionId: Int
+        @Body acceptVoteRequest: AcceptVoteRequest
     )
 
     @POST("api/v1/lamp-match/reject")
     suspend fun reject(
-        @Body lampSuggestionId: Int
+        @Body rejectVoteRequest: RejectVoteRequest
     )
 
     @GET("api/v1/lamp-match")

@@ -1,7 +1,7 @@
 package com.devndev.lamp.data.socket
 
 import android.util.Log
-import com.devndev.lamp.data.datsource.local.LocalDataSource
+import com.devndev.lamp.data.datasource.local.LocalDataSource
 import io.socket.client.IO
 import io.socket.client.Socket
 import org.json.JSONObject
@@ -42,6 +42,7 @@ class LampSocketServiceImpl @Inject constructor(
                 if (args.isNotEmpty()) {
                     try {
                         val jsonObject = JSONObject(args[0].toString())
+                        Log.d("123123123", jsonObject.toString())
                         when {
                             jsonObject.has("userLampStatus") -> {
                                 val status = jsonObject.getString("userLampStatus")

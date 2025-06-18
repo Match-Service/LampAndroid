@@ -62,10 +62,19 @@ class HomeViewModel @Inject constructor(
     val matchSuggestion: StateFlow<MatchSuggestionDomainModel?> = _matchSuggestion
 
     private val _userStatus = MutableStateFlow<String>("")
-    val userStatue: StateFlow<String> = _userStatus
+    val userStatus: StateFlow<String> = _userStatus
 
     private val _visitLampOwnerName = MutableStateFlow<String>("")
     val visitLampOwnerName = _visitLampOwnerName
+
+    private val _isVoted = MutableStateFlow(false)
+    val isVoted: StateFlow<Boolean> = _isVoted
+
+    private val _approveCount = MutableStateFlow(0)
+    val approveCount: StateFlow<Int> = _approveCount
+
+    private val _rejectCount = MutableStateFlow(0)
+    val rejectCount: StateFlow<Int> = _rejectCount
 
     init {
         getMyInfo()
@@ -168,12 +177,16 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getMatchSuggestion() {
+    fun getMatchSuggestion(onComplete: (() -> Unit)? = null) {
         viewModelScope.launch {
             try {
                 Log.d(TAG, "getMatchSuggestion")
-                _matchSuggestion.value = getMatchSuggestionUseCase()
+                val result = getMatchSuggestionUseCase()
+                _matchSuggestion.value = result.copy()
+                _approveCount.value = result.approveCount
+                _rejectCount.value = result.rejectCount
                 Log.d(TAG, "MatchSuggestion ${matchSuggestion.value}")
+                onComplete?.invoke()
             } catch (e: HttpException) {
                 Log.e(TAG, "getMatchSuggestion HttpException", e)
             } catch (e: Exception) {
@@ -187,7 +200,7 @@ class HomeViewModel @Inject constructor(
             try {
                 Log.d(TAG, "getUserStatus")
                 _userStatus.value = getUserStatusUseCase().userLampStatus
-                Log.d(TAG, "UserStatus ${userStatue.value}")
+                Log.d(TAG, "UserStatus ${userStatus.value}")
             } catch (e: HttpException) {
                 Log.e(TAG, "getUserStatus HttpException", e)
             } catch (e: Exception) {
@@ -205,10 +218,20 @@ class HomeViewModel @Inject constructor(
                     },
                     onMessage = { message ->
                         _userStatus.value = message
-                        Log.d(TAG, "status: ${userStatue.value}")
+                        Log.d(TAG, "status: ${userStatus.value}")
                     },
                     onUpdatedMessage = {
-                        getLampData()
+                        when (userStatus.value) {
+                            "PREPARE" -> {
+                                getLampData()
+                                Log.d("onUpdatedMessage", "PREPARE : getLampData()")
+                            }
+                            "FIND_LAMP" -> {
+                                getMatchSuggestion()
+                                Log.d("onUpdatedMessage", "FIND_LAMP : getMatchSuggestion()")
+                            }
+                        }
+//                        getLampData()
                     }
                 )
             } catch (e: Exception) {
@@ -251,8 +274,11 @@ class HomeViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                Log.d(ChatViewModel.TAG, "acceptVote")
-                acceptUseCase(lampSuggestionId)
+                if (!_isVoted.value) {
+                    Log.d(ChatViewModel.TAG, "acceptVote")
+                    acceptUseCase(lampSuggestionId)
+                    _isVoted.value = true
+                }
             } catch (e: Exception) {
                 Log.e(ChatViewModel.TAG, "accept Exception", e)
             }
@@ -264,8 +290,11 @@ class HomeViewModel @Inject constructor(
     ) {
         viewModelScope.launch {
             try {
-                Log.d(ChatViewModel.TAG, "rejectVote")
-                rejectUseCase(lampSuggestionId)
+                if (!_isVoted.value) {
+                    Log.d(ChatViewModel.TAG, "rejectVote")
+                    rejectUseCase(lampSuggestionId)
+                    _isVoted.value = true
+                }
             } catch (e: Exception) {
                 Log.e(ChatViewModel.TAG, "reject Exception", e)
             }

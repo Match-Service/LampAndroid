@@ -1,7 +1,7 @@
 package com.devndev.lamp.data.repository
 
 import android.util.Log
-import com.devndev.lamp.data.datsource.lamp.LampDataSource
+import com.devndev.lamp.data.datasource.lamp.LampDataSource
 import com.devndev.lamp.data.dto.request.lamp.AcceptInviteRequest
 import com.devndev.lamp.data.dto.request.lamp.AcceptVisitRequest
 import com.devndev.lamp.data.dto.request.lamp.CreateLampRequest

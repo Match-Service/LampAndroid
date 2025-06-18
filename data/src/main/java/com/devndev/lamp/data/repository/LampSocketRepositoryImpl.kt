@@ -1,6 +1,6 @@
 package com.devndev.lamp.data.repository
 
-import com.devndev.lamp.data.datsource.socket.LampSocketDataSource
+import com.devndev.lamp.data.datasource.socket.LampSocketDataSource
 import com.devndev.lamp.domain.repository.LampSocketRepository
 import javax.inject.Inject
 

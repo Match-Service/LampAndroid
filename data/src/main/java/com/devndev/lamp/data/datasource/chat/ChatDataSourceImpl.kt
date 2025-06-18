@@ -1,4 +1,4 @@
-package com.devndev.lamp.data.datsource.chat
+package com.devndev.lamp.data.datasource.chat
 
 import com.devndev.lamp.data.dto.request.chat.ChatRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest

@@ -1,7 +1,7 @@
 package com.devndev.lamp.data.repository
 
 import android.util.Log
-import com.devndev.lamp.data.datsource.user.UserDataSource
+import com.devndev.lamp.data.datasource.user.UserDataSource
 import com.devndev.lamp.data.dto.request.signup.AlarmSetting
 import com.devndev.lamp.data.dto.request.signup.BioQuestion
 import com.devndev.lamp.data.dto.request.user.EditImageRequest

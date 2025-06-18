@@ -1,4 +1,4 @@
-package com.devndev.lamp.data.datsource.lamp
+package com.devndev.lamp.data.datasource.lamp
 
 import android.util.Log
 import com.devndev.lamp.data.dto.request.lamp.AcceptInviteRequest

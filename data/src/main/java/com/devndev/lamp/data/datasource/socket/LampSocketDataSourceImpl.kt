@@ -1,4 +1,4 @@
-package com.devndev.lamp.data.datsource.socket
+package com.devndev.lamp.data.datasource.socket
 
 import com.devndev.lamp.data.socket.LampSocketService
 import javax.inject.Inject

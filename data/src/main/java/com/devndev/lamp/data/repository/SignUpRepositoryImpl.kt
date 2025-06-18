@@ -1,6 +1,6 @@
 package com.devndev.lamp.data.repository
 
-import com.devndev.lamp.data.datsource.signup.SignUpDataSource
+import com.devndev.lamp.data.datasource.signup.SignUpDataSource
 import com.devndev.lamp.data.dto.request.signup.AlarmSetting
 import com.devndev.lamp.data.dto.request.signup.BioQuestion
 import com.devndev.lamp.data.dto.request.signup.SignUpAuthRequest

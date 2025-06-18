@@ -1,4 +1,4 @@
-package com.devndev.lamp.data.datsource.alarm
+package com.devndev.lamp.data.datasource.alarm
 
 import com.devndev.lamp.data.dto.response.alarm.AlarmResponse
 import com.devndev.lamp.data.service.AlarmService

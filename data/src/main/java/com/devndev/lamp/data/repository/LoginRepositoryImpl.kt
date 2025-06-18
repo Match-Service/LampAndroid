@@ -1,7 +1,7 @@
 package com.devndev.lamp.data.repository
 
-import com.devndev.lamp.data.datsource.local.LocalDataSource
-import com.devndev.lamp.data.datsource.login.GoogleTokenDataSource
+import com.devndev.lamp.data.datasource.local.LocalDataSource
+import com.devndev.lamp.data.datasource.login.GoogleTokenDataSource
 import com.devndev.lamp.data.dto.request.login.GoogleTokenRequest
 import com.devndev.lamp.data.dto.response.login.GoogleTokenResponse
 import com.devndev.lamp.data.dto.response.login.toDomainModel

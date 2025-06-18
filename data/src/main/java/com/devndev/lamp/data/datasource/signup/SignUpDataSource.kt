@@ -1,4 +1,4 @@
-package com.devndev.lamp.data.datsource.signup
+package com.devndev.lamp.data.datasource.signup
 
 import com.devndev.lamp.data.dto.request.signup.SignUpRequest
 import com.devndev.lamp.data.dto.request.signup.ValidateInstagramRequest

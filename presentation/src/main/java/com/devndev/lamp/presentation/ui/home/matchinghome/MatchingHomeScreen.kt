@@ -119,7 +119,7 @@ fun MatchingHomeScreen(
         }
     }
 
-    val userStatus by homeViewModel.userStatue.collectAsState()
+    val userStatus by homeViewModel.userStatus.collectAsState()
 
     //    var isMatching by remember { mutableStateOf(false) }
     val isMatching by remember(myLamp) {

@@ -44,7 +44,7 @@ fun HomeScreen(
     val handler = remember { Handler(Looper.getMainLooper()) }
     var backPressedOnce = remember { false }
 
-    val userStatus by viewModel.userStatue.collectAsState()
+    val userStatus by viewModel.userStatus.collectAsState()
 
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {

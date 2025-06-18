@@ -1,4 +1,4 @@
-package com.devndev.lamp.data.datsource.local
+package com.devndev.lamp.data.datasource.local
 
 import android.content.Context
 import android.content.SharedPreferences

@@ -1,6 +1,6 @@
 package com.devndev.lamp.data.repository
 
-import com.devndev.lamp.data.datsource.chat.ChatDataSource
+import com.devndev.lamp.data.datasource.chat.ChatDataSource
 import com.devndev.lamp.data.dto.request.chat.ChatRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
 import com.devndev.lamp.data.dto.response.chat.toDomainModel

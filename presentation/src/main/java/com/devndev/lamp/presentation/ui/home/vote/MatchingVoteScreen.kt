@@ -37,6 +37,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -74,7 +75,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
 import com.devndev.lamp.domain.model.lampmatch.IndividualityDomainModel
@@ -106,7 +107,10 @@ fun MatchingVoteScreen(
     modifier: Modifier,
     navController: NavController?
 ) {
+    var isLoaded by remember { mutableStateOf(false) }
     val matchSuggestion by viewModel.matchSuggestion.collectAsState()
+    val approveCount by viewModel.approveCount.collectAsState()
+    val rejectCount by viewModel.rejectCount.collectAsState()
 
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
@@ -145,39 +149,21 @@ fun MatchingVoteScreen(
         null
     }
 
-    // profile 데이터
-    val profiles = if (matchSuggestion != null) {
-        listOf(
-            // 방장
-            listOf(
-                matchSuggestion!!.owner.name,
-                listOf(matchSuggestion!!.owner.profileImageUrls),
-                calculateManAge(matchSuggestion!!.owner.birth),
-                matchSuggestion!!.owner.jobName,
-                matchSuggestion!!.owner.individuality,
-                matchSuggestion!!.owner.bio,
-                listOf(matchSuggestion!!.owner.bioQuestion[1])
-            )
-        ) + matchSuggestion!!.participants.map { participants -> // 참여자
-            listOf(
-                participants.name,
-                listOf(participants.profileImageUrls),
-                calculateManAge(participants.birth),
-                participants.jobName,
-                participants.individuality,
-                participants.bio,
-                listOf(participants.bioQuestion[1])
-            )
-        }
-    } else {
-        null
-    }
-
     val shouldScrollToTop = rememberSaveable { mutableStateOf(false) }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        viewModel.connectSocket()
+        onDispose {
+            viewModel.disconnectSocket()
+        }
+    }
 
     // 상대방 lamp 데이터 가져오기
     LaunchedEffect(Unit) {
-        viewModel.getMatchSuggestion()
+        viewModel.getMatchSuggestion {
+            isLoaded = true
+        }
     }
 
     // Track scroll offset
@@ -212,103 +198,101 @@ fun MatchingVoteScreen(
             (screenHeight - (headerSectionHeight + moodInfoSectionHeight + secondSectionHeight + 70.dp + bottomNaviBarHeight.dp))
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(LampBlack)
-    ) {
+    if (isLoaded) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
+                .background(LampBlack)
         ) {
-            if (lampProfile != null) {
-                ShadowCircleBackground(itemIndex, yOffset, yOffsetHigh, lampProfile)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+            ) {
+                if (lampProfile != null) {
+                    ShadowCircleBackground(itemIndex, yOffset, yOffsetHigh, lampProfile)
+                }
             }
-        }
 
-        LazyColumn(
-            state = listState,
-            modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .zIndex(1f)
-        ) {
-            item {
+            LazyColumn(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .zIndex(1f)
+            ) {
+                item {
 //                Spacer(modifier = Modifier.height(spacerHeight))
-                Spacer(modifier = Modifier.height(63.dp))
-            }
+                    Spacer(modifier = Modifier.height(63.dp))
+                }
 
-            // Sticky Header with Mood and Info
+                // Sticky Header with Mood and Info
 //            stickyHeader {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color.Transparent)
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Color.Transparent)
 //                        .background(if (isStickyHeaderAtTop.value) Color(0xFF6E2126) else Color.Transparent) // 배경 색상 변경
-                        .zIndex(10f)
-                ) {
-                    if (lampProfile != null) {
-                        MoodInfoSection(
-                            lampProfile = lampProfile,
-                            onHeightChange = { height -> moodInfoSectionHeight = height }
+                            .zIndex(10f)
+                    ) {
+                        if (lampProfile != null) {
+                            MoodInfoSection(
+                                lampProfile = lampProfile,
+                                onHeightChange = { height -> moodInfoSectionHeight = height }
+                            )
+                        }
+                    }
+                }
+
+                // Second Section(조회할 프로필 선택)
+                item {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                    ) {
+                        SecondSection(
+                            onHeightChange = { height -> secondSectionHeight = height },
+                            selectedImage = selectedImage,
+                            onImageSelected = { selectedImage = it },
+                            matchSuggestion = matchSuggestion
                         )
                     }
                 }
-            }
 
-            // Second Section(조회할 프로필 선택)
-            item {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-                    SecondSection(
-                        onHeightChange = { height -> secondSectionHeight = height },
-                        selectedImage = selectedImage,
-                        onImageSelected = { selectedImage = it },
-                        matchSuggestion = matchSuggestion
-                    )
-                }
-            }
-
-            item {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .background(LampBlack),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center
-                ) {
-                    if (profiles != null) {
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .background(LampBlack),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
                         ProfileTop(matchSuggestion = matchSuggestion, index = selectedImage)
-                    }
-                    Spacer(modifier = Modifier.height(35.dp))
-                    if (profiles != null) {
-                        ProfileAttractive(profiles = profiles, index = selectedImage)
-                    }
-                    Spacer(modifier = Modifier.height(35.dp))
-                    if (profiles != null) {
+                        Spacer(modifier = Modifier.height(35.dp))
+                        ProfileAttractive(matchSuggestion = matchSuggestion, index = selectedImage)
+                        Spacer(modifier = Modifier.height(35.dp))
                         ProfileDescription(matchSuggestion = matchSuggestion, index = selectedImage)
-                    }
 
-                    val density = context.resources.displayMetrics.density
-                    val naviBarHeightPx = getNavigationBarHeight(context)
-                    val naviBarHeightDp = naviBarHeightPx / density
-                    Spacer(modifier = Modifier.height((naviBarHeightDp + 149).dp))
+                        val density = context.resources.displayMetrics.density
+                        val naviBarHeightPx = getNavigationBarHeight(context)
+                        val naviBarHeightDp = naviBarHeightPx / density
+                        Spacer(modifier = Modifier.height((naviBarHeightDp + 149).dp))
+                    }
                 }
             }
-        }
 
-        BottomSection(
-            viewModel = viewModel,
-            matchSuggestion = matchSuggestion,
-            onHeightChange = { height ->
-                bottomSectionHeight = height
-            }
-        )
+            BottomSection(
+                viewModel = viewModel,
+                matchSuggestion = matchSuggestion,
+                approveCount = approveCount,
+                rejectCount = rejectCount,
+                onHeightChange = { height ->
+                    bottomSectionHeight = height
+                }
+            )
+        }
     }
 }
 
@@ -333,46 +317,46 @@ fun ProfileTop(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
     ) + matchSuggestion?.participants?.map { it.name }
 
     // 프로필 이미지 url list
-    val imageUrlList = listOfNotNull(
+    val imageUrlList = listOf(
         matchSuggestion?.owner?.profileImageUrls
     ) + matchSuggestion?.participants?.map { it.profileImageUrls }
 
-    val imageCnt = imageUrlList.size
+    val imageCnt = imageUrlList[index]?.size
 
     // 프로필 사진 갯수 2개 이하일 경우
-    if (imageCnt <= 2) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 10.dp),
-            horizontalArrangement = Arrangement.Center
-        ) {
-            for (i in imageUrlList[index]?.indices!!) {
-                Image(
-                    painter = rememberImagePainter(imageUrlList[index]?.get(i)),
-                    contentDescription = "Profile Image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(120.dp)
-                        .padding(horizontal = 5.dp)
-                )
-            }
-        }
-    } else {
-        Box(modifier = Modifier.height(120.dp)) {
-            LazyRow(
-                state = listState,
+    if (imageCnt != null) {
+        if (imageCnt <= 2) {
+            Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 10.dp)
-                    .zIndex(0f),
-                horizontalArrangement = Arrangement.spacedBy(5.dp)
+                    .padding(bottom = 10.dp),
+                horizontalArrangement = Arrangement.Center
             ) {
-                items(1) {
-                    Spacer(modifier = Modifier.width(16.dp))
+                for (i in imageUrlList[index]?.indices!!) {
+                    Image(
+                        painter = rememberImagePainter(imageUrlList[index]?.get(i)),
+                        contentDescription = "Profile Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(120.dp)
+                            .padding(horizontal = 5.dp)
+                    )
                 }
-                imageUrlList[index]?.let {
-                    items(it.size) { i ->
+            }
+        } else {
+            Box(modifier = Modifier.wrapContentHeight()) {
+                LazyRow(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 10.dp)
+                        .zIndex(0f),
+                    horizontalArrangement = Arrangement.spacedBy(5.dp)
+                ) {
+                    items(1) {
+                        Spacer(modifier = Modifier.width(16.dp))
+                    }
+                    items(imageUrlList[index]!!.size) { i ->
                         Image(
                             painter = rememberImagePainter(imageUrlList[index]?.get(i)),
                             contentDescription = "Profile Image",
@@ -381,52 +365,58 @@ fun ProfileTop(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
                                 .size(120.dp)
                         )
                     }
+                    items(1) {
+                        Spacer(modifier = Modifier.width(16.dp))
+                    }
                 }
-                items(1) {
-                    Spacer(modifier = Modifier.width(16.dp))
-                }
-            }
 
-            val isAtStart by remember {
-                derivedStateOf {
-                    listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
+                val isAtStart by remember {
+                    derivedStateOf {
+                        listState.firstVisibleItemIndex == 0 && listState.firstVisibleItemScrollOffset == 0
+                    }
                 }
-            }
 
-            val isAtEnd by remember {
-                derivedStateOf {
-                    val layoutInfo = listState.layoutInfo
-                    val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
-                    lastVisibleItem != null && lastVisibleItem.index == layoutInfo.totalItemsCount - 1
+                val isAtEnd by remember {
+                    derivedStateOf {
+                        val layoutInfo = listState.layoutInfo
+                        val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
+                        lastVisibleItem != null && lastVisibleItem.index == layoutInfo.totalItemsCount - 1
+                    }
                 }
-            }
 
-            if (isAtStart) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(70.dp)
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.8f))
+                if (isAtStart) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(70.dp)
+                            .background(
+                                Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = 0.8f)
+                                    )
+                                )
                             )
-                        )
-                        .align(Alignment.CenterEnd)
-                )
-            }
+                            .align(Alignment.CenterEnd)
+                    )
+                }
 
-            if (isAtEnd) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .width(70.dp)
-                        .background(
-                            Brush.horizontalGradient(
-                                colors = listOf(Color.Black.copy(alpha = 0.8f), Color.Transparent)
+                if (isAtEnd) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(70.dp)
+                            .background(
+                                Brush.horizontalGradient(
+                                    colors = listOf(
+                                        Color.Black.copy(alpha = 0.8f),
+                                        Color.Transparent
+                                    )
+                                )
                             )
-                        )
-                        .align(Alignment.CenterStart)
-                )
+                            .align(Alignment.CenterStart)
+                    )
+                }
             }
         }
     }
@@ -469,50 +459,55 @@ fun ProfileTop(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
 
 // 프로필 매력도
 @Composable
-fun ProfileAttractive(profiles: List<List<Any?>>, index: Int) {
-    // MutableState to hold the button's width
-    var buttonWidth by remember { mutableStateOf(0) }
-    val attractive = profiles[index][4] as IndividualityDomainModel
-    attractive.let {
-//        val attractiveAvg = total / attractive.size
-        Column(
+fun ProfileAttractive(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
+//    var buttonWidth by remember { mutableStateOf(0) }
+//    Log.d("matchSuggestion", matchSuggestion.toString())
+
+    // 매력도 리스트
+    val attractiveList: List<IndividualityDomainModel?> = listOfNotNull(
+        matchSuggestion?.owner?.individuality
+    ) + (matchSuggestion?.participants?.map { it.individuality } ?: emptyList())
+
+//    Log.d("attractiveList", attractiveList.toString())
+//        matchSuggestion[index][4] as IndividualityDomainModel
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center
         ) {
-            Row(
+            Icon(
+                painter = painterResource(id = R.drawable.heart),
+                contentDescription = "Heart",
+                tint = Color.White,
                 modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.heart),
-                    contentDescription = "Heart",
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    text = "${stringResource(id = R.string.attractiveness)} ${attractive.attractiveness}",
-                    color = Color.White,
-                    style = Typography.medium18.copy(lineHeight = 20.sp),
-                    fontSize = 18.sp,
-                    textAlign = TextAlign.Center
-                )
-            }
-
-            Spacer(modifier = Modifier.height(9.dp))
-
-            ProgressBar(attractive)
+                    .size(16.dp)
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(
+                text = "${stringResource(id = R.string.attractiveness)} ${attractiveList[index]?.attractiveness}",
+                color = Color.White,
+                style = Typography.medium18.copy(lineHeight = 20.sp),
+                fontSize = 18.sp,
+                textAlign = TextAlign.Center
+            )
         }
+
+        Spacer(modifier = Modifier.height(9.dp))
+
+        ProgressBar(attractiveList, index)
     }
 }
 
 @Composable
 fun ProgressBar(
-    attractive: IndividualityDomainModel,
-    barColor: Color = WomanColor,
+    attractiveList: List<IndividualityDomainModel?>,
+    index: Int?,
     isMyPage: Boolean = false
 ) {
     val modifier = if (isMyPage) {
@@ -532,12 +527,12 @@ fun ProgressBar(
             for (i in 0..3) {
 //                val percentage = attractive[i].coerceIn(0, 100) / 100f
                 val percentage = when (i) {
-                    0 -> attractive.personality
-                    1 -> attractive.voice
-                    2 -> attractive.fashion
-                    3 -> attractive.conversation
+                    0 -> attractiveList[index!!]?.personality
+                    1 -> attractiveList[index!!]?.voice
+                    2 -> attractiveList[index!!]?.fashion
+                    3 -> attractiveList[index!!]?.conversation
                     else -> 0
-                }.coerceIn(0, 100) / 100f
+                }?.coerceIn(0, 100)?.div(100f)
                 Box(
                     modifier = Modifier
                         .wrapContentSize()
@@ -559,7 +554,7 @@ fun ProgressBar(
                         drawArc(
                             color = Color.White,
                             startAngle = -90f, // 12시부터 그리게끔
-                            sweepAngle = 360f * percentage, // 비율에 따른 각도
+                            sweepAngle = 360f * percentage!!, // 비율에 따른 각도
                             useCenter = false, // 중심을 사용하지 않음 (경계선만 그리기)
                             style = Stroke(width = 20f) // 스트로크 두께
                         )
@@ -738,7 +733,7 @@ fun SecondSection(
 // 바닥 섹션
 @SuppressLint("DefaultLocale")
 @Composable
-fun BottomSection(viewModel: HomeViewModel, matchSuggestion: MatchSuggestionDomainModel?, onHeightChange: (Int) -> Unit) {
+fun BottomSection(viewModel: HomeViewModel, matchSuggestion: MatchSuggestionDomainModel?, approveCount: Int, rejectCount: Int, onHeightChange: (Int) -> Unit) {
     // 초기 시간을 3시간(03:00:00)으로 설정
     var totalSeconds by remember { mutableStateOf(3 * 60 * 60) }
 
@@ -803,7 +798,10 @@ fun BottomSection(viewModel: HomeViewModel, matchSuggestion: MatchSuggestionDoma
                         .height(54.dp),
                     onClick = {
                         if (matchSuggestion != null) {
-                            viewModel.accept(matchSuggestion.lampSuggestionId)
+                            if (!viewModel.isVoted.value) {
+                                viewModel.accept(matchSuggestion.lampSuggestionId)
+                            }
+//                            viewModel.getMatchSuggestion()
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -825,7 +823,7 @@ fun BottomSection(viewModel: HomeViewModel, matchSuggestion: MatchSuggestionDoma
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "9명",
+                            text = "$approveCount" + "명",
                             style = Typography.medium10,
                             color = Gray3,
                             textAlign = TextAlign.Center
@@ -836,7 +834,13 @@ fun BottomSection(viewModel: HomeViewModel, matchSuggestion: MatchSuggestionDoma
                     modifier = Modifier
                         .weight(1f)
                         .height(54.dp),
-                    onClick = { /*TODO*/ },
+                    onClick = {
+                        if (matchSuggestion != null) {
+                            if (!viewModel.isVoted.value) {
+                                viewModel.reject(matchSuggestion.lampSuggestionId)
+                            }
+                        }
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LightGray,
                         contentColor = Color.White
@@ -856,7 +860,7 @@ fun BottomSection(viewModel: HomeViewModel, matchSuggestion: MatchSuggestionDoma
                         )
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "9명",
+                            text = "$rejectCount" + "명",
                             style = Typography.medium10,
                             color = Gray3,
                             textAlign = TextAlign.Center

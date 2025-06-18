@@ -2,7 +2,7 @@ package com.devndev.lamp.data.di
 
 import android.content.Context
 import com.devndev.lamp.data.BuildConfig
-import com.devndev.lamp.data.datsource.local.LocalDataSource
+import com.devndev.lamp.data.datasource.local.LocalDataSource
 import com.devndev.lamp.data.di.qualifier.DefaultClient
 import com.devndev.lamp.data.di.qualifier.DefaultRetrofit
 import com.devndev.lamp.data.interceptor.AuthInterceptor

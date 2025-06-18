@@ -1,4 +1,4 @@
-package com.devndev.lamp.data.datsource.login
+package com.devndev.lamp.data.datasource.login
 
 import com.devndev.lamp.data.dto.request.login.GoogleTokenRequest
 import com.devndev.lamp.data.dto.response.login.GoogleTokenResponse
