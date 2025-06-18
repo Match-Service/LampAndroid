@@ -256,7 +256,7 @@ fun MatchingHomeScreen(
                                     contentDescription = null,
                                     tint = Color.White,
                                     modifier = Modifier.clickable {
-                                        navController.navigateCreation(navOption)
+                                        navController.navigateCreation(isEdit = true, navOptions = navOption)
                                     }
                                 )
                             }

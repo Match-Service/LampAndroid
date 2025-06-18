@@ -9,7 +9,7 @@ object Route {
     const val EMAIL_LOGIN = "email_login"
     const val MYPAGE = "mypage"
     const val SEARCH = "search"
-    const val CREATION = "creation"
+    const val CREATION = "creation/{isEdit}"
     const val REGISTRATION = "registration"
     const val INVITE = "invite"
     const val ALARM = "ALARM"

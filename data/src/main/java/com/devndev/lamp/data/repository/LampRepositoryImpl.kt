@@ -42,6 +42,17 @@ class LampRepositoryImpl @Inject constructor(
         lampDataSource.deleteLamp()
     }
 
+    override suspend fun editLamp(createLampParam: CreateLampParam) {
+        val editLampRequest = CreateLampRequest(
+            name = createLampParam.name,
+            description = createLampParam.description,
+            hopeMatchNumber = createLampParam.hopeMatchNumber,
+            location = createLampParam.location,
+            color = createLampParam.color
+        )
+        lampDataSource.editLamp(editLampRequest)
+    }
+
     override suspend fun inviteUser(inviteUsersParam: InviteUsersParam) {
         val inviteUsersRequest = InviteUsersRequest(
             inviteUserIds = inviteUsersParam.inviteUserIds

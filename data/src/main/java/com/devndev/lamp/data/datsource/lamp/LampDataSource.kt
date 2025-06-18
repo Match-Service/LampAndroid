@@ -16,6 +16,7 @@ interface LampDataSource {
     suspend fun createLamp(createLampRequest: CreateLampRequest): CreateLampResponse
     suspend fun getMyInfo(): LampResponse
     suspend fun deleteLamp(): Response<Unit>
+    suspend fun editLamp(createLampRequest: CreateLampRequest)
     suspend fun inviteUser(inviteUsersRequest: InviteUsersRequest): Response<Unit>
     suspend fun acceptInvite(acceptInviteRequest: AcceptInviteRequest): Response<Unit>
     suspend fun rejectInvite(rejectInviteRequest: RejectInviteRequest): Response<Unit>

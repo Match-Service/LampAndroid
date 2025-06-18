@@ -13,6 +13,7 @@ interface LampRepository {
     suspend fun createLamp(createLampParam: CreateLampParam): Int
     suspend fun getMyLamp(): LampDomainModel
     suspend fun deleteLamp()
+    suspend fun editLamp(createLampParam: CreateLampParam)
     suspend fun inviteUser(inviteUsersParam: InviteUsersParam)
     suspend fun acceptInvite(acceptInviteParam: AcceptInviteParam)
     suspend fun rejectInvite(rejectInviteParam: RejectInviteParam)

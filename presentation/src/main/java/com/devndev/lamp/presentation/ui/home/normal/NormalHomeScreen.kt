@@ -67,12 +67,12 @@ fun NormalHomeScreen(
                 buttonText = stringResource(id = R.string.make_lamp),
                 guideButtonText = stringResource(id = R.string.guide_make_lamp),
                 onClick = {
-                    navController.navigateCreation(navOption)
+                    navController.navigateCreation(isEdit = false, navOptions = navOption)
                 },
                 icon = painterResource(id = R.drawable.arrow),
                 enabled = true,
                 onIconClick = {
-                    navController.navigateCreation(navOption)
+                    navController.navigateCreation(isEdit = false, navOptions = navOption)
                 }
             )
             LampButtonWithIcon(

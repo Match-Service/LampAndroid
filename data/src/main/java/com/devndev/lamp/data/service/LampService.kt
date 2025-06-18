@@ -15,6 +15,7 @@ import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface LampService {
@@ -28,6 +29,11 @@ interface LampService {
 
     @DELETE("api/v1/lamp")
     suspend fun deleteLamp(): Response<Unit>
+
+    @PUT("api/v1/lamp")
+    suspend fun editLamp(
+        @Body createLampRequest: CreateLampRequest
+    )
 
     @POST("api/v1/lamp/invite/request")
     suspend fun inviteUsers(
