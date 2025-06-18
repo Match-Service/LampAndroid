@@ -8,12 +8,18 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.creation.LampCreationScreen
 
-fun NavController.navigateCreation(navOptions: NavOptions? = null) {
-    this.navigate(Route.CREATION, navOptions)
+fun NavController.navigateCreation(
+    navOptions: NavOptions? = null,
+    isEdit: Boolean
+) {
+    val route = "creation/$isEdit"
+    this.navigate(route, navOptions)
 }
 
 fun NavGraphBuilder.creationNavGraph(
@@ -22,10 +28,18 @@ fun NavGraphBuilder.creationNavGraph(
     navController: NavController
 ) {
     composable(
-        Route.CREATION,
+        route = Route.CREATION,
+        arguments = listOf(
+            navArgument("isEdit") { type = NavType.BoolType }
+        ),
         enterTransition = { slideInVertically(initialOffsetY = { it }) },
         exitTransition = { slideOutVertically(targetOffsetY = { it }) }
-    ) {
-        LampCreationScreen(modifier = modifier.padding(padding), navController = navController)
+    ) { backStackEntry ->
+        val isEdit = backStackEntry.arguments?.getBoolean("isEdit") ?: false
+        LampCreationScreen(
+            isEdit = isEdit,
+            modifier = modifier.padding(padding),
+            navController = navController
+        )
     }
 }

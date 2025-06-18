@@ -37,6 +37,10 @@ class LampDataSourceImpl @Inject constructor(
         return response
     }
 
+    override suspend fun editLamp(createLampRequest: CreateLampRequest) {
+        return lampService.editLamp(createLampRequest)
+    }
+
     override suspend fun inviteUser(
         inviteUsersRequest: InviteUsersRequest
     ): Response<Unit> {

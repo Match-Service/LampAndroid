@@ -4,12 +4,12 @@ import com.devndev.lamp.domain.model.lamp.CreateLampParam
 import com.devndev.lamp.domain.repository.LampRepository
 import javax.inject.Inject
 
-class CreateLampUseCase @Inject constructor(
+class EditLampUseCase @Inject constructor(
     private val lampRepository: LampRepository
 ) {
-    suspend operator fun invoke(createLampParam: CreateLampParam): Result<Int> {
-        return runCatching {
-            lampRepository.createLamp(createLampParam)
+    suspend operator fun invoke(createLampParam: CreateLampParam): Result<Unit> {
+        return kotlin.runCatching {
+            lampRepository.editLamp(createLampParam)
         }
     }
 }

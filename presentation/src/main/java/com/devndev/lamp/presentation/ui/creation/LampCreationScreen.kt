@@ -18,9 +18,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -30,6 +30,7 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.devndev.lamp.domain.model.lamp.CreateLampParam
 import com.devndev.lamp.presentation.R
@@ -44,16 +45,19 @@ import com.devndev.lamp.presentation.ui.home.navigation.navigateHome
 @Composable
 fun LampCreationScreen(
     lampCreationViewModel: LampCreationViewModel = hiltViewModel(),
+    isEdit: Boolean,
     modifier: Modifier,
     navController: NavController
 ) {
+    val state by lampCreationViewModel.uiState.collectAsStateWithLifecycle()
+
     var currentStep by remember { mutableIntStateOf(1) }
 
-    var selectedPersonnel by remember { mutableStateOf("") }
-    var selectedRegion by remember { mutableStateOf("") }
-    var selectedMood by remember { mutableStateOf(0) }
-    var lampName by remember { mutableStateOf("") }
-    var lampSummary by remember { mutableStateOf("") }
+    LaunchedEffect(Unit) {
+        if (isEdit) {
+            lampCreationViewModel.getMyLamp()
+        }
+    }
 
     BackHandler(enabled = true) {
         if (currentStep > 1) {
@@ -140,12 +144,12 @@ fun LampCreationScreen(
                     label = ""
                 ) { step ->
                     when (step) {
-                        CreationScreen.PERSONNEL -> PersonnelScreen(selectedOption = selectedPersonnel) {
-                            selectedPersonnel = it
+                        CreationScreen.PERSONNEL -> PersonnelScreen(selectedOption = state.personnel) {
+                            lampCreationViewModel.updatePersonnel(it)
                         }
 
-                        CreationScreen.REGION -> RegionScreen(selectedOption = selectedRegion) {
-                            selectedRegion = it
+                        CreationScreen.REGION -> RegionScreen(selectedOption = state.region) {
+                            lampCreationViewModel.updateRegion(it)
                         }
 
                         CreationScreen.MOOD ->
@@ -154,17 +158,23 @@ fun LampCreationScreen(
                                     .fillMaxSize()
                                     .clipToBounds()
                             ) {
-                                MoodScreen(selectedOption = selectedMood) {
-                                    selectedMood = it
+                                MoodScreen(selectedOption = state.mood) {
+                                    lampCreationViewModel.updateMood(it)
                                 }
                             }
 
                         CreationScreen.INTRODUCTION -> LampIntroductionScreen(
-                            lampName = lampName,
-                            lampSummary = lampSummary,
-                            onLampNameChange = { newLampName -> lampName = newLampName },
+                            lampName = state.lampName,
+                            lampSummary = state.lampSummary,
+                            onLampNameChange = { newLampName ->
+                                lampCreationViewModel.updateLampName(
+                                    newLampName
+                                )
+                            },
                             onLampSummaryChange = { newLampSummary ->
-                                lampSummary = newLampSummary
+                                lampCreationViewModel.updateLampSummary(
+                                    newLampSummary
+                                )
                             }
                         )
                     }
@@ -177,37 +187,55 @@ fun LampCreationScreen(
                 buttonText = if (currentStep < 4) {
                     stringResource(id = R.string.next)
                 } else {
-                    stringResource(id = R.string.done)
+                    if (isEdit) {
+                        stringResource(id = R.string.lamp_edit_btn)
+                    } else {
+                        stringResource(id = R.string.lamp_crate_btn)
+                    }
                 },
                 onClick = {
                     if (currentStep < 4) {
                         currentStep++
                     } else {
-                        val hopeMatchNumber = selectedPersonnel.split(":")[0].toInt()
-
-                        lampCreationViewModel.createLamp(
-                            CreateLampParam(
-                                name = lampName,
-                                description = lampSummary,
-                                hopeMatchNumber = hopeMatchNumber,
-                                location = convertLocation(selectedRegion),
-                                color = convertMood(selectedMood)
-                            )
-                        )
-                        navController.navigateHome()
+                        val hopeMatchNumber = state.personnel.split(":")[0].toInt()
+                        if (isEdit) {
+                            lampCreationViewModel.editLamp(
+                                CreateLampParam(
+                                    name = state.lampName,
+                                    description = state.lampSummary,
+                                    hopeMatchNumber = hopeMatchNumber,
+                                    location = convertLocation(state.region),
+                                    color = convertMood(state.mood)
+                                )
+                            ) {
+                                navController.navigateHome()
+                            }
+                        } else {
+                            lampCreationViewModel.createLamp(
+                                CreateLampParam(
+                                    name = state.lampName,
+                                    description = state.lampSummary,
+                                    hopeMatchNumber = hopeMatchNumber,
+                                    location = convertLocation(state.region),
+                                    color = convertMood(state.mood)
+                                )
+                            ) {
+                                navController.navigateHome()
+                            }
+                        }
                     }
                 },
                 enabled = when (currentStep) {
-                    CreationScreen.PERSONNEL -> selectedPersonnel.isNotEmpty()
-                    CreationScreen.REGION -> selectedRegion.isNotEmpty()
+                    CreationScreen.PERSONNEL -> state.personnel.isNotEmpty()
+                    CreationScreen.REGION -> state.region.isNotEmpty()
                     CreationScreen.MOOD -> {
-                        when (selectedMood) {
+                        when (state.mood) {
                             0 -> false
                             else -> true
                         }
                     }
 
-                    else -> lampName.isNotEmpty() && lampSummary.isNotEmpty()
+                    else -> state.lampName.isNotEmpty() && state.lampSummary.isNotEmpty()
                 }
             )
         }

@@ -130,7 +130,7 @@ fun BottomSpace(navController: NavController) {
         LampButton(
             isGradient = true,
             buttonText = stringResource(id = R.string.make_lamp),
-            onClick = { navController.navigateCreation() },
+            onClick = { navController.navigateCreation(isEdit = false) },
             enabled = true
         )
     }
