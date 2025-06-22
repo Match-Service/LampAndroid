@@ -10,6 +10,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +39,8 @@ fun AppointmentScreen(
     appointmentViewModel: AppointmentViewModel = hiltViewModel()
 ) {
     val state by appointmentViewModel.uiState.collectAsStateWithLifecycle()
+    var isAppointmentClickable by remember { mutableStateOf(false) }
+    var selectedAppointment by remember { mutableStateOf(state.getVotedAppointment()) }
 
     val topSectionText = when (state.getAppointmentStatus()) {
         AppointmentStatus.BEFORE_READY -> stringResource(R.string.register_appointment_ready_vote)
@@ -43,8 +48,13 @@ fun AppointmentScreen(
             R.string.vote_ready_count_message,
             state.appointment?.voteReadyUserCount ?: ""
         )
+
         AppointmentStatus.BEFORE_VOTE -> stringResource(R.string.do_vote)
-        AppointmentStatus.WAITING_VOTE -> stringResource(R.string.vote_count_message, state.getVoteCount())
+        AppointmentStatus.WAITING_VOTE -> stringResource(
+            R.string.vote_count_message,
+            state.getVoteCount()
+        )
+
         else -> ""
     }
 
@@ -77,6 +87,7 @@ fun AppointmentScreen(
                 AppointmentList(
                     appointmentList = state.appointmentList,
                     topSectionText = topSectionText,
+                    selectedAppointment = selectedAppointment,
                     onEditClick = {
                         navController.navigateRegisterAppointment(
                             isEdit = true,
@@ -89,7 +100,11 @@ fun AppointmentScreen(
                             isEdit = false,
                             chatAppointmentId = -1
                         )
-                    }
+                    },
+                    onAppointmentSelected = {
+                        selectedAppointment = it
+                    },
+                    isAppointmentClickable = isAppointmentClickable
                 )
             }
         }
@@ -106,31 +121,37 @@ fun AppointmentScreen(
                 AppointmentStatus.EMPTY_APPOINTMENT -> {
                     buttonString = stringResource(R.string.register_appointment_button)
                     buttonEnable = true
+                    isAppointmentClickable = false
                 }
 
                 AppointmentStatus.BEFORE_READY -> {
                     buttonString = stringResource(R.string.ready_vote)
                     buttonEnable = true
+                    isAppointmentClickable = false
                 }
 
                 AppointmentStatus.WAITING_READY -> {
                     buttonString = stringResource(R.string.waiting_ready_vote)
                     buttonEnable = false
+                    isAppointmentClickable = false
                 }
 
                 AppointmentStatus.BEFORE_VOTE -> {
                     buttonString = stringResource(R.string.vote)
-                    buttonEnable = true
+                    buttonEnable = selectedAppointment != null
+                    isAppointmentClickable = true
                 }
 
                 AppointmentStatus.WAITING_VOTE -> {
                     buttonString = stringResource(R.string.waiting_vote)
                     buttonEnable = false
+                    isAppointmentClickable = false
                 }
 
                 AppointmentStatus.CONFIRM_APPOINTMENT -> {
                     buttonString = ""
                     buttonEnable = false
+                    isAppointmentClickable = false
                 }
 
                 else -> {}
