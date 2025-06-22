@@ -49,6 +49,7 @@ fun HomeScreen(
     val updateEvent = viewModel.updateEvent
 
     val userStatus by viewModel.userStatue.collectAsState()
+    val isFind by viewModel.isFind.collectAsState()
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -93,7 +94,12 @@ fun HomeScreen(
             }
 
             "FIND_LAMP" -> {
-                FindLampScreen(modifier = Modifier, navController = navController)
+                Log.d("isFind", isFind.toString())
+                if (isFind) {
+                    MatchingVoteScreen(modifier = Modifier, navController = navController)
+                } else {
+                    FindLampScreen(modifier = Modifier, navController = navController)
+                }
             }
 
             "VISIT_WAITING" -> {
