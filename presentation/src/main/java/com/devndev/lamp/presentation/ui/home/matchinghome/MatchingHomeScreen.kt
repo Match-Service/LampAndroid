@@ -78,6 +78,7 @@ import com.devndev.lamp.presentation.ui.home.matchinghome.viewmodel.MatchingHome
 import com.devndev.lamp.presentation.ui.search.navigation.navigateInvite
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 @SuppressLint("RememberReturnType")
@@ -86,6 +87,7 @@ fun MatchingHomeScreen(
     modifier: Modifier,
     navController: NavController,
     updateEvent: SharedFlow<Unit>,
+    updateStatus: SharedFlow<String>,
     viewModel: MatchingHomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -103,6 +105,19 @@ fun MatchingHomeScreen(
     LaunchedEffect(Unit) {
         updateEvent.collect {
             viewModel.getMyLamp()
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        updateStatus.collect { status ->
+            when (status) {
+                "PREPARE" -> {
+                    viewModel.updateIsMatching(false)
+                }
+                "MATCHING" -> {
+                    viewModel.updateIsMatching(true)
+                }
+            }
         }
     }
 

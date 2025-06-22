@@ -30,6 +30,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -50,6 +51,7 @@ import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.home.vote.ProgressBar
 import com.devndev.lamp.presentation.ui.mypage.calculateManAge
+import com.devndev.lamp.presentation.utils.InstagramUtils
 
 @Composable
 fun OneButtonPopup(onDismissRequest: () -> Unit) {
@@ -288,6 +290,8 @@ fun ProfilePopup(
     userInfo: UserInfo? = null,
     onXButtonClick: () -> Unit
 ) {
+    val context = LocalContext.current
+
     val nameColor = if (userInfo?.gender == "MALE") {
         ManColor
     } else {
@@ -385,7 +389,7 @@ fun ProfilePopup(
                             modifier = Modifier
                                 .size(24.dp)
                                 .clickable {
-                                    // todo insta 접근
+                                    InstagramUtils.openInstagramProfile(context, userInfo?.instagramId ?: "")
                                 }
                         )
                     }
