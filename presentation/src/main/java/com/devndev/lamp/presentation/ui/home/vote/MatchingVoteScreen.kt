@@ -76,6 +76,8 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
+import com.devndev.lamp.data.dto.request.lamp.VoteAcceptRequest
+import com.devndev.lamp.data.dto.request.lamp.VoteRejectRequest
 import com.devndev.lamp.domain.model.lampmatch.IndividualityDomainModel
 import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.presentation.R
@@ -789,7 +791,9 @@ fun BottomSection(viewModel: HomeViewModel, matchSuggestion: MatchSuggestionDoma
                     onClick = {
                         if (matchSuggestion != null) {
                             if (!viewModel.isVoted.value) {
-                                viewModel.accept(matchSuggestion.lampSuggestionId)
+                                viewModel.accept(
+                                    lampSuggestionId = matchSuggestion.lampSuggestionId
+                                )
                             }
 //                            viewModel.getMatchSuggestion()
                         }
@@ -827,7 +831,9 @@ fun BottomSection(viewModel: HomeViewModel, matchSuggestion: MatchSuggestionDoma
                     onClick = {
                         if (matchSuggestion != null) {
                             if (!viewModel.isVoted.value) {
-                                viewModel.reject(matchSuggestion.lampSuggestionId)
+                                viewModel.reject(
+                                    lampSuggestionId = matchSuggestion.lampSuggestionId
+                                )
                             }
                         }
                     },

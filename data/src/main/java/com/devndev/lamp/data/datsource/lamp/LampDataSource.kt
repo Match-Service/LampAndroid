@@ -7,6 +7,8 @@ import com.devndev.lamp.data.dto.request.lamp.InviteUsersRequest
 import com.devndev.lamp.data.dto.request.lamp.KickUserRequest
 import com.devndev.lamp.data.dto.request.lamp.RejectInviteRequest
 import com.devndev.lamp.data.dto.request.lamp.RejectVisitRequest
+import com.devndev.lamp.data.dto.request.lamp.VoteAcceptRequest
+import com.devndev.lamp.data.dto.request.lamp.VoteRejectRequest
 import com.devndev.lamp.data.dto.response.lamp.CreateLampResponse
 import com.devndev.lamp.data.dto.response.lamp.LampResponse
 import com.devndev.lamp.data.dto.response.lamp.VisitRequestLampInfoResponse
