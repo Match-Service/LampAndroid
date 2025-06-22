@@ -22,6 +22,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -41,9 +42,12 @@ import java.util.Locale
 fun AppointmentList(
     appointmentList: List<AppointmentItem>,
     topSectionText: String,
+    selectedAppointment: AppointmentItem?,
     onAddIconClick: () -> Unit,
     onEditClick: (Int) -> Unit,
-    onDeleteClick: (Int) -> Unit
+    onDeleteClick: (Int) -> Unit,
+    onAppointmentSelected: (AppointmentItem) -> Unit = {},
+    isAppointmentClickable: Boolean
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -73,9 +77,12 @@ fun AppointmentList(
         ) {
             items(appointmentList) { appointment ->
                 Appointment(
-                    appointment,
-                    { onEditClick(it) },
-                    { onDeleteClick(it) }
+                    appointment = appointment,
+                    selectedAppointment = selectedAppointment,
+                    onEditClick = { onEditClick(it) },
+                    onDeleteClick = { onDeleteClick(it) },
+                    onAppointmentSelected = { onAppointmentSelected(it) },
+                    isAppointmentClickable = isAppointmentClickable
                 )
             }
         }
@@ -99,16 +106,45 @@ fun AppointmentList(
 @Composable
 fun Appointment(
     appointment: AppointmentItem,
+    selectedAppointment: AppointmentItem?,
     onEditClick: (Int) -> Unit,
-    onDeleteClick: (Int) -> Unit
+    onDeleteClick: (Int) -> Unit,
+    onAppointmentSelected: (AppointmentItem) -> Unit,
+    isAppointmentClickable: Boolean
 ) {
+    val isSelected =
+        selectedAppointment != null && appointment.appointment.chatAppointmentId == selectedAppointment.appointment.chatAppointmentId
+
+    val gradientBrush = Brush.horizontalGradient(
+        colors = listOf(WomanColor, ManColor)
+    )
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .border(
-                width = 1.dp,
-                color = LightGray,
-                shape = RoundedCornerShape(15.dp)
+            .then(
+                if (!isSelected) {
+                    Modifier.border(
+                        width = 1.dp,
+                        color = LightGray,
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                } else {
+                    Modifier.border(
+                        width = 1.dp,
+                        brush = gradientBrush,
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                }
+            )
+            .then(
+                if (isAppointmentClickable) {
+                    Modifier.clickable {
+                        onAppointmentSelected(appointment)
+                    }
+                } else {
+                    Modifier
+                }
             )
             .padding(15.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -124,7 +160,10 @@ fun Appointment(
             }
 
             Text(
-                text = stringResource(R.string.appointment_suggestion, appointment.userName),
+                text = stringResource(
+                    R.string.appointment_suggestion,
+                    appointment.userName
+                ),
                 style = Typography.medium18,
                 color = nameColor
             )

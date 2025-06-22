@@ -51,4 +51,13 @@ data class AppointmentUiState(
         }
         return count
     }
+
+    fun getVotedAppointment(): AppointmentItem? {
+        for (appointment in appointmentList) {
+            if (appointment.appointment.voted) {
+                return appointment
+            }
+        }
+        return null
+    }
 }
