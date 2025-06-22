@@ -224,7 +224,7 @@ fun UserInfoSection(
                     color = textColor,
                     style = IncTypography.normal30
                 )
-                val infoText = if (university == null) {
+                val infoText = if (university.isNullOrEmpty()) {
                     "${age}세"
                 } else {
                     "${age}세, $university"
@@ -273,7 +273,7 @@ fun AttractiveSection(modifier: Modifier, avgAttractive: Int, attractive: List<I
             )
         } else {
             Spacer(modifier = Modifier.height(8.dp))
-            ProgressBar(attractiveList = attractive, null, isMyPage = true)
+            ProgressBar(attractiveList = attractive, 0, isMyPage = true)
         }
     }
 }
