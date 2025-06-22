@@ -5,7 +5,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.network.HttpException
+import com.devndev.lamp.data.datsource.local.LocalDataSource
+import com.devndev.lamp.data.datsource.local.LocalDataSourceImpl
+import com.devndev.lamp.data.dto.request.lamp.VoteAcceptRequest
+import com.devndev.lamp.data.dto.request.lamp.VoteRejectRequest
+import com.devndev.lamp.domain.model.lamp.AcceptVoteParam
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
+import com.devndev.lamp.domain.model.lamp.RejectVoteParam
 import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.usecase.lamp.CancelVisitRequestUseCase
@@ -32,6 +38,7 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
+    private val localDataSourceImpl: LocalDataSourceImpl,
     private val getMyInfoUseCase: GetMyInfoUseCase,
     private val getMyLampUseCase: GetMyLampUseCase,
     private val getMatchSuggestionUseCase: GetMatchSuggestionUseCase,
@@ -72,8 +79,6 @@ class HomeViewModel @Inject constructor(
 
     private val _rejectCount = MutableStateFlow(0)
     val rejectCount: StateFlow<Int> = _rejectCount
-
-    private val prefs = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
 
     private val _isFind = MutableStateFlow(false)
     val isFind: StateFlow<Boolean> = _isFind
@@ -208,7 +213,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 Log.d(ChatViewModel.TAG, "acceptVote")
-                acceptUseCase(lampSuggestionId)
+                acceptUseCase(
+                    AcceptVoteParam(lampSuggestionId)
+                )
             } catch (e: Exception) {
                 Log.e(ChatViewModel.TAG, "accept Exception", e)
             }
@@ -221,7 +228,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 Log.d(ChatViewModel.TAG, "rejectVote")
-                rejectUseCase(lampSuggestionId)
+                rejectUseCase(
+                    RejectVoteParam(lampSuggestionId)
+                )
             } catch (e: Exception) {
                 Log.e(ChatViewModel.TAG, "reject Exception", e)
             }
@@ -241,12 +250,11 @@ class HomeViewModel @Inject constructor(
     }
 
     fun loadFindState(lampId: Int) {
-        val value = prefs.getBoolean("lamp_vote_$lampId", false)
-        _isFind.value = value
+        _isFind.value = localDataSourceImpl.getBoolean("lamp_vote_$lampId")
     }
 
     fun updateFindState(lampId: Int, isFind: Boolean) {
-        prefs.edit().putBoolean("lampId$lampId", isFind).apply()
+        localDataSourceImpl.putBoolean("lampId$lampId", isFind)
         _isFind.value = isFind
     }
 
