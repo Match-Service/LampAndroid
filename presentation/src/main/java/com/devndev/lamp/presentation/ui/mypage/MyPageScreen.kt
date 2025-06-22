@@ -90,11 +90,10 @@ fun MyPageScreen(
 
     val attractive by remember(myInfo) {
         derivedStateOf {
-            myInfo?.individualityDomainModel
-                ?: IndividualityDomainModel(attractiveness = 0, personality = 0, voice = 0, fashion = 0, conversation = 0)
-//            myInfo?.individualityDomainModel?.let {
-//                listOf(it.personality, it.voice, it.fashion, it.conversation)
-//            } ?: listOf(0, 0, 0, 0) // 기본값
+            listOf(
+                myInfo?.individualityDomainModel
+                    ?: IndividualityDomainModel(attractiveness = 0, personality = 0, voice = 0, fashion = 0, conversation = 0)
+            )
         }
     }
 
@@ -247,7 +246,7 @@ fun UserInfoSection(
 }
 
 @Composable
-fun AttractiveSection(modifier: Modifier, avgAttractive: Int, attractive: IndividualityDomainModel) {
+fun AttractiveSection(modifier: Modifier, avgAttractive: Int, attractive: List<IndividualityDomainModel?>) {
     Column(modifier = modifier.padding(top = 15.dp, bottom = 7.dp)) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
@@ -274,7 +273,7 @@ fun AttractiveSection(modifier: Modifier, avgAttractive: Int, attractive: Indivi
             )
         } else {
             Spacer(modifier = Modifier.height(8.dp))
-            ProgressBar(attractive = attractive, barColor = Color.White, isMyPage = true)
+            ProgressBar(attractiveList = attractive, null, isMyPage = true)
         }
     }
 }

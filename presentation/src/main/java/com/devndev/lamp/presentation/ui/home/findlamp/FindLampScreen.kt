@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.home.findlamp
 
+import android.content.Context
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -35,6 +36,7 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -49,7 +51,6 @@ import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.home.main.HomeTextArea
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
-import com.devndev.lamp.presentation.ui.home.navigation.navigateVote
 
 @Composable
 fun FindLampScreen(
@@ -62,6 +63,9 @@ fun FindLampScreen(
     val navOption = navOptions {
         launchSingleTop = true
     }
+    // sharedPreference
+    val context = LocalContext.current
+    val sharedPref = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
 
     LaunchedEffect(Unit) {
         viewModel.getMatchSuggestion()
@@ -118,9 +122,13 @@ fun FindLampScreen(
                             )
                         )
                         .clickable {
-                            navController.navigateVote(
-                                navOptions = navOption
+                            viewModel.updateFindState(
+                                lampId = matchSuggestion!!.lampId,
+                                isFind = true
                             )
+//                            navController.navigateVote(
+//                                navOptions = navOption
+//                            )
                         },
                     contentAlignment = Alignment.Center
                 ) {

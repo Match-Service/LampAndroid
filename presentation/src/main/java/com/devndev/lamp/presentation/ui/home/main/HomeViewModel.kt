@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.home.main
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -20,6 +21,7 @@ import com.devndev.lamp.domain.usecase.vote.RejectVoteUseCase
 import com.devndev.lamp.presentation.ui.chatting.ChatViewModel
 import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -29,6 +31,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getMyInfoUseCase: GetMyInfoUseCase,
     private val getMyLampUseCase: GetMyLampUseCase,
     private val getMatchSuggestionUseCase: GetMatchSuggestionUseCase,
@@ -57,6 +60,20 @@ class HomeViewModel @Inject constructor(
 
     private val _updateEvent = MutableSharedFlow<Unit>()
     val updateEvent: SharedFlow<Unit> = _updateEvent
+
+    private val _isVoted = MutableStateFlow(false)
+    val isVoted: StateFlow<Boolean> = _isVoted
+
+    private val _approveCount = MutableStateFlow(0)
+    val approveCount: StateFlow<Int> = _approveCount
+
+    private val _rejectCount = MutableStateFlow(0)
+    val rejectCount: StateFlow<Int> = _rejectCount
+
+    private val prefs = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+
+    private val _isFind = MutableStateFlow(false)
+    val isFind: StateFlow<Boolean> = _isFind
 
     init {
         getMyInfo()
@@ -94,11 +111,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun getMatchSuggestion() {
+    fun getMatchSuggestion(onComplete: (() -> Unit)? = null) {
         viewModelScope.launch {
             try {
                 Log.d(TAG, "getMatchSuggestion")
-                _matchSuggestion.value = getMatchSuggestionUseCase()
+                val result = getMatchSuggestionUseCase()
+                _matchSuggestion.value = result.copy()
+                _approveCount.value = result.approveCount
+                _rejectCount.value = result.rejectCount
+                onComplete?.invoke()
                 Log.d(TAG, "MatchSuggestion ${matchSuggestion.value}")
             } catch (e: HttpException) {
                 Log.e(TAG, "getMatchSuggestion HttpException", e)
@@ -135,6 +156,16 @@ class HomeViewModel @Inject constructor(
                     },
                     onUpdatedMessage = {
                         Log.d(TAG, "onUpdatedMessage: ${myLamp.value}")
+                        when (userStatue.value) {
+                            "PREPARE" -> {
+                                getLampData()
+                                Log.d("onUpdatedMessage", "PREPARE : getLampData()")
+                            }
+                            "FIND_LAMP" -> {
+                                getMatchSuggestion()
+                                Log.d("onUpdatedMessage", "FIND_LAMP : getMatchSuggestion()")
+                            }
+                        }
 //                        getLampData()
                         updateEvent()
                     }
@@ -197,6 +228,16 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             _updateEvent.emit(Unit)
         }
+    }
+
+    fun loadFindState(lampId: Int) {
+        val value = prefs.getBoolean("lamp_vote_$lampId", false)
+        _isFind.value = value
+    }
+
+    fun updateFindState(lampId: Int, isFind: Boolean) {
+        prefs.edit().putBoolean("lampId$lampId", isFind).apply()
+        _isFind.value = isFind
     }
 
     companion object {

@@ -300,12 +300,14 @@ fun ProfilePopup(
 
     val avgAttractive = attractive.average().toInt()
 
-    val attractiveDomainModel = IndividualityDomainModel(
-        avgAttractive,
-        attractive[0],
-        attractive[1],
-        attractive[2],
-        attractive[3]
+    val attractiveDomainModel = listOf(
+        IndividualityDomainModel(
+            avgAttractive,
+            attractive[0],
+            attractive[1],
+            attractive[2],
+            attractive[3]
+        )
     )
 
     Dialog(onDismissRequest = {}, properties = DialogProperties(usePlatformDefaultWidth = false)) {
@@ -434,7 +436,7 @@ fun ProfilePopup(
 
                         Spacer(modifier = Modifier.height(9.dp))
 
-                        ProgressBar(attractiveDomainModel)
+                        ProgressBar(attractiveDomainModel, 0)
                     }
                     Spacer(modifier = Modifier.height(30.dp))
                     Text(
