@@ -47,6 +47,7 @@ fun HomeScreen(
     var backPressedOnce = remember { false }
 
     val updateEvent = viewModel.updateEvent
+    val updateStatus = viewModel.updateStatus
 
     val userStatus by viewModel.userStatue.collectAsState()
     val isFind by viewModel.isFind.collectAsState()
@@ -89,7 +90,8 @@ fun HomeScreen(
                 MatchingHomeScreen(
                     modifier = modifier,
                     navController = navController,
-                    updateEvent = updateEvent
+                    updateEvent = updateEvent,
+                    updateStatus = updateStatus
                 )
             }
 

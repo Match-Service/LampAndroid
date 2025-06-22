@@ -3,8 +3,8 @@ package com.devndev.lamp.presentation.ui.home.matchinghome.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import coil.network.HttpException
 import com.devndev.lamp.domain.model.lamp.KickUserParam
-import com.devndev.lamp.domain.usecase.chat.TestChatUseCase
 import com.devndev.lamp.domain.usecase.lamp.DeleteLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.ExitLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.GetMyLampUseCase
@@ -12,6 +12,7 @@ import com.devndev.lamp.domain.usecase.lamp.KickUserUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.StartMatchUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.StopMatchUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
+import com.devndev.lamp.domain.usecase.user.GetUserStatusUseCase
 import com.devndev.lamp.presentation.ui.home.matchinghome.MatchingHomeUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -30,13 +31,14 @@ class MatchingHomeViewModel @Inject constructor(
     private val kickUserUseCase: KickUserUseCase,
     private val startMatchUseCase: StartMatchUseCase,
     private val stopMatchUseCase: StopMatchUseCase,
-    private val testChat: TestChatUseCase
+    private val getUSerStatusUseCase: GetUserStatusUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MatchingHomeUiState())
     val uiState: StateFlow<MatchingHomeUiState> = _uiState.asStateFlow()
 
     init {
         getMyInfo()
+        getUserStatus()
     }
 
     private fun getMyInfo() {
@@ -71,6 +73,26 @@ class MatchingHomeViewModel @Inject constructor(
                     Log.e(TAG, "getMyLamp Failure")
                     _uiState.update { it.copy(isLoading = false) }
                 }
+        }
+    }
+
+    private fun getUserStatus() {
+        viewModelScope.launch {
+            try {
+                Log.d(TAG, "getUserStatus")
+                when (getUSerStatusUseCase().userLampStatus) {
+                    "PREPARE" -> {
+                        updateIsMatching(false)
+                    }
+                    "MATCHING" -> {
+                        updateIsMatching(true)
+                    }
+                }
+            } catch (e: HttpException) {
+                Log.e(TAG, "getUserStatus HttpException", e)
+            } catch (e: Exception) {
+                Log.e(TAG, "getUserStatus Exception", e)
+            }
         }
     }
 
@@ -135,6 +157,10 @@ class MatchingHomeViewModel @Inject constructor(
                     Log.e(TAG, "stopMatch Failure")
                 }
         }
+    }
+
+    fun updateIsMatching(isMatching: Boolean) {
+        _uiState.update { it.copy(isMatching = isMatching) }
     }
 
     companion object {
