@@ -61,6 +61,9 @@ class HomeViewModel @Inject constructor(
     private val _updateEvent = MutableSharedFlow<Unit>()
     val updateEvent: SharedFlow<Unit> = _updateEvent
 
+    private val _updateStatus = MutableStateFlow<String>("")
+    val updateStatus: SharedFlow<String> = _updateStatus
+
     private val _isVoted = MutableStateFlow(false)
     val isVoted: StateFlow<Boolean> = _isVoted
 
@@ -153,6 +156,7 @@ class HomeViewModel @Inject constructor(
                     onMessage = { message ->
                         _userStatus.value = message
                         Log.d(TAG, "status: ${userStatue.value}")
+                        updateStatus(message)
                     },
                     onUpdatedMessage = {
                         Log.d(TAG, "onUpdatedMessage: ${myLamp.value}")
@@ -227,6 +231,12 @@ class HomeViewModel @Inject constructor(
     private fun updateEvent() {
         viewModelScope.launch {
             _updateEvent.emit(Unit)
+        }
+    }
+
+    private fun updateStatus(status: String) {
+        viewModelScope.launch {
+            _updateStatus.emit(status)
         }
     }
 
