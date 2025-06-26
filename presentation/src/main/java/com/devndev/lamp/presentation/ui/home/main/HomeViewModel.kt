@@ -5,10 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.network.HttpException
-import com.devndev.lamp.data.datsource.local.LocalDataSource
 import com.devndev.lamp.data.datsource.local.LocalDataSourceImpl
-import com.devndev.lamp.data.dto.request.lamp.VoteAcceptRequest
-import com.devndev.lamp.data.dto.request.lamp.VoteRejectRequest
 import com.devndev.lamp.domain.model.lamp.AcceptVoteParam
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.domain.model.lamp.RejectVoteParam
