@@ -54,7 +54,10 @@ import com.devndev.lamp.presentation.ui.mypage.calculateManAge
 import com.devndev.lamp.presentation.utils.InstagramUtils
 
 @Composable
-fun OneButtonPopup(onDismissRequest: () -> Unit) {
+fun OneButtonPopup(
+    text: String?,
+    onDismissRequest: () -> Unit
+) {
     Dialog(
         onDismissRequest = { onDismissRequest() }
     ) {
@@ -66,27 +69,43 @@ fun OneButtonPopup(onDismissRequest: () -> Unit) {
             verticalArrangement = Arrangement.spacedBy(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                // todo 추후 팝업 내용 수정 서버에서 어떻게 받느냐에 따라 달라짐
-                Column() {
-                    Text(text = "목적", color = Color.White, style = Typography.medium15)
-                    Text(text = "행사 및 마케팅 활동", color = Gray3, style = Typography.normal12)
+            if (text == null) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Column() {
+                        Text(text = "목적", color = Color.White, style = Typography.medium15)
+                        Text(text = "행사 및 마케팅 활동", color = Gray3, style = Typography.normal12)
+                    }
+                    Column() {
+                        Text(text = "항목", color = Color.White, style = Typography.medium15)
+                        Text(text = "이메일", color = Gray3, style = Typography.normal12)
+                    }
+                    Column() {
+                        Text(text = "보유 및 이용기간", color = Color.White, style = Typography.medium15)
+                        Text(
+                            text = "정보제공 동의일로부터 회원탈퇴 및 동의 철회 시",
+                            color = Gray3,
+                            style = Typography.normal12
+                        )
+                    }
                 }
-                Column() {
-                    Text(text = "항목", color = Color.White, style = Typography.medium15)
-                    Text(text = "이메일", color = Gray3, style = Typography.normal12)
-                }
-                Column() {
-                    Text(text = "보유 및 이용기간", color = Color.White, style = Typography.medium15)
+            } else {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 20.dp, bottom = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
                     Text(
-                        text = "정보제공 동의일로부터 회원탈퇴 및 동의 철회 시",
-                        color = Gray3,
-                        style = Typography.normal12
+                        text = text,
+                        color = Color.White,
+                        style = Typography.semiBold20,
+                        textAlign = TextAlign.Center
                     )
                 }
             }

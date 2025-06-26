@@ -68,8 +68,10 @@ import com.devndev.lamp.presentation.ui.common.CustomRadioButton
 import com.devndev.lamp.presentation.ui.common.EditPopup
 import com.devndev.lamp.presentation.ui.common.InstagramAuth
 import com.devndev.lamp.presentation.ui.common.LampBigTextField
+import com.devndev.lamp.presentation.ui.common.OneButtonPopup
 import com.devndev.lamp.presentation.ui.common.ProfileImage
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
+import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateMyPage
 
 // todo 사진 표시 처리 완료 했지만 추후 서버 프로필 수정 기능 완료 후 삭제, 변경 구현 필요
@@ -87,16 +89,14 @@ fun ProfileEditScreen(
     val context = LocalContext.current
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var imageIndex by remember { mutableIntStateOf(-1) }
-    var editImageModel by remember { mutableStateOf<MutableList<EditImageModel?>>(MutableList(6) { null }) }
+    var editImageModel by remember { mutableStateOf<List<EditImageModel?>>(List(6) { null }) }
     var originImageModel by remember { mutableStateOf<MutableList<EditImageModel?>>(mutableListOf()) }
-//    var bitmaps by remember { mutableStateOf<List<Bitmap?>>(List(6) { null }) }
-//    var bitmaps by remember { mutableStateOf<List<Bitmap?>>(emptyList()) }
-//    var bitmaps by remember { mutableStateOf(List(5) { null as Bitmap? }) }
     var deleteIndex by remember { mutableIntStateOf(-1) }
     var urls by remember { mutableStateOf(emptyList<String>()) }
     val myInfo by profileEditViewModel.myInfo.collectAsState()
 
     var profileQuery by remember { mutableStateOf("원래 있던 소개") }
+    var isShowDeletePopup by remember { mutableStateOf(false) }
 
     Log.d(logTag, myInfo?.bioQuestions?.get(0)?.answer.toString())
 
@@ -114,6 +114,11 @@ fun ProfileEditScreen(
 
     var university by remember { mutableStateOf("") }
 
+    var isShowEditUniversityPopup by remember { mutableStateOf(false) }
+    var isShowEditInstagramPopup by remember { mutableStateOf(false) }
+    var isProfilePopupShow by remember { mutableStateOf(false) }
+    var isBioPopupShow by remember { mutableStateOf(false) }
+
     LaunchedEffect(myInfo) {
         selectedDrink = myInfo?.bioQuestions?.get(0)?.answer ?: ""
         selectedSmoke = myInfo?.bioQuestions?.get(1)?.answer ?: ""
@@ -126,14 +131,16 @@ fun ProfileEditScreen(
             urls = newUrls
         }
 
+        val newList = editImageModel.toMutableList()
         myInfo?.profileImages?.forEachIndexed { index, profileImage ->
-            if (index < editImageModel.size) {
-                editImageModel[index] = EditImageModel(
+            if (index < newList.size) {
+                newList[index] = EditImageModel(
                     bitmap = null,
                     imageUrl = profileImage.originUrl
                 )
             }
         }
+        editImageModel = newList.toList()
 
         originImageModel = myInfo?.profileImages?.mapIndexed { index, profileImage ->
             if (index < editImageModel.size) {
@@ -147,8 +154,63 @@ fun ProfileEditScreen(
         }?.toMutableList() ?: mutableListOf()
     }
 
-    var isShowEditUniversityPopup by remember { mutableStateOf(false) }
-    var isShowEditInstagramPopup by remember { mutableStateOf(false) }
+    val isRepresentativeImageEmpty = editImageModel.getOrNull(0)?.let {
+        it.bitmap == null && it.imageUrl.isNullOrBlank()
+    } ?: true
+
+    // 뒤로가기 버튼
+    BackHandler {
+        if (isRepresentativeImageEmpty) {
+            isProfilePopupShow = true
+        } else if (profileQuery.isBlank()) {
+            isBioPopupShow = true
+        } else {
+            if (!compProfileList(originImageModel, editImageModel)) {
+                profileEditViewModel.editImages(
+                    ModifyUserParam(
+                        name = myInfo?.name ?: "", // 변경불가
+                        job = myInfo?.job ?: "",
+                        jobName = university,
+                        gender = myInfo?.gender ?: "", // 변경불가
+                        birth = myInfo?.birth ?: "", // 변경불가
+                        instagramId = instagram,
+                        bio = profileQuery,
+                        profileImages = listOf(myInfo?.profileImages?.get(0)?.downloadUrl ?: ""),
+                        alarmSetting = AlarmSetting(
+                            allPush = myInfo?.alarmSetting?.allPush ?: true,
+                            lampInvite = myInfo?.alarmSetting?.lampInvite ?: true,
+                            lampVisit = myInfo?.alarmSetting?.lampVisit ?: true,
+                            newMatch = myInfo?.alarmSetting?.newMatch ?: true,
+                            receiveBadge = myInfo?.alarmSetting?.receiveBadge ?: true,
+                            receiveMessage = myInfo?.alarmSetting?.receiveMessage ?: true
+                        ),
+                        bioQuestions = listOf(
+                            BioQuestion(myInfo?.bioQuestions?.get(0)?.question ?: "음주", selectedDrink ?: myInfo?.bioQuestions?.get(0)!!.answer),
+                            BioQuestion(myInfo?.bioQuestions?.get(1)?.question ?: "흡연", selectedSmoke ?: myInfo?.bioQuestions?.get(1)!!.answer),
+                            BioQuestion(myInfo?.bioQuestions?.get(2)?.question ?: "운동", selectedExercise ?: myInfo?.bioQuestions?.get(2)!!.answer)
+                        ),
+                        pushToken = ""
+                    ),
+                    editImageModel = editImageModel
+                )
+            }
+            navController.navigateMyPage()
+        }
+    }
+
+    if (isProfilePopupShow) {
+        OneButtonPopup(
+            text = stringResource(id = R.string.register_profile_image),
+            onDismissRequest = { isProfilePopupShow = false }
+        )
+    }
+
+    if (isBioPopupShow) {
+        OneButtonPopup(
+            text = stringResource(id = R.string.type_bio),
+            onDismissRequest = { isBioPopupShow = false }
+        )
+    }
 
     if (isShowEditUniversityPopup) {
         EditPopup(
@@ -186,6 +248,7 @@ fun ProfileEditScreen(
             isNeedClearFocus = instagramAuthStep == InstagramAuth.AUTH_SUCCESS
         )
     }
+
     val imageCropLauncher = rememberLauncherForActivityResult(CropImageContract()) { result ->
         Log.d("imageCropResult", result.isSuccessful.toString())
         if (result.isSuccessful) {
@@ -207,7 +270,6 @@ fun ProfileEditScreen(
                     Log.d("BitmapInfo1", "$this")
                 } else {
                     val emptyIndex = this.indexOfFirst { it?.bitmap == null && it?.imageUrl == null }
-//                    val emptyIndex = this.subList(1, this.size).indexOfFirst { it == null }
                     if (emptyIndex != -1) {
                         this[emptyIndex] = EditImageModel(
                             bitmap = bitmap,
@@ -227,6 +289,55 @@ fun ProfileEditScreen(
         }
     }
 
+    // 프로필 이미지 삭제 팝업
+    if (isShowDeletePopup) {
+        TwoButtonPopup(
+            mainText = stringResource(id = R.string.delete_profile_image),
+            startButtonText = stringResource(id = R.string.no),
+            stringResource(id = R.string.yes),
+            onStartButtonClick = {
+                isShowDeletePopup = false
+            },
+            onEndButtonClick = {
+                if (deleteIndex == -1) {
+                    isShowDeletePopup = false
+                    return@TwoButtonPopup
+                }
+
+                val updatedImage = editImageModel.toMutableList().apply {
+                    if (deleteIndex == 0) {
+                        // 대표 이미지는 삭제만 처리하고 당기지 않음
+                        this[0] = null
+                    } else {
+                        // 1번째 인덱스 이상인 경우 당겨서 빈칸 없애기
+                        this[deleteIndex] = null
+                        for (i in deleteIndex + 1 until size) {
+                            this[i - 1] = this[i]
+                        }
+                        this[size - 1] = null
+                    }
+                }
+
+                urls = urls.toMutableList().apply {
+                    if (deleteIndex == 0 && isNotEmpty()) {
+                        this[0] = ""
+                    } else if (deleteIndex in 1 until size) {
+                        // 삭제 후 당기기 처리
+                        this[deleteIndex] = ""
+                        for (i in deleteIndex + 1 until size) {
+                            this[i - 1] = this[i]
+                        }
+                        this[size - 1] = ""
+                    }
+                }
+                editImageModel = updatedImage.toList()
+                Log.d("test", editImageModel.toString())
+                isShowDeletePopup = false
+                deleteIndex = -1
+            }
+        )
+    }
+
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
@@ -239,64 +350,42 @@ fun ProfileEditScreen(
                 text = stringResource(id = R.string.edit_profile),
                 isNeedXButton = false,
                 onBackButtonClick = {
-//                    if (editImageModel.any { it?.bitmap != null }) {
-                    if (!compProfileList(originImageModel, editImageModel)) {
-                        profileEditViewModel.editImages(
-                            ModifyUserParam(
-                                name = myInfo?.name ?: "", // 변경불가
-                                job = myInfo?.job ?: "",
-                                jobName = university,
-                                gender = myInfo?.gender ?: "", // 변경불가
-                                birth = myInfo?.birth ?: "", // 변경불가
-                                instagramId = instagram,
-                                bio = profileQuery,
-                                profileImages = listOf(myInfo?.profileImages?.get(0)?.downloadUrl ?: ""),
-                                alarmSetting = AlarmSetting(
-                                    allPush = myInfo?.alarmSetting?.allPush ?: true,
-                                    lampInvite = myInfo?.alarmSetting?.lampInvite ?: true,
-                                    lampVisit = myInfo?.alarmSetting?.lampVisit ?: true,
-                                    newMatch = myInfo?.alarmSetting?.newMatch ?: true,
-                                    receiveBadge = myInfo?.alarmSetting?.receiveBadge ?: true,
-                                    receiveMessage = myInfo?.alarmSetting?.receiveMessage ?: true
+                    if (isRepresentativeImageEmpty) {
+                        isProfilePopupShow = true
+                    } else if (profileQuery.isBlank()) {
+                        isBioPopupShow = true
+                    } else {
+                        if (!compProfileList(originImageModel, editImageModel)) {
+                            profileEditViewModel.editImages(
+                                ModifyUserParam(
+                                    name = myInfo?.name ?: "", // 변경불가
+                                    job = myInfo?.job ?: "",
+                                    jobName = university,
+                                    gender = myInfo?.gender ?: "", // 변경불가
+                                    birth = myInfo?.birth ?: "", // 변경불가
+                                    instagramId = instagram,
+                                    bio = profileQuery,
+                                    profileImages = listOf(myInfo?.profileImages?.get(0)?.downloadUrl ?: ""),
+                                    alarmSetting = AlarmSetting(
+                                        allPush = myInfo?.alarmSetting?.allPush ?: true,
+                                        lampInvite = myInfo?.alarmSetting?.lampInvite ?: true,
+                                        lampVisit = myInfo?.alarmSetting?.lampVisit ?: true,
+                                        newMatch = myInfo?.alarmSetting?.newMatch ?: true,
+                                        receiveBadge = myInfo?.alarmSetting?.receiveBadge ?: true,
+                                        receiveMessage = myInfo?.alarmSetting?.receiveMessage ?: true
+                                    ),
+                                    bioQuestions = listOf(
+                                        BioQuestion(myInfo?.bioQuestions?.get(0)?.question ?: "음주", selectedDrink ?: myInfo?.bioQuestions?.get(0)!!.answer),
+                                        BioQuestion(myInfo?.bioQuestions?.get(1)?.question ?: "흡연", selectedSmoke ?: myInfo?.bioQuestions?.get(1)!!.answer),
+                                        BioQuestion(myInfo?.bioQuestions?.get(2)?.question ?: "운동", selectedExercise ?: myInfo?.bioQuestions?.get(2)!!.answer)
+                                    ),
+                                    pushToken = ""
                                 ),
-                                bioQuestions = listOf(
-                                    BioQuestion(myInfo?.bioQuestions?.get(0)?.question ?: "음주", selectedDrink ?: myInfo?.bioQuestions?.get(0)!!.answer),
-                                    BioQuestion(myInfo?.bioQuestions?.get(1)?.question ?: "흡연", selectedSmoke ?: myInfo?.bioQuestions?.get(1)!!.answer),
-                                    BioQuestion(myInfo?.bioQuestions?.get(2)?.question ?: "운동", selectedExercise ?: myInfo?.bioQuestions?.get(2)!!.answer)
-                                ),
-                                pushToken = ""
-                            ),
-                            editImageModel = editImageModel
-                        )
+                                editImageModel = editImageModel
+                            )
+                        }
+                        navController.navigateMyPage()
                     }
-
-//                    profileEditViewModel.modifyUser(
-//                        ModifyUserParam(
-//                            name = myInfo?.name ?: "", // 변경불가
-//                            job = myInfo?.job ?: "",
-//                            jobName = university,
-//                            gender = myInfo?.gender ?: "", // 변경불가
-//                            birth = myInfo?.birth ?: "", // 변경불가
-//                            instagramId = instagram,
-//                            bio = profileQuery,
-//                            profileImages = listOf(myInfo?.profileImages?.get(0)?.downloadUrl ?: ""),
-//                            alarmSetting = AlarmSetting(
-//                                allPush = myInfo?.alarmSetting?.allPush ?: true,
-//                                lampInvite = myInfo?.alarmSetting?.lampInvite ?: true,
-//                                lampVisit = myInfo?.alarmSetting?.lampVisit ?: true,
-//                                newMatch = myInfo?.alarmSetting?.newMatch ?: true,
-//                                receiveBadge = myInfo?.alarmSetting?.receiveBadge ?: true,
-//                                receiveMessage = myInfo?.alarmSetting?.receiveMessage ?: true
-//                            ),
-//                            bioQuestions = listOf(
-//                                BioQuestion(myInfo?.bioQuestions?.get(0)?.question ?: "음주", selectedDrink ?: myInfo?.bioQuestions?.get(0)!!.answer),
-//                                BioQuestion(myInfo?.bioQuestions?.get(1)?.question ?: "흡연", selectedSmoke ?: myInfo?.bioQuestions?.get(1)!!.answer),
-//                                BioQuestion(myInfo?.bioQuestions?.get(2)?.question ?: "운동", selectedExercise ?: myInfo?.bioQuestions?.get(2)!!.answer)
-//                            ),
-//                            pushToken = ""
-//                        )
-//                    )
-                    navController.navigateMyPage()
                 }
             )
 
@@ -317,9 +406,8 @@ fun ProfileEditScreen(
                             repeat(3) { column ->
                                 val index = row * 3 + column
 
-                                val currentUrl =
-                                    if (index < urls.size) urls[index].ifEmpty { null } else null
-                                val currentBitmap = if (index < editImageModel.size) editImageModel[index]?.bitmap else null
+                                val currentUrl = urls.getOrNull(index)?.takeIf { it.isNotEmpty() }
+                                val currentBitmap = editImageModel.getOrNull(index)?.bitmap
 
                                 ProfileImage(
                                     bitmap = currentBitmap,
@@ -335,13 +423,7 @@ fun ProfileEditScreen(
                                     },
                                     onDelete = {
                                         deleteIndex = index
-                                        editImageModel = editImageModel.toMutableList().apply {
-                                            if (index < this.size) {
-                                                this[index] = null
-                                            }
-                                        }
-                                        Log.d("deleteImage", editImageModel.toString())
-                                        editImageModel = editImageModel.toMutableList()
+                                        isShowDeletePopup = true
                                     },
                                     isFirstImage = (index == 0)
                                 )
@@ -590,7 +672,7 @@ fun RadioButtonWithLabel(
     }
 }
 
-fun compProfileList(originImageModel: MutableList<EditImageModel?>, editImageModel: MutableList<EditImageModel?>): Boolean {
+fun compProfileList(originImageModel: MutableList<EditImageModel?>, editImageModel: List<EditImageModel?>): Boolean {
     // 두 리스트의 크기가 다르면 바로 false 반환
     if (originImageModel.size != editImageModel.size) return false
 

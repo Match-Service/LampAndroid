@@ -43,7 +43,10 @@ fun ConsentScreen(
     var isPopupShow by remember { mutableStateOf(false) }
 
     if (isPopupShow) {
-        OneButtonPopup(onDismissRequest = { isPopupShow = false })
+        OneButtonPopup(
+            text = null,
+            onDismissRequest = { isPopupShow = false }
+        )
     }
 
     SelectionScreen(text = "") {

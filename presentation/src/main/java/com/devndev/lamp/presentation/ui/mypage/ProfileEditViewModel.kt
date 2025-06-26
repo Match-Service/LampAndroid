@@ -99,7 +99,7 @@ class ProfileEditViewModel @Inject constructor(
         }
     }
 
-    fun editImages(modifyUserParam: ModifyUserParam, editImageModel: MutableList<EditImageModel?>) {
+    fun editImages(modifyUserParam: ModifyUserParam, editImageModel: List<EditImageModel?>) {
         viewModelScope.launch {
             try {
                 val profileImageList = mutableListOf<String?>()

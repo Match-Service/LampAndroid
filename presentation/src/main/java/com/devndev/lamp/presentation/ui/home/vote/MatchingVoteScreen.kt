@@ -76,8 +76,6 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberImagePainter
-import com.devndev.lamp.data.dto.request.lamp.VoteAcceptRequest
-import com.devndev.lamp.data.dto.request.lamp.VoteRejectRequest
 import com.devndev.lamp.domain.model.lampmatch.IndividualityDomainModel
 import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.presentation.R

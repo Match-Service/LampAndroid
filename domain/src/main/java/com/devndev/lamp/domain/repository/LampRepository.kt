@@ -2,14 +2,12 @@ package com.devndev.lamp.domain.repository
 
 import com.devndev.lamp.domain.model.lamp.AcceptInviteParam
 import com.devndev.lamp.domain.model.lamp.AcceptVisitParam
-import com.devndev.lamp.domain.model.lamp.AcceptVoteParam
 import com.devndev.lamp.domain.model.lamp.CreateLampParam
 import com.devndev.lamp.domain.model.lamp.InviteUsersParam
 import com.devndev.lamp.domain.model.lamp.KickUserParam
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.domain.model.lamp.RejectInviteParam
 import com.devndev.lamp.domain.model.lamp.RejectVisitParam
-import com.devndev.lamp.domain.model.lamp.RejectVoteParam
 
 interface LampRepository {
     suspend fun createLamp(createLampParam: CreateLampParam): Int
