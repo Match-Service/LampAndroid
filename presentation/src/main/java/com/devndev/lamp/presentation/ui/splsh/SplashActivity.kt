@@ -28,6 +28,7 @@ class SplashActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        // todo noti permission 표시 위치 변경ㅌ
         checkNotificationPermission()
         setContent {
             LampTheme {

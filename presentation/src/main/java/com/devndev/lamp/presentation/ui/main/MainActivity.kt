@@ -17,6 +17,7 @@ import com.devndev.lamp.data.socket.LampSocketService
 import com.devndev.lamp.presentation.theme.LampTheme
 import com.devndev.lamp.presentation.ui.login.LoginActivity
 import com.devndev.lamp.presentation.ui.mypage.MyPageViewModel
+import com.devndev.lamp.presentation.ui.onboarding.OnBoardingActivity
 import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -38,10 +39,19 @@ class MainActivity : ComponentActivity() {
         mainViewModel.putPushToken()
         setContent {
             val state by myPageViewModel.uiState.collectAsStateWithLifecycle()
+            val mainState by mainViewModel.state.collectAsStateWithLifecycle()
             LampTheme {
-                Lamp(
-                    signOut = myPageViewModel::signOut
-                )
+                when {
+                    mainState.isFirstOpen == true -> {
+                        OnBoardingActivity.openActivity(this)
+                        finish()
+                    }
+                    mainState.isFirstOpen == false -> {
+                        Lamp(
+                            signOut = myPageViewModel::signOut
+                        )
+                    }
+                }
 
                 if (state.isLoggedOut) {
                     Log.d(logTag, "isUserLoggedOut true")

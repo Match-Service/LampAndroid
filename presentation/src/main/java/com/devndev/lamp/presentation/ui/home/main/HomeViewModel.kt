@@ -246,9 +246,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun loadFindState(lampId: Int) {
-        _isFind.value = localDataSourceImpl.getBoolean("lamp_vote_$lampId")
-    }
+//    fun loadFindState(lampId: Int) {
+//        _isFind.value = localDataSourceImpl.getBoolean("lamp_vote_$lampId")
+//    }
 
     fun updateFindState(lampId: Int, isFind: Boolean) {
         localDataSourceImpl.putBoolean("lampId$lampId", isFind)

@@ -4,17 +4,40 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.user.PushTokenParam
+import com.devndev.lamp.domain.usecase.config.GetIsFirstOpenUseCase
 import com.devndev.lamp.domain.usecase.user.PutPushTokenUseCase
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val putPushTokenUseCase: PutPushTokenUseCase
+    private val putPushTokenUseCase: PutPushTokenUseCase,
+    private val getIsFirstOpenUseCase: GetIsFirstOpenUseCase
 ) : ViewModel() {
     private val logTag = "MainViewModel"
+
+    private val _state = MutableStateFlow(MainUiState())
+    val state = _state.asStateFlow()
+
+    init {
+        updateIsFirstOpen()
+    }
+
+    private fun updateIsFirstOpen() {
+        viewModelScope.launch {
+            getIsFirstOpenUseCase()
+                .onSuccess {
+                    _state.update { state -> state.copy(isFirstOpen = it) }
+                }.onFailure {
+                    _state.update { state -> state.copy(isFirstOpen = false) }
+                }
+        }
+    }
 
     fun putPushToken() {
         FirebaseMessaging.getInstance().token.addOnCompleteListener { task ->
