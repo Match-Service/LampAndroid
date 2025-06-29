@@ -5,6 +5,7 @@ import com.devndev.lamp.data.dto.request.chat.ChatRequest
 import com.devndev.lamp.data.dto.request.chat.EditAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.RegisterAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
+import com.devndev.lamp.data.dto.request.chat.VoteAppointmentRequest
 import com.devndev.lamp.data.dto.response.chat.toDomainModel
 import com.devndev.lamp.domain.model.chat.AppointmentListDomainModel
 import com.devndev.lamp.domain.model.chat.ChatInfoDomainModel
@@ -76,5 +77,9 @@ class ChatRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAppointment(chatAppointmentId: Int) {
         chatDataSource.deleteAppointment(chatAppointmentId)
+    }
+
+    override suspend fun voteAppointment(chatAppointmentId: Int) {
+        chatDataSource.voteAppointment(VoteAppointmentRequest(chatAppointmentId))
     }
 }

@@ -263,4 +263,7 @@
     <string name="guide_after_vote">다수결로 완료되지 않으면 재투표를 진행할게요</string>
     <string name="do_vote">투표를 시작해 주세요</string>
     <string name="vote_count_message">%d명이 투표를 완료 했어요</string>
+
+    <string name="vote_popup_title">투표 하시겠어요?</string>
+    <string name="vote_popup_message">모든 인원이 투표가 완료될 때까지\n투표를 수정하실 수 없어요.</string>
 </resources>

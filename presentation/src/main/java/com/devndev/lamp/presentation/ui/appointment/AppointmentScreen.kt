@@ -30,6 +30,7 @@ import com.devndev.lamp.presentation.ui.appointment.navigation.navigateRegisterA
 import com.devndev.lamp.presentation.ui.common.AppointmentStatus
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
+import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 
 @Composable
 fun AppointmentScreen(
@@ -41,6 +42,26 @@ fun AppointmentScreen(
     val state by appointmentViewModel.uiState.collectAsStateWithLifecycle()
     var isAppointmentClickable by remember { mutableStateOf(false) }
     var selectedAppointment by remember { mutableStateOf(state.getVotedAppointment()) }
+
+    var isVoteConfirmPopupShow by remember { mutableStateOf(false) }
+
+    if (isVoteConfirmPopupShow) {
+        TwoButtonPopup(
+            mainText = stringResource(R.string.vote_popup_title),
+            hintText = stringResource(R.string.vote_popup_message),
+            startButtonText = stringResource(R.string.cancel),
+            endButtonText = stringResource(R.string.confirm),
+            onStartButtonClick = { isVoteConfirmPopupShow = false },
+            onEndButtonClick = {
+                isVoteConfirmPopupShow = false
+                appointmentViewModel.voteAppointment(
+                    chatAppointmentId = selectedAppointment?.appointment?.chatAppointmentId
+                        ?: -1,
+                    onSuccess = { navController.popBackStack() }
+                )
+            }
+        )
+    }
 
     val topSectionText = when (state.getAppointmentStatus()) {
         AppointmentStatus.BEFORE_READY -> stringResource(R.string.register_appointment_ready_vote)
@@ -170,13 +191,21 @@ fun AppointmentScreen(
                 isGradient = true,
                 buttonText = buttonString,
                 onClick = {
-                    if (state.isEmpty) {
-                        navController.navigateRegisterAppointment(
-                            isEdit = false,
-                            chatAppointmentId = -1
-                        )
-                    } else {
-                        appointmentViewModel.readyVote(chatRoomId)
+                    when (state.getAppointmentStatus()) {
+                        AppointmentStatus.EMPTY_APPOINTMENT -> {
+                            navController.navigateRegisterAppointment(
+                                isEdit = false,
+                                chatAppointmentId = -1
+                            )
+                        }
+
+                        AppointmentStatus.BEFORE_READY -> {
+                            appointmentViewModel.readyVote(chatRoomId)
+                        }
+
+                        AppointmentStatus.BEFORE_VOTE -> {
+                            isVoteConfirmPopupShow = true
+                        }
                     }
                 },
                 enabled = buttonEnable
