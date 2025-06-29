@@ -148,11 +148,11 @@ fun AppointmentScreen(
                     isAppointmentClickable = false
                 }
 
-                AppointmentStatus.CONFIRM_APPOINTMENT -> {
-                    buttonString = ""
-                    buttonEnable = false
-                    isAppointmentClickable = false
-                }
+//                AppointmentStatus.CONFIRM_APPOINTMENT -> {
+//                    buttonString = ""
+//                    buttonEnable = false
+//                    isAppointmentClickable = false
+//                }
 
                 else -> {}
             }
