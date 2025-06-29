@@ -83,7 +83,7 @@ class AppointmentViewModel @Inject constructor(
             getAppointmentListUseCase(
                 chatRoomId = chatRoomId
             ).onSuccess { appointment ->
-                Log.d(TAG, "getAppointmentList Success")
+                Log.d(TAG, "getAppointmentList Success $appointment")
                 val chatInfo = uiState.value.chatInfo
                 val myInfo = uiState.value.myInfo
 
