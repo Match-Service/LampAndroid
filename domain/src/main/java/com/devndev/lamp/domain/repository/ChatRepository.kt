@@ -26,4 +26,7 @@ interface ChatRepository {
     suspend fun deleteAppointment(
         chatAppointmentId: Int
     )
+    suspend fun voteAppointment(
+        chatAppointmentId: Int
+    )
 }

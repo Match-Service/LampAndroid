@@ -4,6 +4,7 @@ import com.devndev.lamp.data.dto.request.chat.ChatRequest
 import com.devndev.lamp.data.dto.request.chat.EditAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.RegisterAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
+import com.devndev.lamp.data.dto.request.chat.VoteAppointmentRequest
 import com.devndev.lamp.data.dto.response.chat.AppointmentListResponse
 import com.devndev.lamp.data.dto.response.chat.ChatInfoResponse
 import com.devndev.lamp.data.dto.response.chat.ChatMessageResponse
@@ -67,5 +68,10 @@ interface ChatService {
     @DELETE("api/v1/chat/appointment/{chatAppointmentId}")
     suspend fun deleteAppointment(
         @Path("chatAppointmentId") chatAppointmentId: Int
+    )
+
+    @POST("api/v1/chat/appointment/agree")
+    suspend fun voteAppointment(
+        @Body voteAppointmentRequest: VoteAppointmentRequest
     )
 }

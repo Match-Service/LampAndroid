@@ -4,6 +4,7 @@ import com.devndev.lamp.data.dto.request.chat.ChatRequest
 import com.devndev.lamp.data.dto.request.chat.EditAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.RegisterAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
+import com.devndev.lamp.data.dto.request.chat.VoteAppointmentRequest
 import com.devndev.lamp.data.dto.response.chat.AppointmentListResponse
 import com.devndev.lamp.data.dto.response.chat.ChatInfoResponse
 import com.devndev.lamp.data.dto.response.chat.ChatMessageResponse
@@ -25,5 +26,8 @@ interface ChatDataSource {
     )
     suspend fun deleteAppointment(
         chatAppointmentId: Int
+    )
+    suspend fun voteAppointment(
+        voteAppointmentRequest: VoteAppointmentRequest
     )
 }

@@ -15,6 +15,7 @@ import com.devndev.lamp.domain.usecase.chat.GetAppointmentListUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatInfoUseCase
 import com.devndev.lamp.domain.usecase.chat.ReadyVoteUseCase
 import com.devndev.lamp.domain.usecase.chat.RegisterAppointmentUseCase
+import com.devndev.lamp.domain.usecase.chat.VoteAppointmentUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -36,7 +37,8 @@ class AppointmentViewModel @Inject constructor(
     private val getMyInfoUseCase: GetMyInfoUseCase,
     private val readyVoteUseCase: ReadyVoteUseCase,
     private val editAppointmentUseCase: EditAppointmentUseCase,
-    private val deleteAppointmentUseCase: DeleteAppointmentUseCase
+    private val deleteAppointmentUseCase: DeleteAppointmentUseCase,
+    private val voteAppointmentUseCase: VoteAppointmentUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AppointmentUiState())
     val uiState: StateFlow<AppointmentUiState> = _uiState.asStateFlow()
@@ -228,10 +230,12 @@ class AppointmentViewModel @Inject constructor(
                         _uiState.update { it.copy(editAppointment = a) }
                         uiState.value.editAppointment?.location?.let { updateLocation(it) }
                         uiState.value.editAppointment?.meetingTime?.let {
-                            val inputFormatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
+                            val inputFormatter =
+                                SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
                             val date: Date = inputFormatter.parse(it) ?: return@let
 
-                            val outputFormatter = SimpleDateFormat("yyyy년 M월 d일 HH:mm", Locale.getDefault())
+                            val outputFormatter =
+                                SimpleDateFormat("yyyy년 M월 d일 HH:mm", Locale.getDefault())
                             outputFormatter.timeZone = TimeZone.getTimeZone("UTC") // ★ 여기 추가
 
                             val dateTimeString = outputFormatter.format(date)
@@ -242,6 +246,21 @@ class AppointmentViewModel @Inject constructor(
             }.onFailure {
                 Log.e(TAG, "getAppointmentInfo Failure", it)
             }
+        }
+    }
+
+    fun voteAppointment(
+        chatAppointmentId: Int,
+        onSuccess: () -> Unit
+    ) {
+        viewModelScope.launch {
+            voteAppointmentUseCase(chatAppointmentId)
+                .onSuccess {
+                    Log.d(TAG, "voteAppointment Success")
+                    onSuccess()
+                }.onFailure {
+                    Log.e(TAG, "voteAppointment Failure", it)
+                }
         }
     }
 
