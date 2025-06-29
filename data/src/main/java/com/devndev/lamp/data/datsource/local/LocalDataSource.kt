@@ -6,4 +6,6 @@ interface LocalDataSource {
     fun getToken(): String
     fun setToken(token: String)
     fun removeToken()
+    fun saveIsFirstOpen(isFirstOpen: Boolean)
+    fun getIsFirstOpen(): Boolean
 }

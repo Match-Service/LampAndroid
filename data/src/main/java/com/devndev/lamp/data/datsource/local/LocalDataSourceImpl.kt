@@ -30,8 +30,8 @@ class LocalDataSourceImpl @Inject constructor(
     }
 
     @Synchronized
-    fun getBoolean(key: String): Boolean {
-        return sharedPreferences.getBoolean(key, false)
+    private fun getBoolean(key: String, defaultValue: Boolean): Boolean {
+        return sharedPreferences.getBoolean(key, defaultValue)
     }
 
     @Synchronized
@@ -46,7 +46,7 @@ class LocalDataSourceImpl @Inject constructor(
     }
 
     override fun getIsNeedSignOut(): Boolean {
-        return getBoolean(KEY_IS_NEED_SIGN_OUT)
+        return getBoolean(KEY_IS_NEED_SIGN_OUT, false)
     }
 
     override fun saveIsNeedSignOut(isNeedSignOut: Boolean) {
@@ -65,9 +65,18 @@ class LocalDataSourceImpl @Inject constructor(
         remove(KEY_TOKEN)
     }
 
+    override fun saveIsFirstOpen(isFirstOpen: Boolean) {
+        putBoolean(KEY_IS_FIRST_OPEN, isFirstOpen)
+    }
+
+    override fun getIsFirstOpen(): Boolean {
+        return getBoolean(KEY_IS_FIRST_OPEN, true)
+    }
+
     companion object {
         private const val PREF_NAME = "lamp_preferences"
         private const val KEY_IS_NEED_SIGN_OUT = "key_access_token"
         private const val KEY_TOKEN = "key_token"
+        private const val KEY_IS_FIRST_OPEN = "key_is_first_open"
     }
 }
