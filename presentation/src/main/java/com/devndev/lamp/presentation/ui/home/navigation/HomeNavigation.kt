@@ -10,7 +10,6 @@ import androidx.navigation.compose.composable
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.home.findlamp.FindLampScreen
 import com.devndev.lamp.presentation.ui.home.main.HomeScreen
-import com.devndev.lamp.presentation.ui.home.vote.MatchingVoteScreen
 
 fun NavController.navigateHome(navOptions: NavOptions? = null) {
     this.navigate(Route.HOME, navOptions)
@@ -19,10 +18,12 @@ fun NavController.navigateHome(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.homeNavGraph(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    isBarVisible: Boolean,
+    onBarVisibleChange: (Boolean) -> Unit
 ) {
     composable(Route.HOME) {
-        HomeScreen(modifier = modifier.padding(padding), navController = navController)
+        HomeScreen(modifier = modifier.padding(padding), navController = navController, isBarVisible = isBarVisible, onBarVisibleChange = onBarVisibleChange)
     }
 }
 
@@ -41,23 +42,5 @@ fun NavGraphBuilder.findNavGraph(
         Route.FIND
     ) {
         FindLampScreen(modifier = modifier.padding(padding), navController = navController)
-    }
-}
-
-fun NavController.navigateVote(
-    navOptions: NavOptions? = null
-) {
-    this.navigate(Route.VOTE, navOptions)
-}
-
-fun NavGraphBuilder.voteNavGraph(
-    padding: PaddingValues,
-    modifier: Modifier = Modifier,
-    navController: NavController
-) {
-    composable(
-        Route.VOTE
-    ) {
-        MatchingVoteScreen(modifier = modifier.padding(padding), navController = navController)
     }
 }

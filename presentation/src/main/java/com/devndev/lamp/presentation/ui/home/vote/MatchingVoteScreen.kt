@@ -37,6 +37,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
@@ -103,7 +104,8 @@ import java.util.concurrent.TimeUnit
 fun MatchingVoteScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     modifier: Modifier,
-    navController: NavController?
+    navController: NavController?,
+    onScreen: (Boolean) -> Unit
 ) {
     var isLoaded by remember { mutableStateOf(false) }
     val matchSuggestion by viewModel.matchSuggestion.collectAsState()
@@ -153,6 +155,13 @@ fun MatchingVoteScreen(
     LaunchedEffect(Unit) {
         viewModel.getMatchSuggestion {
             isLoaded = true
+        }
+        onScreen(true)
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            onScreen(false)
         }
     }
 
