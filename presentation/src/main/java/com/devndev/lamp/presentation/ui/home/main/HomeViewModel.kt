@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import coil.network.HttpException
-import com.devndev.lamp.data.datsource.local.LocalDataSourceImpl
 import com.devndev.lamp.domain.model.lamp.AcceptVoteParam
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.domain.model.lamp.RejectVoteParam
@@ -15,6 +14,8 @@ import com.devndev.lamp.domain.usecase.lamp.CancelVisitRequestUseCase
 import com.devndev.lamp.domain.usecase.lamp.GetMyLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.GetVisitRequestLampInfoUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.GetMatchSuggestionUseCase
+import com.devndev.lamp.domain.usecase.local.GetBooleanUseCase
+import com.devndev.lamp.domain.usecase.local.PutBooleanUseCase
 import com.devndev.lamp.domain.usecase.socket.AddStatusListenerUseCase
 import com.devndev.lamp.domain.usecase.socket.RemoveStatueListenerUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
@@ -35,7 +36,6 @@ import javax.inject.Inject
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val localDataSourceImpl: LocalDataSourceImpl,
     private val getMyInfoUseCase: GetMyInfoUseCase,
     private val getMyLampUseCase: GetMyLampUseCase,
     private val getMatchSuggestionUseCase: GetMatchSuggestionUseCase,
@@ -45,7 +45,9 @@ class HomeViewModel @Inject constructor(
     private val acceptUseCase: AcceptVoteUseCase,
     private val rejectUseCase: RejectVoteUseCase,
     private val addStatusListenerUseCase: AddStatusListenerUseCase,
-    private val removeStatueListenerUseCase: RemoveStatueListenerUseCase
+    private val removeStatueListenerUseCase: RemoveStatueListenerUseCase,
+    private val putBooleanUseCase: PutBooleanUseCase,
+    private val getBooleanUseCase: GetBooleanUseCase
 ) : ViewModel() {
     private val _myInfo = MutableStateFlow<MyInfoDomainModel?>(null)
     val myInfo: StateFlow<MyInfoDomainModel?> = _myInfo
@@ -246,13 +248,21 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-//    fun loadFindState(lampId: Int) {
-//        _isFind.value = localDataSourceImpl.getBoolean("lamp_vote_$lampId")
-//    }
+    fun loadFindState(lampId: Int, isFind: Boolean): Boolean {
+        var res = false
+        viewModelScope.launch {
+            res = getBooleanUseCase("lampId$lampId", isFind)
+            _isFind.value = res
+        }
+        return res
+    }
 
     fun updateFindState(lampId: Int, isFind: Boolean) {
-        localDataSourceImpl.putBoolean("lampId$lampId", isFind)
-        _isFind.value = isFind
+        viewModelScope.launch {
+            putBooleanUseCase("lampId$lampId", isFind)
+//        localDataSourceImpl.putBoolean("lampId$lampId", isFind)
+            _isFind.value = isFind
+        }
     }
 
     companion object {
