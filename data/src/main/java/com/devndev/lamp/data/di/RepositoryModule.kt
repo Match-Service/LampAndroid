@@ -6,6 +6,7 @@ import com.devndev.lamp.data.repository.ConfigRepositoryImpl
 import com.devndev.lamp.data.repository.LampMatchRepositoryImpl
 import com.devndev.lamp.data.repository.LampRepositoryImpl
 import com.devndev.lamp.data.repository.LampSocketRepositoryImpl
+import com.devndev.lamp.data.repository.LocalRepositoryImpl
 import com.devndev.lamp.data.repository.LoginRepositoryImpl
 import com.devndev.lamp.data.repository.SignUpRepositoryImpl
 import com.devndev.lamp.data.repository.UserRepositoryImpl
@@ -15,6 +16,7 @@ import com.devndev.lamp.domain.repository.ConfigRepository
 import com.devndev.lamp.domain.repository.LampMatchRepository
 import com.devndev.lamp.domain.repository.LampRepository
 import com.devndev.lamp.domain.repository.LampSocketRepository
+import com.devndev.lamp.domain.repository.LocalRepository
 import com.devndev.lamp.domain.repository.LoginRepository
 import com.devndev.lamp.domain.repository.SignUpRepository
 import com.devndev.lamp.domain.repository.UserRepository
@@ -62,4 +64,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindConfigRepository(configRepositoryImpl: ConfigRepositoryImpl): ConfigRepository
+
+    @Singleton
+    @Binds
+    fun bindLocalRepository(localRepositoryImpl: LocalRepositoryImpl): LocalRepository
 }

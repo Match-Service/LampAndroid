@@ -25,13 +25,13 @@ class LocalDataSourceImpl @Inject constructor(
     }
 
     @Synchronized
-    fun putBoolean(key: String, value: Boolean) {
+    override fun putBoolean(key: String, value: Boolean) {
         sharedPreferences.edit().putBoolean(key, value).apply()
     }
 
     @Synchronized
-    private fun getBoolean(key: String, defaultValue: Boolean): Boolean {
-        return sharedPreferences.getBoolean(key, defaultValue)
+    override fun getBoolean(key: String, value: Boolean): Boolean {
+        return sharedPreferences.getBoolean(key, value)
     }
 
     @Synchronized

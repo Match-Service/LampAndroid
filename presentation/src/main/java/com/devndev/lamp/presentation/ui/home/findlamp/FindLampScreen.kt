@@ -1,6 +1,5 @@
 package com.devndev.lamp.presentation.ui.home.findlamp
 
-import android.content.Context
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -65,7 +64,6 @@ fun FindLampScreen(
     }
     // sharedPreference
     val context = LocalContext.current
-    val sharedPref = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
 
     LaunchedEffect(Unit) {
         viewModel.getMatchSuggestion()

@@ -45,12 +45,12 @@ fun HomeScreen(
     val context = LocalContext.current
     val handler = remember { Handler(Looper.getMainLooper()) }
     var backPressedOnce = remember { false }
+    val matchSuggestion by viewModel.matchSuggestion.collectAsState()
 
     val updateEvent = viewModel.updateEvent
     val updateStatus = viewModel.updateStatus
 
     val userStatus by viewModel.userStatue.collectAsState()
-    val isFind by viewModel.isFind.collectAsState()
 
     val lifecycleOwner = LocalLifecycleOwner.current
 
@@ -96,8 +96,8 @@ fun HomeScreen(
             }
 
             "FIND_LAMP" -> {
-                Log.d("isFind", isFind.toString())
-                if (isFind) {
+                val isFind = matchSuggestion?.lampId?.let { viewModel.loadFindState(it, false) }
+                if (isFind == true) {
                     MatchingVoteScreen(modifier = Modifier, navController = navController)
                 } else {
                     FindLampScreen(modifier = Modifier, navController = navController)
