@@ -50,7 +50,6 @@ import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.creation.navigation.creationNavGraph
 import com.devndev.lamp.presentation.ui.home.navigation.homeNavGraph
 import com.devndev.lamp.presentation.ui.home.navigation.navigateHome
-import com.devndev.lamp.presentation.ui.home.navigation.voteNavGraph
 import com.devndev.lamp.presentation.ui.login.navigation.emailLoginNavGraph
 import com.devndev.lamp.presentation.ui.login.navigation.forgotPasswordNavGraph
 import com.devndev.lamp.presentation.ui.mypage.navigation.myPageNavGraph
@@ -72,6 +71,8 @@ fun MainScreen(
     val currentRoute = navBackStackEntry?.destination?.route
 
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    var isBarVisible by remember { mutableStateOf(true) }
 
     var isNeedAlarmUpdate by remember { mutableStateOf(false) }
 
@@ -101,32 +102,35 @@ fun MainScreen(
         },
         containerColor = BackGroundColor,
         topBar = {
-            if (
-                currentRoute != Route.START_LAMP &&
-                currentRoute != Route.CREATION &&
-                currentRoute != Route.REVIEW &&
-                currentRoute != Route.VOTE &&
-                currentRoute != Route.CHAT_LIST
-            ) {
-                when (currentRoute) {
-                    Route.SIGNUP, Route.EMAIL_LOGIN, Route.FORGOT_PASSWORD -> {
-                        LampTopBar(
-                            navController = navController,
-                            isAlarmIconNeed = false,
-                            needAlarmUpdate = isNeedAlarmUpdate
-                        )
-                    }
-
-                    else -> {
-                        LampTopBar(
-                            navController = navController,
-                            isAlarmIconNeed = true,
-                            needAlarmUpdate = isNeedAlarmUpdate
-                        )
-                    }
-                }
-            } else {
+            if (isBarVisible) {
                 Spacer(modifier = Modifier.height(0.dp))
+            } else {
+                if (
+                    currentRoute != Route.START_LAMP &&
+                    currentRoute != Route.CREATION &&
+                    currentRoute != Route.REVIEW &&
+                    currentRoute != Route.CHAT_LIST
+                ) {
+                    when (currentRoute) {
+                        Route.SIGNUP, Route.EMAIL_LOGIN, Route.FORGOT_PASSWORD -> {
+                            LampTopBar(
+                                navController = navController,
+                                isAlarmIconNeed = false,
+                                needAlarmUpdate = isNeedAlarmUpdate
+                            )
+                        }
+
+                        else -> {
+                            LampTopBar(
+                                navController = navController,
+                                isAlarmIconNeed = true,
+                                needAlarmUpdate = isNeedAlarmUpdate
+                            )
+                        }
+                    }
+                } else {
+                    Spacer(modifier = Modifier.height(0.dp))
+                }
             }
         },
         bottomBar = {
@@ -141,7 +145,7 @@ fun MainScreen(
                 currentRoute != Route.FORGOT_PASSWORD &&
                 currentRoute != Route.REVIEW
             ) {
-                if (currentRoute != Route.VOTE) {
+                if (!isBarVisible) {
                     LampBottomNavigation(navController, LampBlack)
                 } else {
                     LampBottomNavigation(navController, Gray)
@@ -155,7 +159,7 @@ fun MainScreen(
             navController,
             startDestination = Route.HOME
         ) {
-            homeNavGraph(padding = innerPadding, navController = navController)
+            homeNavGraph(padding = innerPadding, navController = navController, isBarVisible = isBarVisible, onBarVisibleChange = { isBarVisible = it })
             chatListNavGraph(padding = innerPadding, navController = navController)
             myPageNavGraph(padding = innerPadding, navController = navController, signOut = signOut)
             searchNavGraph(padding = innerPadding, navController = navController)
@@ -168,7 +172,7 @@ fun MainScreen(
             emailLoginNavGraph(padding = innerPadding, navController = navController)
             forgotPasswordNavGraph(padding = innerPadding, navController = navController)
             reviewNavGraph(padding = innerPadding, navController = navController)
-            voteNavGraph(padding = innerPadding, navController = navController)
+//            voteNavGraph(padding = innerPadding, navController = navController)
         }
     }
 }
