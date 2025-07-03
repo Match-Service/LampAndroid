@@ -220,7 +220,6 @@ fun MatchingVoteScreen(
                     .zIndex(1f)
             ) {
                 item {
-//                Spacer(modifier = Modifier.height(spacerHeight))
                     Spacer(modifier = Modifier.height(63.dp))
                 }
 
@@ -231,7 +230,6 @@ fun MatchingVoteScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .background(Color.Transparent)
-//                        .background(if (isStickyHeaderAtTop.value) Color(0xFF6E2126) else Color.Transparent) // 배경 색상 변경
                             .zIndex(10f)
                     ) {
                         if (lampProfile != null) {
@@ -301,9 +299,9 @@ fun ProfileTop(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
     val listState = remember { LazyListState() }
 
     // 대학교 list
-    val jobNameList = listOf(
+    val jobNameList: List<String?> = listOf(
         matchSuggestion?.owner?.jobName
-    ) + matchSuggestion?.participants?.map { it.jobName }
+    ) + (matchSuggestion?.participants?.map { it.jobName } ?: emptyList())
 
     // 나이 list
     val ageList = listOf(
@@ -448,7 +446,8 @@ fun ProfileTop(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
         horizontalArrangement = Arrangement.Center
     ) {
         Text(
-            text = ageList[index] + stringResource(id = R.string.age) + ", " + jobNameList[index],
+            text = ageList[index] + stringResource(id = R.string.age) +
+                jobNameList[index]?.takeIf { it.isNotBlank() }?.let { ", $it" }.orEmpty(),
             color = Color.White,
             style = Typography.medium18.copy(lineHeight = 20.sp),
             textAlign = TextAlign.Center
