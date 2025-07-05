@@ -1,6 +1,7 @@
 package com.devndev.lamp.data.di
 
 import com.devndev.lamp.data.repository.AlarmRepositoryImpl
+import com.devndev.lamp.data.repository.AssessmentRepositoryImpl
 import com.devndev.lamp.data.repository.ChatRepositoryImpl
 import com.devndev.lamp.data.repository.ConfigRepositoryImpl
 import com.devndev.lamp.data.repository.LampMatchRepositoryImpl
@@ -11,6 +12,7 @@ import com.devndev.lamp.data.repository.LoginRepositoryImpl
 import com.devndev.lamp.data.repository.SignUpRepositoryImpl
 import com.devndev.lamp.data.repository.UserRepositoryImpl
 import com.devndev.lamp.domain.repository.AlarmRepository
+import com.devndev.lamp.domain.repository.AssessmentRepository
 import com.devndev.lamp.domain.repository.ChatRepository
 import com.devndev.lamp.domain.repository.ConfigRepository
 import com.devndev.lamp.domain.repository.LampMatchRepository
@@ -68,4 +70,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindLocalRepository(localRepositoryImpl: LocalRepositoryImpl): LocalRepository
+
+    @Singleton
+    @Binds
+    fun bindAssessmentRepository(assessmentRepositoryImpl: AssessmentRepositoryImpl): AssessmentRepository
 }

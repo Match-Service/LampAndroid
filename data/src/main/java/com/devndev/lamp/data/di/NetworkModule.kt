@@ -7,6 +7,7 @@ import com.devndev.lamp.data.di.qualifier.DefaultClient
 import com.devndev.lamp.data.di.qualifier.DefaultRetrofit
 import com.devndev.lamp.data.interceptor.AuthInterceptor
 import com.devndev.lamp.data.service.AlarmService
+import com.devndev.lamp.data.service.AssessmentService
 import com.devndev.lamp.data.service.ChatService
 import com.devndev.lamp.data.service.LampMatchService
 import com.devndev.lamp.data.service.LampService
@@ -114,6 +115,12 @@ internal class NetworkModule {
     fun provideLampSocketService(
         localDataSource: LocalDataSource // DI에서 LocalDataSource 제공
     ): LampSocketService = LampSocketServiceImpl(localDataSource)
+
+    @Singleton
+    @Provides
+    fun provideAssessmentService(
+        @DefaultRetrofit retrofit: Retrofit
+    ): AssessmentService = retrofit.create()
 
     companion object {
         private const val BASE_URL = "https://dev-api.lamp-app.xyz/"
