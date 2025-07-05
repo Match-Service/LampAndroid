@@ -13,11 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -42,7 +41,6 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     modifier: Modifier,
     navController: NavController,
-    isBarVisible: Boolean,
     onBarVisibleChange: (Boolean) -> Unit
 ) {
     val logTag = "HomeScreen"
@@ -50,7 +48,7 @@ fun HomeScreen(
     val handler = remember { Handler(Looper.getMainLooper()) }
     var backPressedOnce = remember { false }
     val matchSuggestion by viewModel.matchSuggestion.collectAsState()
-    var isBarVisible by remember { mutableStateOf(true) }
+    val isFind by viewModel.isFind.collectAsState()
 
     val updateEvent = viewModel.updateEvent
     val updateStatus = viewModel.updateStatus
@@ -58,6 +56,12 @@ fun HomeScreen(
     val userStatus by viewModel.userStatue.collectAsState()
 
     val lifecycleOwner = LocalLifecycleOwner.current
+
+    LaunchedEffect(matchSuggestion?.lampId) {
+        matchSuggestion?.lampId?.let { lampId ->
+            viewModel.loadFindState(lampId, false)
+        }
+    }
 
     DisposableEffect(lifecycleOwner) {
         viewModel.addStatusListener()
@@ -101,9 +105,7 @@ fun HomeScreen(
             }
 
             "FIND_LAMP" -> {
-                val isFind = matchSuggestion?.lampId?.let { viewModel.loadFindState(it, false) }
-                Log.d("isFind", isFind.toString())
-                if (isFind == true) {
+                if (isFind) {
                     MatchingVoteScreen(modifier = Modifier, navController = navController, onScreen = onBarVisibleChange)
                 } else {
                     FindLampScreen(modifier = Modifier, navController = navController)

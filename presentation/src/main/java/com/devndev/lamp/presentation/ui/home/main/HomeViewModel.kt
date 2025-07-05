@@ -248,13 +248,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun loadFindState(lampId: Int, isFind: Boolean): Boolean {
-        var res = false
-        viewModelScope.launch {
-            res = getBooleanUseCase("lampId$lampId", isFind)
-            _isFind.value = res
-        }
-        return res
+    suspend fun loadFindState(lampId: Int, isFind: Boolean): Boolean {
+        val result = getBooleanUseCase("lampId$lampId", isFind)
+        _isFind.value = result
+        return result
     }
 
     fun updateFindState(lampId: Int, isFind: Boolean) {

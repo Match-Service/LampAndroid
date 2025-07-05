@@ -23,7 +23,11 @@ fun NavGraphBuilder.homeNavGraph(
     onBarVisibleChange: (Boolean) -> Unit
 ) {
     composable(Route.HOME) {
-        HomeScreen(modifier = modifier.padding(padding), navController = navController, isBarVisible = isBarVisible, onBarVisibleChange = onBarVisibleChange)
+        HomeScreen(
+            modifier = modifier.padding(padding),
+            navController = navController,
+            onBarVisibleChange = onBarVisibleChange
+        )
     }
 }
 
