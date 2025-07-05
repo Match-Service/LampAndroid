@@ -1,14 +1,10 @@
-package com.devndev.lamp.presentation.ui.home.normal.viewmodel
+package com.devndev.lamp.presentation.ui.assessment
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.assessment.AssessmentListDomainModel
 import com.devndev.lamp.domain.usecase.assessment.GetAssessmentListUseCase
-import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
-import com.devndev.lamp.presentation.ui.home.main.HomeViewModel.Companion.TAG
-import com.devndev.lamp.presentation.ui.home.normal.NormalHomeUiState
-import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,40 +14,18 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NormalHomeViewModel @Inject constructor(
-    private val getMyInfoUseCase: GetMyInfoUseCase,
+class AssessmentListViewModel @Inject constructor(
     private val getAssessmentListUseCase: GetAssessmentListUseCase
 ) : ViewModel() {
-    private val _uiState = MutableStateFlow(NormalHomeUiState())
-    val uiState: StateFlow<NormalHomeUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(AssessmentUiState())
+    val uiState: StateFlow<AssessmentUiState> = _uiState.asStateFlow()
 
     init {
-        getMyInfo()
         getAssessmentList()
     }
 
-    private fun getMyInfo() {
-        updateLoadingState(true)
-        viewModelScope.launch {
-            getMyInfoUseCase()
-                .onSuccess { userInfo ->
-                    Log.d(TAG, "getMyInfo")
-                    _uiState.update { it.copy(myInfo = userInfo) }
-                    Log.d(TAG, "My Info ${_uiState.value.myInfo}")
-                    _uiState.value.myInfo?.gender.let {
-                        if (it != null) {
-                            IconStatusManager.setIconStatus(it)
-                        }
-                    }
-                    updateLoadingState(false)
-                }
-                .onFailure { throwable ->
-                    Log.e(TAG, "Failed to fetch user info", throwable)
-                }
-        }
-    }
-
     private fun getAssessmentList() {
+        Log.d(TAG, "getAssessmentList()")
         val tempAssessmentList = listOf(
             AssessmentListDomainModel(
                 lampMatchId = 0,
@@ -68,9 +42,7 @@ class NormalHomeViewModel @Inject constructor(
                 title = "못난이들 램프 평가하기",
                 meetingTime = "2025년 7월 8일"
             )
-
         )
-        Log.d(TAG, "getAssessmentList()")
         viewModelScope.launch {
             getAssessmentListUseCase()
                 .onSuccess { assessmentList ->
@@ -82,11 +54,7 @@ class NormalHomeViewModel @Inject constructor(
         }
     }
 
-    private fun updateLoadingState(isLoading: Boolean) {
-        _uiState.update { it.copy(isLoading = isLoading) }
-    }
-
     companion object {
-        const val TAG = "NormalHomeViewModel"
+        const val TAG = "AssessmentListViewModel"
     }
 }

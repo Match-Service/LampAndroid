@@ -281,4 +281,8 @@
     <string name="attractive_msg">미팅이 끝나면 이성의 매력도 만큼\n밝기를 올려줄 수 있어요</string>
     <string name="attractive_info">매력도는 프로필에 반영되어\n나만의 매력을 어필할 수 있어요</string>
     <string name="skip_onboarding">건너뛰기</string>
+
+    <!-- 평가 리스트 화면 -->
+    <string name="assessment_title">매력도 평가</string>
+    <string name="assessment_msg">만남은 즐거우셨나요?\n빛나는 그날의 기억을 기록해주세요</string>
 </resources>

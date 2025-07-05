@@ -23,4 +23,5 @@ object Route {
     const val CHAT = "chat"
     const val APPOINTMENT = "appointment"
     const val REGISTER_APPOINTMENT = "register_appointment/{isEdit}/{chatAppointmentId}"
+    const val ASSESSMENT_LIST = "assessment_list"
 }

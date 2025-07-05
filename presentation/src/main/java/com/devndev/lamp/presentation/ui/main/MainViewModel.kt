@@ -3,6 +3,7 @@ package com.devndev.lamp.presentation.ui.main
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devndev.lamp.domain.model.assessment.AssessmentListDomainModel
 import com.devndev.lamp.domain.model.user.PushTokenParam
 import com.devndev.lamp.domain.usecase.assessment.GetAssessmentListUseCase
 import com.devndev.lamp.domain.usecase.config.GetIsFirstOpenUseCase
@@ -19,7 +20,6 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val putPushTokenUseCase: PutPushTokenUseCase,
     private val getIsFirstOpenUseCase: GetIsFirstOpenUseCase,
-    private val getAssessmentListUseCase: GetAssessmentListUseCase
 ) : ViewModel() {
     private val logTag = "MainViewModel"
 
@@ -55,20 +55,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun getAssessmentList() {
-        Log.d(logTag, "getAssessmentList()")
-        viewModelScope.launch {
-            getAssessmentListUseCase()
-                .onSuccess { assessmentList ->
-                    Log.i(logTag, "assessmentList $assessmentList")
-                    _state.update { it.copy(assessmentList = assessmentList) }
-                }.onFailure {
-                    Log.e(logTag, "getAssessmentList Failure", it)
-                }
-        }
-    }
-
-    fun updateIsNormalHome(isNormalHome: Boolean) {
-        _state.update { it.copy(isNormalHomeScreen = isNormalHome) }
+    fun updateIsAssessmentExist(isExist: Boolean) {
+        _state.update { it.copy(isAssessmentListExist = isExist) }
     }
 }
