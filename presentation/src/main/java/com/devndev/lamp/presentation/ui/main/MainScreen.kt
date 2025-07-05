@@ -64,11 +64,14 @@ import com.devndev.lamp.presentation.ui.signup.navigation.startLampNavGraph
 @Composable
 fun MainScreen(
     modifier: Modifier,
+    viewModel: MainViewModel = hiltViewModel(),
     signOut: () -> Unit
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -122,7 +125,8 @@ fun MainScreen(
                             LampTopBar(
                                 navController = navController,
                                 isAlarmIconNeed = true,
-                                needAlarmUpdate = isNeedAlarmUpdate
+                                needAlarmUpdate = isNeedAlarmUpdate,
+                                isAssessmentExist = state.getIsNeedAssessTopBar()
                             )
                         }
                     }
@@ -161,7 +165,18 @@ fun MainScreen(
             navController,
             startDestination = Route.HOME
         ) {
-            homeNavGraph(padding = innerPadding, navController = navController, isBarVisible = isBarVisible, onBarVisibleChange = { isBarVisible = it })
+            homeNavGraph(
+                padding = innerPadding,
+                navController = navController,
+                isBarVisible = isBarVisible,
+                onBarVisibleChange = { isBarVisible = it },
+                isNormalHome = {
+                    if (it) {
+                        viewModel.getAssessmentList()
+                    }
+                    viewModel.updateIsNormalHome(it)
+                }
+            )
             chatListNavGraph(padding = innerPadding, navController = navController)
             myPageNavGraph(padding = innerPadding, navController = navController, signOut = signOut)
             searchNavGraph(padding = innerPadding, navController = navController)
@@ -186,6 +201,7 @@ fun LampTopBar(
     color: Color = LampBlack,
     needAlarmUpdate: Boolean,
     isChatExist: Boolean = false,
+    isAssessmentExist: Boolean = false,
     alarmViewModel: AlarmViewModel = hiltViewModel()
 ) {
     val currentRoute = navController.currentBackStackEntry?.destination?.route

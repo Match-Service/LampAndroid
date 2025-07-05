@@ -41,6 +41,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     modifier: Modifier,
     navController: NavController,
+    isNormalHome: (Boolean) -> Unit,
     onBarVisibleChange: (Boolean) -> Unit
 ) {
     val logTag = "HomeScreen"
@@ -91,7 +92,13 @@ fun HomeScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         when (userStatus) {
             "ON_BOARDING" -> {
-                NormalHomeScreen(modifier = modifier, navController = navController)
+                NormalHomeScreen(
+                    modifier = modifier,
+                    navController = navController,
+                    isNormalHome = {
+                        isNormalHome(it)
+                    }
+                )
             }
 
             "PREPARE",
