@@ -41,7 +41,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     modifier: Modifier,
     navController: NavController,
-    isNormalHome: (Boolean) -> Unit,
+    isAssessmentExist: (Boolean) -> Unit,
     onBarVisibleChange: (Boolean) -> Unit
 ) {
     val logTag = "HomeScreen"
@@ -95,8 +95,8 @@ fun HomeScreen(
                 NormalHomeScreen(
                     modifier = modifier,
                     navController = navController,
-                    isNormalHome = {
-                        isNormalHome(it)
+                    isAssessmentExist = {
+                        isAssessmentExist(it)
                     }
                 )
             }

@@ -44,6 +44,7 @@ import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.ui.alarm.AlarmViewModel
 import com.devndev.lamp.presentation.ui.alarm.navigation.alarmNavGraph
 import com.devndev.lamp.presentation.ui.alarm.navigation.navigateAlarm
+import com.devndev.lamp.presentation.ui.assessment.navigation.assessmentListNavGraph
 import com.devndev.lamp.presentation.ui.chatting.navigation.chatListNavGraph
 import com.devndev.lamp.presentation.ui.chatting.navigation.navigateChatList
 import com.devndev.lamp.presentation.ui.common.Route
@@ -113,7 +114,10 @@ fun MainScreen(
                     currentRoute != Route.CHAT_LIST
                 ) {
                     when (currentRoute) {
-                        Route.SIGNUP, Route.EMAIL_LOGIN, Route.FORGOT_PASSWORD -> {
+                        Route.SIGNUP,
+                        Route.EMAIL_LOGIN,
+                        Route.FORGOT_PASSWORD,
+                        Route.ASSESSMENT_LIST-> {
                             LampTopBar(
                                 navController = navController,
                                 isAlarmIconNeed = false,
@@ -126,7 +130,7 @@ fun MainScreen(
                                 navController = navController,
                                 isAlarmIconNeed = true,
                                 needAlarmUpdate = isNeedAlarmUpdate,
-                                isAssessmentExist = state.getIsNeedAssessTopBar()
+                                isAssessmentExist = state.isAssessmentListExist
                             )
                         }
                     }
@@ -170,11 +174,8 @@ fun MainScreen(
                 navController = navController,
                 isBarVisible = isBarVisible,
                 onBarVisibleChange = { isBarVisible = it },
-                isNormalHome = {
-                    if (it) {
-                        viewModel.getAssessmentList()
-                    }
-                    viewModel.updateIsNormalHome(it)
+                isAssessmentExist = {
+                    viewModel.updateIsAssessmentExist(it)
                 }
             )
             chatListNavGraph(padding = innerPadding, navController = navController)
@@ -189,6 +190,7 @@ fun MainScreen(
             emailLoginNavGraph(padding = innerPadding, navController = navController)
             forgotPasswordNavGraph(padding = innerPadding, navController = navController)
             reviewNavGraph(padding = innerPadding, navController = navController)
+            assessmentListNavGraph(padding = innerPadding, navController = navController)
 //            voteNavGraph(padding = innerPadding, navController = navController)
         }
     }
@@ -228,11 +230,17 @@ fun LampTopBar(
         LightGray
     }
 
+    val backgroundColor = if (isAssessmentExist) {
+        Gray
+    } else {
+        color
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(72.dp)
-            .background(color)
+            .background(backgroundColor)
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
