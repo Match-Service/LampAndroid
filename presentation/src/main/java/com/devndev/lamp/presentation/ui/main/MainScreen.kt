@@ -72,7 +72,7 @@ fun MainScreen(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var isBarVisible by remember { mutableStateOf(true) }
+    var isBarVisible by remember { mutableStateOf(false) }
 
     var isNeedAlarmUpdate by remember { mutableStateOf(false) }
 
@@ -102,9 +102,7 @@ fun MainScreen(
         },
         containerColor = BackGroundColor,
         topBar = {
-            if (isBarVisible) {
-                Spacer(modifier = Modifier.height(0.dp))
-            } else {
+            if (!isBarVisible) {
                 if (
                     currentRoute != Route.START_LAMP &&
                     currentRoute != Route.CREATION &&
@@ -131,6 +129,8 @@ fun MainScreen(
                 } else {
                     Spacer(modifier = Modifier.height(0.dp))
                 }
+            } else {
+                Spacer(modifier = Modifier.height(0.dp))
             }
         },
         bottomBar = {
@@ -145,13 +145,15 @@ fun MainScreen(
                 currentRoute != Route.FORGOT_PASSWORD &&
                 currentRoute != Route.REVIEW
             ) {
-                if (!isBarVisible) {
-                    LampBottomNavigation(navController, LampBlack)
-                } else {
-                    LampBottomNavigation(navController, Gray)
-                }
+                LampBottomNavigation(navController, LampBlack)
             } else {
                 Spacer(modifier = Modifier.height(0.dp))
+            }
+
+            if (isBarVisible) {
+                LampBottomNavigation(navController, Gray)
+            } else {
+                LampBottomNavigation(navController, LampBlack)
             }
         }
     ) { innerPadding ->

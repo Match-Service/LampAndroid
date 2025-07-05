@@ -124,9 +124,6 @@ fun FindLampScreen(
                                 lampId = matchSuggestion!!.lampId,
                                 isFind = true
                             )
-//                            navController.navigateVote(
-//                                navOptions = navOption
-//                            )
                         },
                     contentAlignment = Alignment.Center
                 ) {
