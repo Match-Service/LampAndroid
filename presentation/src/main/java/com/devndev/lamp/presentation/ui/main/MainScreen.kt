@@ -242,7 +242,7 @@ fun LampTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(72.dp)
-            .background(color)
+            .background(backgroundColor)
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
