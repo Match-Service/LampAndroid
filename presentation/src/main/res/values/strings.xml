@@ -235,7 +235,7 @@
     <string name="register_appointment">"약속을 등록 해보세요"</string>
     <string name="send">"전송"</string>
 
-    <string name="new_message">"새 메세지"</string>
+    <string name="new_message">"새 메세지 확인하기"</string>
 
     <string name="make_appointment">"약속 만들기"</string>
     <string name="no_registered_appointment">"등록된 약속이 없어요"</string>

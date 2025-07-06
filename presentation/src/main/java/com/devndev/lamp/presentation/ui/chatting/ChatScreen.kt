@@ -361,27 +361,37 @@ fun ChatScreen(
     val textFieldHeightDp = with(LocalDensity.current) { textFieldHeight.toDp() }
 
     if (state.showNewMessageBadge) {
+        val gradientBrush = Brush.horizontalGradient(
+            colors = listOf(WomanColor, ManColor)
+        )
         Box(
             Modifier
                 .fillMaxSize()
                 .padding(bottom = textFieldHeightDp + 40.dp),
             contentAlignment = Alignment.BottomCenter
         ) {
-            Box(
+            Row(
                 modifier = Modifier
                     .clip(RoundedCornerShape(22.dp))
-                    .background(Gray)
-                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                    .background(brush = gradientBrush)
+                    .padding(horizontal = 15.dp, vertical = 5.dp)
                     .clickable {
                         viewModel.setNeedScrollDown(true)
                         viewModel.setShowNewMessageBadge(false)
                     },
-                contentAlignment = Alignment.Center
+                horizontalArrangement = Arrangement.spacedBy(3.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
                     text = stringResource(R.string.new_message),
                     color = Color.White,
-                    style = Typography.normal15
+                    style = Typography.medium15
+                )
+                Icon(
+                    painter = painterResource(R.drawable.expand_icon),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(12.dp)
                 )
             }
         }
