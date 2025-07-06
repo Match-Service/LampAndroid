@@ -313,7 +313,7 @@ fun AlarmItem(
                 onClick = {
                     onAcceptClick(alarmData)
                 },
-                buttonWidth = 1,
+                buttonWidth = 1000,
                 enabled = true,
                 textStyle = Typography.medium15,
                 height = 40
