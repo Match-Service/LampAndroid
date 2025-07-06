@@ -44,6 +44,7 @@ import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.ui.alarm.AlarmViewModel
 import com.devndev.lamp.presentation.ui.alarm.navigation.alarmNavGraph
 import com.devndev.lamp.presentation.ui.alarm.navigation.navigateAlarm
+import com.devndev.lamp.presentation.ui.assessment.navigation.assessmentListNavGraph
 import com.devndev.lamp.presentation.ui.chatting.navigation.chatListNavGraph
 import com.devndev.lamp.presentation.ui.chatting.navigation.navigateChatList
 import com.devndev.lamp.presentation.ui.common.Route
@@ -159,9 +160,9 @@ fun MainScreen(
             }
 
             if (isBottomBarVisible) {
-                LampBottomNavigation(navController, Gray)
-            } else {
                 LampBottomNavigation(navController, LampBlack)
+            } else {
+                LampBottomNavigation(navController, Gray)
             }
         }
     ) { innerPadding ->
@@ -193,7 +194,6 @@ fun MainScreen(
             forgotPasswordNavGraph(padding = innerPadding, navController = navController)
             reviewNavGraph(padding = innerPadding, navController = navController)
             assessmentListNavGraph(padding = innerPadding, navController = navController)
-//            voteNavGraph(padding = innerPadding, navController = navController)
         }
     }
 }

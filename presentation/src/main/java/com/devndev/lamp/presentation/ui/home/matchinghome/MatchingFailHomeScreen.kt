@@ -19,13 +19,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,7 +43,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.presentation.R
@@ -65,20 +61,24 @@ fun MatchingFailHomeScreen(
     navController: NavController,
     updateEvent: SharedFlow<Unit>,
     updateStatus: SharedFlow<String>,
+    onBottomScreen: (Boolean) -> Unit,
     viewModel: MatchingHomeViewModel = hiltViewModel()
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-    var kickUserId by remember { mutableIntStateOf(0) }
-    var kickUserName by remember { mutableStateOf("") }
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
-    val navOption = navOptions {
-        launchSingleTop = true
-    }
 
     LaunchedEffect(Unit) {
+        onBottomScreen(false)
+
         updateEvent.collect {
             viewModel.getMyLamp()
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            onBottomScreen(true)
         }
     }
 

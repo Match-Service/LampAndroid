@@ -115,7 +115,7 @@ fun HomeScreen(
 
             "FIND_LAMP" -> {
                 if (isFind) {
-                    MatchingVoteScreen(modifier = Modifier, navController = navController, onScreen = onBarVisibleChange)
+                    MatchingVoteScreen(modifier = Modifier, navController = navController, onTopScreen = onTopBarVisibleChange, onBottomScreen = onBottomBarVisibleChange)
                 } else {
                     FindLampScreen(modifier = Modifier, navController = navController)
                 }
@@ -130,7 +130,8 @@ fun HomeScreen(
                     modifier = modifier,
                     navController = navController,
                     updateEvent = updateEvent,
-                    updateStatus = updateStatus
+                    updateStatus = updateStatus,
+                    onBottomScreen = onBottomBarVisibleChange
                 )
             }
 //
