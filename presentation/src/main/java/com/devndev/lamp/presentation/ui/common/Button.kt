@@ -109,6 +109,10 @@ fun LampButton(
             .buttonBackGround(isGradient = isGradient, enabled = enabled)
             .fillMaxWidth()
             .height(height.dp)
+    } else if (buttonWidth == 1000) {
+        Modifier
+            .buttonBackGround(isGradient = isGradient, enabled = enabled)
+            .height(height.dp)
     } else {
         Modifier
             .buttonBackGround(isGradient = isGradient, enabled = enabled)
