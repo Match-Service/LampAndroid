@@ -42,6 +42,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     modifier: Modifier,
     navController: NavController,
+    isAssessmentExist: (Boolean) -> Unit,
     onTopBarVisibleChange: (Boolean) -> Unit,
     onBottomBarVisibleChange: (Boolean) -> Unit
 ) {
@@ -93,7 +94,13 @@ fun HomeScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         when (userStatus) {
             "ON_BOARDING" -> {
-                NormalHomeScreen(modifier = modifier, navController = navController)
+                NormalHomeScreen(
+                    modifier = modifier,
+                    navController = navController,
+                    isAssessmentExist = {
+                        isAssessmentExist(it)
+                    }
+                )
             }
 
             "PREPARE",
@@ -108,7 +115,7 @@ fun HomeScreen(
 
             "FIND_LAMP" -> {
                 if (isFind) {
-                    MatchingVoteScreen(modifier = Modifier, navController = navController, onTopScreen = onTopBarVisibleChange, onBottomScreen = onBottomBarVisibleChange)
+                    MatchingVoteScreen(modifier = Modifier, navController = navController, onScreen = onBarVisibleChange)
                 } else {
                     FindLampScreen(modifier = Modifier, navController = navController)
                 }

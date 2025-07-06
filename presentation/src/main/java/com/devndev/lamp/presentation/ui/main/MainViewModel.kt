@@ -52,4 +52,8 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    fun updateIsAssessmentExist(isExist: Boolean) {
+        _state.update { it.copy(isAssessmentListExist = isExist) }
+    }
 }

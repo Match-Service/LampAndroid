@@ -2,6 +2,8 @@ package com.devndev.lamp.data.di
 
 import com.devndev.lamp.data.datsource.alarm.AlarmDataSource
 import com.devndev.lamp.data.datsource.alarm.AlarmDataSourceImpl
+import com.devndev.lamp.data.datsource.assessment.AssessmentDataSource
+import com.devndev.lamp.data.datsource.assessment.AssessmentDataSourceImpl
 import com.devndev.lamp.data.datsource.chat.ChatDataSource
 import com.devndev.lamp.data.datsource.chat.ChatDataSourceImpl
 import com.devndev.lamp.data.datsource.lamp.LampDataSource
@@ -62,4 +64,8 @@ interface DataSourceModule {
     @Singleton
     @Binds
     fun bindChatDataSource(chatDataSourceImpl: ChatDataSourceImpl): ChatDataSource
+
+    @Singleton
+    @Binds
+    fun bindAssessmentDataSource(assessmentDataSourceImpl: AssessmentDataSourceImpl): AssessmentDataSource
 }

@@ -64,11 +64,14 @@ import com.devndev.lamp.presentation.ui.signup.navigation.startLampNavGraph
 @Composable
 fun MainScreen(
     modifier: Modifier,
+    viewModel: MainViewModel = hiltViewModel(),
     signOut: () -> Unit
 ) {
     val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
+
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -111,7 +114,10 @@ fun MainScreen(
                     currentRoute != Route.CHAT_LIST
                 ) {
                     when (currentRoute) {
-                        Route.SIGNUP, Route.EMAIL_LOGIN, Route.FORGOT_PASSWORD -> {
+                        Route.SIGNUP,
+                        Route.EMAIL_LOGIN,
+                        Route.FORGOT_PASSWORD,
+                        Route.ASSESSMENT_LIST -> {
                             LampTopBar(
                                 navController = navController,
                                 isAlarmIconNeed = false,
@@ -123,7 +129,8 @@ fun MainScreen(
                             LampTopBar(
                                 navController = navController,
                                 isAlarmIconNeed = true,
-                                needAlarmUpdate = isNeedAlarmUpdate
+                                needAlarmUpdate = isNeedAlarmUpdate,
+                                isAssessmentExist = state.isAssessmentListExist
                             )
                         }
                     }
@@ -162,7 +169,17 @@ fun MainScreen(
             navController,
             startDestination = Route.HOME
         ) {
-            homeNavGraph(padding = innerPadding, navController = navController, isTopBarVisible = isTopBarVisible, isBottomBarVisible = isBottomBarVisible, onTopBarVisibleChange = { isTopBarVisible = it }, onBottomBarVisibleChange = { isBottomBarVisible = it })
+            homeNavGraph(
+                padding = innerPadding,
+                navController = navController,
+                isTopBarVisible = isTopBarVisible,
+                isBottomBarVisible = isBottomBarVisible,
+                onTopBarVisibleChange = { isTopBarVisible = it },
+                onBottomBarVisibleChange = { isBottomBarVisible = it },
+                isAssessmentExist = {
+                    viewModel.updateIsAssessmentExist(it)
+                }
+            )
             chatListNavGraph(padding = innerPadding, navController = navController)
             myPageNavGraph(padding = innerPadding, navController = navController, signOut = signOut)
             searchNavGraph(padding = innerPadding, navController = navController)
@@ -175,6 +192,7 @@ fun MainScreen(
             emailLoginNavGraph(padding = innerPadding, navController = navController)
             forgotPasswordNavGraph(padding = innerPadding, navController = navController)
             reviewNavGraph(padding = innerPadding, navController = navController)
+            assessmentListNavGraph(padding = innerPadding, navController = navController)
 //            voteNavGraph(padding = innerPadding, navController = navController)
         }
     }
@@ -187,6 +205,7 @@ fun LampTopBar(
     color: Color = LampBlack,
     needAlarmUpdate: Boolean,
     isChatExist: Boolean = false,
+    isAssessmentExist: Boolean = false,
     alarmViewModel: AlarmViewModel = hiltViewModel()
 ) {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
@@ -211,6 +230,12 @@ fun LampTopBar(
         Color.White
     } else {
         LightGray
+    }
+
+    val backgroundColor = if (isAssessmentExist) {
+        Gray
+    } else {
+        color
     }
 
     Row(
