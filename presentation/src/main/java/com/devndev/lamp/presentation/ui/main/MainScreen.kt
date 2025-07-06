@@ -117,7 +117,7 @@ fun MainScreen(
                         Route.SIGNUP,
                         Route.EMAIL_LOGIN,
                         Route.FORGOT_PASSWORD,
-                        Route.ASSESSMENT_LIST-> {
+                        Route.ASSESSMENT_LIST -> {
                             LampTopBar(
                                 navController = navController,
                                 isAlarmIconNeed = false,
