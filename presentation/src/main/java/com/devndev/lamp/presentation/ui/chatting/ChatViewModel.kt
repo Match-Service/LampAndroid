@@ -99,9 +99,9 @@ class ChatViewModel @Inject constructor(
                 .onSuccess { newMessage ->
                     Log.d(TAG, newMessage.toString())
                     val message = if (lastMessageId == null) {
-                        newMessage
+                        newMessage.reversed()
                     } else {
-                        newMessage + uiState.value.chatMessage
+                        newMessage.reversed() + uiState.value.chatMessage
                     }
                     _uiState.update { it.copy(chatMessage = message) }
                 }
