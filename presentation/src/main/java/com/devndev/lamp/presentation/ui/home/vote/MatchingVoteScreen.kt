@@ -106,7 +106,7 @@ fun MatchingVoteScreen(
     modifier: Modifier,
     navController: NavController?,
     onTopScreen: (Boolean) -> Unit,
-    onBottomScreen: (Boolean) -> Unit,
+    onBottomScreen: (Boolean) -> Unit
 ) {
     var isLoaded by remember { mutableStateOf(false) }
     val matchSuggestion by viewModel.matchSuggestion.collectAsState()
