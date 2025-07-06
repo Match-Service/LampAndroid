@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.chat.ChatItem
+import com.devndev.lamp.domain.usecase.chat.GetAppointmentListUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatInfoUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatListUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatMessageUseCase
@@ -30,7 +31,8 @@ class ChatViewModel @Inject constructor(
     private val getChatInfoUseCase: GetChatInfoUseCase,
     private val sendChatUseCase: SendChatUseCase,
     private val addChatListenerUseCase: AddChatListenerUseCase,
-    private val removeChatListenerUseCase: RemoveChatListenerUseCase
+    private val removeChatListenerUseCase: RemoveChatListenerUseCase,
+    private val getAppointmentListUseCase: GetAppointmentListUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
@@ -221,6 +223,24 @@ class ChatViewModel @Inject constructor(
                 removeChatListenerUseCase()
             } catch (e: Exception) {
                 Log.e(TAG, "removeChatListener error", e)
+            }
+        }
+    }
+
+    fun getAppointment(chatRoomId: Int) {
+        viewModelScope.launch {
+            getAppointmentListUseCase(
+                chatRoomId = chatRoomId
+            ).onSuccess { appointment ->
+                Log.d(TAG, "getAppointmentList Success $appointment")
+                _uiState.update {
+                    it.copy(
+                        isEmpty = appointment.chatAppointmentList.isEmpty(),
+                        appointment = appointment
+                    )
+                }
+            }.onFailure {
+                Log.e(TAG, "getAppointmentListUseCase Failure", it)
             }
         }
     }

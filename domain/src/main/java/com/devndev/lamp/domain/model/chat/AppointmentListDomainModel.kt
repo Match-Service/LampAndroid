@@ -5,7 +5,8 @@ data class AppointmentListDomainModel(
     val isReady: Boolean,
     val voteReadyUserCount: Int,
     val allUserCount: Int,
-    val chatAppointmentList: List<AppointmentDomainModel>
+    val chatAppointmentList: List<AppointmentDomainModel>,
+    val selectedChatAppointment: SelectedChatAppointmentDomainModel?
 )
 
 data class AppointmentDomainModel(
@@ -23,4 +24,9 @@ data class AppointmentItem(
     val gender: String,
     val userName: String,
     val isMine: Boolean
+)
+
+data class SelectedChatAppointmentDomainModel(
+    val location: String,
+    val meetingTime: String
 )
