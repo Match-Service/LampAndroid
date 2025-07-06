@@ -72,7 +72,9 @@ import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
+import com.devndev.lamp.presentation.theme.getMainColor
 import com.devndev.lamp.presentation.ui.appointment.navigation.navigateAppointment
+import com.devndev.lamp.presentation.ui.common.AppointmentStatus
 import com.devndev.lamp.presentation.ui.common.ProfilePopup
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -99,8 +101,15 @@ fun ChatScreen(
 
     var textFieldHeight by remember { mutableStateOf(0) }
 
+    val color = if (state.getAppointmentStatus() == AppointmentStatus.EMPTY_APPOINTMENT) {
+        Color.White
+    } else {
+        getMainColor(state.myInfo?.gender ?: "MALE")
+    }
+
     LaunchedEffect(Unit) {
         viewModel.addChatListener(chatRoomId)
+        viewModel.getAppointment(chatRoomId)
     }
 
     BackHandler {
@@ -196,7 +205,9 @@ fun ChatScreen(
             },
             onCalendarClick = {
                 navController.navigateAppointment()
-            }
+            },
+            isAppointmentConfirmed = state.getAppointmentStatus() == AppointmentStatus.CONFIRM_APPOINTMENT,
+            color = color
         )
 
         LazyColumn(
@@ -596,6 +607,7 @@ fun ChatBubble(
                     }
                 }
             }
+
             MessageType.CONFIRM_APPOINTMENT,
             MessageType.ALL_READY_APPOINTMENT -> {
                 Box(
@@ -616,6 +628,7 @@ fun ChatBubble(
                     )
                 }
             }
+
             null -> {}
         }
     }
@@ -625,7 +638,9 @@ fun ChatBubble(
 fun ChatTopBar(
     chat: ChatUiState,
     onBackClick: () -> Unit,
-    onCalendarClick: () -> Unit
+    onCalendarClick: () -> Unit,
+    isAppointmentConfirmed: Boolean,
+    color: Color
 ) {
     Row(
         modifier = Modifier
@@ -704,16 +719,18 @@ fun ChatTopBar(
             }
         }
 
-        Icon(
-            painter = painterResource(id = R.drawable.calendar),
-            contentDescription = "calendar",
-            tint = Color.White,
-            modifier = Modifier
-                .size(24.dp)
-                .clickable {
-                    onCalendarClick()
-                }
-        )
+        if (!isAppointmentConfirmed) {
+            Icon(
+                painter = painterResource(id = R.drawable.calendar),
+                contentDescription = "calendar",
+                tint = color,
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable {
+                        onCalendarClick()
+                    }
+            )
+        }
     }
 }
 
