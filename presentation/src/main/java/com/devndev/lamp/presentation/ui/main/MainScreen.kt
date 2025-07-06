@@ -76,7 +76,8 @@ fun MainScreen(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var isBarVisible by remember { mutableStateOf(false) }
+    var isTopBarVisible by remember { mutableStateOf(true) }
+    var isBottomBarVisible by remember { mutableStateOf(true) }
 
     var isNeedAlarmUpdate by remember { mutableStateOf(false) }
 
@@ -106,7 +107,7 @@ fun MainScreen(
         },
         containerColor = BackGroundColor,
         topBar = {
-            if (!isBarVisible) {
+            if (isTopBarVisible) {
                 if (
                     currentRoute != Route.START_LAMP &&
                     currentRoute != Route.CREATION &&
@@ -158,10 +159,10 @@ fun MainScreen(
                 Spacer(modifier = Modifier.height(0.dp))
             }
 
-            if (isBarVisible) {
-                LampBottomNavigation(navController, Gray)
-            } else {
+            if (isBottomBarVisible) {
                 LampBottomNavigation(navController, LampBlack)
+            } else {
+                LampBottomNavigation(navController, Gray)
             }
         }
     ) { innerPadding ->
@@ -172,8 +173,10 @@ fun MainScreen(
             homeNavGraph(
                 padding = innerPadding,
                 navController = navController,
-                isBarVisible = isBarVisible,
-                onBarVisibleChange = { isBarVisible = it },
+                isTopBarVisible = isTopBarVisible,
+                isBottomBarVisible = isBottomBarVisible,
+                onTopBarVisibleChange = { isTopBarVisible = it },
+                onBottomBarVisibleChange = { isBottomBarVisible = it },
                 isAssessmentExist = {
                     viewModel.updateIsAssessmentExist(it)
                 }
@@ -191,7 +194,6 @@ fun MainScreen(
             forgotPasswordNavGraph(padding = innerPadding, navController = navController)
             reviewNavGraph(padding = innerPadding, navController = navController)
             assessmentListNavGraph(padding = innerPadding, navController = navController)
-//            voteNavGraph(padding = innerPadding, navController = navController)
         }
     }
 }
@@ -240,7 +242,7 @@ fun LampTopBar(
         modifier = Modifier
             .fillMaxWidth()
             .height(72.dp)
-            .background(backgroundColor)
+            .background(color)
             .padding(horizontal = 16.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically

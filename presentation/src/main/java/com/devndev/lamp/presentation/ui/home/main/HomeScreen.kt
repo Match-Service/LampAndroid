@@ -30,6 +30,7 @@ import com.devndev.lamp.presentation.theme.IncTypography
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.getMainColor
 import com.devndev.lamp.presentation.ui.home.findlamp.FindLampScreen
+import com.devndev.lamp.presentation.ui.home.matchinghome.MatchingFailHomeScreen
 import com.devndev.lamp.presentation.ui.home.matchinghome.MatchingHomeScreen
 import com.devndev.lamp.presentation.ui.home.normal.NormalHomeScreen
 import com.devndev.lamp.presentation.ui.home.vote.MatchingVoteScreen
@@ -42,7 +43,8 @@ fun HomeScreen(
     modifier: Modifier,
     navController: NavController,
     isAssessmentExist: (Boolean) -> Unit,
-    onBarVisibleChange: (Boolean) -> Unit
+    onTopBarVisibleChange: (Boolean) -> Unit,
+    onBottomBarVisibleChange: (Boolean) -> Unit
 ) {
     val logTag = "HomeScreen"
     val context = LocalContext.current
@@ -113,7 +115,7 @@ fun HomeScreen(
 
             "FIND_LAMP" -> {
                 if (isFind) {
-                    MatchingVoteScreen(modifier = Modifier, navController = navController, onScreen = onBarVisibleChange)
+                    MatchingVoteScreen(modifier = Modifier, navController = navController, onTopScreen = onTopBarVisibleChange, onBottomScreen = onBottomBarVisibleChange)
                 } else {
                     FindLampScreen(modifier = Modifier, navController = navController)
                 }
@@ -122,7 +124,16 @@ fun HomeScreen(
             "VISIT_WAITING" -> {
                 WaitingHomeScreen(modifier = modifier, navController = navController)
             }
-//        "FAILED" -> TODO("Not yet implementation")
+
+            "FAILED" -> {
+                MatchingFailHomeScreen(
+                    modifier = modifier,
+                    navController = navController,
+                    updateEvent = updateEvent,
+                    updateStatus = updateStatus,
+                    onBottomScreen = onBottomBarVisibleChange
+                )
+            }
 //
 //        "IN_PROGRESS" -> TODO("Not yet implementation")
 //

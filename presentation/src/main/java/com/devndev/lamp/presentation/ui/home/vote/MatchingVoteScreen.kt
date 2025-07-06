@@ -105,7 +105,8 @@ fun MatchingVoteScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     modifier: Modifier,
     navController: NavController?,
-    onScreen: (Boolean) -> Unit
+    onTopScreen: (Boolean) -> Unit,
+    onBottomScreen: (Boolean) -> Unit
 ) {
     var isLoaded by remember { mutableStateOf(false) }
     val matchSuggestion by viewModel.matchSuggestion.collectAsState()
@@ -156,12 +157,14 @@ fun MatchingVoteScreen(
         viewModel.getMatchSuggestion {
             isLoaded = true
         }
-        onScreen(true)
+        onTopScreen(false)
+        onBottomScreen(false)
     }
 
     DisposableEffect(Unit) {
         onDispose {
-            onScreen(false)
+            onTopScreen(true)
+            onBottomScreen(true)
         }
     }
 
