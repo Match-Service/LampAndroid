@@ -72,7 +72,8 @@ fun MainScreen(
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    var isBarVisible by remember { mutableStateOf(false) }
+    var isTopBarVisible by remember { mutableStateOf(true) }
+    var isBottomBarVisible by remember { mutableStateOf(true) }
 
     var isNeedAlarmUpdate by remember { mutableStateOf(false) }
 
@@ -102,7 +103,7 @@ fun MainScreen(
         },
         containerColor = BackGroundColor,
         topBar = {
-            if (!isBarVisible) {
+            if (isTopBarVisible) {
                 if (
                     currentRoute != Route.START_LAMP &&
                     currentRoute != Route.CREATION &&
@@ -150,7 +151,7 @@ fun MainScreen(
                 Spacer(modifier = Modifier.height(0.dp))
             }
 
-            if (isBarVisible) {
+            if (isBottomBarVisible) {
                 LampBottomNavigation(navController, Gray)
             } else {
                 LampBottomNavigation(navController, LampBlack)
@@ -161,7 +162,7 @@ fun MainScreen(
             navController,
             startDestination = Route.HOME
         ) {
-            homeNavGraph(padding = innerPadding, navController = navController, isBarVisible = isBarVisible, onBarVisibleChange = { isBarVisible = it })
+            homeNavGraph(padding = innerPadding, navController = navController, isTopBarVisible = isTopBarVisible, isBottomBarVisible = isBottomBarVisible, onTopBarVisibleChange = { isTopBarVisible = it }, onBottomBarVisibleChange = { isBottomBarVisible = it })
             chatListNavGraph(padding = innerPadding, navController = navController)
             myPageNavGraph(padding = innerPadding, navController = navController, signOut = signOut)
             searchNavGraph(padding = innerPadding, navController = navController)

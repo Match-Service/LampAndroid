@@ -19,14 +19,17 @@ fun NavGraphBuilder.homeNavGraph(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
     navController: NavController,
-    isBarVisible: Boolean,
-    onBarVisibleChange: (Boolean) -> Unit
+    isTopBarVisible: Boolean,
+    isBottomBarVisible: Boolean,
+    onTopBarVisibleChange: (Boolean) -> Unit,
+    onBottomBarVisibleChange: (Boolean) -> Unit
 ) {
     composable(Route.HOME) {
         HomeScreen(
             modifier = modifier.padding(padding),
             navController = navController,
-            onBarVisibleChange = onBarVisibleChange
+            onTopBarVisibleChange = onTopBarVisibleChange,
+            onBottomBarVisibleChange = onBottomBarVisibleChange
         )
     }
 }

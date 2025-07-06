@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,7 +48,7 @@ fun LampButtonWithIcon(
     onIconClick: () -> Unit = {},
     enabled: Boolean
 ) {
-    val buttonColors = getButtonColor(isGradient = isGradient)
+    val buttonColors = getButtonColor(isGradient = isGradient, buttonText = buttonText)
     val buttonModifier = Modifier.buttonBackGround(isGradient = isGradient, true)
 
     Button(
@@ -101,7 +102,7 @@ fun LampButton(
     textStyle: TextStyle = Typography.medium18,
     height: Int = 48
 ) {
-    val buttonColors = getButtonColor(isGradient = isGradient)
+    val buttonColors = getButtonColor(isGradient = isGradient, buttonText = buttonText)
 
     val buttonModifier = if (buttonWidth == 0) {
         Modifier
@@ -111,6 +112,7 @@ fun LampButton(
     } else {
         Modifier
             .buttonBackGround(isGradient = isGradient, enabled = enabled)
+            .width(buttonWidth.dp)
             .height(height.dp)
     }
 
@@ -141,13 +143,20 @@ fun LampButton(
 }
 
 @Composable
-fun getButtonColor(isGradient: Boolean): ButtonColors {
+fun getButtonColor(isGradient: Boolean, buttonText: String): ButtonColors {
     return if (isGradient) {
         ButtonDefaults.buttonColors(
             containerColor = Color.Transparent,
             contentColor = Color.White,
             disabledContentColor = LightGray,
             disabledContainerColor = Gray
+        )
+    } else if (buttonText == stringResource(id = R.string.cancel_matching)) {
+        ButtonDefaults.buttonColors(
+            containerColor = LightGray,
+            contentColor = Color.White,
+            disabledContainerColor = LightGray,
+            disabledContentColor = Color.White
         )
     } else {
         ButtonDefaults.buttonColors(
