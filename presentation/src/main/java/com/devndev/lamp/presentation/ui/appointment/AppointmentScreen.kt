@@ -125,7 +125,8 @@ fun AppointmentScreen(
                     onAppointmentSelected = {
                         selectedAppointment = it
                     },
-                    isAppointmentClickable = isAppointmentClickable
+                    isAppointmentClickable = isAppointmentClickable,
+                    appointmentStatus = state.getAppointmentStatus()
                 )
             }
         }
