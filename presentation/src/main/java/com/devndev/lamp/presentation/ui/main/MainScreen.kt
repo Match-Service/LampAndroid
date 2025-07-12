@@ -86,6 +86,7 @@ fun MainScreen(
         isNeedAlarmUpdate = when (currentRoute) {
             Route.HOME,
             Route.CHAT_LIST,
+            Route.CHAT_LIST_WITH_ID,
             Route.MYPAGE,
             Route.SEARCH,
             Route.INVITE,
@@ -113,7 +114,8 @@ fun MainScreen(
                     currentRoute != Route.START_LAMP &&
                     currentRoute != Route.CREATION &&
                     currentRoute != Route.REVIEW &&
-                    currentRoute != Route.CHAT_LIST
+                    currentRoute != Route.CHAT_LIST &&
+                    currentRoute != Route.CHAT_LIST_WITH_ID
                 ) {
                     when (currentRoute) {
                         Route.SIGNUP,
@@ -342,7 +344,7 @@ fun LampBottomNavigation(
                     Icon(
                         painter = painterResource(id = R.drawable.chatting),
                         contentDescription = Route.CHAT_LIST,
-                        tint = if (currentRoute == Route.CHAT_LIST) Color.White else LightGray,
+                        tint = if (currentRoute == Route.CHAT_LIST || currentRoute == Route.CHAT_LIST_WITH_ID) Color.White else LightGray,
                         modifier = Modifier.size(24.dp)
                     )
                     Spacer(modifier = Modifier.height(5.dp))
@@ -350,7 +352,7 @@ fun LampBottomNavigation(
             },
             selected = false,
             onClick = {
-                navController.navigateChatList(chattingNavOptions)
+                navController.navigateChatList(chattingNavOptions, null)
             },
             modifier = Modifier.padding(top = 15.dp, bottom = 20.dp),
             enabled = currentRoute != Route.CHAT_LIST
