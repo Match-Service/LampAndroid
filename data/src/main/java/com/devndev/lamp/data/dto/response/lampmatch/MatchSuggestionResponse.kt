@@ -72,6 +72,8 @@ data class MatchSuggestionUser(
     val birth: String,
     @Json(name = "bio")
     val bio: String?,
+    @Json(name = "instagramId")
+    val instagramId: String?,
     @Json(name = "profileImageUrls")
     val profileImageUrls: List<String>,
     @Json(name = "individuality")
@@ -87,6 +89,7 @@ data class MatchSuggestionUser(
             jobName = jobName.orEmpty(),
             birth = birth,
             bio = bio.orEmpty(),
+            instagramId = instagramId.orEmpty(),
             profileImageUrls = profileImageUrls,
             individuality = individuality?.toDomainModel(),
             bioQuestion = bioQuestion.map { it.toDomainModel() }

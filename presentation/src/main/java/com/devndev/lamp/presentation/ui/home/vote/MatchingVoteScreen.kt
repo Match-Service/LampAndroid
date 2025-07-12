@@ -93,6 +93,7 @@ import com.devndev.lamp.presentation.theme.MoodYellow
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
+import com.devndev.lamp.presentation.utils.InstagramUtils
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -269,7 +270,7 @@ fun MatchingVoteScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        ProfileTop(matchSuggestion = matchSuggestion, index = selectedImage)
+                        ProfileTop(context = context, matchSuggestion = matchSuggestion, index = selectedImage)
                         Spacer(modifier = Modifier.height(35.dp))
                         ProfileAttractive(matchSuggestion = matchSuggestion, index = selectedImage)
                         Spacer(modifier = Modifier.height(35.dp))
@@ -298,7 +299,7 @@ fun MatchingVoteScreen(
 
 // 프로필 상단부분
 @Composable
-fun ProfileTop(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
+fun ProfileTop(context: Context, matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
     val listState = remember { LazyListState() }
 
     // 대학교 list
@@ -320,6 +321,11 @@ fun ProfileTop(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
     val imageUrlList = listOf(
         matchSuggestion?.owner?.profileImageUrls
     ) + matchSuggestion?.participants?.map { it.profileImageUrls }
+
+    // 인스타그램 아이디 list
+    val instagramList = listOf(
+        matchSuggestion?.owner?.instagramId
+    ) + matchSuggestion?.participants?.map { it.instagramId }
 
     val imageCnt = imageUrlList[index]?.size
 
@@ -434,13 +440,15 @@ fun ProfileTop(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
             textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.width(10.dp))
-        Image(
-            modifier = Modifier
-                .size(23.dp)
-                .clickable { /*TODO : 인스타 계정으로 이동하도록 구현 필요*/ },
-            painter = painterResource(id = R.drawable.instagram_icon),
-            contentDescription = "Instagram Icon"
-        )
+        if (instagramList[index].toString().isNotEmpty()) {
+            Image(
+                modifier = Modifier
+                    .size(23.dp)
+                    .clickable { InstagramUtils.openInstagramProfile(context, instagramList[index].toString() ?: "") },
+                painter = painterResource(id = R.drawable.instagram_icon),
+                contentDescription = "Instagram Icon"
+            )
+        }
     }
     Row(
         modifier = Modifier
