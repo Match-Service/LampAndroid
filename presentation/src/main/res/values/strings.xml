@@ -279,6 +279,7 @@
     <string name="topbar_before_vote_msg">약속 장소와 날짜를 등록하고, 투표를 준비하세요!</string>
     <string name="topbar_vote_msg">투표하고 약속을 확정하세요</string>
 
+    <string name="agree_number">%d명</string>
 
     <!-- 온보딩 화면 -->
     <string name="lamp_title">램프</string>

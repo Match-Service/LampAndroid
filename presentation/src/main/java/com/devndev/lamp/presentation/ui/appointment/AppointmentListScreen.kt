@@ -34,6 +34,7 @@ import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
+import com.devndev.lamp.presentation.ui.common.AppointmentStatus
 import com.devndev.lamp.presentation.utils.DateFormatUtil
 
 @Composable
@@ -45,7 +46,8 @@ fun AppointmentList(
     onEditClick: (Int) -> Unit,
     onDeleteClick: (Int) -> Unit,
     onAppointmentSelected: (AppointmentItem) -> Unit = {},
-    isAppointmentClickable: Boolean
+    isAppointmentClickable: Boolean,
+    appointmentStatus: Int
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -80,7 +82,8 @@ fun AppointmentList(
                     onEditClick = { onEditClick(it) },
                     onDeleteClick = { onDeleteClick(it) },
                     onAppointmentSelected = { onAppointmentSelected(it) },
-                    isAppointmentClickable = isAppointmentClickable
+                    isAppointmentClickable = isAppointmentClickable,
+                    appointmentStatus = appointmentStatus
                 )
             }
         }
@@ -108,7 +111,8 @@ fun Appointment(
     onEditClick: (Int) -> Unit,
     onDeleteClick: (Int) -> Unit,
     onAppointmentSelected: (AppointmentItem) -> Unit,
-    isAppointmentClickable: Boolean
+    isAppointmentClickable: Boolean,
+    appointmentStatus: Int
 ) {
     val isSelected =
         selectedAppointment != null && appointment.appointment.chatAppointmentId == selectedAppointment.appointment.chatAppointmentId
@@ -117,7 +121,18 @@ fun Appointment(
         colors = listOf(WomanColor, ManColor)
     )
 
-    Column(
+    val alignment = when (appointmentStatus) {
+        AppointmentStatus.WAITING_VOTE,
+        AppointmentStatus.BEFORE_VOTE -> {
+            Alignment.CenterVertically
+        }
+
+        else -> {
+            Alignment.Top
+        }
+    }
+
+    Row(
         modifier = Modifier
             .fillMaxWidth()
             .then(
@@ -125,6 +140,12 @@ fun Appointment(
                     Modifier.border(
                         width = 1.dp,
                         color = LightGray,
+                        shape = RoundedCornerShape(15.dp)
+                    )
+                } else if (appointment.appointment.voted) {
+                    Modifier.border(
+                        width = 1.dp,
+                        brush = gradientBrush,
                         shape = RoundedCornerShape(15.dp)
                     )
                 } else {
@@ -145,11 +166,11 @@ fun Appointment(
                 }
             )
             .padding(15.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        verticalAlignment = alignment,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+        Column(
+            horizontalAlignment = Alignment.Start
         ) {
             val nameColor = if (appointment.gender == "MALE") {
                 ManColor
@@ -166,74 +187,109 @@ fun Appointment(
                 color = nameColor
             )
 
-            if (appointment.isMine) {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-                    Icon(
-                        painter = painterResource(R.drawable.edit_icon),
-                        contentDescription = "Edit Appointment",
-                        tint = LightGray,
-                        modifier = Modifier
-                            .size(18.dp)
-                            .clickable {
-                                onEditClick(appointment.appointment.chatAppointmentId)
-                            }
-                    )
-                    Icon(
-                        painter = painterResource(R.drawable.delete_icon),
-                        contentDescription = "Delete Appointment",
-                        tint = LightGray,
-                        modifier = Modifier
-                            .height(18.dp)
-                            .width(14.dp)
-                            .clickable {
-                                onDeleteClick(appointment.appointment.chatAppointmentId)
-                            }
-                    )
-                }
+            Spacer(modifier = Modifier.height(10.dp))
+
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.spacedBy(4.5.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.clock_icon),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(11.dp)
+                )
+                Text(
+                    text = DateFormatUtil.formatIsoToKoreanDate(appointment.appointment.meetingTime),
+                    color = Color.White,
+                    style = Typography.medium15
+                )
+            }
+
+            Spacer(modifier = Modifier.height(3.dp))
+
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.spacedBy(4.5.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.region_icon),
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier.size(11.dp)
+                )
+                Text(
+                    text = appointment.appointment.location,
+                    color = Color.White,
+                    style = Typography.medium15
+                )
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        when (appointmentStatus) {
+            AppointmentStatus.BEFORE_VOTE,
+            AppointmentStatus.WAITING_VOTE -> {
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    if (isSelected || appointment.appointment.voted) {
+                        Icon(
+                            painter = painterResource(R.drawable.heart),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    } else {
+                        Icon(
+                            painter = painterResource(R.drawable.heart_outlined),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(16.dp)
+                        )
+                    }
+                    Text(
+                        text = stringResource(
+                            R.string.agree_number,
+                            appointment.appointment.agreeCount
+                        ),
+                        color = Color.White,
+                        style = Typography.normal12
+                    )
+                }
+            }
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(4.5.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.clock_icon),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(11.dp)
-            )
-            Text(
-                text = DateFormatUtil.formatIsoToKoreanDate(appointment.appointment.meetingTime),
-                color = Color.White,
-                style = Typography.medium15
-            )
-        }
-
-        Spacer(modifier = Modifier.height(3.dp))
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(4.5.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.region_icon),
-                contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(11.dp)
-            )
-            Text(
-                text = appointment.appointment.location,
-                color = Color.White,
-                style = Typography.medium15
-            )
+            else -> {
+                if (appointment.isMine) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(R.drawable.edit_icon),
+                            contentDescription = "Edit Appointment",
+                            tint = LightGray,
+                            modifier = Modifier
+                                .size(18.dp)
+                                .clickable {
+                                    onEditClick(appointment.appointment.chatAppointmentId)
+                                }
+                        )
+                        Icon(
+                            painter = painterResource(R.drawable.delete_icon),
+                            contentDescription = "Delete Appointment",
+                            tint = LightGray,
+                            modifier = Modifier
+                                .height(18.dp)
+                                .width(14.dp)
+                                .clickable {
+                                    onDeleteClick(appointment.appointment.chatAppointmentId)
+                                }
+                        )
+                    }
+                }
+            }
         }
     }
 }
