@@ -21,6 +21,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -132,7 +133,9 @@ fun MainScreen(
                                 isAlarmIconNeed = true,
                                 needAlarmUpdate = isNeedAlarmUpdate,
                                 isAssessmentExist = state.isAssessmentListExist
-                            )
+                            ) {
+                                viewModel.updateIsAssessmentExist(false)
+                            }
                         }
                     }
                 } else {
@@ -154,15 +157,21 @@ fun MainScreen(
                 currentRoute != Route.FORGOT_PASSWORD &&
                 currentRoute != Route.REVIEW
             ) {
-                LampBottomNavigation(navController, LampBlack)
+                LampBottomNavigation(navController, LampBlack) {
+                    viewModel.updateIsAssessmentExist(false)
+                }
             } else {
                 Spacer(modifier = Modifier.height(0.dp))
             }
 
             if (isBottomBarVisible) {
-                LampBottomNavigation(navController, LampBlack)
+                LampBottomNavigation(navController, LampBlack) {
+                    viewModel.updateIsAssessmentExist(false)
+                }
             } else {
-                LampBottomNavigation(navController, Gray)
+                LampBottomNavigation(navController, Gray) {
+                    viewModel.updateIsAssessmentExist(false)
+                }
             }
         }
     ) { innerPadding ->
@@ -206,10 +215,13 @@ fun LampTopBar(
     needAlarmUpdate: Boolean,
     isChatExist: Boolean = false,
     isAssessmentExist: Boolean = false,
-    alarmViewModel: AlarmViewModel = hiltViewModel()
+    alarmViewModel: AlarmViewModel = hiltViewModel(),
+    updateAssessmentExist: () -> Unit = {}
 ) {
     val currentRoute = navController.currentBackStackEntry?.destination?.route
     val state by alarmViewModel.uiState.collectAsStateWithLifecycle()
+
+    val coroutineScope = rememberCoroutineScope()
 
     if (needAlarmUpdate) {
         alarmViewModel.getAlarm()
@@ -264,6 +276,7 @@ fun LampTopBar(
                     .size(24.dp)
                     .clickable {
                         if (currentRoute != Route.ALARM) {
+                            updateAssessmentExist()
                             navController.navigateAlarm()
                         } else {
                             navController.popBackStack()
@@ -275,7 +288,11 @@ fun LampTopBar(
 }
 
 @Composable
-fun LampBottomNavigation(navController: NavController, containerColor: Color) {
+fun LampBottomNavigation(
+    navController: NavController,
+    containerColor: Color,
+    updateAssessmentExist: () -> Unit
+) {
     NavigationBar(
         containerColor = containerColor,
         contentColor = Color.White,
@@ -353,6 +370,7 @@ fun LampBottomNavigation(navController: NavController, containerColor: Color) {
             },
             selected = false,
             onClick = {
+                updateAssessmentExist()
                 navController.navigateMyPage(myPageNavOptions)
             },
             modifier = Modifier.padding(top = 15.dp, bottom = 20.dp),

@@ -2,6 +2,7 @@ package com.devndev.lamp.presentation.ui.home.normal
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,6 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -40,6 +43,8 @@ import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.home.main.HomeTextArea
 import com.devndev.lamp.presentation.ui.home.normal.viewmodel.NormalHomeViewModel
 import com.devndev.lamp.presentation.ui.search.navigation.navigateSearch
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun NormalHomeScreen(
@@ -51,6 +56,8 @@ fun NormalHomeScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     val lifecycleOwner = LocalLifecycleOwner.current
+
+    val coroutineScope = rememberCoroutineScope()
 
     LaunchedEffect(state.assessmentList) {
         isAssessmentExist(state.getIsNeedAssessTopBar())
@@ -103,6 +110,7 @@ fun NormalHomeScreen(
                     icon = painterResource(id = R.drawable.arrow),
                     enabled = true,
                     onIconClick = {
+                        isAssessmentExist(false)
                         navController.navigateCreation(isEdit = false, navOptions = navOption)
                     }
                 )
@@ -111,11 +119,23 @@ fun NormalHomeScreen(
                     buttonText = stringResource(id = R.string.find_friend),
                     guideButtonText = stringResource(id = R.string.guide_find_friend),
                     onClick = {
+                        if (state.getIsNeedAssessTopBar()) {
+                            isAssessmentExist(false)
+                            coroutineScope.launch {
+                                delay(50)
+                            }
+                        }
                         navController.navigateSearch(navOption)
                     },
                     icon = painterResource(id = R.drawable.arrow),
                     enabled = true,
                     onIconClick = {
+                        if (state.getIsNeedAssessTopBar()) {
+                            isAssessmentExist(false)
+                            coroutineScope.launch {
+                                delay(50)
+                            }
+                        }
                         navController.navigateSearch(navOption)
                     }
                 )
@@ -132,10 +152,14 @@ fun NormalHomeScreen(
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(bottomStart = 25.dp, bottomEnd = 25.dp))
                     .background(Gray)
-                    .clickable {
+                    .padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 72.dp)
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
+                        isAssessmentExist(false)
                         navController.navigateAssessmentList()
-                    }
-                    .padding(start = 20.dp, end = 20.dp, bottom = 10.dp, top = 72.dp),
+                    },
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
