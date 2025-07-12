@@ -24,6 +24,7 @@ data class MatchSuggestionUserDomainModel(
     val jobName: String?,
     val birth: String,
     val bio: String?,
+    val instagramId: String?,
     val profileImageUrls: List<String>,
     val individuality: IndividualityDomainModel?,
     val bioQuestion: List<BioDomainModel>
