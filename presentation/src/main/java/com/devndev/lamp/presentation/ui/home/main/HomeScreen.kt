@@ -32,6 +32,7 @@ import com.devndev.lamp.presentation.theme.getMainColor
 import com.devndev.lamp.presentation.ui.home.findlamp.FindLampScreen
 import com.devndev.lamp.presentation.ui.home.matchinghome.MatchingFailHomeScreen
 import com.devndev.lamp.presentation.ui.home.matchinghome.MatchingHomeScreen
+import com.devndev.lamp.presentation.ui.home.matchinghome.MatchingSuccessHomeScreen
 import com.devndev.lamp.presentation.ui.home.normal.NormalHomeScreen
 import com.devndev.lamp.presentation.ui.home.vote.MatchingVoteScreen
 import com.devndev.lamp.presentation.ui.home.waiting.WaitingHomeScreen
@@ -52,6 +53,7 @@ fun HomeScreen(
     var backPressedOnce = remember { false }
     val matchSuggestion by viewModel.matchSuggestion.collectAsState()
     val isFind by viewModel.isFind.collectAsState()
+    val isMatchingSuccess by viewModel.isSuccess.collectAsState()
 
     val updateEvent = viewModel.updateEvent
     val updateStatus = viewModel.updateStatus
@@ -94,13 +96,25 @@ fun HomeScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         when (userStatus) {
             "ON_BOARDING" -> {
-                NormalHomeScreen(
-                    modifier = modifier,
-                    navController = navController,
-                    isAssessmentExist = {
-                        isAssessmentExist(it)
-                    }
-                )
+                // matchingSuccess 화면 띄우는 경우
+                Log.e("isMatchingSuccess", isMatchingSuccess.toString())
+                if (isMatchingSuccess) {
+                    MatchingSuccessHomeScreen(
+                        modifier = modifier,
+                        navController = navController,
+                        updateEvent = updateEvent,
+                        updateStatus = updateStatus,
+                        onBottomScreen = onBottomBarVisibleChange
+                    )
+                } else {
+                    NormalHomeScreen(
+                        modifier = modifier,
+                        navController = navController,
+                        isAssessmentExist = {
+                            isAssessmentExist(it)
+                        }
+                    )
+                }
             }
 
             "PREPARE",
@@ -114,6 +128,7 @@ fun HomeScreen(
             }
 
             "FIND_LAMP" -> {
+                Log.e("isFind", isFind.toString())
                 if (isFind) {
                     MatchingVoteScreen(modifier = Modifier, navController = navController, onTopScreen = onTopBarVisibleChange, onBottomScreen = onBottomBarVisibleChange)
                 } else {
@@ -134,11 +149,20 @@ fun HomeScreen(
                     onBottomScreen = onBottomBarVisibleChange
                 )
             }
+
+//            "FINISHED" -> {
+//                MatchingSuccessHomeScreen(
+//                    modifier = modifier,
+//                    navController = navController,
+//                    updateEvent = updateEvent,
+//                    updateStatus = updateStatus,
+//                    onBottomScreen = onBottomBarVisibleChange
+//                )
+//            }
 //
 //        "IN_PROGRESS" -> TODO("Not yet implementation")
 //
 //
-//        "FINISHED" -> TODO("Not yet implementation")
         }
     }
 }

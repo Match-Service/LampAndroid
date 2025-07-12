@@ -82,6 +82,9 @@ class HomeViewModel @Inject constructor(
     private val _isFind = MutableStateFlow(false)
     val isFind: StateFlow<Boolean> = _isFind
 
+    private val _isSuccess = MutableStateFlow(false)
+    val isSuccess: StateFlow<Boolean> = _isSuccess
+
     init {
         getMyInfo()
         getLampData()
@@ -257,8 +260,20 @@ class HomeViewModel @Inject constructor(
     fun updateFindState(lampId: Int, isFind: Boolean) {
         viewModelScope.launch {
             putBooleanUseCase("lampId$lampId", isFind)
-//        localDataSourceImpl.putBoolean("lampId$lampId", isFind)
             _isFind.value = isFind
+        }
+    }
+
+    suspend fun loadSuccessState(lampId: Int, isSuccess: Boolean): Boolean {
+        val result = getBooleanUseCase("matchSuccess$lampId", isSuccess)
+        _isSuccess.value = result
+        return result
+    }
+
+    fun updateSuccessState(lampId: Int, isSuccess: Boolean) {
+        viewModelScope.launch {
+            putBooleanUseCase("matchSuccess$lampId", isSuccess)
+            _isSuccess.value = isSuccess
         }
     }
 
