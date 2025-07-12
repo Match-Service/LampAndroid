@@ -347,7 +347,7 @@ fun MatchingHomeScreen(
                         if (state.isOwner || state.isMatching) {
                             LampButton(
                                 isGradient = !state.isMatching,
-                                buttonWidth = 300,
+                                buttonWidth = 156,
                                 buttonText = buttonText,
                                 onClick = {
                                     if (state.isMatching) {
@@ -671,17 +671,17 @@ fun VerticalSwipeGesture(
 
 @Composable
 fun ShadowCircleBackground(
-    animatableOffset: Animatable<Float, AnimationVector1D>,
-    animatableAlpha: Animatable<Float, AnimationVector1D>,
-    animatableShadowRadius: Animatable<Float, AnimationVector1D>,
+    animatableOffset: Animatable<Float, AnimationVector1D>?,
+    animatableAlpha: Animatable<Float, AnimationVector1D>?,
+    animatableShadowRadius: Animatable<Float, AnimationVector1D>?,
     mood: String?
 ) {
     // mood에 따라 색상 변경
     val shadowColor = when (mood) {
-        "FUNNY" -> MoodRed.copy(alpha = animatableAlpha.value)
-        "CASUAL" -> MoodYellow.copy(alpha = animatableAlpha.value)
-        "SERIOUS" -> MoodBlue.copy(alpha = animatableAlpha.value)
-        else -> MoodRed.copy(alpha = animatableAlpha.value)
+        "FUNNY" -> MoodRed.copy(alpha = animatableAlpha!!.value)
+        "CASUAL" -> MoodYellow.copy(alpha = animatableAlpha!!.value)
+        "SERIOUS" -> MoodBlue.copy(alpha = animatableAlpha!!.value)
+        else -> MoodRed.copy(alpha = animatableAlpha!!.value)
     }
 
     val configuration = LocalConfiguration.current
@@ -689,8 +689,8 @@ fun ShadowCircleBackground(
     val screenWidth = configuration.screenWidthDp.dp
     Canvas(modifier = Modifier.fillMaxSize()) {
         val size = size
-        val shadowRadius = animatableShadowRadius.value
-        val center = Offset(size.width / 2, screenHeight.toPx() / 8 * 6 + animatableOffset.value)
+        val shadowRadius = animatableShadowRadius!!.value
+        val center = Offset(size.width / 2, screenHeight.toPx() / 8 * 6 + animatableOffset!!.value)
 
         val radius = (screenWidth * (250f / 360f)).toPx()
         drawIntoCanvas { canvas ->

@@ -21,6 +21,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
@@ -51,6 +52,7 @@ import com.devndev.lamp.presentation.theme.Gray3
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import com.devndev.lamp.presentation.ui.home.matchinghome.viewmodel.MatchingHomeViewModel
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -67,9 +69,16 @@ fun MatchingFailHomeScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val configuration = LocalConfiguration.current
     val screenHeight = configuration.screenHeightDp.dp
+    val homeViewModel: HomeViewModel = hiltViewModel()
+    val matchSuggestion = homeViewModel.matchSuggestion.collectAsState()
 
     LaunchedEffect(Unit) {
         onBottomScreen(false)
+
+        matchSuggestion.value?.let { suggestion ->
+            homeViewModel.updateSuccessState(suggestion.lampId, false)
+            homeViewModel.updateFindState(suggestion.lampId, false)
+        }
 
         updateEvent.collect {
             viewModel.getMyLamp()

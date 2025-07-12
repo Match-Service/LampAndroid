@@ -158,6 +158,9 @@ fun MatchingVoteScreen(
         viewModel.getMatchSuggestion {
             isLoaded = true
         }
+        matchSuggestion?.lampId?.let {
+            viewModel.updateSuccessState(it, true)
+        }
         onTopScreen(false)
         onBottomScreen(false)
     }
