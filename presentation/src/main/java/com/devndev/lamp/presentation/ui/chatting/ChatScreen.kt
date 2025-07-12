@@ -27,6 +27,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -76,6 +77,7 @@ import com.devndev.lamp.presentation.theme.getMainColor
 import com.devndev.lamp.presentation.ui.appointment.navigation.navigateAppointment
 import com.devndev.lamp.presentation.ui.common.AppointmentStatus
 import com.devndev.lamp.presentation.ui.common.ProfilePopup
+import com.devndev.lamp.presentation.utils.DateFormatUtil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -206,8 +208,8 @@ fun ChatScreen(
             onCalendarClick = {
                 navController.navigateAppointment()
             },
-            isAppointmentConfirmed = state.getAppointmentStatus() == AppointmentStatus.CONFIRM_APPOINTMENT,
-            color = color
+            color = color,
+            appointmentStatus = state.getAppointmentStatus()
         )
 
         LazyColumn(
@@ -544,10 +546,10 @@ fun ChatBubble(
                             brush = gradientBrush,
                             shape = RoundedCornerShape(22.dp)
                         )
-                        .padding(vertical = 5.dp, horizontal = 15.dp)
                         .clickable {
                             onCreateAppointChatClick()
                         }
+                        .padding(vertical = 5.dp, horizontal = 15.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -568,7 +570,8 @@ fun ChatBubble(
                 }
             }
 
-            MessageType.READY_APPOINTMENT -> {
+            MessageType.READY_APPOINTMENT,
+            MessageType.VOTE_APPOINTMENT -> {
                 Box(
                     modifier = Modifier
                         .background(
@@ -580,10 +583,10 @@ fun ChatBubble(
                             brush = gradientBrush,
                             shape = RoundedCornerShape(22.dp)
                         )
-                        .padding(vertical = 5.dp, horizontal = 15.dp)
                         .clickable {
                             onCreateAppointChatClick()
                         }
+                        .padding(vertical = 5.dp, horizontal = 15.dp)
                 ) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
@@ -616,10 +619,16 @@ fun ChatBubble(
                             brush = gradientBrush,
                             shape = RoundedCornerShape(22.dp)
                         )
+                        .then(
+                            if (message.messageTypeEnum != MessageType.CONFIRM_APPOINTMENT) {
+                                Modifier.clickable {
+                                    onCreateAppointChatClick()
+                                }
+                            } else {
+                                Modifier
+                            }
+                        )
                         .padding(vertical = 5.dp, horizontal = 15.dp)
-                        .clickable {
-                            onCreateAppointChatClick()
-                        }
                 ) {
                     Text(
                         text = message.message,
@@ -639,98 +648,200 @@ fun ChatTopBar(
     chat: ChatUiState,
     onBackClick: () -> Unit,
     onCalendarClick: () -> Unit,
-    isAppointmentConfirmed: Boolean,
-    color: Color
+    color: Color,
+    appointmentStatus: Int
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(bottomStart = 25.dp, bottomEnd = 25.dp))
             .background(Gray)
             .padding(start = 16.dp, end = 16.dp, bottom = 15.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Row(
-            modifier = Modifier,
-            horizontalArrangement = Arrangement.spacedBy(20.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Icon(
-                painterResource(id = R.drawable.back_arrow),
-                contentDescription = "뒤로가기",
-                tint = Color.White,
-                modifier = Modifier.clickable {
-                    onBackClick()
-                }
-            )
-            Column(
-                verticalArrangement = Arrangement.spacedBy(2.dp)
+            Row(
+                modifier = Modifier,
+                horizontalArrangement = Arrangement.spacedBy(20.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(3.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                Icon(
+                    painterResource(id = R.drawable.back_arrow),
+                    contentDescription = "뒤로가기",
+                    tint = Color.White,
+                    modifier = Modifier.clickable {
+                        onBackClick()
+                    }
+                )
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.bulb),
-                        contentDescription = null,
-                        tint = Gray3,
-                        modifier = Modifier.height(10.dp)
-                    )
-                    Text(
-                        text = formatDateExceptYear(chat.chatInfo?.startDate) + stringResource(id = R.string.lamp_on),
-                        color = Gray3,
-                        style = Typography.normal12
-                    )
-                    Spacer(modifier = Modifier.width(7.dp))
-                    Icon(
-                        painter = painterResource(id = R.drawable.mypage),
-                        contentDescription = null,
-                        tint = Gray3,
-                        modifier = Modifier.height(10.dp)
-                    )
-                    // todo ? 뭔가 이상함 숫자가 추후 램프 정상 매칭 가능할때 살펴보기
-                    Text(
-                        text = "${((chat.chatInfo?.inviteUserCount ?: 0) + 1) / 2} : ${((chat.chatInfo?.inviteUserCount ?: 0) + 1) / 2}",
-                        color = Gray3,
-                        style = Typography.normal12
-                    )
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(3.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.bulb),
+                            contentDescription = null,
+                            tint = Gray3,
+                            modifier = Modifier.height(10.dp)
+                        )
+                        Text(
+                            text = formatDateExceptYear(chat.chatInfo?.startDate) + stringResource(
+                                id = R.string.lamp_on
+                            ),
+                            color = Gray3,
+                            style = Typography.normal12
+                        )
+                        Spacer(modifier = Modifier.width(7.dp))
+                        Icon(
+                            painter = painterResource(id = R.drawable.mypage),
+                            contentDescription = null,
+                            tint = Gray3,
+                            modifier = Modifier.height(10.dp)
+                        )
+                        // todo ? 뭔가 이상함 숫자가 추후 램프 정상 매칭 가능할때 살펴보기
+                        Text(
+                            text = "${((chat.chatInfo?.inviteUserCount ?: 0) + 1) / 2} : ${((chat.chatInfo?.inviteUserCount ?: 0) + 1) / 2}",
+                            color = Gray3,
+                            style = Typography.normal12
+                        )
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(5.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = chat.chatInfo?.myLampName ?: "",
+                            color = Color.White,
+                            style = Typography.medium15
+                        )
+                        Icon(
+                            modifier = Modifier.size(10.dp),
+                            painter = painterResource(id = R.drawable.heart),
+                            contentDescription = null,
+                            tint = Color.White
+                        )
+                        Text(
+                            text = chat.chatInfo?.otherLampName ?: "",
+                            color = Color.White,
+                            style = Typography.medium15
+                        )
+                    }
                 }
+            }
+
+            if (appointmentStatus != AppointmentStatus.CONFIRM_APPOINTMENT) {
+                Icon(
+                    painter = painterResource(id = R.drawable.calendar),
+                    contentDescription = "calendar",
+                    tint = color,
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable {
+                            onCalendarClick()
+                        }
+                )
+            }
+        }
+        if (appointmentStatus != AppointmentStatus.EMPTY_APPOINTMENT) {
+            HorizontalDivider(thickness = 1.dp, color = LightGray)
+        }
+        when (appointmentStatus) {
+            AppointmentStatus.CONFIRM_APPOINTMENT -> {
+                val appointmentTime = chat.appointment!!.selectedChatAppointment!!.meetingTime
+                val dateTime =
+                    DateFormatUtil.formatIsoToKoreanDate(appointmentTime).split(" ", limit = 2)[1]
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(5.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    Icon(
+                        painter = painterResource(R.drawable.calendar),
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = color
+                    )
+                    Spacer(modifier = Modifier.width(3.dp))
                     Text(
-                        text = chat.chatInfo?.myLampName ?: "",
-                        color = Color.White,
+                        text = DateFormatUtil.formatToDDay(appointmentTime),
+                        color = color,
                         style = Typography.medium15
                     )
-                    Icon(
-                        modifier = Modifier.size(10.dp),
-                        painter = painterResource(id = R.drawable.heart),
-                        contentDescription = null,
-                        tint = Color.White
-                    )
+                    Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        text = chat.chatInfo?.otherLampName ?: "",
-                        color = Color.White,
+                        text = "$dateTime ${chat.appointment.selectedChatAppointment!!.location}",
+                        color = color,
                         style = Typography.medium15
                     )
                 }
             }
-        }
 
-        if (!isAppointmentConfirmed) {
-            Icon(
-                painter = painterResource(id = R.drawable.calendar),
-                contentDescription = "calendar",
-                tint = color,
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable {
+            AppointmentStatus.BEFORE_READY,
+            AppointmentStatus.WAITING_READY -> {
+                AppointmentStatusSection(
+                    text = stringResource(R.string.topbar_before_vote_msg),
+                    color = color,
+                    onClick = {
                         onCalendarClick()
                     }
+                )
+            }
+
+            AppointmentStatus.BEFORE_VOTE,
+            AppointmentStatus.WAITING_VOTE -> {
+                AppointmentStatusSection(
+                    text = stringResource(R.string.topbar_vote_msg),
+                    color = color,
+                    onClick = {
+                        onCalendarClick()
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun AppointmentStatusSection(
+    text: String,
+    color: Color,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClick()
+            },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(3.dp)
+        ) {
+            Icon(
+                painter = painterResource(R.drawable.calendar),
+                contentDescription = null,
+                modifier = Modifier.size(14.dp),
+                tint = color
+            )
+            Text(
+                text = text,
+                color = color,
+                style = Typography.medium15
             )
         }
+        Icon(
+            painter = painterResource(R.drawable.arrow),
+            contentDescription = null,
+            modifier = Modifier.size(10.dp),
+            tint = color
+        )
     }
 }
 

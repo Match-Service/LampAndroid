@@ -7,11 +7,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,16 +32,25 @@ import com.devndev.lamp.presentation.theme.Gray3
 import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.alarm.getTimeAgo
+import com.devndev.lamp.presentation.utils.DateFormatUtil
 
 @Composable
 fun Chat(
     modifier: Modifier,
     onChatClick: () -> Unit = {},
-    chat: ChatRoomDomainModel
+    chat: ChatRoomDomainModel,
+    gender: String
 ) {
     val isChatExist = chat.lastMessageInfo != null
-    val isScheduleExist = chat.appointment != null
+    val isAppointmentExist = chat.appointment != null
+
+    val color = if (gender == "MALE") {
+        ManColor
+    } else {
+        WomanColor
+    }
 
     Column(
         modifier = modifier
@@ -127,30 +139,42 @@ fun Chat(
                     style = Typography.medium15
                 )
             }
+            if (isAppointmentExist) {
+                val appointmentTime = chat.appointment!!.appointmentDate
+                val dateTime =
+                    DateFormatUtil.formatIsoToKoreanDate(appointmentTime).split(" ", limit = 2)[1]
+
+                HorizontalDivider(
+                    modifier = Modifier.padding(top = 5.dp),
+                    thickness = 1.dp,
+                    color = LightGray
+                )
+                Spacer(modifier = Modifier.height(5.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.calendar),
+                        contentDescription = null,
+                        modifier = Modifier.size(11.dp),
+                        tint = color
+                    )
+                    Spacer(modifier = Modifier.width(3.dp))
+                    Text(
+                        text = DateFormatUtil.formatToDDay(appointmentTime),
+                        color = color,
+                        style = Typography.normal12
+                    )
+                    Spacer(modifier = Modifier.width(10.dp))
+                    Text(
+                        text = "$dateTime ${chat.appointment!!.appointmentPlace}",
+                        color = color,
+                        style = Typography.normal12
+                    )
+                }
+            }
         }
-//        if (isScheduleExist) {
-//            Box() {
-//                HorizontalDivider(thickness = 1.dp, color = LightGray)
-//                Row(
-//                    modifier = Modifier.padding(top = 10.dp),
-//                    horizontalArrangement = Arrangement.spacedBy(10.dp)
-//                ) {
-//                    Row(horizontalArrangement = Arrangement.spacedBy(3.dp)) {
-//                        Icon(
-//                            painter = painterResource(id = R.drawable.calendar),
-//                            contentDescription = null,
-//                            tint = ManColor
-//                        )
-//                        Text(text = "D-1", color = ManColor, style = Typography.normal12)
-//                    }
-//                    Text(
-//                        text = chat.appointment?.appointmentPlace,
-//                        color = ManColor,
-//                        style = Typography.normal12
-//                    )
-//                }
-//            }
-//        }
     }
 }
 

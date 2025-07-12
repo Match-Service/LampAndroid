@@ -273,6 +273,10 @@
     <string name="vote_popup_title">투표 하시겠어요?</string>
     <string name="vote_popup_message">모든 인원이 투표가 완료될 때까지\n투표를 수정하실 수 없어요.</string>
 
+    <string name="topbar_before_vote_msg">약속 장소와 날짜를 등록하고, 투표를 준비하세요!</string>
+    <string name="topbar_vote_msg">투표하고 약속을 확정하세요</string>
+
+
     <!-- 온보딩 화면 -->
     <string name="lamp_title">램프</string>
     <string name="lamp_msg">친구들과 함께\n설레는 미팅을 준비해보세요</string>

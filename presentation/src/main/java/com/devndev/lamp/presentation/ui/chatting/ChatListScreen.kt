@@ -57,7 +57,6 @@ fun ChatListScreen(
 ) {
     val logTag = "ChatListScreen"
     val state by viewModel.uiState.collectAsStateWithLifecycle()
-
     val context = LocalContext.current
     val activity = context as? Activity
     val handler = remember { Handler(Looper.getMainLooper()) }
@@ -139,7 +138,8 @@ fun ChatListScreen(
                                     R.anim.none
                                 )
                             },
-                            chat = chat
+                            chat = chat,
+                            gender = state.myInfo?.gender ?: "MALE"
                         )
                     }
                 }

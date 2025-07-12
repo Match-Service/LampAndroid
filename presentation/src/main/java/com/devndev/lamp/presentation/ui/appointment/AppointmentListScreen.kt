@@ -34,9 +34,7 @@ import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+import com.devndev.lamp.presentation.utils.DateFormatUtil
 
 @Composable
 fun AppointmentList(
@@ -212,7 +210,7 @@ fun Appointment(
                 modifier = Modifier.size(11.dp)
             )
             Text(
-                text = formatIsoToKoreanDate(appointment.appointment.meetingTime),
+                text = DateFormatUtil.formatIsoToKoreanDate(appointment.appointment.meetingTime),
                 color = Color.White,
                 style = Typography.medium15
             )
@@ -237,26 +235,5 @@ fun Appointment(
                 style = Typography.medium15
             )
         }
-    }
-}
-
-fun formatIsoToKoreanDate(isoString: String): String {
-    return try {
-        val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.getDefault())
-        val outputFormat = SimpleDateFormat("yyyy년 M월 d일 HH:mm", Locale.getDefault())
-
-        val date = inputFormat.parse(isoString)
-        if (date != null) {
-            val calendar = Calendar.getInstance().apply {
-                time = date
-                add(Calendar.HOUR_OF_DAY, -9) // 9시간 빼기
-            }
-            outputFormat.format(calendar.time)
-        } else {
-            ""
-        }
-    } catch (e: Exception) {
-        e.printStackTrace()
-        ""
     }
 }
