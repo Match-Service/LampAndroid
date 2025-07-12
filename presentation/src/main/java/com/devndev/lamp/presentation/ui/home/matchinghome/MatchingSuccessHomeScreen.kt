@@ -2,7 +2,6 @@ package com.devndev.lamp.presentation.ui.home.matchinghome
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Intent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -48,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.devndev.lamp.domain.model.lampmatch.MatchSuggestionDomainModel
 import com.devndev.lamp.presentation.R
@@ -57,9 +57,10 @@ import com.devndev.lamp.presentation.theme.MoodBlue
 import com.devndev.lamp.presentation.theme.MoodRed
 import com.devndev.lamp.presentation.theme.MoodYellow
 import com.devndev.lamp.presentation.theme.Typography
-import com.devndev.lamp.presentation.ui.chatting.ChatActivity
 import com.devndev.lamp.presentation.ui.chatting.ChatViewModel
+import com.devndev.lamp.presentation.ui.chatting.navigation.navigateChatList
 import com.devndev.lamp.presentation.ui.common.LampButton
+import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -80,6 +81,11 @@ fun MatchingSuccessHomeScreen(
     val activity = context as? Activity
     val chatViewModel: ChatViewModel = hiltViewModel()
     val chatList by chatViewModel.uiState.collectAsStateWithLifecycle()
+
+    val chattingNavOptions = navOptions {
+        launchSingleTop = true
+        popUpTo(Route.CHAT_LIST) { inclusive = true }
+    }
 
     LaunchedEffect(Unit) {
         onBottomScreen(true)
@@ -115,16 +121,6 @@ fun MatchingSuccessHomeScreen(
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-//                MatchingHomeTopBar(
-//                    onExitIconClick = {
-//                        if (state.isOwner) {
-//                            isDeletePopupShow = true
-//                        } else {
-//                            isExitPopupShow = true
-//                        }
-//                    },
-//                    onShareIconClick = {}
-//                )
             Spacer(modifier = Modifier.height(50.dp))
             Text(
                 text = headerSuccessMatching,
@@ -216,20 +212,22 @@ fun MatchingSuccessHomeScreen(
                     buttonWidth = 171,
                     buttonText = stringResource(id = R.string.join_chat),
                     onClick = {
-                        chatViewModel.getChatList()
-
                         val latestChatRoomId = chatViewModel.uiState.value.chatList.firstOrNull()?.chatRoomId
 
-                        if (latestChatRoomId != null) {
-                            val intent = Intent(context, ChatActivity::class.java).apply {
-                                putExtra("chatRoomId", latestChatRoomId)
-                            }
-                            context.startActivity(intent)
-                            (context as? Activity)?.overridePendingTransition(
-                                R.anim.slide_in_right,
-                                R.anim.none
-                            )
-                        }
+                        navController.navigateChatList(navOptions = chattingNavOptions, chatRoomId = latestChatRoomId)
+//                        chatViewModel.getChatList()
+//
+//
+//                        if (latestChatRoomId != null) {
+//                            val intent = Intent(context, ChatActivity::class.java).apply {
+//                                putExtra("chatRoomId", latestChatRoomId)
+//                            }
+//                            context.startActivity(intent)
+//                            (context as? Activity)?.overridePendingTransition(
+//                                R.anim.slide_in_right,
+//                                R.anim.none
+//                            )
+//                        }
                     },
                     enabled = true
                 )
