@@ -12,7 +12,6 @@ import androidx.navigation.navArgument
 import com.devndev.lamp.presentation.ui.chatting.ChatListScreen
 import com.devndev.lamp.presentation.ui.chatting.ChatScreen
 import com.devndev.lamp.presentation.ui.common.Route
-import com.kakao.sdk.common.KakaoSdk.type
 
 fun NavController.navigateChatList(navOptions: NavOptions? = null, chatRoomId: Int? = null) {
     val route = if (chatRoomId != null) {
@@ -37,13 +36,10 @@ fun NavGraphBuilder.chatListNavGraph(
                 defaultValue = null
             }
         )
-    ) { backStackEntry ->
-        val chatRoomId = backStackEntry.arguments?.getString("chatRoomId")?.toIntOrNull()
-
+    ) {
         ChatListScreen(
             modifier = modifier.padding(padding),
-            navController = navController,
-            initialChatRoomId = chatRoomId
+            navController = navController
         )
     }
 }
