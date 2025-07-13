@@ -98,6 +98,7 @@ fun MatchingSuccessHomeScreen(
         onBottomScreen(true)
 
         matchSuggestion?.lampId?.let { viewModel.updateFindState(it, false) }
+        viewModel.updateTimer(0L)
     }
 
     DisposableEffect(Unit) {

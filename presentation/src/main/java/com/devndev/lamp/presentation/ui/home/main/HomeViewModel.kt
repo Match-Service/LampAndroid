@@ -15,7 +15,9 @@ import com.devndev.lamp.domain.usecase.lamp.GetMyLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.GetVisitRequestLampInfoUseCase
 import com.devndev.lamp.domain.usecase.lampmatch.GetMatchSuggestionUseCase
 import com.devndev.lamp.domain.usecase.local.GetBooleanUseCase
+import com.devndev.lamp.domain.usecase.local.GetLongUseCase
 import com.devndev.lamp.domain.usecase.local.PutBooleanUseCase
+import com.devndev.lamp.domain.usecase.local.PutLongUseCase
 import com.devndev.lamp.domain.usecase.socket.AddStatusListenerUseCase
 import com.devndev.lamp.domain.usecase.socket.RemoveStatueListenerUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
@@ -47,7 +49,9 @@ class HomeViewModel @Inject constructor(
     private val addStatusListenerUseCase: AddStatusListenerUseCase,
     private val removeStatueListenerUseCase: RemoveStatueListenerUseCase,
     private val putBooleanUseCase: PutBooleanUseCase,
-    private val getBooleanUseCase: GetBooleanUseCase
+    private val getBooleanUseCase: GetBooleanUseCase,
+    private val putLongUseCase: PutLongUseCase,
+    private val getLongUseCase: GetLongUseCase
 ) : ViewModel() {
     private val _myInfo = MutableStateFlow<MyInfoDomainModel?>(null)
     val myInfo: StateFlow<MyInfoDomainModel?> = _myInfo
@@ -84,6 +88,9 @@ class HomeViewModel @Inject constructor(
 
     private val _isSuccess = MutableStateFlow(false)
     val isSuccess: StateFlow<Boolean> = _isSuccess
+
+    private val _time = MutableStateFlow(0L)
+    val time: StateFlow<Long> = _time
 
     init {
         getMyInfo()
@@ -274,6 +281,19 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             putBooleanUseCase("matchSuccess$lampId", isSuccess)
             _isSuccess.value = isSuccess
+        }
+    }
+
+    suspend fun loadTimer(time: Long): Long {
+        val result = getLongUseCase("matchTimer", time)
+        _time.value = result
+        return result
+    }
+
+    fun updateTimer(time: Long) {
+        viewModelScope.launch {
+            putLongUseCase("matchTimer", time)
+            _time.value = time
         }
     }
 

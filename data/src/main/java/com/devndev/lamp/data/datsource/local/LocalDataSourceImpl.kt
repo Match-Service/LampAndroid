@@ -35,6 +35,16 @@ class LocalDataSourceImpl @Inject constructor(
     }
 
     @Synchronized
+    override fun putLong(key: String, value: Long) {
+        sharedPreferences.edit().putLong(key, value).apply()
+    }
+
+    @Synchronized
+    override fun getLong(key: String, value: Long): Long {
+        return sharedPreferences.getLong(key, value)
+    }
+
+    @Synchronized
     fun deleteData(key: String) {
         sharedPreferences.edit().remove(key).apply()
     }
