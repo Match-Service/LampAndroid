@@ -2,6 +2,7 @@ package com.devndev.lamp.presentation.ui.home.matchinghome
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -25,6 +26,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,12 +59,15 @@ import com.devndev.lamp.presentation.theme.MoodBlue
 import com.devndev.lamp.presentation.theme.MoodRed
 import com.devndev.lamp.presentation.theme.MoodYellow
 import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.ui.chatting.ChatActivity
 import com.devndev.lamp.presentation.ui.chatting.ChatViewModel
 import com.devndev.lamp.presentation.ui.chatting.navigation.navigateChatList
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.launch
 
 @SuppressLint("RememberReturnType")
 @Composable
@@ -81,6 +86,8 @@ fun MatchingSuccessHomeScreen(
     val activity = context as? Activity
     val chatViewModel: ChatViewModel = hiltViewModel()
     val chatList by chatViewModel.uiState.collectAsStateWithLifecycle()
+
+    val coroutineScope = rememberCoroutineScope()
 
     val chattingNavOptions = navOptions {
         launchSingleTop = true
@@ -214,20 +221,20 @@ fun MatchingSuccessHomeScreen(
                     onClick = {
                         val latestChatRoomId = chatViewModel.uiState.value.chatList.firstOrNull()?.chatRoomId
 
-                        navController.navigateChatList(navOptions = chattingNavOptions, chatRoomId = latestChatRoomId)
-//                        chatViewModel.getChatList()
-//
-//
-//                        if (latestChatRoomId != null) {
-//                            val intent = Intent(context, ChatActivity::class.java).apply {
-//                                putExtra("chatRoomId", latestChatRoomId)
-//                            }
-//                            context.startActivity(intent)
-//                            (context as? Activity)?.overridePendingTransition(
-//                                R.anim.slide_in_right,
-//                                R.anim.none
-//                            )
-//                        }
+                        if (latestChatRoomId != null) {
+                            val intent = Intent(context, ChatActivity::class.java).apply {
+                                putExtra("chatRoomId", latestChatRoomId)
+                            }
+                            context.startActivity(intent)
+                            (context as? Activity)?.overridePendingTransition(
+                                R.anim.slide_in_right,
+                                R.anim.none
+                            )
+                            coroutineScope.launch {
+                                delay(50)
+                                navController.navigateChatList()
+                            }
+                        }
                     },
                     enabled = true
                 )

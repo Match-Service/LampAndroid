@@ -137,17 +137,19 @@ fun Appointment(
             .fillMaxWidth()
             .then(
                 if (!isSelected) {
-                    Modifier.border(
-                        width = 1.dp,
-                        color = LightGray,
-                        shape = RoundedCornerShape(15.dp)
-                    )
-                } else if (appointment.appointment.voted) {
-                    Modifier.border(
-                        width = 1.dp,
-                        brush = gradientBrush,
-                        shape = RoundedCornerShape(15.dp)
-                    )
+                    if (appointment.appointment.voted) {
+                        Modifier.border(
+                            width = 1.dp,
+                            brush = gradientBrush,
+                            shape = RoundedCornerShape(15.dp)
+                        )
+                    } else {
+                        Modifier.border(
+                            width = 1.dp,
+                            color = LightGray,
+                            shape = RoundedCornerShape(15.dp)
+                        )
+                    }
                 } else {
                     Modifier.border(
                         width = 1.dp,
