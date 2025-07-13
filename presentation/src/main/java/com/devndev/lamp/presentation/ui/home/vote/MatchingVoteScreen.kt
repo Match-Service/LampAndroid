@@ -316,14 +316,14 @@ fun ProfileTop(context: Context, matchSuggestion: MatchSuggestionDomainModel?, i
     ) + (matchSuggestion?.participants?.map { it.birth.let { birth -> calculateManAge(birth) } } ?: emptyList())
 
     // 이름 list
-    val nameList = listOf(
+    val nameList = listOfNotNull(
         matchSuggestion?.owner?.name
-    ) + matchSuggestion?.participants?.map { it.name }
+    ) + matchSuggestion?.participants?.map { it.name }.orEmpty()
 
     // 프로필 이미지 url list
-    val imageUrlList = listOf(
+    val imageUrlList = listOfNotNull(
         matchSuggestion?.owner?.profileImageUrls
-    ) + matchSuggestion?.participants?.map { it.profileImageUrls }
+    ) + matchSuggestion?.participants?.map { it.profileImageUrls }.orEmpty()
 
     // 인스타그램 아이디 list
     val instagramList = listOf(
@@ -592,18 +592,22 @@ fun ProgressBar(
 // 프로필 설명
 @Composable
 fun ProfileDescription(matchSuggestion: MatchSuggestionDomainModel?, index: Int) {
+    val bioQuestionList: List<List<Pair<String, String>>> = listOf(
+        matchSuggestion?.owner?.bioQuestion?.map { it.question to it.answer }.orEmpty(),
+        *(
+            matchSuggestion?.participants?.map { participant ->
+                participant.bioQuestion.map { it.question to it.answer }
+            }.orEmpty().toTypedArray()
+            )
+    )
+
     val bioList = listOfNotNull(
         matchSuggestion?.owner?.bio
     ) + (matchSuggestion?.participants?.mapNotNull { it.bio } ?: emptyList())
-
-    val bioQuestionList = listOfNotNull(
-        matchSuggestion?.owner?.bioQuestion?.map { it.answer }
-    ) + (matchSuggestion?.participants?.map { it.bioQuestion.map { question -> question.answer } } ?: emptyList())
-
-    Log.d("bioList", bioList.toString())
-    Log.d("bioQuestionList", bioQuestionList.toString())
+    Log.e("12312312312123", bioList.toString())
 
     Text(
+        modifier = Modifier.padding(start = 16.dp, end = 16.dp),
         text = bioList[index],
         color = Color.White,
         style = Typography.normal12.copy(lineHeight = 16.sp),
@@ -616,23 +620,9 @@ fun ProfileDescription(matchSuggestion: MatchSuggestionDomainModel?, index: Int)
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
     ) {
-        for (i in bioQuestionList[index].indices) {
+        bioQuestionList[index].forEachIndexed { i, (question, answer) ->
             Text(
-                text = when (i) {
-                    0 -> {
-                        "${stringResource(id = R.string.drink)} : " + bioQuestionList[index][i]
-                    }
-
-                    1 -> {
-                        "${stringResource(id = R.string.smoke)} : " + bioQuestionList[index][i]
-                    }
-
-                    2 -> {
-                        "${stringResource(id = R.string.exercise)} : " + bioQuestionList[index][i]
-                    }
-
-                    else -> "" // nothing
-                },
+                text = "$question : $answer",
                 color = Gray3,
                 style = Typography.medium10.copy(lineHeight = 12.sp),
                 textAlign = TextAlign.Center
@@ -705,6 +695,7 @@ fun MoodInfoSection(lampProfile: List<String?>, onHeightChange: (Dp) -> Unit) {
             OtherLampInfo(painter = painterResource(id = R.drawable.heart), text = mood)
         }
         Text(
+            modifier = Modifier.padding(start = 42.5.dp, end = 42.5.dp),
             text = lampProfile[4]!!,
             color = Gray3,
             style = Typography.medium10,
@@ -748,12 +739,18 @@ fun SecondSection(
 fun BottomSection(viewModel: HomeViewModel, matchSuggestion: MatchSuggestionDomainModel?, approveCount: Int, rejectCount: Int, onHeightChange: (Int) -> Unit) {
     // 초기 시간을 3시간(03:00:00)으로 설정
     var totalSeconds by remember { mutableStateOf(3 * 60 * 60) }
+    var isApiCalled by remember { mutableStateOf(false) }
 
     // 1초마다 시간을 줄이는 타이머
     LaunchedEffect(key1 = totalSeconds) {
         if (totalSeconds > 0) {
             delay(1000L)
             totalSeconds -= 1
+        } else if (!isApiCalled) { // 0초 되면 투표 거절
+            isApiCalled = true
+            if (matchSuggestion != null) {
+                viewModel.reject(matchSuggestion.lampId)
+            }
         }
     }
 
