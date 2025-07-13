@@ -21,7 +21,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,7 +53,6 @@ import kotlin.system.exitProcess
 fun ChatListScreen(
     modifier: Modifier,
     navController: NavController,
-    initialChatRoomId: Int? = null,
     viewModel: ChatViewModel = hiltViewModel()
 ) {
     val logTag = "ChatListScreen"
@@ -66,20 +64,6 @@ fun ChatListScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     var isFirstLaunch by remember { mutableStateOf(true) }
-
-    LaunchedEffect(initialChatRoomId, state.chatList) {
-        val chat = state.chatList.firstOrNull { it.chatRoomId == initialChatRoomId }
-        if (initialChatRoomId != null && chat != null) {
-            val intent = Intent(context, ChatActivity::class.java).apply {
-                putExtra("chatRoomId", initialChatRoomId)
-            }
-            context.startActivity(intent)
-            activity?.overridePendingTransition(
-                R.anim.slide_in_right,
-                R.anim.none
-            )
-        }
-    }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
