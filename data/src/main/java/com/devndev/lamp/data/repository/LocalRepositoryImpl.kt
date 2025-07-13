@@ -14,4 +14,12 @@ class LocalRepositoryImpl @Inject constructor(
     override suspend fun getBoolean(key: String, value: Boolean): Boolean {
         return localDataSource.getBoolean(key, value)
     }
+
+    override suspend fun putLong(key: String, value: Long) {
+        localDataSource.putLong(key, value)
+    }
+
+    override suspend fun getLong(key: String, value: Long): Long {
+        return localDataSource.getLong(key, value)
+    }
 }

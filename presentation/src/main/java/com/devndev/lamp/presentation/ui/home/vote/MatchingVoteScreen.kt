@@ -6,7 +6,6 @@ import android.graphics.RadialGradient
 import android.media.Image
 import android.util.Log
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -98,9 +97,7 @@ import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MatchingVoteScreen(
     viewModel: HomeViewModel = hiltViewModel(),
@@ -447,7 +444,12 @@ fun ProfileTop(context: Context, matchSuggestion: MatchSuggestionDomainModel?, i
             Image(
                 modifier = Modifier
                     .size(23.dp)
-                    .clickable { InstagramUtils.openInstagramProfile(context, instagramList[index].toString() ?: "") },
+                    .clickable {
+                        InstagramUtils.openInstagramProfile(
+                            context,
+                            instagramList[index].toString() ?: ""
+                        )
+                    },
                 painter = painterResource(id = R.drawable.instagram_icon),
                 contentDescription = "Instagram Icon"
             )
@@ -736,28 +738,45 @@ fun SecondSection(
 // 바닥 섹션
 @SuppressLint("DefaultLocale")
 @Composable
-fun BottomSection(viewModel: HomeViewModel, matchSuggestion: MatchSuggestionDomainModel?, approveCount: Int, rejectCount: Int, onHeightChange: (Int) -> Unit) {
-    // 초기 시간을 3시간(03:00:00)으로 설정
-    var totalSeconds by remember { mutableStateOf(3 * 60 * 60) }
-    var isApiCalled by remember { mutableStateOf(false) }
+fun BottomSection(
+    viewModel: HomeViewModel,
+    matchSuggestion: MatchSuggestionDomainModel?,
+    approveCount: Int,
+    rejectCount: Int,
+    onHeightChange: (Int) -> Unit
+) {
+    var totalSeconds by remember { mutableStateOf(0L) }
+    var hasVote by remember { mutableStateOf(false) }
 
-    // 1초마다 시간을 줄이는 타이머
-    LaunchedEffect(key1 = totalSeconds) {
+    LaunchedEffect(Unit) {
+        val savedEndTime = viewModel.loadTimer(0L)
+        if (savedEndTime == 0L) {
+            val newEndTime = System.currentTimeMillis() + 3 * 60 * 60 * 1000L
+            viewModel.updateTimer(newEndTime)
+            totalSeconds = 3 * 60 * 60
+        } else {
+            totalSeconds = ((savedEndTime - System.currentTimeMillis()) / 1000L).coerceAtLeast(0L)
+        }
+    }
+
+    // 타이머 작동
+    LaunchedEffect(totalSeconds) {
         if (totalSeconds > 0) {
             delay(1000L)
             totalSeconds -= 1
-        } else if (!isApiCalled) { // 0초 되면 투표 거절
-            isApiCalled = true
-            if (matchSuggestion != null) {
-                viewModel.reject(matchSuggestion.lampId)
-            }
+        } else if (!hasVote) {
+            hasVote = true
+            matchSuggestion?.lampId?.let { viewModel.reject(it) }
         }
     }
 
     // 시, 분, 초로 변환
-    val hours = TimeUnit.SECONDS.toHours(totalSeconds.toLong()).toInt()
-    val minutes = (TimeUnit.SECONDS.toMinutes(totalSeconds.toLong()) % 60).toInt()
-    val seconds = (totalSeconds % 60)
+    val hours = totalSeconds / 3600
+    val minutes = (totalSeconds % 3600) / 60
+    val seconds = totalSeconds % 60
+//    val hours = TimeUnit.SECONDS.toHours(totalSeconds.toLong()).toInt()
+//    val minutes = (TimeUnit.SECONDS.toMinutes(totalSeconds.toLong()) % 60).toInt()
+//    val seconds = (totalSeconds % 60)
 
     Box(
         modifier = Modifier

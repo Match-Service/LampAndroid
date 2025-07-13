@@ -7,6 +7,8 @@ interface LocalDataSource {
     fun setToken(token: String)
     fun putBoolean(key: String, value: Boolean)
     fun getBoolean(key: String, value: Boolean): Boolean
+    fun putLong(key: String, value: Long)
+    fun getLong(key: String, value: Long): Long
     fun removeToken()
     fun saveIsFirstOpen(isFirstOpen: Boolean)
     fun getIsFirstOpen(): Boolean

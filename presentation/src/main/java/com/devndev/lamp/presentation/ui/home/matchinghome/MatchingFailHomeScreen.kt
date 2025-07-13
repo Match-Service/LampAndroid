@@ -79,6 +79,7 @@ fun MatchingFailHomeScreen(
             homeViewModel.updateSuccessState(suggestion.lampId, false)
             homeViewModel.updateFindState(suggestion.lampId, false)
         }
+        homeViewModel.updateTimer(0L)
 
         updateEvent.collect {
             viewModel.getMyLamp()
