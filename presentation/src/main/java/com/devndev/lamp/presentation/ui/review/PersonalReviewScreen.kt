@@ -28,6 +28,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,32 +42,28 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import coil.compose.rememberAsyncImagePainter
+import com.devndev.lamp.domain.model.assessment.AssessmentDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.SelectionScreen
+import com.devndev.lamp.presentation.ui.mypage.calculateManAge
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun PersonalReviewScreen(step: Int) {
-    // 현재 프로그레스 상태를 저장할 상태 변수
-    var personalityProgress by remember { mutableStateOf(25f) }
-    var voiceProgress by remember { mutableStateOf(25f) }
-    var fashionProgress by remember { mutableStateOf(25f) }
-    var conversationProgress by remember { mutableStateOf(25f) }
+fun PersonalReviewScreen(
+    step: Int,
+    assessment: AssessmentDomainModel,
+    userScores: MutableList<List<MutableState<Int>>>,
+    onProgressChange: (Int, Int, Int) -> Unit
+) {
     var previousStep by remember { mutableStateOf(step) }
-    val tmpProfile = listOf(
-        listOf("닉네임입니다", 28, "한국대학교"),
-        listOf("Profile2", 27, "한국대학교"),
-        listOf("Profile3", 26, "한국대학교"),
-        listOf("Profile4", 25, "한국대학교")
-    )
 
-    if (step <= tmpProfile.size) {
+    if (step <= assessment.users.size) {
         AnimatedContent(
             targetState = step,
             transitionSpec = {
@@ -82,7 +79,8 @@ fun PersonalReviewScreen(step: Int) {
             }
         ) { currentStep ->
             previousStep = currentStep
-            SelectionScreen(text = "${tmpProfile[currentStep - 1][0]}${stringResource(id = R.string.personal_review_title)}") {
+            val currentUser = currentStep - 1
+            SelectionScreen(text = "${assessment.users[currentStep - 1].name}${stringResource(id = R.string.personal_review_title)}") {
                 Box(
                     modifier = Modifier.fillMaxSize()
                 ) {
@@ -96,38 +94,64 @@ fun PersonalReviewScreen(step: Int) {
                     ) {
                         Spacer(modifier = Modifier.height(7.dp))
                         Text(
-                            text = "${tmpProfile[currentStep - 1][0]}${stringResource(id = R.string.personal_review_subtitle)}",
+                            text = "${assessment.users[currentUser].name}${stringResource(id = R.string.personal_review_subtitle)}",
                             style = Typography.medium12,
                             color = Color.White
                         )
                         Spacer(modifier = Modifier.height(40.dp))
+                        val image =
+                            rememberAsyncImagePainter(assessment.users[currentUser].profileImageUrl)
                         Image(
-                            painter = painterResource(id = R.drawable.testimage),
-                            contentDescription = "testimage",
+                            painter = image,
+                            contentDescription = null,
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
                                 .size(150.dp)
                                 .clip(RoundedCornerShape(4.dp))
                         )
                         Spacer(modifier = Modifier.height(5.dp))
+                        var universityText = ""
+                        if (assessment.users[currentUser].jobName != null) {
+                            universityText = ", ${assessment.users[currentUser].jobName}"
+                        }
                         Text(
-                            text = "${tmpProfile[currentStep - 1][1]}${stringResource(id = R.string.age)}, ${tmpProfile[currentStep - 1][2]}",
+                            text = "${calculateManAge(assessment.users[currentUser].birth)}${
+                            stringResource(
+                                id = R.string.age
+                            )
+                            }" + universityText,
                             style = Typography.medium15,
                             color = Color.White
                         )
                         Spacer(modifier = Modifier.height(25.dp))
 
-                        PersonalReviewProgressBar("성격은 어땠나요?", true, personalityProgress) { newValue ->
-                            personalityProgress = newValue
+                        PersonalReviewProgressBar(
+                            "성격은 어땠나요?",
+                            true,
+                            convertIntToF(userScores[currentUser][0].value)
+                        ) { newValue ->
+                            onProgressChange(currentUser, 0, convertFToInt(newValue))
                         }
-                        PersonalReviewProgressBar("목소리는 어땠나요?", true, voiceProgress) { newValue ->
-                            voiceProgress = newValue
+                        PersonalReviewProgressBar(
+                            "목소리는 어땠나요?",
+                            true,
+                            convertIntToF(userScores[currentUser][1].value)
+                        ) { newValue ->
+                            onProgressChange(currentUser, 1, convertFToInt(newValue))
                         }
-                        PersonalReviewProgressBar("패션 센스는 어땠나요?", true, fashionProgress) { newValue ->
-                            fashionProgress = newValue
+                        PersonalReviewProgressBar(
+                            "패션 센스는 어땠나요?",
+                            true,
+                            convertIntToF(userScores[currentUser][2].value)
+                        ) { newValue ->
+                            onProgressChange(currentUser, 2, convertFToInt(newValue))
                         }
-                        PersonalReviewProgressBar("대화는 어땠나요?", false, conversationProgress) { newValue ->
-                            conversationProgress = newValue
+                        PersonalReviewProgressBar(
+                            "대화는 어땠나요?",
+                            false,
+                            convertIntToF(userScores[currentUser][3].value)
+                        ) { newValue ->
+                            onProgressChange(currentUser, 3, convertFToInt(newValue))
                         }
                         Spacer(modifier = Modifier.height(102.dp))
                     }
@@ -139,7 +163,12 @@ fun PersonalReviewScreen(step: Int) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PersonalReviewProgressBar(title: String, isBorder: Boolean, progress: Float, onProgressChange: (Float) -> Unit) {
+fun PersonalReviewProgressBar(
+    title: String,
+    isBorder: Boolean,
+    progress: Float,
+    onProgressChange: (Float) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth(),
@@ -262,8 +291,22 @@ fun PersonalReviewProgressBar(title: String, isBorder: Boolean, progress: Float,
     }
 }
 
-@Preview
-@Composable
-fun C() {
-    PersonalReviewScreen(1)
+fun convertIntToF(int: Int): Float {
+    return when (int) {
+        1 -> 25f
+        2 -> 50f
+        3 -> 75f
+        4 -> 100f
+        else -> 0f
+    }
+}
+
+fun convertFToInt(float: Float): Int {
+    return when (float) {
+        25f -> 1
+        50f -> 2
+        75f -> 3
+        100f -> 4
+        else -> 0
+    }
 }

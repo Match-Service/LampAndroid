@@ -8,16 +8,22 @@ import com.squareup.moshi.JsonClass
 data class AssessmentListResponse(
     @Json(name = "lampMatchId")
     val lampMatchId: Int,
-    @Json(name = "title")
-    val title: String,
+    @Json(name = "myLampName")
+    val myLampName: String,
+    @Json(name = "otherLampName")
+    val otherLampName: String,
     @Json(name = "meetingTime")
-    val meetingTime: String
+    val meetingTime: String,
+    @Json(name = "meetingUserCount")
+    val meetingUserCount: Int
 )
 
 fun AssessmentListResponse.toDomainModel(): AssessmentListDomainModel {
     return AssessmentListDomainModel(
         lampMatchId = lampMatchId,
-        title = title,
-        meetingTime = meetingTime
+        myLampName = myLampName,
+        otherLampName = otherLampName,
+        meetingTime = meetingTime,
+        meetingUserCount = meetingUserCount
     )
 }

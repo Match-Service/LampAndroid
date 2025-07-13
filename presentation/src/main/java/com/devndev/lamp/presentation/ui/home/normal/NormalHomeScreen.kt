@@ -43,6 +43,7 @@ import com.devndev.lamp.presentation.ui.creation.navigation.navigateCreation
 import com.devndev.lamp.presentation.ui.home.main.HomeTextArea
 import com.devndev.lamp.presentation.ui.home.normal.viewmodel.NormalHomeViewModel
 import com.devndev.lamp.presentation.ui.search.navigation.navigateSearch
+import com.devndev.lamp.presentation.utils.DateFormatUtil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -175,14 +176,17 @@ fun NormalHomeScreen(
                         contentDescription = null,
                         tint = Color.White
                     )
-                    // TODO::SHKIM assessment를 통해 text 표시
+                    val assessment = state.assessmentList[0]
                     Text(
-                        text = "7월 6일,",
+                        text = "${DateFormatUtil.formatDateToMonthDay(assessment.meetingTime)},",
                         color = Color.White,
                         style = Typography.medium15
                     )
                     Text(
-                        text = "그룹명입니다 램프와 만남은 어땠나요?",
+                        text = stringResource(
+                            R.string.home_assessment_title,
+                            assessment.otherLampName
+                        ),
                         color = Color.White,
                         style = Typography.medium15
                     )

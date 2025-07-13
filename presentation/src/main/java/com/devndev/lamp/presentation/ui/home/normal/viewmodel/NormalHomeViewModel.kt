@@ -3,10 +3,8 @@ package com.devndev.lamp.presentation.ui.home.normal.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.devndev.lamp.domain.model.assessment.AssessmentListDomainModel
 import com.devndev.lamp.domain.usecase.assessment.GetAssessmentListUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
-import com.devndev.lamp.presentation.ui.home.main.HomeViewModel.Companion.TAG
 import com.devndev.lamp.presentation.ui.home.normal.NormalHomeUiState
 import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -52,30 +50,12 @@ class NormalHomeViewModel @Inject constructor(
     }
 
     private fun getAssessmentList() {
-        val tempAssessmentList = listOf(
-            AssessmentListDomainModel(
-                lampMatchId = 0,
-                title = "이쁜2들 램프 평가하기",
-                meetingTime = "2025년 7월 3일"
-            ),
-            AssessmentListDomainModel(
-                lampMatchId = 1,
-                title = "멍쟁2들 램프 평가하기",
-                meetingTime = "2025년 7월 5일"
-            ),
-            AssessmentListDomainModel(
-                lampMatchId = 2,
-                title = "못난이들 램프 평가하기",
-                meetingTime = "2025년 7월 8일"
-            )
-
-        )
         Log.d(TAG, "getAssessmentList()")
         viewModelScope.launch {
             getAssessmentListUseCase()
                 .onSuccess { assessmentList ->
                     Log.i(TAG, "assessmentList $assessmentList")
-                    _uiState.update { it.copy(assessmentList = tempAssessmentList) }
+                    _uiState.update { it.copy(assessmentList = assessmentList) }
                 }.onFailure {
                     Log.e(TAG, "getAssessmentList Failure", it)
                 }

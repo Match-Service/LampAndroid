@@ -11,5 +11,6 @@ data class UserDomainModel(
     val userId: Int,
     val name: String,
     val birth: String,
-    val profileImageUrl: String
+    val profileImageUrl: String,
+    val jobName: String?
 )

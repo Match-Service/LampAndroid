@@ -26,9 +26,6 @@ import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -40,24 +37,24 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import com.devndev.lamp.domain.model.assessment.AssessmentDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
+import com.devndev.lamp.presentation.utils.DateFormatUtil
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun LampReviewScreen() {
-    // 현재 프로그레스 상태를 저장할 상태 변수
-    var progress by remember { mutableStateOf(25f) }
-    val tmpLampName = "이쁜2들"
-    val tmpLampDate = "7월 6일"
-
+fun LampReviewScreen(
+    assessment: AssessmentDomainModel,
+    lampScore: Int,
+    onScoreChange: (Int) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize(),
@@ -67,7 +64,7 @@ fun LampReviewScreen() {
             modifier = Modifier.fillMaxSize()
         ) {
             // circle animation
-            BreathingCircleAnimation(progress)
+            BreathingCircleAnimation(convertIntToF(lampScore))
 
             Column(
                 modifier = Modifier
@@ -77,7 +74,7 @@ fun LampReviewScreen() {
             ) {
                 Spacer(modifier = Modifier.height(73.dp))
                 Text(
-                    text = "$tmpLampName ${stringResource(id = R.string.review_name)}",
+                    text = "${assessment.lampName} ${stringResource(id = R.string.review_name)}",
                     color = Color.White,
                     style = Typography.semiBold25,
                     lineHeight = 33.sp,
@@ -86,7 +83,7 @@ fun LampReviewScreen() {
                 // 리뷰 slider
                 Spacer(modifier = Modifier.height(7.dp))
                 Text(
-                    text = "$tmpLampDate, 즐거웠던 만큼 밝기를 올려주세요",
+                    text = "${DateFormatUtil.formatDateToMonthDay(assessment.meetingTime)}, 즐거웠던 만큼 밝기를 올려주세요",
                     style = Typography.medium12,
                     color = Color.White
                 )
@@ -94,8 +91,8 @@ fun LampReviewScreen() {
                     modifier = Modifier.wrapContentSize()
                 ) {
                     Spacer(modifier = Modifier.weight(1f))
-                    ReviewProgressBar(progress) { newValue ->
-                        progress = newValue
+                    ReviewProgressBar(convertIntToF(lampScore)) { newValue ->
+                        onScoreChange(convertFToInt(newValue))
                     }
                     Spacer(modifier = Modifier.height(73.dp))
                 }
@@ -171,7 +168,8 @@ fun ReviewProgressBar(progress: Float, onProgressChange: (Float) -> Unit) {
                     .size(24.dp)
                     .align(Alignment.CenterStart)
                     .offset {
-                        val offsetX = ((progress - 25f) / (100f - 25f) * (constraints.maxWidth - 24.dp.toPx())).toInt()
+                        val offsetX =
+                            ((progress - 25f) / (100f - 25f) * (constraints.maxWidth - 24.dp.toPx())).toInt()
                         IntOffset(offsetX, 0)
                     }
                     .zIndex(3f)
@@ -252,10 +250,4 @@ fun DrawScope.drawBreathingCircle(blur: Float, alpha: Float, center: Offset) {
         }
         canvas.nativeCanvas.drawCircle(center.x, center.y, radius + blur, paint)
     }
-}
-
-@Preview
-@Composable
-fun B() {
-    LampReviewScreen()
 }
