@@ -302,4 +302,6 @@
 
     <string name="home_assessment_title">%s 램프와 만남은 어땠나요?</string>
     <string name="assessment_item_title">%s 램프 평가하기</string>
+
+    <string name="chat_list_assessment_msg">%s, %s 램프와 만남은 어땠나요?\n빛나는 그날의 기억을 기록해주세요</string>
 </resources>

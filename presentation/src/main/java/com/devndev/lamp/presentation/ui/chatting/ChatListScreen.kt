@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -42,7 +44,10 @@ import com.devndev.lamp.presentation.theme.IncTypography
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
+import com.devndev.lamp.presentation.theme.WomanColor
+import com.devndev.lamp.presentation.ui.assessment.navigation.navigateAssessmentList
 import com.devndev.lamp.presentation.ui.main.LampTopBar
+import com.devndev.lamp.presentation.utils.DateFormatUtil
 import java.text.SimpleDateFormat
 import java.util.Locale
 import java.util.TimeZone
@@ -64,6 +69,12 @@ fun ChatListScreen(
     val lifecycleOwner = LocalLifecycleOwner.current
 
     var isFirstLaunch by remember { mutableStateOf(true) }
+
+    val color = if (state.myInfo?.gender == "MALE") {
+        ManColor
+    } else {
+        WomanColor
+    }
 
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -125,6 +136,39 @@ fun ChatListScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(15.dp)
                 ) {
+                    item {
+                        if (state.assessmentList.isNotEmpty()) {
+                            val assessment = state.assessmentList.last()
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(
+                                        color = color,
+                                        shape = RoundedCornerShape(15.dp)
+                                    )
+                                    .clickable {
+                                        navController.navigateAssessmentList()
+                                    }
+                                    .padding(vertical = 15.dp, horizontal = 20.dp),
+                                verticalArrangement = Arrangement.spacedBy(5.dp)
+                            ) {
+                                Text(
+                                    text = "${assessment.myLampName} ♥ ${assessment.otherLampName}",
+                                    style = Typography.medium18,
+                                    color = LampBlack
+                                )
+                                Text(
+                                    text = stringResource(
+                                        id = R.string.chat_list_assessment_msg,
+                                        DateFormatUtil.formatDateToMonthDay(assessment.meetingTime),
+                                        assessment.otherLampName
+                                    ),
+                                    style = Typography.normal12,
+                                    color = LampBlack
+                                )
+                            }
+                        }
+                    }
                     items(state.chatList, key = { it.chatRoomId }) { chat ->
                         Chat(
                             modifier = Modifier.animateItemPlacement(),
