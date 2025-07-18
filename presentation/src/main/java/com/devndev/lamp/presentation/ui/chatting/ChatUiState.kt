@@ -1,6 +1,7 @@
 package com.devndev.lamp.presentation.ui.chatting
 
 import android.util.Log
+import com.devndev.lamp.domain.model.assessment.AssessmentListDomainModel
 import com.devndev.lamp.domain.model.chat.AppointmentListDomainModel
 import com.devndev.lamp.domain.model.chat.ChatInfoDomainModel
 import com.devndev.lamp.domain.model.chat.ChatItem
@@ -21,7 +22,8 @@ data class ChatUiState(
     val isAtBottom: Boolean = true,
     val showNewMessageBadge: Boolean = false,
     val isEmpty: Boolean = true,
-    val appointment: AppointmentListDomainModel? = null
+    val appointment: AppointmentListDomainModel? = null,
+    val assessmentList: List<AssessmentListDomainModel> = emptyList()
 ) {
     fun getAppointmentStatus(): Int {
         if (appointment?.selectedChatAppointment != null) {

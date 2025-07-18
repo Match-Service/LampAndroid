@@ -176,7 +176,7 @@ fun NormalHomeScreen(
                         contentDescription = null,
                         tint = Color.White
                     )
-                    val assessment = state.assessmentList[0]
+                    val assessment = state.assessmentList.last()
                     Text(
                         text = "${DateFormatUtil.formatDateToMonthDay(assessment.meetingTime)},",
                         color = Color.White,
