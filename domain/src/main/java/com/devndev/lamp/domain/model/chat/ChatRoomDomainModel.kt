@@ -9,7 +9,8 @@ data class ChatRoomDomainModel(
     val otherLampName: String,
     val otherLampId: Int,
     val lastMessageInfo: LastMessageInfo?,
-    val appointment: ChatAppointment?
+    val appointment: ChatAppointment?,
+    val unreadMessageCount: Int
 )
 
 data class LastMessageInfo(

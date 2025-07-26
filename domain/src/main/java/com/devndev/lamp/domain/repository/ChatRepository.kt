@@ -5,6 +5,7 @@ import com.devndev.lamp.domain.model.chat.ChatInfoDomainModel
 import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
 import com.devndev.lamp.domain.model.chat.ChatRoomDomainModel
 import com.devndev.lamp.domain.model.chat.EditAppointmentParam
+import com.devndev.lamp.domain.model.chat.ReadParam
 import com.devndev.lamp.domain.model.chat.RegisterAppointmentParam
 
 interface ChatRepository {
@@ -29,4 +30,5 @@ interface ChatRepository {
     suspend fun voteAppointment(
         chatAppointmentId: Int
     )
+    suspend fun lastRead(chatRoomId: Int, readParam: ReadParam)
 }
