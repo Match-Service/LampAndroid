@@ -111,7 +111,9 @@ class ChatViewModel @Inject constructor(
                         newMessage.reversed() + uiState.value.chatMessage
                     }
                     _uiState.update { it.copy(chatMessage = message) }
-                    lastRead(chatRoomId, ReadParam(message.last().id.toInt()))
+                    if (message.isNotEmpty()) {
+                        lastRead(chatRoomId, ReadParam(message.last().id.toInt()))
+                    }
                 }
                 .onFailure {
                     Log.e(TAG, "getChatMessage Failure", it)
