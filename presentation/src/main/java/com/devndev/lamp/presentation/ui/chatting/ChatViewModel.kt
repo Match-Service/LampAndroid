@@ -4,11 +4,13 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.chat.ChatItem
+import com.devndev.lamp.domain.model.chat.ReadParam
 import com.devndev.lamp.domain.usecase.assessment.GetAssessmentListUseCase
 import com.devndev.lamp.domain.usecase.chat.GetAppointmentListUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatInfoUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatListUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatMessageUseCase
+import com.devndev.lamp.domain.usecase.chat.LastReadUseCase
 import com.devndev.lamp.domain.usecase.chat.SendChatUseCase
 import com.devndev.lamp.domain.usecase.socket.AddChatListenerUseCase
 import com.devndev.lamp.domain.usecase.socket.RemoveChatListenerUseCase
@@ -34,7 +36,8 @@ class ChatViewModel @Inject constructor(
     private val addChatListenerUseCase: AddChatListenerUseCase,
     private val removeChatListenerUseCase: RemoveChatListenerUseCase,
     private val getAppointmentListUseCase: GetAppointmentListUseCase,
-    private val getAssessmentListUseCase: GetAssessmentListUseCase
+    private val getAssessmentListUseCase: GetAssessmentListUseCase,
+    private val lastReadUseCase: LastReadUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
@@ -55,6 +58,7 @@ class ChatViewModel @Inject constructor(
                         val dateString = chatRoom.lastMessageInfo?.createdAt ?: chatRoom.startDate
                         parseDate(dateString)
                     }
+
                     _uiState.update { it.copy(chatList = sortedList) }
                     getAssessmentList()
                 }
@@ -107,6 +111,7 @@ class ChatViewModel @Inject constructor(
                         newMessage.reversed() + uiState.value.chatMessage
                     }
                     _uiState.update { it.copy(chatMessage = message) }
+                    lastRead(chatRoomId, ReadParam(message.last().id.toInt()))
                 }
                 .onFailure {
                     Log.e(TAG, "getChatMessage Failure", it)
@@ -181,7 +186,10 @@ class ChatViewModel @Inject constructor(
                         if (chatMessage.chatRoomId == chatRoomId) {
                             val updatedMessages = uiState.value.chatMessage + chatMessage
                             _uiState.update { it.copy(chatMessage = updatedMessages) }
-
+                            lastRead(
+                                chatRoomId,
+                                ReadParam(chatMessage.id.toInt())
+                            )
                             updateChatItems()
                             val isMine = chatMessage.userId == uiState.value.myInfo?.userId
                             val isAtBottom = uiState.value.isAtBottom
@@ -258,6 +266,17 @@ class ChatViewModel @Inject constructor(
                     Log.e(TAG, "getAssessmentList Failure", it)
                     _uiState.update { it.copy(isLoading = false) }
                 }
+        }
+    }
+
+    private fun lastRead(chatRoomId: Int, readParam: ReadParam) {
+        viewModelScope.launch {
+            try {
+                Log.d(TAG, "messageId ${readParam.messageId}")
+                lastReadUseCase(chatRoomId, readParam)
+            } catch (e: Exception) {
+                Log.e(TAG, "lastRead error", e)
+            }
         }
     }
 

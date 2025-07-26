@@ -2,6 +2,7 @@ package com.devndev.lamp.data.datsource.chat
 
 import com.devndev.lamp.data.dto.request.chat.ChatRequest
 import com.devndev.lamp.data.dto.request.chat.EditAppointmentRequest
+import com.devndev.lamp.data.dto.request.chat.ReadRequest
 import com.devndev.lamp.data.dto.request.chat.RegisterAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
 import com.devndev.lamp.data.dto.request.chat.VoteAppointmentRequest
@@ -75,5 +76,9 @@ class ChatDataSourceImpl @Inject constructor(
 
     override suspend fun voteAppointment(voteAppointmentRequest: VoteAppointmentRequest) {
         chatService.voteAppointment(voteAppointmentRequest)
+    }
+
+    override suspend fun lastRead(chatRoomId: Int, readRequest: ReadRequest) {
+        chatService.lastRead(chatRoomId, readRequest)
     }
 }
