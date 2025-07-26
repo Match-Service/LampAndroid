@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.chat.ChatItem
+import com.devndev.lamp.domain.usecase.assessment.GetAssessmentListUseCase
 import com.devndev.lamp.domain.usecase.chat.GetAppointmentListUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatInfoUseCase
 import com.devndev.lamp.domain.usecase.chat.GetChatListUseCase
@@ -32,7 +33,8 @@ class ChatViewModel @Inject constructor(
     private val sendChatUseCase: SendChatUseCase,
     private val addChatListenerUseCase: AddChatListenerUseCase,
     private val removeChatListenerUseCase: RemoveChatListenerUseCase,
-    private val getAppointmentListUseCase: GetAppointmentListUseCase
+    private val getAppointmentListUseCase: GetAppointmentListUseCase,
+    private val getAssessmentListUseCase: GetAssessmentListUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(ChatUiState())
     val uiState: StateFlow<ChatUiState> = _uiState.asStateFlow()
@@ -54,11 +56,10 @@ class ChatViewModel @Inject constructor(
                         parseDate(dateString)
                     }
                     _uiState.update { it.copy(chatList = sortedList) }
-                    _uiState.update { it.copy(isLoading = false) }
+                    getAssessmentList()
                 }
                 .onFailure { e ->
                     Log.e(TAG, "getChatList Failure", e)
-                    _uiState.update { it.copy(isLoading = false) }
                 }
         }
     }
@@ -242,6 +243,21 @@ class ChatViewModel @Inject constructor(
             }.onFailure {
                 Log.e(TAG, "getAppointmentListUseCase Failure", it)
             }
+        }
+    }
+
+    private fun getAssessmentList() {
+        viewModelScope.launch {
+            getAssessmentListUseCase()
+                .onSuccess { assessmentList ->
+                    Log.d(TAG, "getAssessmentList Success")
+                    _uiState.update { it.copy(assessmentList = assessmentList) }
+                    _uiState.update { it.copy(isLoading = false) }
+                }
+                .onFailure {
+                    Log.e(TAG, "getAssessmentList Failure", it)
+                    _uiState.update { it.copy(isLoading = false) }
+                }
         }
     }
 

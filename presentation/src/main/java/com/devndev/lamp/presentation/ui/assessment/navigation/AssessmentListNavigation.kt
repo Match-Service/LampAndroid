@@ -23,8 +23,20 @@ fun NavGraphBuilder.assessmentListNavGraph(
 ) {
     composable(
         Route.ASSESSMENT_LIST,
-        enterTransition = { slideInHorizontally(initialOffsetX = { it }) },
-        exitTransition = { slideOutHorizontally(targetOffsetX = { it }) }
+        enterTransition = {
+            if (initialState.destination.route == Route.REVIEW) {
+                null
+            } else {
+                slideInHorizontally(initialOffsetX = { it })
+            }
+        },
+        exitTransition = {
+            if (targetState.destination.route == Route.REVIEW) {
+                null
+            } else {
+                slideOutHorizontally(targetOffsetX = { it })
+            }
+        }
     ) {
         AssessmentListScreen(
             modifier = modifier.padding(padding),

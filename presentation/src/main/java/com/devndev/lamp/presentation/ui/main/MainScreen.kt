@@ -159,21 +159,17 @@ fun MainScreen(
                 currentRoute != Route.FORGOT_PASSWORD &&
                 currentRoute != Route.REVIEW
             ) {
-                LampBottomNavigation(navController, LampBlack) {
-                    viewModel.updateIsAssessmentExist(false)
+                if (isBottomBarVisible) {
+                    LampBottomNavigation(navController, LampBlack) {
+                        viewModel.updateIsAssessmentExist(false)
+                    }
+                } else {
+                    LampBottomNavigation(navController, Gray) {
+                        viewModel.updateIsAssessmentExist(false)
+                    }
                 }
             } else {
                 Spacer(modifier = Modifier.height(0.dp))
-            }
-
-            if (isBottomBarVisible) {
-                LampBottomNavigation(navController, LampBlack) {
-                    viewModel.updateIsAssessmentExist(false)
-                }
-            } else {
-                LampBottomNavigation(navController, Gray) {
-                    viewModel.updateIsAssessmentExist(false)
-                }
             }
         }
     ) { innerPadding ->

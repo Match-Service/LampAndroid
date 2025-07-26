@@ -1,6 +1,7 @@
 package com.devndev.lamp.presentation.ui.assessment
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,6 +35,8 @@ import com.devndev.lamp.presentation.theme.Gray3
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
+import com.devndev.lamp.presentation.ui.review.navigation.navigateReview
+import com.devndev.lamp.presentation.utils.DateFormatUtil
 
 @Composable
 fun AssessmentListScreen(
@@ -66,22 +69,34 @@ fun AssessmentListScreen(
 
         LazyColumn(
             modifier = Modifier
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .padding(horizontal = 14.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(state.assessmentList) { assessment ->
-                AssessmentItem(assessment)
+                AssessmentItem(
+                    assessment = assessment,
+                    onAssessmentClick = {
+                        navController.navigateReview(lampMatchId = it)
+                    }
+                )
             }
         }
     }
 }
 
 @Composable
-fun AssessmentItem(assessment: AssessmentListDomainModel) {
+fun AssessmentItem(
+    assessment: AssessmentListDomainModel,
+    onAssessmentClick: (Int) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .background(color = Gray, shape = RoundedCornerShape(80.dp))
+            .clickable {
+                onAssessmentClick(assessment.lampMatchId)
+            }
             .padding(vertical = 12.dp, horizontal = 30.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -90,12 +105,10 @@ fun AssessmentItem(assessment: AssessmentListDomainModel) {
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             Text(
-                text = assessment.title,
+                text = stringResource(R.string.assessment_item_title, assessment.otherLampName),
                 style = Typography.medium18,
                 color = Color.White
             )
-
-            // TODO::SHKIM 날짜 convert
             Row(
                 horizontalArrangement = Arrangement.spacedBy(3.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -108,7 +121,7 @@ fun AssessmentItem(assessment: AssessmentListDomainModel) {
                         .size(8.dp)
                 )
                 Text(
-                    text = "2024년 12월 3일",
+                    text = DateFormatUtil.formatToYearMonthDay(assessment.meetingTime),
                     color = Gray3,
                     style = Typography.normal12
                 )
@@ -121,7 +134,7 @@ fun AssessmentItem(assessment: AssessmentListDomainModel) {
                         .size(8.dp)
                 )
                 Text(
-                    text = "5 : 5",
+                    text = "${assessment.meetingUserCount} : ${assessment.meetingUserCount}",
                     color = Gray3,
                     style = Typography.normal12
                 )

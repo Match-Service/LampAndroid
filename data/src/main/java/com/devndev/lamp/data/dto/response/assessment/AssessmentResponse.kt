@@ -26,7 +26,9 @@ data class User(
     @Json(name = "birth")
     val birth: String,
     @Json(name = "profileImageUrl")
-    val profileImageUrl: String
+    val profileImageUrl: String,
+    @Json(name = "jobName")
+    val jobName: String?
 )
 
 fun AssessmentResponse.toDomainModel(): AssessmentDomainModel {
@@ -43,6 +45,7 @@ fun User.toDomainModel(): UserDomainModel {
         userId = userId,
         name = name,
         birth = birth,
-        profileImageUrl = profileImageUrl
+        profileImageUrl = profileImageUrl,
+        jobName = jobName
     )
 }

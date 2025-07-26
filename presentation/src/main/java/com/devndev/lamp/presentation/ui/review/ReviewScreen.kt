@@ -22,8 +22,12 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,13 +36,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.devndev.lamp.domain.model.assessment.AssessmentParam
+import com.devndev.lamp.domain.model.assessment.AssessmentUserInfo
 import com.devndev.lamp.presentation.theme.Gray
 import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
+import com.devndev.lamp.presentation.ui.assessment.AssessmentListViewModel
 import com.devndev.lamp.presentation.ui.common.ReviewScreen
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.home.navigation.navigateHome
@@ -46,10 +55,41 @@ import com.devndev.lamp.presentation.ui.home.navigation.navigateHome
 @Composable
 fun ReviewScreen(
     modifier: Modifier,
-    navController: NavController
+    navController: NavController,
+    lampMatchId: Int,
+    viewModel: AssessmentListViewModel = hiltViewModel()
 ) {
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
+
+    LaunchedEffect(Unit) {
+        viewModel.getAssessment(lampMatchId)
+    }
+
+    val userAnswers = mutableListOf<AssessmentUserInfo>()
+    val userScores = remember { mutableStateListOf<List<MutableState<Int>>>() }
+    val isSkippedList = remember { mutableStateListOf<Boolean>() }
+
+    LaunchedEffect(state.assessment?.users) {
+        state.assessment?.users?.let { users ->
+            users.forEach { _ ->
+                userScores.add(
+                    listOf(
+                        mutableIntStateOf(1),
+                        mutableIntStateOf(1),
+                        mutableIntStateOf(1),
+                        mutableIntStateOf(1)
+                    )
+                )
+                isSkippedList.add(false)
+            }
+        }
+    }
+
     var currentStep by remember { mutableIntStateOf(0) }
     var personalStep by remember { mutableIntStateOf(1) }
+
+    var lampScore by remember { mutableStateOf<Int?>(1) }
+
     BackHandler {
         if (currentStep == 0) {
             navController.popBackStack()
@@ -61,14 +101,9 @@ fun ReviewScreen(
             }
         }
     }
-    val tmpProfile = listOf(
-        listOf("닉네임입니다", 28, "한국대학교"),
-        listOf("Profile2", 27, "한국대학교"),
-        listOf("Profile3", 26, "한국대학교"),
-        listOf("Profile4", 25, "한국대학교")
-    )
-    val tmpProfileSize = tmpProfile.size
-    val indicatorSize = 1f / (tmpProfileSize + 1)
+
+    val profileSize = state.getUserSize()
+    val indicatorSize = 1f / (profileSize + 1)
 
     Column(
         modifier = modifier
@@ -94,6 +129,7 @@ fun ReviewScreen(
                                 else -> 1f
                             }
                         }
+
                         else -> 1f
                     }
                 },
@@ -154,8 +190,22 @@ fun ReviewScreen(
                     label = ""
                 ) { step ->
                     when (step) {
-                        ReviewScreen.LAMP -> LampReviewScreen()
-                        ReviewScreen.PERSONAL -> PersonalReviewScreen(personalStep)
+                        ReviewScreen.LAMP -> state.assessment?.let {
+                            LampReviewScreen(it, lampScore ?: 1) {
+                                lampScore = it
+                            }
+                        }
+
+                        ReviewScreen.PERSONAL -> state.assessment?.let {
+                            PersonalReviewScreen(
+                                step = personalStep,
+                                assessment = it,
+                                userScores = userScores,
+                                onProgressChange = { user, attractive, score ->
+                                    userScores[user][attractive].value = score
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -175,8 +225,27 @@ fun ReviewScreen(
                     onClick = {
                         if (currentStep == ReviewScreen.LAMP) {
                             currentStep = ReviewScreen.PERSONAL
+                            lampScore = null
                         } else if (currentStep == ReviewScreen.PERSONAL) {
-                            if (personalStep == tmpProfileSize) {
+                            isSkippedList[personalStep - 1] = true
+                            if (personalStep == profileSize) {
+                                for (i in isSkippedList.indices) {
+                                    if (!isSkippedList[i]) {
+                                        val userId = state.assessment!!.users[i].userId
+                                        userAnswers.add(AssessmentUserInfo("PERSONALITY", userScores[i][0].value, userId))
+                                        userAnswers.add(AssessmentUserInfo("VOICE", userScores[i][1].value, userId))
+                                        userAnswers.add(AssessmentUserInfo("FASHION", userScores[i][2].value, userId))
+                                        userAnswers.add(AssessmentUserInfo("CONVERSATION", userScores[i][3].value, userId))
+                                    }
+                                }
+                                viewModel.assessment(
+                                    AssessmentParam(
+                                        score = lampScore,
+                                        lampId = state.assessment!!.lampId,
+                                        lampMatchId = lampMatchId,
+                                        lampAssessmentUserInfos = userAnswers
+                                    )
+                                )
                                 navController.navigateHome()
                             } else {
                                 personalStep++
@@ -200,7 +269,25 @@ fun ReviewScreen(
                         if (currentStep == ReviewScreen.LAMP) {
                             currentStep = ReviewScreen.PERSONAL
                         } else if (currentStep == ReviewScreen.PERSONAL) {
-                            if (personalStep == tmpProfileSize) {
+                            isSkippedList[personalStep - 1] = false
+                            if (personalStep == profileSize) {
+                                for (i in isSkippedList.indices) {
+                                    if (!isSkippedList[i]) {
+                                        val userId = state.assessment!!.users[i].userId
+                                        userAnswers.add(AssessmentUserInfo("PERSONALITY", userScores[i][0].value, userId))
+                                        userAnswers.add(AssessmentUserInfo("VOICE", userScores[i][1].value, userId))
+                                        userAnswers.add(AssessmentUserInfo("FASHION", userScores[i][2].value, userId))
+                                        userAnswers.add(AssessmentUserInfo("CONVERSATION", userScores[i][3].value, userId))
+                                    }
+                                }
+                                viewModel.assessment(
+                                    AssessmentParam(
+                                        score = lampScore,
+                                        lampId = state.assessment!!.lampId,
+                                        lampMatchId = lampMatchId,
+                                        lampAssessmentUserInfos = userAnswers
+                                    )
+                                )
                                 navController.navigateHome()
                             } else {
                                 personalStep++

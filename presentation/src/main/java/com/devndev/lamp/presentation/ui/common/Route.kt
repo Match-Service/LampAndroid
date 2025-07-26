@@ -17,7 +17,7 @@ object Route {
     const val ALARM = "ALARM"
     const val SIGNUP = "signup"
     const val START_LAMP = "start_lamp"
-    const val REVIEW = "review"
+    const val REVIEW = "review/{lampMatchId}"
     const val PROFILE_EDIT = "profile_edit"
     const val FORGOT_PASSWORD = "forgot_password"
     const val VOTE = "vote"
