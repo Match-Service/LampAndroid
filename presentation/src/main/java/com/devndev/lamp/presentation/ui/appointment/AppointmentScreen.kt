@@ -44,6 +44,9 @@ fun AppointmentScreen(
     var selectedAppointment by remember { mutableStateOf(state.getVotedAppointment()) }
 
     var isVoteConfirmPopupShow by remember { mutableStateOf(false) }
+    var isReadyConfirmPopupShow by remember { mutableStateOf(false) }
+    var isDeletePopupShow by remember { mutableStateOf(false) }
+    var deleteAppointmentId by remember { mutableStateOf(0) }
 
     if (isVoteConfirmPopupShow) {
         TwoButtonPopup(
@@ -59,6 +62,35 @@ fun AppointmentScreen(
                         ?: -1,
                     onSuccess = { navController.popBackStack() }
                 )
+            }
+        )
+    }
+
+    if (isReadyConfirmPopupShow) {
+        TwoButtonPopup(
+            mainText = stringResource(R.string.ready_popup_title),
+            hintText = stringResource(R.string.ready_popup_message),
+            startButtonText = stringResource(R.string.cancel),
+            endButtonText = stringResource(R.string.confirm),
+            onStartButtonClick = { isReadyConfirmPopupShow = false },
+            onEndButtonClick = {
+                appointmentViewModel.readyVote(chatRoomId)
+                isReadyConfirmPopupShow = false
+            }
+        )
+    }
+
+    if (isDeletePopupShow) {
+        TwoButtonPopup(
+            mainText = stringResource(R.string.delete_popup_title),
+            hintText = stringResource(R.string.delete_popup_message),
+            startButtonText = stringResource(R.string.cancel),
+            endButtonText = stringResource(R.string.confirm),
+            onStartButtonClick = { isDeletePopupShow = false },
+            onEndButtonClick = {
+                appointmentViewModel.deleteAppointment(chatRoomId, deleteAppointmentId)
+                isDeletePopupShow = false
+                deleteAppointmentId = 0
             }
         )
     }
@@ -115,7 +147,10 @@ fun AppointmentScreen(
                             chatAppointmentId = it
                         )
                     },
-                    onDeleteClick = { appointmentViewModel.deleteAppointment(chatRoomId, it) },
+                    onDeleteClick = {
+                        isDeletePopupShow = true
+                        deleteAppointmentId = it
+                    },
                     onAddIconClick = {
                         navController.navigateRegisterAppointment(
                             isEdit = false,
@@ -201,7 +236,7 @@ fun AppointmentScreen(
                         }
 
                         AppointmentStatus.BEFORE_READY -> {
-                            appointmentViewModel.readyVote(chatRoomId)
+                            isReadyConfirmPopupShow = true
                         }
 
                         AppointmentStatus.BEFORE_VOTE -> {
