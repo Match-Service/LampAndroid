@@ -65,7 +65,7 @@ class SignUpRepositoryImpl @Inject constructor(private val signUpDataSource: Sig
                 lampInvite = signUpParam.user.alarmSetting.lampInvite,
                 lampVisit = signUpParam.user.alarmSetting.lampVisit,
                 newMatch = signUpParam.user.alarmSetting.newMatch,
-                receiveBadge = signUpParam.user.alarmSetting.receiveBadge,
+                receiveAssessment = signUpParam.user.alarmSetting.receiveAssessment,
                 receiveMessage = signUpParam.user.alarmSetting.receiveMessage
             ),
             bioQuestions = listOf(

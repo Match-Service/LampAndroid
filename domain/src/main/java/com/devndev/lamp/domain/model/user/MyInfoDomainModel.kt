@@ -13,7 +13,6 @@ data class MyInfoDomainModel(
     val instagramId: String?,
     val bio: String?,
     val profileImages: List<ProfileImageForMyInfo>,
-    val alarmSetting: AlarmSettingForMyInfo,
     val bioQuestions: List<BioQuestion>,
     val individualityDomainModel: IndividualityDomainModel?
 )
@@ -32,6 +31,6 @@ data class AlarmSettingForMyInfo(
     val lampInvite: Boolean,
     val lampVisit: Boolean,
     val newMatch: Boolean,
-    val receiveBadge: Boolean,
+    val receiveAssessment: Boolean,
     val receiveMessage: Boolean
 )

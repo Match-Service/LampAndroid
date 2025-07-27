@@ -19,7 +19,6 @@ data class MyInfoResponse(
     @Json(name = "instagramId") val instagramId: String?,
     @Json(name = "bio") val bio: String?,
     @Json(name = "profileImages") val profileImages: List<ProfileImage>,
-    @Json(name = "alarmSetting") val alarmSetting: AlarmSetting,
     @Json(name = "bioQuestions") val bioQuestions: List<BioQuestion>,
     @Json(name = "individuality") val individuality: Individuality?
 )
@@ -50,7 +49,7 @@ data class AlarmSetting(
     @Json(name = "lampInvite") val lampInvite: Boolean,
     @Json(name = "lampVisit") val lampVisit: Boolean,
     @Json(name = "newMatch") val newMatch: Boolean,
-    @Json(name = "receiveBadge") val receiveBadge: Boolean,
+    @Json(name = "receiveAssessment") val receiveAssessment: Boolean,
     @Json(name = "receiveMessage") val receiveMessage: Boolean
 ) {
     fun toDomainModel(): AlarmSettingForMyInfo {
@@ -60,7 +59,7 @@ data class AlarmSetting(
             lampInvite = lampInvite,
             lampVisit = lampVisit,
             newMatch = newMatch,
-            receiveBadge = receiveBadge,
+            receiveAssessment = receiveAssessment,
             receiveMessage = receiveMessage
         )
     }
@@ -96,7 +95,6 @@ fun MyInfoResponse.toDomainModel(): MyInfoDomainModel {
         instagramId = instagramId,
         bio = bio,
         profileImages = profileImages.map { it.toDomainModel() },
-        alarmSetting = alarmSetting.toDomainModel(),
         bioQuestions = bioQuestions.map { it.toDomainModel() },
         individualityDomainModel = individuality?.toDomainModel()
     )

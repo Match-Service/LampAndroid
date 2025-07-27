@@ -56,7 +56,6 @@ import com.canhub.cropper.CropImage.CancelledResult.uriContent
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
-import com.devndev.lamp.domain.model.signup.AlarmSetting
 import com.devndev.lamp.domain.model.signup.BioQuestion
 import com.devndev.lamp.domain.model.user.EditImageModel
 import com.devndev.lamp.domain.model.user.ModifyUserParam
@@ -176,18 +175,19 @@ fun ProfileEditScreen(
                         instagramId = instagram,
                         bio = profileQuery,
                         profileImages = listOf(myInfo?.profileImages?.get(0)?.downloadUrl ?: ""),
-                        alarmSetting = AlarmSetting(
-                            allPush = myInfo?.alarmSetting?.allPush ?: true,
-                            lampInvite = myInfo?.alarmSetting?.lampInvite ?: true,
-                            lampVisit = myInfo?.alarmSetting?.lampVisit ?: true,
-                            newMatch = myInfo?.alarmSetting?.newMatch ?: true,
-                            receiveBadge = myInfo?.alarmSetting?.receiveBadge ?: true,
-                            receiveMessage = myInfo?.alarmSetting?.receiveMessage ?: true
-                        ),
                         bioQuestions = listOf(
-                            BioQuestion(myInfo?.bioQuestions?.get(0)?.question ?: "음주", selectedDrink ?: myInfo?.bioQuestions?.get(0)!!.answer),
-                            BioQuestion(myInfo?.bioQuestions?.get(1)?.question ?: "흡연", selectedSmoke ?: myInfo?.bioQuestions?.get(1)!!.answer),
-                            BioQuestion(myInfo?.bioQuestions?.get(2)?.question ?: "운동", selectedExercise ?: myInfo?.bioQuestions?.get(2)!!.answer)
+                            BioQuestion(
+                                myInfo?.bioQuestions?.get(0)?.question ?: "음주",
+                                selectedDrink ?: myInfo?.bioQuestions?.get(0)!!.answer
+                            ),
+                            BioQuestion(
+                                myInfo?.bioQuestions?.get(1)?.question ?: "흡연",
+                                selectedSmoke ?: myInfo?.bioQuestions?.get(1)!!.answer
+                            ),
+                            BioQuestion(
+                                myInfo?.bioQuestions?.get(2)?.question ?: "운동",
+                                selectedExercise ?: myInfo?.bioQuestions?.get(2)!!.answer
+                            )
                         ),
                         pushToken = ""
                     ),
@@ -269,7 +269,8 @@ fun ProfileEditScreen(
                     )
                     Log.d("BitmapInfo1", "$this")
                 } else {
-                    val emptyIndex = this.indexOfFirst { it?.bitmap == null && it?.imageUrl == null }
+                    val emptyIndex =
+                        this.indexOfFirst { it?.bitmap == null && it?.imageUrl == null }
                     if (emptyIndex != -1) {
                         this[emptyIndex] = EditImageModel(
                             bitmap = bitmap,
@@ -365,19 +366,23 @@ fun ProfileEditScreen(
                                     birth = myInfo?.birth ?: "", // 변경불가
                                     instagramId = instagram,
                                     bio = profileQuery,
-                                    profileImages = listOf(myInfo?.profileImages?.get(0)?.downloadUrl ?: ""),
-                                    alarmSetting = AlarmSetting(
-                                        allPush = myInfo?.alarmSetting?.allPush ?: true,
-                                        lampInvite = myInfo?.alarmSetting?.lampInvite ?: true,
-                                        lampVisit = myInfo?.alarmSetting?.lampVisit ?: true,
-                                        newMatch = myInfo?.alarmSetting?.newMatch ?: true,
-                                        receiveBadge = myInfo?.alarmSetting?.receiveBadge ?: true,
-                                        receiveMessage = myInfo?.alarmSetting?.receiveMessage ?: true
+                                    profileImages = listOf(
+                                        myInfo?.profileImages?.get(0)?.downloadUrl ?: ""
                                     ),
                                     bioQuestions = listOf(
-                                        BioQuestion(myInfo?.bioQuestions?.get(0)?.question ?: "음주", selectedDrink ?: myInfo?.bioQuestions?.get(0)!!.answer),
-                                        BioQuestion(myInfo?.bioQuestions?.get(1)?.question ?: "흡연", selectedSmoke ?: myInfo?.bioQuestions?.get(1)!!.answer),
-                                        BioQuestion(myInfo?.bioQuestions?.get(2)?.question ?: "운동", selectedExercise ?: myInfo?.bioQuestions?.get(2)!!.answer)
+                                        BioQuestion(
+                                            myInfo?.bioQuestions?.get(0)?.question ?: "음주",
+                                            selectedDrink ?: myInfo?.bioQuestions?.get(0)!!.answer
+                                        ),
+                                        BioQuestion(
+                                            myInfo?.bioQuestions?.get(1)?.question ?: "흡연",
+                                            selectedSmoke ?: myInfo?.bioQuestions?.get(1)!!.answer
+                                        ),
+                                        BioQuestion(
+                                            myInfo?.bioQuestions?.get(2)?.question ?: "운동",
+                                            selectedExercise
+                                                ?: myInfo?.bioQuestions?.get(2)!!.answer
+                                        )
                                     ),
                                     pushToken = ""
                                 ),
@@ -672,7 +677,10 @@ fun RadioButtonWithLabel(
     }
 }
 
-fun compProfileList(originImageModel: MutableList<EditImageModel?>, editImageModel: List<EditImageModel?>): Boolean {
+fun compProfileList(
+    originImageModel: MutableList<EditImageModel?>,
+    editImageModel: List<EditImageModel?>
+): Boolean {
     // 두 리스트의 크기가 다르면 바로 false 반환
     if (originImageModel.size != editImageModel.size) return false
 

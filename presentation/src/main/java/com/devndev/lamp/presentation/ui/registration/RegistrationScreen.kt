@@ -127,7 +127,7 @@ fun RegistrationScreen(
                 lampInvite = true,
                 lampVisit = true,
                 newMatch = true,
-                receiveBadge = true,
+                receiveAssessment = true,
                 receiveMessage = true
             ),
             bioQuestions = listOf(

@@ -15,7 +15,6 @@ data class ModifyUserRequest(
     @Json(name = "instagramId") val instagramId: String,
     @Json(name = "bio") val bio: String,
     @Json(name = "profileImages") val profileImages: List<String>,
-    @Json(name = "alarmSetting") val alarmSetting: AlarmSetting,
     @Json(name = "bioQuestions") val bioQuestions: List<BioQuestion>,
     @Json(name = "pushToken") val pushToken: String
 )

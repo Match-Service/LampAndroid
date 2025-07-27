@@ -9,6 +9,7 @@ import com.devndev.lamp.data.repository.LampRepositoryImpl
 import com.devndev.lamp.data.repository.LampSocketRepositoryImpl
 import com.devndev.lamp.data.repository.LocalRepositoryImpl
 import com.devndev.lamp.data.repository.LoginRepositoryImpl
+import com.devndev.lamp.data.repository.SettingRepositoryImpl
 import com.devndev.lamp.data.repository.SignUpRepositoryImpl
 import com.devndev.lamp.data.repository.UserRepositoryImpl
 import com.devndev.lamp.domain.repository.AlarmRepository
@@ -20,6 +21,7 @@ import com.devndev.lamp.domain.repository.LampRepository
 import com.devndev.lamp.domain.repository.LampSocketRepository
 import com.devndev.lamp.domain.repository.LocalRepository
 import com.devndev.lamp.domain.repository.LoginRepository
+import com.devndev.lamp.domain.repository.SettingRepository
 import com.devndev.lamp.domain.repository.SignUpRepository
 import com.devndev.lamp.domain.repository.UserRepository
 import dagger.Binds
@@ -74,4 +76,8 @@ interface RepositoryModule {
     @Singleton
     @Binds
     fun bindAssessmentRepository(assessmentRepositoryImpl: AssessmentRepositoryImpl): AssessmentRepository
+
+    @Singleton
+    @Binds
+    fun bindSettingRepository(bindSettingRepositoryImpl: SettingRepositoryImpl): SettingRepository
 }
