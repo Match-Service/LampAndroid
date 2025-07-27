@@ -3,11 +3,14 @@ package com.devndev.lamp.presentation.ui.mypage
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.devndev.lamp.domain.model.setting.PushSettingDomainModel
+import com.devndev.lamp.domain.model.setting.PushSettingParam
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.usecase.login.SignOutUseCase
+import com.devndev.lamp.domain.usecase.setting.GetPushSettingUseCase
+import com.devndev.lamp.domain.usecase.setting.PutPushSettingUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.presentation.ui.common.AccountStatus
-import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import com.devndev.lamp.presentation.ui.login.AuthManager
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.firebase.messaging.FirebaseMessaging
@@ -23,7 +26,9 @@ import javax.inject.Inject
 class MyPageViewModel @Inject constructor(
     private val googleSignInClient: GoogleSignInClient,
     private val getMyInfoUseCase: GetMyInfoUseCase,
-    private val signOutUseCase: SignOutUseCase
+    private val signOutUseCase: SignOutUseCase,
+    private val getPushSettingUseCase: GetPushSettingUseCase,
+    private val putPushSettingUseCase: PutPushSettingUseCase
 ) : ViewModel() {
     private val logTag = "MyPageViewModel"
 
@@ -39,6 +44,7 @@ class MyPageViewModel @Inject constructor(
     init {
         getMyInfo()
         getFcmToken()
+        getPushSetting()
     }
 
     private fun getFcmToken() {
@@ -58,12 +64,12 @@ class MyPageViewModel @Inject constructor(
         viewModelScope.launch {
             getMyInfoUseCase()
                 .onSuccess { userInfo ->
-                    Log.d(HomeViewModel.TAG, "getMyInfo")
+                    Log.d(logTag, "getMyInfo")
                     _myInfo.value = userInfo
-                    Log.d(HomeViewModel.TAG, "My Info ${myInfo.value}")
+                    Log.d(logTag, "My Info ${myInfo.value}")
                 }
                 .onFailure { throwable ->
-                    Log.e(HomeViewModel.TAG, "Failed to fetch user info", throwable)
+                    Log.e(logTag, "Failed to fetch user info", throwable)
                 }
         }
     }
@@ -81,6 +87,52 @@ class MyPageViewModel @Inject constructor(
                     isLoggedOut = true
                 )
             }
+        }
+    }
+
+    private fun getPushSetting() {
+        viewModelScope.launch {
+            getPushSettingUseCase()
+                .onSuccess { pushSetting ->
+                    _uiState.update { it.copy(pushSetting = pushSetting) }
+                }.onFailure {
+                    Log.e(logTag, " getPushSetting Failure", it)
+                }
+        }
+    }
+
+    fun updatePushSetting(pushSettingDomainModel: PushSettingDomainModel) {
+        viewModelScope.launch {
+            Log.d(logTag, "updatePushSetting $pushSettingDomainModel")
+            val pushSettingParam = PushSettingParam(
+                allPush = pushSettingDomainModel.allPush,
+                lampInvite = pushSettingDomainModel.lampInvite,
+                lampVisit = pushSettingDomainModel.lampVisit,
+                newMatch = pushSettingDomainModel.newMatch,
+                receiveMessage = pushSettingDomainModel.receiveMessage,
+                receiveAssessment = pushSettingDomainModel.receiveAssessment
+            )
+            putPushSettingUseCase(pushSettingParam)
+                .onSuccess {
+                    Log.d(logTag, "upDatePushSetting Success")
+                    getPushSetting()
+                }.onFailure {
+                    Log.d(logTag, "upDatePushSetting Failure", it)
+                }
+        }
+    }
+
+    fun rejectPushSetting() {
+        viewModelScope.launch {
+            val pushSettingParam = PushSettingParam(
+                allPush = false,
+                lampInvite = false,
+                lampVisit = false,
+                newMatch = false,
+                receiveAssessment = false,
+                receiveMessage = false
+            )
+            putPushSettingUseCase(pushSettingParam)
         }
     }
 }

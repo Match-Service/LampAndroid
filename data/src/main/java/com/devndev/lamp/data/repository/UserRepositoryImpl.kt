@@ -2,7 +2,6 @@ package com.devndev.lamp.data.repository
 
 import android.util.Log
 import com.devndev.lamp.data.datsource.user.UserDataSource
-import com.devndev.lamp.data.dto.request.signup.AlarmSetting
 import com.devndev.lamp.data.dto.request.signup.BioQuestion
 import com.devndev.lamp.data.dto.request.user.EditImageRequest
 import com.devndev.lamp.data.dto.request.user.ModifyUserRequest
@@ -40,14 +39,6 @@ class UserRepositoryImpl @Inject constructor(private val userDataSource: UserDat
             instagramId = modifyUserParam.instagramId,
             bio = modifyUserParam.bio,
             profileImages = modifyUserParam.profileImages,
-            alarmSetting = AlarmSetting(
-                allPush = modifyUserParam.alarmSetting.allPush,
-                lampInvite = modifyUserParam.alarmSetting.lampInvite,
-                lampVisit = modifyUserParam.alarmSetting.lampVisit,
-                newMatch = modifyUserParam.alarmSetting.newMatch,
-                receiveBadge = modifyUserParam.alarmSetting.receiveBadge,
-                receiveMessage = modifyUserParam.alarmSetting.receiveMessage
-            ),
             bioQuestions = listOf(
                 BioQuestion(
                     question = modifyUserParam.bioQuestions[0].question,

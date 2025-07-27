@@ -1,8 +1,14 @@
 package com.devndev.lamp.presentation.ui.mypage
 
+import android.Manifest
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.text.Layout
 import android.text.Spannable
 import android.text.SpannableString
@@ -10,6 +16,8 @@ import android.text.style.AlignmentSpan
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.background
@@ -33,6 +41,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.derivedStateOf
@@ -52,11 +61,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import coil.compose.AsyncImage
 import com.devndev.lamp.domain.model.lampmatch.IndividualityDomainModel
+import com.devndev.lamp.domain.model.setting.PushSettingDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray3
 import com.devndev.lamp.presentation.theme.IncTypography
@@ -65,6 +80,7 @@ import com.devndev.lamp.presentation.theme.LightGray
 import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
+import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 import com.devndev.lamp.presentation.ui.home.vote.ProgressBar
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateProfileEdit
 import java.text.SimpleDateFormat
@@ -86,13 +102,20 @@ fun MyPageScreen(
     var backPressedOnce by remember { mutableStateOf(false) }
 //    val avgAttractive = attractive.average()
 
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     val myInfo by viewModel.myInfo.collectAsState()
 
     val attractive by remember(myInfo) {
         derivedStateOf {
             listOf(
                 myInfo?.individualityDomainModel
-                    ?: IndividualityDomainModel(attractiveness = 0, personality = 0, voice = 0, fashion = 0, conversation = 0)
+                    ?: IndividualityDomainModel(
+                        attractiveness = 0,
+                        personality = 0,
+                        voice = 0,
+                        fashion = 0,
+                        conversation = 0
+                    )
             )
         }
     }
@@ -105,8 +128,10 @@ fun MyPageScreen(
 
     val birthdate = myInfo?.birth ?: "00000000"
 
-    val alarmsState = remember {
-        AlarmsState()
+    val alarmsState = remember(state.pushSetting) {
+        AlarmsState(state.pushSetting) { updatedState ->
+            viewModel.updatePushSetting(updatedState)
+        }
     }
 
     BackHandler {
@@ -160,15 +185,12 @@ fun MyPageScreen(
                     avgAttractive = avgAttractive,
                     attractive = attractive
                 )
+
                 AlarmSettingsSection(modifier = outlineModifier, alarmsState = alarmsState)
+
                 AskQuestionSection(modifier = outlineModifier)
                 LogOutSection(modifier = outlineModifier, signOut = signOut)
             }
-//            Button(onClick = {
-//                viewModel.sendFcmNotification("Fcm 테스트", "test")
-//            }) {
-//                Text("알람테스트")
-//            }
         }
     }
 }
@@ -246,7 +268,11 @@ fun UserInfoSection(
 }
 
 @Composable
-fun AttractiveSection(modifier: Modifier, avgAttractive: Int, attractive: List<IndividualityDomainModel?>) {
+fun AttractiveSection(
+    modifier: Modifier,
+    avgAttractive: Int,
+    attractive: List<IndividualityDomainModel?>
+) {
     Column(modifier = modifier.padding(top = 15.dp, bottom = 7.dp)) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
@@ -279,8 +305,80 @@ fun AttractiveSection(modifier: Modifier, avgAttractive: Int, attractive: List<I
 }
 
 @Composable
-fun AlarmSettingsSection(modifier: Modifier, alarmsState: AlarmsState) {
+fun AlarmSettingsSection(
+    modifier: Modifier,
+    alarmsState: AlarmsState
+) {
     val context = LocalContext.current
+    var isShowPermissionPopup by remember { mutableStateOf(false) }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    var isNeedCheckPermission by remember { mutableStateOf(false) }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            alarmsState.notifyUpdate()
+            showAgreeToast(context, true)
+        } else {
+            isShowPermissionPopup = true
+        }
+    }
+
+    DisposableEffect(Unit) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                if (isNeedCheckPermission) {
+                    isNeedCheckPermission = false
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        val permissionStatus = ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        )
+                        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                            alarmsState.isPushAlarmChecked = false
+                            alarmsState.notifyUpdate()
+                        } else {
+                            alarmsState.checkAllAlarms()
+                            alarmsState.notifyUpdate()
+                            showAgreeToast(context, true)
+                        }
+                    }
+                }
+            }
+        }
+
+        lifecycleOwner.lifecycle.addObserver(observer)
+
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    if (isShowPermissionPopup) {
+        TwoButtonPopup(
+            stringResource(R.string.push_popup_title),
+            stringResource(R.string.cancel),
+            stringResource(R.string.push_popup_btn_end),
+            stringResource(R.string.push_popup_msg),
+            onStartButtonClick = {
+                alarmsState.isPushAlarmChecked = false
+                alarmsState.notifyUpdate()
+                isShowPermissionPopup = false
+            },
+            onEndButtonClick = {
+                isNeedCheckPermission = true
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", context.packageName, null)
+                }
+                context.startActivity(intent)
+                isShowPermissionPopup = false
+            }
+        )
+    }
+
     Column(
         modifier = modifier
             .padding(vertical = 15.dp)
@@ -293,11 +391,24 @@ fun AlarmSettingsSection(modifier: Modifier, alarmsState: AlarmsState) {
             onCheckedChange = { isChecked ->
                 alarmsState.isPushAlarmChecked = isChecked
                 if (isChecked) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        val permissionStatus = ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.POST_NOTIFICATIONS
+                        )
+                        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                            permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        } else {
+                            showAgreeToast(context, true)
+                        }
+                    } else {
+                        Log.d("Permission", "API < 33 — 권한 불필요")
+                    }
                     if (alarmsState.areAllAlarmsUnchecked()) {
                         alarmsState.checkAllAlarms()
                     }
-                    showAgreeToast(context, true)
                 } else {
+                    alarmsState.notifyUpdate()
                     showAgreeToast(context, false)
                 }
             }
@@ -310,7 +421,9 @@ fun AlarmSettingsSection(modifier: Modifier, alarmsState: AlarmsState) {
 }
 
 @Composable
-fun AlarmSwitches(alarmsState: AlarmsState) {
+fun AlarmSwitches(
+    alarmsState: AlarmsState
+) {
     SwitchWithText(
         text = stringResource(id = R.string.invite_lamp_alarm),
         hintText = stringResource(id = R.string.guide_invite_lamp_alarm),
@@ -320,6 +433,7 @@ fun AlarmSwitches(alarmsState: AlarmsState) {
             if (alarmsState.areAllAlarmsUnchecked()) {
                 alarmsState.isPushAlarmChecked = false
             }
+            alarmsState.notifyUpdate()
         }
     )
     SwitchWithText(
@@ -331,6 +445,7 @@ fun AlarmSwitches(alarmsState: AlarmsState) {
             if (alarmsState.areAllAlarmsUnchecked()) {
                 alarmsState.isPushAlarmChecked = false
             }
+            alarmsState.notifyUpdate()
         }
     )
     SwitchWithText(
@@ -342,6 +457,7 @@ fun AlarmSwitches(alarmsState: AlarmsState) {
             if (alarmsState.areAllAlarmsUnchecked()) {
                 alarmsState.isPushAlarmChecked = false
             }
+            alarmsState.notifyUpdate()
         }
     )
     SwitchWithText(
@@ -353,6 +469,7 @@ fun AlarmSwitches(alarmsState: AlarmsState) {
             if (alarmsState.areAllAlarmsUnchecked()) {
                 alarmsState.isPushAlarmChecked = false
             }
+            alarmsState.notifyUpdate()
         }
     )
     SwitchWithText(
@@ -364,6 +481,7 @@ fun AlarmSwitches(alarmsState: AlarmsState) {
             if (alarmsState.areAllAlarmsUnchecked()) {
                 alarmsState.isPushAlarmChecked = false
             }
+            alarmsState.notifyUpdate()
         }
     )
 }
@@ -543,15 +661,23 @@ fun showAgreeToast(context: Context, agree: Boolean) {
     Toast.makeText(context, centeredText, Toast.LENGTH_LONG).show()
 }
 
-class AlarmsState {
-    var isPushAlarmChecked by mutableStateOf(false)
-    var isInviteAlarmChecked by mutableStateOf(false)
-    var isVisitAlarmChecked by mutableStateOf(false)
-    var isMatchAlarmChecked by mutableStateOf(false)
-    var isBadgeAlarmChecked by mutableStateOf(false)
-    var isMessageAlarmChecked by mutableStateOf(false)
+class AlarmsState(
+    private val pushSetting: PushSettingDomainModel?,
+    private val onUpdate: (PushSettingDomainModel) -> Unit
+) {
+    var isPushAlarmChecked by mutableStateOf(pushSetting?.allPush ?: false)
+    var isInviteAlarmChecked by mutableStateOf(pushSetting?.lampInvite ?: false)
+    var isVisitAlarmChecked by mutableStateOf(pushSetting?.lampVisit ?: false)
+    var isMatchAlarmChecked by mutableStateOf(pushSetting?.newMatch ?: false)
+    var isBadgeAlarmChecked by mutableStateOf(pushSetting?.receiveAssessment ?: false)
+    var isMessageAlarmChecked by mutableStateOf(pushSetting?.receiveMessage ?: false)
+
+    fun areAllAlarmsUnchecked(): Boolean {
+        return !isInviteAlarmChecked && !isVisitAlarmChecked && !isMatchAlarmChecked && !isBadgeAlarmChecked && !isMessageAlarmChecked
+    }
 
     fun checkAllAlarms() {
+        isPushAlarmChecked = true
         isInviteAlarmChecked = true
         isVisitAlarmChecked = true
         isMatchAlarmChecked = true
@@ -559,7 +685,16 @@ class AlarmsState {
         isMessageAlarmChecked = true
     }
 
-    fun areAllAlarmsUnchecked(): Boolean {
-        return !isInviteAlarmChecked && !isVisitAlarmChecked && !isMatchAlarmChecked && !isBadgeAlarmChecked && !isMessageAlarmChecked
+    fun notifyUpdate() {
+        onUpdate(
+            PushSettingDomainModel(
+                allPush = isPushAlarmChecked,
+                lampInvite = isInviteAlarmChecked,
+                lampVisit = isVisitAlarmChecked,
+                newMatch = isMatchAlarmChecked,
+                receiveAssessment = isBadgeAlarmChecked,
+                receiveMessage = isMessageAlarmChecked
+            )
+        )
     }
 }

@@ -1,17 +1,22 @@
 package com.devndev.lamp.presentation.ui.main
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.devndev.lamp.data.socket.LampSocketService
 import com.devndev.lamp.presentation.theme.LampTheme
@@ -31,6 +36,17 @@ class MainActivity : ComponentActivity() {
 
     private val mainViewModel by viewModels<MainViewModel>()
     private val myPageViewModel by viewModels<MyPageViewModel>()
+
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        if (!it) {
+            myPageViewModel.rejectPushSetting()
+        }
+        OnBoardingActivity.openActivity(this)
+        finish()
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         lampSocketService.connect {
@@ -43,8 +59,7 @@ class MainActivity : ComponentActivity() {
             LampTheme {
                 when {
                     mainState.isFirstOpen == true -> {
-                        OnBoardingActivity.openActivity(this)
-                        finish()
+                        checkNotificationPermission()
                     }
                     mainState.isFirstOpen == false -> {
                         Lamp(
@@ -100,6 +115,27 @@ class MainActivity : ComponentActivity() {
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
             PackageManager.DONT_KILL_APP
         )
+    }
+
+    @SuppressLint("InlinedApi")
+    private fun checkNotificationPermission() {
+        if (!askNotificationPermission()) {
+            requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        } else {
+            OnBoardingActivity.openActivity(this)
+            finish()
+        }
+    }
+
+    private fun askNotificationPermission(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            false
+        }
     }
 
     companion object {

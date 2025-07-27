@@ -14,6 +14,8 @@ import com.devndev.lamp.data.datsource.local.LocalDataSource
 import com.devndev.lamp.data.datsource.local.LocalDataSourceImpl
 import com.devndev.lamp.data.datsource.login.GoogleTokenDataSource
 import com.devndev.lamp.data.datsource.login.GoogleTokenDataSourceImpl
+import com.devndev.lamp.data.datsource.setting.SettingDataSource
+import com.devndev.lamp.data.datsource.setting.SettingDataSourceImpl
 import com.devndev.lamp.data.datsource.signup.SignUpDataSource
 import com.devndev.lamp.data.datsource.signup.SignUpDataSourceImpl
 import com.devndev.lamp.data.datsource.socket.LampSocketDataSource
@@ -68,4 +70,8 @@ interface DataSourceModule {
     @Singleton
     @Binds
     fun bindAssessmentDataSource(assessmentDataSourceImpl: AssessmentDataSourceImpl): AssessmentDataSource
+
+    @Singleton
+    @Binds
+    fun bindSettingDataSource(settingDataSourceImpl: SettingDataSourceImpl): SettingDataSource
 }
