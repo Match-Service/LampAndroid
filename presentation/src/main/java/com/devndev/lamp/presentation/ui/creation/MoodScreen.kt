@@ -165,7 +165,12 @@ fun MoodScreen(selectedOption: Int, onSelectOption: (Int) -> Unit) {
                         color = textColors[page],
                         fontSize = pageTextSizes[page],
                         textAlign = TextAlign.Center,
-                        modifier = Modifier.padding(bottom = 96.dp)
+                        modifier = Modifier.padding(bottom = 96.dp),
+                        style = if (page == 0) {
+                            Typography.medium15
+                        } else {
+                            Typography.semiBold25
+                        }
                     )
                 }
             }
