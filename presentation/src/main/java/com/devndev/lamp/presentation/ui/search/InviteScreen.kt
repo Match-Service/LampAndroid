@@ -60,13 +60,10 @@ fun InviteScreen(
 
     val selectedItems = remember { mutableStateListOf<UserDomainModel>() }
 
-    val tempRecentUser = listOf(
-        UserDomainModel(id = 999, name = "김수환무", thumbnail = "", lampId = null, "PARTICIPATED"),
-        UserDomainModel(id = 998, name = "Super", thumbnail = "", lampId = 9, "INVITED")
-    )
-
     val users by remember { mutableStateOf(searchViewModel.users) }
     val showBottomButton = selectedItems.isNotEmpty()
+
+    val recentUsers by remember { mutableStateOf(searchViewModel.recentUsers) }
 
     LaunchedEffect(Unit) {
         searchViewModel.resetUsers()
@@ -151,7 +148,7 @@ fun InviteScreen(
 
             InviteList(
                 searchUserList = users,
-                recentUserList = tempRecentUser,
+                recentUserList = recentUsers,
                 selectedItems = selectedItems,
                 onCheckedItemChanged = { checkedItem, isSelected ->
                     if (isSelected) {

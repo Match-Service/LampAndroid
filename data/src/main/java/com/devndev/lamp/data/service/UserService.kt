@@ -48,4 +48,7 @@ interface UserService {
 
     @GET("api/v1/user/status")
     suspend fun getUserStatus(): UserStatusResponse
+
+    @GET("api/v1/user/recent")
+    suspend fun getRecentUsers(): List<UserResponseDto>
 }

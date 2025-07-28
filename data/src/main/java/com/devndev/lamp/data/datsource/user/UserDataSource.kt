@@ -16,4 +16,5 @@ interface UserDataSource {
     suspend fun getMyInfo(): MyInfoResponse
     suspend fun putPushToken(pushTokenRequest: PushTokenRequest): Response<Void>
     suspend fun getUserStatus(): UserStatusResponse
+    suspend fun getRecentUsers(): List<UserResponseDto>
 }
