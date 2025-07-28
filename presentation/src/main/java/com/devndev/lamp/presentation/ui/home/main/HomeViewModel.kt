@@ -252,9 +252,15 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    private fun updateStatus(status: String) {
+    fun updateStatus(status: String) {
         viewModelScope.launch {
             _updateStatus.emit(status)
+        }
+    }
+
+    fun updateUserStatus(status: String) {
+        viewModelScope.launch {
+            _userStatus.emit(status)
         }
     }
 

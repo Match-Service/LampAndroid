@@ -53,8 +53,7 @@ fun NavGraphBuilder.matchingNavGraph(
     updateStatus: SharedFlow<String>
 ) {
     composable(
-//        Route.FIND
-        Route.MATCHING
+        Route.FIND
     ) {
         MatchingHomeScreen(
             modifier = modifier.padding(padding),

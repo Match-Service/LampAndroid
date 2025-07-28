@@ -55,8 +55,6 @@ import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import com.devndev.lamp.presentation.ui.home.matchinghome.viewmodel.MatchingHomeViewModel
-import com.devndev.lamp.presentation.ui.home.navigation.navigateHome
-import com.devndev.lamp.presentation.ui.home.navigation.navigateMatching
 import kotlinx.coroutines.flow.SharedFlow
 
 @SuppressLint("RememberReturnType")
@@ -258,7 +256,7 @@ fun MatchingFailHomeScreen(
                         buttonText = cancelMatching,
                         onClick = {
                             viewModel.updateIsMatching(false)
-                            navController.navigateMatching()
+                            homeViewModel.updateUserStatus("PREPARE")
                         },
                         enabled = true
                     )
