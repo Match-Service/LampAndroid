@@ -56,6 +56,7 @@ import com.canhub.cropper.CropImage.CancelledResult.uriContent
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import com.devndev.lamp.domain.model.signup.BioQuestion
 import com.devndev.lamp.domain.model.user.EditImageModel
 import com.devndev.lamp.domain.model.user.ModifyUserParam
@@ -422,7 +423,12 @@ fun ProfileEditScreen(
                                         imageCropLauncher.launch(
                                             CropImageContractOptions(
                                                 uriContent,
-                                                CropImageOptions()
+                                                CropImageOptions().apply {
+                                                    aspectRatioX = 1
+                                                    aspectRatioY = 1
+                                                    fixAspectRatio = true
+                                                    guidelines = CropImageView.Guidelines.ON
+                                                }
                                             )
                                         )
                                     },
