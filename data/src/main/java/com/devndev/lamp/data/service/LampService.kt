@@ -76,6 +76,6 @@ interface LampService {
     @GET("api/v1/lamp/visit/request")
     suspend fun getVisitRequestLampInfo(): VisitRequestLampInfoResponse
 
-    @DELETE("api/vq/lamp/visit/request")
+    @DELETE("api/v1/lamp/visit/request")
     suspend fun cancelVisitRequest(): Response<Unit>
 }
