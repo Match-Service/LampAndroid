@@ -105,12 +105,14 @@ fun WaitingHomeScreen(
                 LampButtonWithIcon(
                     isGradient = false,
                     buttonText = stringResource(id = R.string.cancel_waiting),
-                    onClick = {},
+                    onClick = {
+                        viewModel.cancelVisitRequest()
+                    },
                     icon = painterResource(id = R.drawable.x_button_big),
                     onIconClick = {
                         viewModel.cancelVisitRequest()
                     },
-                    enabled = false
+                    enabled = true
                 )
             }
             Spacer(
