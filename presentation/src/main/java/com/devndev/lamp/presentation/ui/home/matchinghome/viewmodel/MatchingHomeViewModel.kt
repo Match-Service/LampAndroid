@@ -133,6 +133,19 @@ class MatchingHomeViewModel @Inject constructor(
         }
     }
 
+    fun cancelMatch() {
+        viewModelScope.launch {
+            startMatchUseCase()
+                .onSuccess {
+                    Log.d(TAG, "cancelMatch Success")
+                    _uiState.update { it.copy(isMatching = false) }
+                }
+                .onFailure {
+                    Log.d(TAG, "cancelMatch Failure")
+                }
+        }
+    }
+
     fun startMatch() {
         viewModelScope.launch {
             startMatchUseCase()

@@ -55,6 +55,8 @@ import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.LampButton
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import com.devndev.lamp.presentation.ui.home.matchinghome.viewmodel.MatchingHomeViewModel
+import com.devndev.lamp.presentation.ui.home.navigation.navigateHome
+import com.devndev.lamp.presentation.ui.home.navigation.navigateMatching
 import kotlinx.coroutines.flow.SharedFlow
 
 @SuppressLint("RememberReturnType")
@@ -240,7 +242,7 @@ fun MatchingFailHomeScreen(
                     Log.e("state.isOwner", "${state.isOwner}")
                     if (state.isOwner) {
                         LampButton(
-                            isGradient = !state.isMatching,
+                            isGradient = true,
                             buttonWidth = 156,
                             buttonText = reMatching,
                             onClick = {
@@ -255,7 +257,8 @@ fun MatchingFailHomeScreen(
                         buttonWidth = 156,
                         buttonText = cancelMatching,
                         onClick = {
-//                            navController.navigateMatching()
+                            viewModel.updateIsMatching(false)
+                            navController.navigateMatching()
                         },
                         enabled = true
                     )
