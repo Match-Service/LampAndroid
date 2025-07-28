@@ -43,4 +43,8 @@ class UserDataSourceImpl @Inject constructor(
     override suspend fun getUserStatus(): UserStatusResponse {
         return userService.getUserStatus()
     }
+
+    override suspend fun getRecentUsers(): List<UserResponseDto> {
+        return userService.getRecentUsers()
+    }
 }

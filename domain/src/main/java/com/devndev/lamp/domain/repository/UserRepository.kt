@@ -16,4 +16,5 @@ interface UserRepository {
     suspend fun getMyInfo(): MyInfoDomainModel
     suspend fun putPushToken(pushTokenParam: PushTokenParam)
     suspend fun getUserStatus(): UserStatusDomainModel
+    suspend fun getRecentUsers(): List<UserDomainModel>
 }

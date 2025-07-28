@@ -50,7 +50,7 @@ fun InviteList(
         items(searchUserList.size) { index ->
             val profile = searchUserList[index]
 
-            val isSelected = selectedItems.contains(profile)
+            val isSelected = selectedItems.any { it.id == profile.id }
 
             InviteItem(
                 profile = profile,
@@ -84,7 +84,7 @@ fun InviteList(
         items(recentUserList.size) { index ->
             val profile = recentUserList[index]
 
-            val isSelected = selectedItems.contains(profile)
+            val isSelected = selectedItems.any { it.id == profile.id }
 
             InviteItem(
                 profile = profile,

@@ -13,6 +13,7 @@ import com.devndev.lamp.domain.usecase.lamp.GetMyLampUseCase
 import com.devndev.lamp.domain.usecase.lamp.InviteUsersUseCase
 import com.devndev.lamp.domain.usecase.lamp.RequestVisitUseCase
 import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
+import com.devndev.lamp.domain.usecase.user.GetRecentUsersUseCase
 import com.devndev.lamp.domain.usecase.user.SearchInviteUserUseCase
 import com.devndev.lamp.domain.usecase.user.SearchVisitUserUseCase
 import com.devndev.lamp.presentation.ui.common.SearchStatus
@@ -29,9 +30,11 @@ class SearchViewModel @Inject constructor(
     private val inviteUsersUseCase: InviteUsersUseCase,
     private val getMyLampUseCase: GetMyLampUseCase,
     private val getMyInfoUseCase: GetMyInfoUseCase,
-    private val requestVisitUseCase: RequestVisitUseCase
+    private val requestVisitUseCase: RequestVisitUseCase,
+    private val getRecentUsersUseCase: GetRecentUsersUseCase
 ) : ViewModel() {
     private val logTag = "SearchViewModel"
+
     private val _users = mutableStateListOf<UserDomainModel>()
     val users: List<UserDomainModel> = _users
 
@@ -44,9 +47,13 @@ class SearchViewModel @Inject constructor(
     private val _searchStatus = MutableStateFlow(SearchStatus.NONE)
     val searchStatus = _searchStatus
 
+    private val _recentUsers = mutableStateListOf<UserDomainModel>()
+    val recentUsers: List<UserDomainModel> = _recentUsers
+
     init {
         getMyInfo()
         getLampData()
+        getRecentUsers()
     }
 
     fun updateSearchStatus(status: Int) {
@@ -135,6 +142,19 @@ class SearchViewModel @Inject constructor(
             } catch (e: Exception) {
                 Log.e(logTag, "requestVisit Exception", e)
             }
+        }
+    }
+
+    private fun getRecentUsers() {
+        viewModelScope.launch {
+            getRecentUsersUseCase()
+                .onSuccess { users ->
+                    _recentUsers.clear()
+                    _recentUsers.addAll(users)
+                    Log.d(logTag, "getRecentUser $users")
+                }.onFailure {
+                    Log.e(logTag, "getRecentUsers failure", it)
+                }
         }
     }
 }

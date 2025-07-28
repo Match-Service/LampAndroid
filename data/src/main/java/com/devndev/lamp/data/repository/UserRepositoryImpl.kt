@@ -90,4 +90,8 @@ class UserRepositoryImpl @Inject constructor(private val userDataSource: UserDat
     override suspend fun getUserStatus(): UserStatusDomainModel {
         return userDataSource.getUserStatus().toDomainModel()
     }
+
+    override suspend fun getRecentUsers(): List<UserDomainModel> {
+        return userDataSource.getRecentUsers().toDomainModel()
+    }
 }
