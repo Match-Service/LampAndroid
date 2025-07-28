@@ -1,6 +1,7 @@
 package com.devndev.lamp.presentation.ui.home.matchinghome
 
 import android.annotation.SuppressLint
+import android.util.Log
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -236,22 +237,26 @@ fun MatchingFailHomeScreen(
 
                     Spacer(modifier = Modifier.height(69.dp))
 
-                    LampButton(
-                        isGradient = !state.isMatching,
-                        buttonWidth = 156,
-                        buttonText = reMatching,
-                        onClick = {
-                            // startMatch 하면 userStatus = MATCHING
-                            viewModel.startMatch()
-                        },
-                        enabled = state.isOwner
-                    )
+                    Log.e("state.isOwner", "${state.isOwner}")
+                    if (state.isOwner) {
+                        LampButton(
+                            isGradient = true,
+                            buttonWidth = 156,
+                            buttonText = reMatching,
+                            onClick = {
+                                // startMatch 하면 userStatus = MATCHING
+                                viewModel.startMatch()
+                            },
+                            enabled = true
+                        )
+                    }
                     LampButton(
                         isGradient = false,
                         buttonWidth = 156,
                         buttonText = cancelMatching,
                         onClick = {
-                            viewModel.stopMatch()
+                            viewModel.updateIsMatching(false)
+                            homeViewModel.updateUserStatus("PREPARE")
                         },
                         enabled = true
                     )

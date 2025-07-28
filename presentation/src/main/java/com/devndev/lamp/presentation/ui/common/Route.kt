@@ -4,6 +4,7 @@ object Route {
     const val MAIN = "main"
     const val SPLASH = "splash"
     const val HOME = "home"
+    const val MATCHING = "matching"
     const val CHAT_LIST = "chat_list"
     const val CHAT_LIST_WITH_ID = "chatList?chatRoomId={chatRoomId}"
     const val LOGIN = "login"
