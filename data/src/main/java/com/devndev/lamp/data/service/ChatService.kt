@@ -2,6 +2,7 @@ package com.devndev.lamp.data.service
 
 import com.devndev.lamp.data.dto.request.chat.ChatRequest
 import com.devndev.lamp.data.dto.request.chat.EditAppointmentRequest
+import com.devndev.lamp.data.dto.request.chat.ReadRequest
 import com.devndev.lamp.data.dto.request.chat.RegisterAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
 import com.devndev.lamp.data.dto.request.chat.VoteAppointmentRequest
@@ -73,5 +74,11 @@ interface ChatService {
     @POST("api/v1/chat/appointment/agree")
     suspend fun voteAppointment(
         @Body voteAppointmentRequest: VoteAppointmentRequest
+    )
+
+    @POST("api/v1/chat/{chatRoomId}/read")
+    suspend fun lastRead(
+        @Path("chatRoomId") chatRoomId: Int,
+        @Body readRequest: ReadRequest
     )
 }

@@ -3,6 +3,7 @@ package com.devndev.lamp.data.repository
 import com.devndev.lamp.data.datsource.chat.ChatDataSource
 import com.devndev.lamp.data.dto.request.chat.ChatRequest
 import com.devndev.lamp.data.dto.request.chat.EditAppointmentRequest
+import com.devndev.lamp.data.dto.request.chat.ReadRequest
 import com.devndev.lamp.data.dto.request.chat.RegisterAppointmentRequest
 import com.devndev.lamp.data.dto.request.chat.TestChatRequest
 import com.devndev.lamp.data.dto.request.chat.VoteAppointmentRequest
@@ -12,6 +13,7 @@ import com.devndev.lamp.domain.model.chat.ChatInfoDomainModel
 import com.devndev.lamp.domain.model.chat.ChatMessageDomainModel
 import com.devndev.lamp.domain.model.chat.ChatRoomDomainModel
 import com.devndev.lamp.domain.model.chat.EditAppointmentParam
+import com.devndev.lamp.domain.model.chat.ReadParam
 import com.devndev.lamp.domain.model.chat.RegisterAppointmentParam
 import com.devndev.lamp.domain.repository.ChatRepository
 import javax.inject.Inject
@@ -81,5 +83,12 @@ class ChatRepositoryImpl @Inject constructor(
 
     override suspend fun voteAppointment(chatAppointmentId: Int) {
         chatDataSource.voteAppointment(VoteAppointmentRequest(chatAppointmentId))
+    }
+
+    override suspend fun lastRead(chatRoomId: Int, readParam: ReadParam) {
+        chatDataSource.lastRead(
+            chatRoomId,
+            ReadRequest(readParam.messageId)
+        )
     }
 }

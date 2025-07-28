@@ -246,9 +246,7 @@ fun ChatScreen(
                     ) {
                         Spacer(modifier = Modifier.height(10.dp))
                         Text(
-                            text = stringResource(id = R.string.chat_created) +
-                                "\n" +
-                                stringResource(id = R.string.say_hi),
+                            text = stringResource(id = R.string.chat_created) + "\n" + stringResource(id = R.string.say_hi),
                             textAlign = TextAlign.Center,
                             color = Color.White,
                             style = Typography.normal12
@@ -286,7 +284,9 @@ fun ChatScreen(
                         isProfilePopupShow = true
                     },
                     onCreateAppointChatClick = {
-                        navController.navigateAppointment()
+                        if (state.getAppointmentStatus() != AppointmentStatus.CONFIRM_APPOINTMENT) {
+                            navController.navigateAppointment()
+                        }
                     }
                 )
                 Spacer(modifier = Modifier.height(10.dp))
@@ -592,7 +592,11 @@ fun ChatBubble(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(3.dp)
                     ) {
-                        val regex = Regex("""\((\d+명 완료)\)""")
+                        val regex = if (message.messageTypeEnum == MessageType.READY_APPOINTMENT) {
+                            Regex("""\((\d+명 완료)\)""")
+                        } else {
+                            Regex("""(\d+명 완료)$""")
+                        }
                         val match = regex.find(message.message)
 
                         val tailText = match?.groupValues?.get(1) ?: ""

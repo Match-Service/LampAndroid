@@ -12,6 +12,7 @@ import com.devndev.lamp.data.service.ChatService
 import com.devndev.lamp.data.service.LampMatchService
 import com.devndev.lamp.data.service.LampService
 import com.devndev.lamp.data.service.LoginService
+import com.devndev.lamp.data.service.SettingService
 import com.devndev.lamp.data.service.SignUpService
 import com.devndev.lamp.data.service.UserService
 import com.devndev.lamp.data.socket.LampSocketService
@@ -121,6 +122,12 @@ internal class NetworkModule {
     fun provideAssessmentService(
         @DefaultRetrofit retrofit: Retrofit
     ): AssessmentService = retrofit.create()
+
+    @Singleton
+    @Provides
+    fun provideSettingService(
+        @DefaultRetrofit retrofit: Retrofit
+    ): SettingService = retrofit.create()
 
     companion object {
         private const val BASE_URL = "https://dev-api.lamp-app.xyz/"

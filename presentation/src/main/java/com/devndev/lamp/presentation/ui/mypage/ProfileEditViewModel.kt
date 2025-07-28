@@ -165,7 +165,6 @@ class ProfileEditViewModel @Inject constructor(
                         instagramId = modifyUser.instagramId,
                         bio = modifyUser.bio,
                         profileImages = modifyUser.profileImages,
-                        alarmSetting = modifyUser.alarmSetting,
                         bioQuestions = modifyUser.bioQuestions,
                         pushToken = fcmToken
                     )

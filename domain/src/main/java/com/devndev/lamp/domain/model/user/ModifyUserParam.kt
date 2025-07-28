@@ -1,6 +1,5 @@
 package com.devndev.lamp.domain.model.user
 
-import com.devndev.lamp.domain.model.signup.AlarmSetting
 import com.devndev.lamp.domain.model.signup.BioQuestion
 
 data class ModifyUserParam(
@@ -12,7 +11,6 @@ data class ModifyUserParam(
     val instagramId: String,
     val bio: String,
     var profileImages: List<String>,
-    val alarmSetting: AlarmSetting,
     val bioQuestions: List<BioQuestion>,
     var pushToken: String
 )

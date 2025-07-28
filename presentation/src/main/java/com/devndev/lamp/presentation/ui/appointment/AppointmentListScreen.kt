@@ -88,18 +88,20 @@ fun AppointmentList(
             }
         }
         Spacer(modifier = Modifier.height(25.dp))
-        Box(
-            modifier = Modifier
-                .size(54.dp)
-                .background(color = Gray, shape = CircleShape)
-                .clickable(onClick = onAddIconClick),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                painter = painterResource(R.drawable.add_icon),
-                contentDescription = "Add Appointment",
-                tint = Color.White
-            )
+        if (appointmentStatus == AppointmentStatus.BEFORE_READY) {
+            Box(
+                modifier = Modifier
+                    .size(54.dp)
+                    .background(color = Gray, shape = CircleShape)
+                    .clickable(onClick = onAddIconClick),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.add_icon),
+                    contentDescription = "Add Appointment",
+                    tint = Color.White
+                )
+            }
         }
     }
 }

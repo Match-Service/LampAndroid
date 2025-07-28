@@ -115,20 +115,27 @@ fun Chat(
                             color = Gray3,
                             style = Typography.normal9
                         )
-                        Box(
-                            modifier = Modifier
-                                .background(
-                                    color = ManColor,
-                                    shape = RoundedCornerShape(30.dp)
+                        val unreadMessageCount = if (chat.unreadMessageCount > 0) {
+                            chat.unreadMessageCount.toString()
+                        } else {
+                            ""
+                        }
+                        if (unreadMessageCount.isNotEmpty()) {
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        color = color,
+                                        shape = RoundedCornerShape(30.dp)
+                                    )
+                                    .padding(vertical = 2.dp, horizontal = 6.dp)
+                            ) {
+                                Text(
+                                    modifier = Modifier.align(Alignment.Center),
+                                    text = unreadMessageCount,
+                                    color = Color.White,
+                                    style = Typography.normal9
                                 )
-                                .padding(vertical = 2.dp, horizontal = 6.dp)
-                        ) {
-                            Text(
-                                modifier = Modifier.align(Alignment.Center),
-                                text = "14",
-                                color = Color.White,
-                                style = Typography.normal9
-                            )
+                            }
                         }
                     }
                 }
