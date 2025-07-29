@@ -17,13 +17,16 @@ import kotlinx.coroutines.launch
 class FirebaseMessagingService : FirebaseMessagingService() {
     private val logTag = "FCMService"
 
-    // TODO: 알람별로 data 파싱해서 처리하면 될듯
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
         super.onMessageReceived(remoteMessage)
         Log.d(logTag, "onMessageReceived")
-        CoroutineScope(Dispatchers.Default).launch {
-            AlarmEventBus.postEvent()
+
+        if (remoteMessage.data["messageType"] == "INVITE_REQUEST" || remoteMessage.data["messageType"] == "VISIT_REQUEST") {
+            CoroutineScope(Dispatchers.Default).launch {
+                AlarmEventBus.postEvent()
+            }
         }
+
         with(remoteMessage) {
             notification?.let {
                 sendNotification(it.title, it.body)
