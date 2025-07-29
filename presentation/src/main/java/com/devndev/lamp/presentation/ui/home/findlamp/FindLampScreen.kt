@@ -50,6 +50,7 @@ import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.home.main.HomeTextArea
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun FindLampScreen(
@@ -66,6 +67,8 @@ fun FindLampScreen(
     val context = LocalContext.current
 
     LaunchedEffect(Unit) {
+        delay(1000L)
+
         viewModel.getMatchSuggestion()
     }
 
