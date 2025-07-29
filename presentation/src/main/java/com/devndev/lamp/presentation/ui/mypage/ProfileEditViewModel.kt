@@ -99,7 +99,11 @@ class ProfileEditViewModel @Inject constructor(
         }
     }
 
-    fun editImages(modifyUserParam: ModifyUserParam, editImageModel: List<EditImageModel?>) {
+    fun editImages(
+        modifyUserParam: ModifyUserParam,
+        editImageModel: List<EditImageModel?>,
+        completion: () -> Unit
+    ) {
         viewModelScope.launch {
             try {
                 val profileImageList = mutableListOf<String?>()
@@ -144,39 +148,32 @@ class ProfileEditViewModel @Inject constructor(
                     )
                 )
 
-                modifyUser(modifyUser = modifyUserParam)
+                modifyUser(modifyUser = modifyUserParam, completion)
             } catch (e: Exception) {
                 Log.e(logTag, "Error uploading image", e)
             }
         }
     }
 
-    fun modifyUser(modifyUser: ModifyUserParam) {
+    fun modifyUser(modifyUser: ModifyUserParam, completion: () -> Unit) {
         viewModelScope.launch {
-            Log.d(logTag, "modifyUserRequest $modifyUser pushToken $fcmToken")
-            try {
-                val response = modifyUserUseCase(
-                    ModifyUserParam(
-                        name = modifyUser.name,
-                        job = modifyUser.job,
-                        jobName = modifyUser.jobName,
-                        gender = modifyUser.gender,
-                        birth = modifyUser.birth,
-                        instagramId = modifyUser.instagramId,
-                        bio = modifyUser.bio,
-                        profileImages = modifyUser.profileImages,
-                        bioQuestions = modifyUser.bioQuestions,
-                        pushToken = fcmToken
-                    )
+            modifyUserUseCase(
+                ModifyUserParam(
+                    name = modifyUser.name,
+                    job = modifyUser.job,
+                    jobName = modifyUser.jobName,
+                    gender = modifyUser.gender,
+                    birth = modifyUser.birth,
+                    instagramId = modifyUser.instagramId,
+                    bio = modifyUser.bio,
+                    profileImages = modifyUser.profileImages,
+                    bioQuestions = modifyUser.bioQuestions,
+                    pushToken = fcmToken
                 )
-
-                if (response) {
-                    Log.d(logTag, "modifyUser: true")
-                } else {
-                    Log.d(logTag, "modifyUser: fail")
-                }
-            } catch (e: ApiException) {
-                Log.e(logTag, "modifyUser", e)
+            ).onSuccess {
+                completion()
+            }.onFailure {
+                completion()
             }
         }
     }
