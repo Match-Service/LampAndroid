@@ -185,7 +185,7 @@ fun Picker(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
-                .height(30.dp * visibleItemsCount + 20.dp)
+                .height(25.dp * visibleItemsCount + 20.dp)
                 .fadingEdge(fadingEdgeGradient)
         ) {
             items(listScrollCount) { index ->
@@ -221,8 +221,7 @@ fun Picker(
                     style = animatedTextStyle,
                     modifier = Modifier
                         .width(100.dp)
-                        .height(30.dp)
-                        .padding(vertical = 2.dp),
+                        .height(25.dp),
                     textAlign = textAlign
                 )
             }
