@@ -74,16 +74,12 @@ import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateMyPage
 
-// todo 사진 표시 처리 완료 했지만 추후 서버 프로필 수정 기능 완료 후 삭제, 변경 구현 필요
 @Composable
 fun ProfileEditScreen(
     modifier: Modifier,
     profileEditViewModel: ProfileEditViewModel = hiltViewModel(),
     navController: NavController
 ) {
-    BackHandler {
-        navController.navigateMyPage()
-    }
     val logTag = "ProfileEditScreen"
 
     val context = LocalContext.current
@@ -193,9 +189,10 @@ fun ProfileEditScreen(
                         pushToken = ""
                     ),
                     editImageModel = editImageModel
-                )
+                ) {
+                    navController.navigateMyPage()
+                }
             }
-            navController.navigateMyPage()
         }
     }
 
@@ -388,9 +385,10 @@ fun ProfileEditScreen(
                                     pushToken = ""
                                 ),
                                 editImageModel = editImageModel
-                            )
+                            ) {
+                                navController.navigateMyPage()
+                            }
                         }
-                        navController.navigateMyPage()
                     }
                 }
             )
