@@ -152,6 +152,8 @@ fun MatchingVoteScreen(
 
     // 상대방 lamp 데이터 가져오기
     LaunchedEffect(Unit) {
+        delay(1000L)
+
         viewModel.getMatchSuggestion {
             isLoaded = true
         }
