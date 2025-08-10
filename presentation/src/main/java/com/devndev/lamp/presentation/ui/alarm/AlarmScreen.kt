@@ -88,13 +88,17 @@ fun AlarmScreen(
     var isRefreshing by remember { mutableStateOf(false) }
 
     LaunchedEffect(inviteList) {
-        if (inviteList.isEmpty() && isInvitationExpanded) {
+        if (inviteList.isNotEmpty()) {
+            isInvitationExpanded = true
+        } else if (isInvitationExpanded) {
             isInvitationExpanded = false
         }
     }
 
     LaunchedEffect(visitList) {
-        if (visitList.isEmpty() && isVisitExpanded) {
+        if (visitList.isNotEmpty()) {
+            isVisitExpanded = true
+        } else if (isVisitExpanded) {
             isVisitExpanded = false
         }
     }
