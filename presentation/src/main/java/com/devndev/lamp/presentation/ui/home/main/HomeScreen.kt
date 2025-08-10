@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -61,12 +60,12 @@ fun HomeScreen(
     val userStatus by viewModel.userStatue.collectAsState()
 
     val lifecycleOwner = LocalLifecycleOwner.current
-
-    LaunchedEffect(matchSuggestion?.lampId) {
-        matchSuggestion?.lampId?.let { lampId ->
-            viewModel.loadFindState(lampId, false)
-        }
-    }
+//
+//    LaunchedEffect(matchSuggestion?.lampId) {
+//        matchSuggestion?.lampId?.let { lampId ->
+//            viewModel.loadFindState(lampId, false)
+//        }
+//    }
 
     DisposableEffect(lifecycleOwner) {
         viewModel.addStatusListener()
@@ -129,10 +128,17 @@ fun HomeScreen(
 
             "FIND_LAMP" -> {
                 Log.e("isFind", isFind.toString())
-                if (isFind) {
-                    MatchingVoteScreen(modifier = Modifier, navController = navController, onTopScreen = onTopBarVisibleChange, onBottomScreen = onBottomBarVisibleChange)
-                } else {
-                    FindLampScreen(modifier = Modifier, navController = navController)
+                if (isFind != null) {
+                    if (isFind!!) {
+                        MatchingVoteScreen(
+                            modifier = Modifier,
+                            navController = navController,
+                            onTopScreen = onTopBarVisibleChange,
+                            onBottomScreen = onBottomBarVisibleChange
+                        )
+                    } else {
+                        FindLampScreen(modifier = Modifier, navController = navController)
+                    }
                 }
             }
 

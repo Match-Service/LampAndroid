@@ -106,7 +106,7 @@ fun MatchingVoteScreen(
     onTopScreen: (Boolean) -> Unit,
     onBottomScreen: (Boolean) -> Unit
 ) {
-    var isLoaded by remember { mutableStateOf(false) }
+    val isLoaded by viewModel.isLoaded.collectAsState()
     val matchSuggestion by viewModel.matchSuggestion.collectAsState()
     val approveCount by viewModel.approveCount.collectAsState()
     val rejectCount by viewModel.rejectCount.collectAsState()
@@ -152,16 +152,13 @@ fun MatchingVoteScreen(
 
     // 상대방 lamp 데이터 가져오기
     LaunchedEffect(Unit) {
+        onTopScreen(false)
+        onBottomScreen(false)
         delay(1000L)
 
-        viewModel.getMatchSuggestion {
-            isLoaded = true
-        }
         matchSuggestion?.lampId?.let {
             viewModel.updateSuccessState(it, true)
         }
-        onTopScreen(false)
-        onBottomScreen(false)
     }
 
     DisposableEffect(Unit) {
@@ -793,8 +790,8 @@ fun BottomSection(
                 .background(
                     brush = Brush.verticalGradient(
                         colorStops = arrayOf(
-                            0.0f to MoodGray.copy(alpha = 1f),
-                            0.1f to MoodGray.copy(alpha = 1f),
+                            0.0f to MoodGray.copy(alpha = 0f),
+                            0.1f to MoodGray.copy(alpha = 0.5f),
                             1.0f to Gray.copy(alpha = 1f)
                         ),
                         startY = 0f,
@@ -833,7 +830,6 @@ fun BottomSection(
                                     lampSuggestionId = matchSuggestion.lampSuggestionId
                                 )
                             }
-//                            viewModel.getMatchSuggestion()
                         }
                     },
                     colors = ButtonDefaults.buttonColors(

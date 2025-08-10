@@ -82,6 +82,12 @@ fun MainScreen(
 
     var isNeedAlarmUpdate by remember { mutableStateOf(false) }
 
+    LaunchedEffect(state.isLoading) {
+        if (currentRoute == Route.HOME && state.userStatus == "FIND_LAMP") {
+            isTopBarVisible = false
+        }
+    }
+
     LaunchedEffect(currentRoute) {
         isNeedAlarmUpdate = when (currentRoute) {
             Route.HOME,
@@ -99,6 +105,14 @@ fun MainScreen(
                 false
             }
         }
+
+        if (currentRoute != Route.HOME) {
+            isBottomBarVisible = true
+        }
+
+        if (currentRoute == Route.CHAT_LIST_WITH_ID || currentRoute == Route.MYPAGE) {
+            isTopBarVisible = true
+        }
     }
 
     Scaffold(
@@ -114,8 +128,7 @@ fun MainScreen(
                     currentRoute != Route.START_LAMP &&
                     currentRoute != Route.CREATION &&
                     currentRoute != Route.REVIEW &&
-                    currentRoute != Route.CHAT_LIST &&
-                    currentRoute != Route.CHAT_LIST_WITH_ID
+                    currentRoute != Route.CHAT_LIST
                 ) {
                     when (currentRoute) {
                         Route.SIGNUP,

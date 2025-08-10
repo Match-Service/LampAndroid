@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.user.PushTokenParam
 import com.devndev.lamp.domain.usecase.config.GetIsFirstOpenUseCase
+import com.devndev.lamp.domain.usecase.user.GetUserStatusUseCase
 import com.devndev.lamp.domain.usecase.user.PutPushTokenUseCase
 import com.google.firebase.messaging.FirebaseMessaging
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val putPushTokenUseCase: PutPushTokenUseCase,
-    private val getIsFirstOpenUseCase: GetIsFirstOpenUseCase
+    private val getIsFirstOpenUseCase: GetIsFirstOpenUseCase,
+    private val getUserStatusUseCase: GetUserStatusUseCase
 ) : ViewModel() {
     private val logTag = "MainViewModel"
 
@@ -26,6 +28,7 @@ class MainViewModel @Inject constructor(
 
     init {
         updateIsFirstOpen()
+        getUserStatue()
     }
 
     private fun updateIsFirstOpen() {
@@ -50,6 +53,13 @@ class MainViewModel @Inject constructor(
                 val token = task.result
                 putPushTokenUseCase(PushTokenParam(token))
             }
+        }
+    }
+
+    private fun getUserStatue() {
+        viewModelScope.launch {
+            val userStatus = getUserStatusUseCase().userLampStatus
+            _state.update { it.copy(userStatus = userStatus, isLoading = false) }
         }
     }
 
