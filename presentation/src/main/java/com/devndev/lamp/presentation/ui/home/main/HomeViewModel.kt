@@ -83,14 +83,17 @@ class HomeViewModel @Inject constructor(
     private val _rejectCount = MutableStateFlow(0)
     val rejectCount: StateFlow<Int> = _rejectCount
 
-    private val _isFind = MutableStateFlow(false)
-    val isFind: StateFlow<Boolean> = _isFind
+    private val _isFind = MutableStateFlow<Boolean?>(null)
+    val isFind: StateFlow<Boolean?> = _isFind
 
     private val _isSuccess = MutableStateFlow(false)
     val isSuccess: StateFlow<Boolean> = _isSuccess
 
     private val _time = MutableStateFlow(0L)
     val time: StateFlow<Long> = _time
+
+    private val _isLoaded = MutableStateFlow(false)
+    val isLoaded: StateFlow<Boolean> = _isLoaded
 
     init {
         getMyInfo()
@@ -138,6 +141,8 @@ class HomeViewModel @Inject constructor(
                 _rejectCount.value = result.rejectCount
                 onComplete?.invoke()
                 Log.d(TAG, "MatchSuggestion ${matchSuggestion.value}")
+                _isLoaded.value = true
+                loadFindState(result.lampId, false)
             } catch (e: HttpException) {
                 Log.e(TAG, "getMatchSuggestion HttpException", e)
             } catch (e: Exception) {
@@ -151,6 +156,9 @@ class HomeViewModel @Inject constructor(
             try {
                 Log.d(TAG, "getUserStatus")
                 _userStatus.value = getUserStatusUseCase().userLampStatus
+                if (userStatue.value == "FIND_LAMP") {
+                    getMatchSuggestion()
+                }
                 Log.d(TAG, "UserStatus ${userStatue.value}")
             } catch (e: HttpException) {
                 Log.e(TAG, "getUserStatus HttpException", e)
@@ -264,10 +272,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    suspend fun loadFindState(lampId: Int, isFind: Boolean): Boolean {
-        val result = getBooleanUseCase("lampId$lampId", isFind)
-        _isFind.value = result
-        return result
+    suspend fun loadFindState(lampId: Int, isFind: Boolean) {
+        viewModelScope.launch {
+            val result = getBooleanUseCase("lampId$lampId", isFind)
+            Log.d(TAG, "load find state result $result")
+            _isFind.value = result
+        }
     }
 
     fun updateFindState(lampId: Int, isFind: Boolean) {

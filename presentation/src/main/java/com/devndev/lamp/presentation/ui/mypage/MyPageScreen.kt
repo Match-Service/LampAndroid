@@ -170,26 +170,31 @@ fun MyPageScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         item {
-            UserInfoSection(
-                url = myInfo?.profileImages?.get(0)?.downloadUrl,
-                navController = navController,
-                name = myInfo?.name ?: "",
-                age = calculateManAge(birthdate = birthdate),
-                university = myInfo?.jobName ?: "",
-                gender = myInfo?.gender ?: ""
-            )
-            Spacer(modifier = Modifier.height(30.dp))
-            Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
-                AttractiveSection(
-                    modifier = outlineModifier,
-                    avgAttractive = avgAttractive,
-                    attractive = attractive
+            if (state.pushSetting == null) {
+                Box() {
+                }
+            } else {
+                UserInfoSection(
+                    url = myInfo?.profileImages?.get(0)?.downloadUrl,
+                    navController = navController,
+                    name = myInfo?.name ?: "",
+                    age = calculateManAge(birthdate = birthdate),
+                    university = myInfo?.jobName ?: "",
+                    gender = myInfo?.gender ?: ""
                 )
+                Spacer(modifier = Modifier.height(30.dp))
+                Column(verticalArrangement = Arrangement.spacedBy(15.dp)) {
+                    AttractiveSection(
+                        modifier = outlineModifier,
+                        avgAttractive = avgAttractive,
+                        attractive = attractive
+                    )
 
-                AlarmSettingsSection(modifier = outlineModifier, alarmsState = alarmsState)
+                    AlarmSettingsSection(modifier = outlineModifier, alarmsState = alarmsState)
 
-                AskQuestionSection(modifier = outlineModifier)
-                LogOutSection(modifier = outlineModifier, signOut = signOut)
+                    AskQuestionSection(modifier = outlineModifier)
+                    LogOutSection(modifier = outlineModifier, signOut = signOut)
+                }
             }
         }
     }
@@ -273,7 +278,7 @@ fun AttractiveSection(
     avgAttractive: Int,
     attractive: List<IndividualityDomainModel?>
 ) {
-    Column(modifier = modifier.padding(top = 15.dp, bottom = 7.dp)) {
+    Column(modifier = modifier.padding(vertical = 15.dp)) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(5.dp),
             verticalAlignment = Alignment.CenterVertically
@@ -387,7 +392,7 @@ fun AlarmSettingsSection(
     ) {
         SwitchWithText(
             text = stringResource(id = R.string.push_alarm),
-            isChecked = alarmsState.isPushAlarmChecked,
+            isChecked = alarmsState.isPushAlarmChecked!!,
             onCheckedChange = { isChecked ->
                 alarmsState.isPushAlarmChecked = isChecked
                 if (isChecked) {
@@ -400,6 +405,7 @@ fun AlarmSettingsSection(
                             permissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                         } else {
                             showAgreeToast(context, true)
+                            alarmsState.notifyUpdate()
                         }
                     } else {
                         Log.d("Permission", "API < 33 — 권한 불필요")
@@ -407,6 +413,7 @@ fun AlarmSettingsSection(
                     if (alarmsState.areAllAlarmsUnchecked()) {
                         alarmsState.checkAllAlarms()
                     }
+                    alarmsState.notifyUpdate()
                 } else {
                     alarmsState.notifyUpdate()
                     showAgreeToast(context, false)
@@ -414,7 +421,7 @@ fun AlarmSettingsSection(
             }
         )
 
-        if (alarmsState.isPushAlarmChecked) {
+        if (alarmsState.isPushAlarmChecked!!) {
             AlarmSwitches(alarmsState)
         }
     }
@@ -427,7 +434,7 @@ fun AlarmSwitches(
     SwitchWithText(
         text = stringResource(id = R.string.invite_lamp_alarm),
         hintText = stringResource(id = R.string.guide_invite_lamp_alarm),
-        isChecked = alarmsState.isInviteAlarmChecked,
+        isChecked = alarmsState.isInviteAlarmChecked!!,
         onCheckedChange = {
             alarmsState.isInviteAlarmChecked = it
             if (alarmsState.areAllAlarmsUnchecked()) {
@@ -439,7 +446,7 @@ fun AlarmSwitches(
     SwitchWithText(
         text = stringResource(id = R.string.visit_lamp_alarm),
         hintText = stringResource(id = R.string.guide_visit_lamp_alarm),
-        isChecked = alarmsState.isVisitAlarmChecked,
+        isChecked = alarmsState.isVisitAlarmChecked!!,
         onCheckedChange = {
             alarmsState.isVisitAlarmChecked = it
             if (alarmsState.areAllAlarmsUnchecked()) {
@@ -451,7 +458,7 @@ fun AlarmSwitches(
     SwitchWithText(
         text = stringResource(id = R.string.match_alarm),
         hintText = stringResource(id = R.string.guide_match_alarm),
-        isChecked = alarmsState.isMatchAlarmChecked,
+        isChecked = alarmsState.isMatchAlarmChecked!!,
         onCheckedChange = {
             alarmsState.isMatchAlarmChecked = it
             if (alarmsState.areAllAlarmsUnchecked()) {
@@ -463,7 +470,7 @@ fun AlarmSwitches(
     SwitchWithText(
         text = stringResource(id = R.string.badge_alarm),
         hintText = stringResource(id = R.string.guide_badge_alarm),
-        isChecked = alarmsState.isBadgeAlarmChecked,
+        isChecked = alarmsState.isBadgeAlarmChecked!!,
         onCheckedChange = {
             alarmsState.isBadgeAlarmChecked = it
             if (alarmsState.areAllAlarmsUnchecked()) {
@@ -475,7 +482,7 @@ fun AlarmSwitches(
     SwitchWithText(
         text = stringResource(id = R.string.message_alarm),
         hintText = stringResource(id = R.string.guide_message_alarm),
-        isChecked = alarmsState.isMessageAlarmChecked,
+        isChecked = alarmsState.isMessageAlarmChecked!!,
         onCheckedChange = {
             alarmsState.isMessageAlarmChecked = it
             if (alarmsState.areAllAlarmsUnchecked()) {
@@ -524,13 +531,21 @@ fun GradientSwitch(
     val toggleSize = 15.dp
 
     val toggleOffset = with(LocalDensity.current) {
-        if (isChecked) (switchWidth.toPx() - toggleSize.toPx() - 6.dp.toPx()) else 0f
+        if (isChecked) {
+            switchWidth.toPx() - toggleSize.toPx() - 6.dp.toPx()
+        } else {
+            0f
+        }
     }
 
     val togglePosition = remember { Animatable(0f) }
 
     LaunchedEffect(isChecked) {
-        togglePosition.animateTo(toggleOffset)
+        if (!togglePosition.isRunning && togglePosition.value == 0f) {
+            togglePosition.snapTo(toggleOffset)
+        } else {
+            togglePosition.animateTo(toggleOffset)
+        }
     }
 
     val trackColor = if (isChecked) {
@@ -665,15 +680,15 @@ class AlarmsState(
     private val pushSetting: PushSettingDomainModel?,
     private val onUpdate: (PushSettingDomainModel) -> Unit
 ) {
-    var isPushAlarmChecked by mutableStateOf(pushSetting?.allPush ?: false)
-    var isInviteAlarmChecked by mutableStateOf(pushSetting?.lampInvite ?: false)
-    var isVisitAlarmChecked by mutableStateOf(pushSetting?.lampVisit ?: false)
-    var isMatchAlarmChecked by mutableStateOf(pushSetting?.newMatch ?: false)
-    var isBadgeAlarmChecked by mutableStateOf(pushSetting?.receiveAssessment ?: false)
-    var isMessageAlarmChecked by mutableStateOf(pushSetting?.receiveMessage ?: false)
+    var isPushAlarmChecked by mutableStateOf(pushSetting?.allPush)
+    var isInviteAlarmChecked by mutableStateOf(pushSetting?.lampInvite)
+    var isVisitAlarmChecked by mutableStateOf(pushSetting?.lampVisit)
+    var isMatchAlarmChecked by mutableStateOf(pushSetting?.newMatch)
+    var isBadgeAlarmChecked by mutableStateOf(pushSetting?.receiveAssessment)
+    var isMessageAlarmChecked by mutableStateOf(pushSetting?.receiveMessage)
 
     fun areAllAlarmsUnchecked(): Boolean {
-        return !isInviteAlarmChecked && !isVisitAlarmChecked && !isMatchAlarmChecked && !isBadgeAlarmChecked && !isMessageAlarmChecked
+        return !isInviteAlarmChecked!! && !isVisitAlarmChecked!! && !isMatchAlarmChecked!! && !isBadgeAlarmChecked!! && !isMessageAlarmChecked!!
     }
 
     fun checkAllAlarms() {
@@ -688,12 +703,12 @@ class AlarmsState(
     fun notifyUpdate() {
         onUpdate(
             PushSettingDomainModel(
-                allPush = isPushAlarmChecked,
-                lampInvite = isInviteAlarmChecked,
-                lampVisit = isVisitAlarmChecked,
-                newMatch = isMatchAlarmChecked,
-                receiveAssessment = isBadgeAlarmChecked,
-                receiveMessage = isMessageAlarmChecked
+                allPush = isPushAlarmChecked!!,
+                lampInvite = isInviteAlarmChecked!!,
+                lampVisit = isVisitAlarmChecked!!,
+                newMatch = isMatchAlarmChecked!!,
+                receiveAssessment = isBadgeAlarmChecked!!,
+                receiveMessage = isMessageAlarmChecked!!
             )
         )
     }

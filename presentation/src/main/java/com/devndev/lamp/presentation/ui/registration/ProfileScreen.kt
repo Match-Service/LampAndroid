@@ -29,6 +29,7 @@ import com.canhub.cropper.CropImage.CancelledResult.uriContent
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.LampBigTextField
@@ -135,7 +136,12 @@ fun ProfileScreen(
                                 imageCropLauncher.launch(
                                     CropImageContractOptions(
                                         uriContent,
-                                        CropImageOptions()
+                                        CropImageOptions().apply {
+                                            aspectRatioX = 1
+                                            aspectRatioY = 1
+                                            fixAspectRatio = true
+                                            guidelines = CropImageView.Guidelines.ON
+                                        }
                                     )
                                 )
                             },
