@@ -69,74 +69,70 @@ class AlarmViewModel @Inject constructor(
 
     fun acceptInvite(inviteRequestUserId: Int, alarmId: Int) {
         viewModelScope.launch {
-            try {
+            acceptInviteUseCase(
+                acceptInviteParam = AcceptInviteParam(
+                    inviteRequestUserId = inviteRequestUserId,
+                    alarmId = alarmId
+                )
+            ).onSuccess {
                 Log.d(
                     logTag,
                     "acceptInvite, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId"
                 )
-                acceptInviteUseCase(
-                    acceptInviteParam = AcceptInviteParam(
-                        inviteRequestUserId = inviteRequestUserId,
-                        alarmId = alarmId
-                    )
-                )
                 getAlarm()
-            } catch (e: Exception) {
-                Log.e(logTag, "acceptInvite Exception", e)
+            }.onFailure {
+                Log.e(logTag, "acceptInvite Exception", it)
             }
         }
     }
 
     fun rejectInvite(inviteRequestUserId: Int, alarmId: Int) {
         viewModelScope.launch {
-            try {
+            rejectInviteUseCase(
+                rejectInviteParam = RejectInviteParam(
+                    inviteRequestUserId = inviteRequestUserId,
+                    alarmId = alarmId
+                )
+            ).onSuccess {
                 Log.d(
                     logTag,
                     "rejectInvite, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId"
                 )
-                rejectInviteUseCase(
-                    rejectInviteParam = RejectInviteParam(
-                        inviteRequestUserId = inviteRequestUserId,
-                        alarmId = alarmId
-                    )
-                )
                 getAlarm()
-            } catch (e: Exception) {
-                Log.e(logTag, "rejectInvite Exception", e)
+            }.onFailure {
+                Log.e(logTag, "rejectInvite Exception", it)
             }
         }
     }
 
     fun acceptVisit(lampId: Int, visitUserId: Int, alarmId: Int) {
         viewModelScope.launch {
-            try {
+            acceptVisitUseCase(
+                AcceptVisitParam(visitUserId, alarmId)
+            ).onSuccess {
                 Log.d(
                     logTag,
                     "acceptVisit, lampId: $lampId visitUserId: $visitUserId alarmId: $alarmId"
                 )
-                acceptVisitUseCase(
-                    AcceptVisitParam(visitUserId, alarmId)
-                )
                 getAlarm()
-            } catch (e: Exception) {
-                Log.e(logTag, "acceptVisit Exception", e)
+            }.onFailure {
+                Log.e(logTag, "acceptVisit Exception", it)
             }
         }
     }
 
     fun rejectVisit(lampId: Int, visitUserId: Int, alarmId: Int) {
         viewModelScope.launch {
-            try {
+            rejectVisitUseCase(
+                RejectVisitParam(visitUserId, alarmId)
+            ).onSuccess {
                 Log.d(
                     logTag,
                     "rejectVisit, lampId: $lampId visitUserId: $visitUserId alarmId: $alarmId"
                 )
-                rejectVisitUseCase(
-                    RejectVisitParam(visitUserId, alarmId)
-                )
                 getAlarm()
-            } catch (e: Exception) {
-                Log.e(logTag, "rejectVisit Exception", e)
+            }.onFailure {
+                Log.e(logTag, "rejectVisit Exception", it)
             }
         }
     }
