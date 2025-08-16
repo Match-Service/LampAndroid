@@ -82,6 +82,8 @@ fun MainScreen(
 
     var isNeedAlarmUpdate by remember { mutableStateOf(false) }
 
+    var alarmExist by remember { mutableStateOf<Boolean?>(null) }
+
     LaunchedEffect(state.isLoading) {
         if (currentRoute == Route.HOME && state.userStatus == "FIND_LAMP") {
             isTopBarVisible = false
@@ -97,7 +99,8 @@ fun MainScreen(
             Route.SEARCH,
             Route.INVITE,
             Route.PROFILE_EDIT,
-            Route.FIND -> {
+            Route.FIND,
+            Route.ALARM -> {
                 true
             }
 
@@ -147,7 +150,8 @@ fun MainScreen(
                                 navController = navController,
                                 isAlarmIconNeed = true,
                                 needAlarmUpdate = isNeedAlarmUpdate,
-                                isAssessmentExist = state.isAssessmentListExist
+                                isAssessmentExist = state.isAssessmentListExist,
+                                alarmExist = alarmExist
                             ) {
                                 viewModel.updateIsAssessmentExist(false)
                             }
@@ -206,7 +210,7 @@ fun MainScreen(
             searchNavGraph(padding = innerPadding, navController = navController)
             inviteNavGraph(padding = innerPadding, navController = navController)
             creationNavGraph(padding = innerPadding, navController = navController)
-            alarmNavGraph(padding = innerPadding, navController = navController)
+            alarmNavGraph(padding = innerPadding, navController = navController, alarmExist = { alarmExist = it })
             signUpNavGraph(padding = innerPadding, navController = navController)
             startLampNavGraph(navController = navController)
             profileEditNavGraph(padding = innerPadding, navController = navController)
@@ -226,6 +230,7 @@ fun LampTopBar(
     needAlarmUpdate: Boolean,
     isChatExist: Boolean = false,
     isAssessmentExist: Boolean = false,
+    alarmExist: Boolean? = null,
     alarmViewModel: AlarmViewModel = hiltViewModel(),
     updateAssessmentExist: () -> Unit = {}
 ) {
@@ -237,20 +242,25 @@ fun LampTopBar(
     if (needAlarmUpdate) {
         alarmViewModel.getAlarm()
     }
+
+    LaunchedEffect(alarmExist) {
+        alarmViewModel.getAlarm()
+    }
+
     LaunchedEffect(needAlarmUpdate) {
         if (needAlarmUpdate) {
             alarmViewModel.getAlarm()
         }
     }
 
-    val alarmIcon = if (currentRoute == Route.ALARM) {
-        if (state.alarmExist) {
-            painterResource(id = R.drawable.alarm_icon_on)
-        } else {
-            painterResource(id = R.drawable.alarm_icon_filled)
-        }
+    val alarmIcon = if (state.alarmExist) {
+        painterResource(id = R.drawable.alarm_icon_on)
     } else {
-        painterResource(id = R.drawable.alarm_icon)
+        if (currentRoute == Route.ALARM) {
+            painterResource(id = R.drawable.alarm_icon_filled)
+        } else {
+            painterResource(id = R.drawable.alarm_icon)
+        }
     }
 
     val logoColor = if (color != LampBlack || isChatExist) {

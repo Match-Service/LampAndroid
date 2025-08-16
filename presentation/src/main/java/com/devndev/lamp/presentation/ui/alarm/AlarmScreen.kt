@@ -71,7 +71,8 @@ import java.time.format.DateTimeFormatter
 fun AlarmScreen(
     modifier: Modifier,
     navController: NavController,
-    viewModel: AlarmViewModel = hiltViewModel()
+    viewModel: AlarmViewModel = hiltViewModel(),
+    alarmExist: (Boolean) -> Unit
 ) {
     BackHandler {
         navController.popBackStack()
@@ -101,6 +102,10 @@ fun AlarmScreen(
         } else if (isVisitExpanded) {
             isVisitExpanded = false
         }
+    }
+
+    LaunchedEffect(state.alarmExist) {
+        alarmExist(state.alarmExist)
     }
 
     val pullRefreshState = rememberPullToRefreshState()

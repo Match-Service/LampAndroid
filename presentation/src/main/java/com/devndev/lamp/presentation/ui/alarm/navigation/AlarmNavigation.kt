@@ -19,7 +19,8 @@ fun NavController.navigateAlarm(navOptions: NavOptions? = null) {
 fun NavGraphBuilder.alarmNavGraph(
     padding: PaddingValues,
     modifier: Modifier = Modifier,
-    navController: NavController
+    navController: NavController,
+    alarmExist: (Boolean) -> Unit = {}
 ) {
     composable(
         route = Route.ALARM,
@@ -28,7 +29,8 @@ fun NavGraphBuilder.alarmNavGraph(
     ) {
         AlarmScreen(
             modifier = modifier.padding(padding),
-            navController = navController
+            navController = navController,
+            alarmExist = alarmExist
         )
     }
 }
