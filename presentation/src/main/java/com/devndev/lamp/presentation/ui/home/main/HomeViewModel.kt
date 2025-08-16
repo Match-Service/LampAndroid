@@ -134,8 +134,8 @@ class HomeViewModel @Inject constructor(
     fun getMatchSuggestion(onComplete: (() -> Unit)? = null) {
         viewModelScope.launch {
             try {
-                Log.d(TAG, "getMatchSuggestion")
                 val result = getMatchSuggestionUseCase()
+                Log.d(TAG, "getMatchSuggestion $result")
                 _matchSuggestion.value = result.copy()
                 _approveCount.value = result.approveCount
                 _rejectCount.value = result.rejectCount
@@ -179,6 +179,9 @@ class HomeViewModel @Inject constructor(
                         _userStatus.value = message
                         Log.d(TAG, "status: ${userStatue.value}")
                         updateStatus(message)
+                        if (userStatue.value == "FIND_LAMP") {
+                            getMatchSuggestion()
+                        }
                     },
                     onUpdatedMessage = {
                         Log.d(TAG, "onUpdatedMessage: ${myLamp.value}")

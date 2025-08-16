@@ -112,6 +112,10 @@ fun MatchingHomeScreen(
     }
 
     LaunchedEffect(Unit) {
+        viewModel.getMyLamp()
+    }
+
+    LaunchedEffect(Unit) {
         updateStatus.collect { status ->
             when (status) {
                 "PREPARE" -> {
