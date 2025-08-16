@@ -312,4 +312,10 @@
     <string name="assessment_item_title">%s 램프 평가하기</string>
 
     <string name="chat_list_assessment_msg">%s, %s 램프와 만남은 어땠나요?\n빛나는 그날의 기억을 기록해주세요</string>
+
+    <!-- Alarm Toast -->
+    <string name="invite_accept_msg">%s 램프에 참여 하셨어요.</string>
+    <string name="invite_reject_msg">%s님의 램프 초대를 거절 하셨어요.</string>
+    <string name="visit_accept_msg">%s님이 램프에 참여 하셨어요.</string>
+    <string name="visit_reject_msg">%s님의 램프 방문을 거절 하셨어요.</string>
 </resources>

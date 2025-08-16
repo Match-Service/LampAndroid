@@ -77,7 +77,7 @@ class AlarmViewModel @Inject constructor(
             ).onSuccess {
                 Log.d(
                     logTag,
-                    "acceptInvite, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId"
+                    "acceptInvite, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId, $it"
                 )
                 getAlarm()
             }.onFailure {

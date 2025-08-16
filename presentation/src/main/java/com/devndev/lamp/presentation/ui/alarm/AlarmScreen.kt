@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.alarm
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -44,6 +45,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -77,6 +79,8 @@ fun AlarmScreen(
     BackHandler {
         navController.popBackStack()
     }
+
+    val context = LocalContext.current
 
     val state by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -179,12 +183,27 @@ fun AlarmScreen(
                                     inviteRequestUserId = it.inviteUserId ?: 0,
                                     alarmId = it.id
                                 )
+                                navController.popBackStack()
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.invite_accept_msg, it.inviteLampName ?: ""),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             },
                             onRejectClick = {
                                 viewModel.rejectInvite(
                                     inviteRequestUserId = it.inviteUserId ?: 0,
                                     alarmId = it.id
                                 )
+
+                                val regex = Regex("^(.+?)님이\\s")
+                                val match = regex.find(it.content)
+
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.invite_reject_msg, match?.groupValues?.get(1) ?: ""),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         )
                     }
@@ -206,6 +225,14 @@ fun AlarmScreen(
                                     visitUserId = it.visitUserId ?: 0,
                                     alarmId = it.id
                                 )
+                                val regex = Regex("^(.+?)님이\\s")
+                                val match = regex.find(it.content)
+                                navController.popBackStack()
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.visit_accept_msg, match?.groupValues?.get(1) ?: ""),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             },
                             onRejectClick = {
                                 viewModel.rejectVisit(
@@ -213,6 +240,13 @@ fun AlarmScreen(
                                     visitUserId = it.visitUserId ?: 0,
                                     alarmId = it.id
                                 )
+                                val regex = Regex("^(.+?)님이\\s")
+                                val match = regex.find(it.content)
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.visit_reject_msg, match?.groupValues?.get(1) ?: ""),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                         )
                     }
