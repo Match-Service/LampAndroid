@@ -243,8 +243,12 @@ fun LampTopBar(
         }
     }
 
-    val alarmIcon = if (currentRoute == Route.ALARM || state.alarmExist) {
-        painterResource(id = R.drawable.alarm_icon_on)
+    val alarmIcon = if (currentRoute == Route.ALARM) {
+        if (state.alarmExist) {
+            painterResource(id = R.drawable.alarm_icon_on)
+        } else {
+            painterResource(id = R.drawable.alarm_icon_filled)
+        }
     } else {
         painterResource(id = R.drawable.alarm_icon)
     }
