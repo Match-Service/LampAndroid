@@ -260,7 +260,7 @@ class ChatViewModel @Inject constructor(
         viewModelScope.launch {
             getAssessmentListUseCase()
                 .onSuccess { assessmentList ->
-                    Log.d(TAG, "getAssessmentList Success")
+                    Log.d(TAG, "getAssessmentList Success $assessmentList")
                     _uiState.update { it.copy(assessmentList = assessmentList) }
                     _uiState.update { it.copy(isLoading = false) }
                 }

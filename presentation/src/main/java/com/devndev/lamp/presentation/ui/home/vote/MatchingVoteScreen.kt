@@ -91,10 +91,13 @@ import com.devndev.lamp.presentation.theme.MoodRed
 import com.devndev.lamp.presentation.theme.MoodYellow
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
+import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 import com.devndev.lamp.presentation.ui.home.main.HomeViewModel
 import com.devndev.lamp.presentation.utils.InstagramUtils
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
+import java.time.Duration
+import java.time.OffsetDateTime
 import java.util.Calendar
 import java.util.Locale
 
@@ -111,6 +114,8 @@ fun MatchingVoteScreen(
     val approveCount by viewModel.approveCount.collectAsState()
     val rejectCount by viewModel.rejectCount.collectAsState()
 
+    var isAcceptPopupShow by remember { mutableStateOf(false) }
+    var isRejectPopupShow by remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val context = LocalContext.current
     val bottomNaviBarHeight = getNavigationBarHeight(context)
@@ -200,6 +205,49 @@ fun MatchingVoteScreen(
             (screenHeight - (headerSectionHeight + moodInfoSectionHeight + secondSectionHeight + 70.dp + bottomNaviBarHeight.dp))
     }
 
+    if (isAcceptPopupShow) {
+        TwoButtonPopup(
+            mainText = stringResource(id = R.string.matching_accept_popup_msg),
+            startButtonText = stringResource(id = R.string.cancel),
+            endButtonText = stringResource(id = R.string.done),
+            hintText = stringResource(id = R.string.matching_popup_hint),
+            onStartButtonClick = {
+                isAcceptPopupShow = false
+            },
+            onEndButtonClick = {
+                if (matchSuggestion != null) {
+                    if (!viewModel.isVoted.value) {
+                        viewModel.accept(
+                            lampSuggestionId = matchSuggestion!!.lampSuggestionId
+                        )
+                    }
+                }
+                isAcceptPopupShow = false
+            }
+        )
+    }
+
+    if (isRejectPopupShow) {
+        TwoButtonPopup(
+            mainText = stringResource(id = R.string.matching_reject_popup_msg),
+            startButtonText = stringResource(id = R.string.cancel),
+            endButtonText = stringResource(id = R.string.done),
+            hintText = stringResource(id = R.string.matching_popup_hint),
+            onStartButtonClick = {
+                isRejectPopupShow = false
+            },
+            onEndButtonClick = {
+                if (matchSuggestion != null) {
+                    if (!viewModel.isVoted.value) {
+                        viewModel.reject(
+                            lampSuggestionId = matchSuggestion!!.lampSuggestionId
+                        )
+                    }
+                }
+                isRejectPopupShow = false
+            }
+        )
+    }
     if (isLoaded) {
         Box(
             modifier = Modifier
@@ -290,6 +338,12 @@ fun MatchingVoteScreen(
                 rejectCount = rejectCount,
                 onHeightChange = { height ->
                     bottomSectionHeight = height
+                },
+                onAcceptClick = {
+                    isAcceptPopupShow = true
+                },
+                onRejectClick = {
+                    isRejectPopupShow = true
                 }
             )
         }
@@ -324,7 +378,7 @@ fun ProfileTop(context: Context, matchSuggestion: MatchSuggestionDomainModel?, i
     // 인스타그램 아이디 list
     val instagramList = listOf(
         matchSuggestion?.owner?.instagramId
-    ) + matchSuggestion?.participants?.map { it.instagramId }
+    ) + matchSuggestion?.participants?.map { it.instagramId }.orEmpty()
 
     val imageCnt = imageUrlList[index]?.size
 
@@ -440,6 +494,7 @@ fun ProfileTop(context: Context, matchSuggestion: MatchSuggestionDomainModel?, i
         )
         Spacer(modifier = Modifier.width(10.dp))
         if (instagramList[index].toString().isNotEmpty()) {
+            Log.d("insta", instagramList.toString())
             Image(
                 modifier = Modifier
                     .size(23.dp)
@@ -742,19 +797,20 @@ fun BottomSection(
     matchSuggestion: MatchSuggestionDomainModel?,
     approveCount: Int,
     rejectCount: Int,
-    onHeightChange: (Int) -> Unit
+    onHeightChange: (Int) -> Unit,
+    onAcceptClick: () -> Unit,
+    onRejectClick: () -> Unit
 ) {
     var totalSeconds by remember { mutableStateOf(0L) }
     var hasVote by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        val savedEndTime = viewModel.loadTimer(0L)
-        if (savedEndTime == 0L) {
-            val newEndTime = System.currentTimeMillis() + 3 * 60 * 60 * 1000L
-            viewModel.updateTimer(newEndTime)
-            totalSeconds = 3 * 60 * 60
-        } else {
-            totalSeconds = ((savedEndTime - System.currentTimeMillis()) / 1000L).coerceAtLeast(0L)
+    LaunchedEffect(matchSuggestion) {
+        matchSuggestion?.let { suggestion ->
+            // matchCompleteTime 문자열을 OffsetDateTime으로 변환
+            val targetTime = OffsetDateTime.parse(suggestion.matchCompleteTime)
+            val now = OffsetDateTime.now()
+            val remaining = Duration.between(now, targetTime).seconds.coerceAtLeast(0L)
+            totalSeconds = remaining
         }
     }
 
@@ -824,13 +880,7 @@ fun BottomSection(
                         .weight(1f)
                         .height(54.dp),
                     onClick = {
-                        if (matchSuggestion != null) {
-                            if (!viewModel.isVoted.value) {
-                                viewModel.accept(
-                                    lampSuggestionId = matchSuggestion.lampSuggestionId
-                                )
-                            }
-                        }
+                        onAcceptClick()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LightGray,
@@ -863,13 +913,7 @@ fun BottomSection(
                         .weight(1f)
                         .height(54.dp),
                     onClick = {
-                        if (matchSuggestion != null) {
-                            if (!viewModel.isVoted.value) {
-                                viewModel.reject(
-                                    lampSuggestionId = matchSuggestion.lampSuggestionId
-                                )
-                            }
-                        }
+                        onRejectClick()
                     },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = LightGray,

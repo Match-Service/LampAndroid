@@ -142,7 +142,7 @@ fun TwoButtonPopup(
     ) {
         Column(
             modifier = Modifier
-                .width(340.dp)
+                .padding(horizontal = 20.dp)
                 .background(Gray, shape = RoundedCornerShape(15.dp)),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

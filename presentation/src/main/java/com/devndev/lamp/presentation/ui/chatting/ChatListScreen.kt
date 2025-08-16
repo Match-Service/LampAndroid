@@ -118,7 +118,9 @@ fun ChatListScreen(
         )
     } else {
         if (state.chatList.isNotEmpty()) {
-            Column() {
+            Column(
+                modifier = Modifier.fillMaxSize()
+            ) {
                 LampTopBar(
                     navController = navController,
                     isAlarmIconNeed = true,
@@ -126,7 +128,7 @@ fun ChatListScreen(
                     isChatExist = state.chatList.isNotEmpty()
                 )
                 LazyColumn(
-                    modifier = modifier
+                    modifier = Modifier
                         .fillMaxSize()
                         .padding(horizontal = 16.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
