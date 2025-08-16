@@ -117,6 +117,7 @@ fun MatchingHomeScreen(
                 "PREPARE" -> {
                     viewModel.updateIsMatching(false)
                 }
+
                 "MATCHING" -> {
                     viewModel.updateIsMatching(true)
                 }
@@ -274,7 +275,10 @@ fun MatchingHomeScreen(
                                     contentDescription = null,
                                     tint = Color.White,
                                     modifier = Modifier.clickable {
-                                        navController.navigateCreation(isEdit = true, navOptions = navOption)
+                                        navController.navigateCreation(
+                                            isEdit = true,
+                                            navOptions = navOption
+                                        )
                                     }
                                 )
                             }
@@ -378,24 +382,26 @@ fun MatchingHomeScreen(
                     )
                 }
 
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 85.dp)
-                        .offset { IntOffset(0, offsetY.value.roundToInt()) }, // 위아래로만 움직임
-                    verticalArrangement = Arrangement.spacedBy(1.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.swipe_icon),
-                        contentDescription = null,
-                        tint = Color.Unspecified
-                    )
-                    Text(
-                        text = stringResource(id = R.string.swipe_guide),
-                        color = Gray3,
-                        style = Typography.normal12
-                    )
+                if (state.isFullPersonnel) {
+                    Column(
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .padding(bottom = 85.dp)
+                            .offset { IntOffset(0, offsetY.value.roundToInt()) }, // 위아래로만 움직임
+                        verticalArrangement = Arrangement.spacedBy(1.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.swipe_icon),
+                            contentDescription = null,
+                            tint = Color.Unspecified
+                        )
+                        Text(
+                            text = stringResource(id = R.string.swipe_guide),
+                            color = Gray3,
+                            style = Typography.normal12
+                        )
+                    }
                 }
             }
         }
