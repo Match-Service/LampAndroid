@@ -592,24 +592,10 @@ fun ChatBubble(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(3.dp)
                     ) {
-                        val regex = if (message.messageTypeEnum == MessageType.READY_APPOINTMENT) {
-                            Regex("""\((\d+명 완료)\)""")
-                        } else {
-                            Regex("""(\d+명 완료)$""")
-                        }
-                        val match = regex.find(message.message)
-
-                        val tailText = match?.groupValues?.get(1) ?: ""
-                        val frontText = message.message.replace(regex, "").trim()
                         Text(
-                            text = frontText,
+                            text = message.message,
                             color = Color.White,
                             style = Typography.medium15
-                        )
-                        Text(
-                            text = tailText,
-                            color = Gray3,
-                            style = Typography.medium10
                         )
                     }
                 }

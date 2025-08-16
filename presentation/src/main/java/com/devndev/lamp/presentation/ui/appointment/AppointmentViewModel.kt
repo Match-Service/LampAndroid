@@ -95,19 +95,22 @@ class AppointmentViewModel @Inject constructor(
                         it.copy(
                             isEmpty = appointment.chatAppointmentList.isEmpty(),
                             appointment = appointment,
-                            appointmentList = appointmentList
+                            appointmentList = appointmentList,
+                            isLoading = false
                         )
                     }
                 } else {
                     _uiState.update {
                         it.copy(
                             isEmpty = appointment.chatAppointmentList.isEmpty(),
-                            appointment = appointment
+                            appointment = appointment,
+                            isLoading = false
                         )
                     }
                 }
             }.onFailure {
                 Log.e(TAG, "getAppointmentListUseCase Failure", it)
+                _uiState.update { it.copy(isLoading = false) }
             }
         }
     }

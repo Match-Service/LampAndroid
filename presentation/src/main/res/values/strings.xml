@@ -278,9 +278,9 @@
     <string name="vote_count_message">%d명이 투표를 완료 했어요</string>
 
     <string name="ready_popup_title">투표 준비가 완료 되셨나요?</string>
-    <string name="ready_popup_message">모든 인원이 준비가 완료될 때까지\n약속을 등록하거나 수정하실 수 없어.</string>
+    <string name="ready_popup_message">모든 인원이 준비가 완료될 때까지\n약속을 등록하거나 수정하실 수 없어요.</string>
     <string name="delete_popup_title">약속을 삭제 하시겠어요?</string>
-    <string name="delete_popup_message">삭제된 정보는 다시 블러올 수 없어요.</string>
+    <string name="delete_popup_message">삭제된 정보는 다시 불러올 수 없어요.</string>
     <string name="vote_popup_title">투표 하시겠어요?</string>
     <string name="vote_popup_message">모든 인원이 투표가 완료될 때까지\n투표를 수정하실 수 없어요.</string>
 

@@ -265,7 +265,7 @@ fun Appointment(
             }
 
             else -> {
-                if (appointment.isMine) {
+                if (appointment.isMine && appointmentStatus == AppointmentStatus.BEFORE_READY) {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(10.dp)
