@@ -18,7 +18,7 @@ data class AppointmentUiState(
     val myInfo: MyInfoDomainModel? = null,
     val appointmentList: List<AppointmentItem> = emptyList(),
     val editAppointment: AppointmentDomainModel? = null,
-    val isEditLoading: Boolean = false
+    val isLoading: Boolean = true
 ) {
     fun getAppointmentStatus(): Int {
         if (isEmpty) {

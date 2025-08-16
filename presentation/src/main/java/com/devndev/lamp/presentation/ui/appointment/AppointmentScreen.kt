@@ -76,6 +76,7 @@ fun AppointmentScreen(
             onEndButtonClick = {
                 appointmentViewModel.readyVote(chatRoomId)
                 isReadyConfirmPopupShow = false
+                navController.popBackStack()
             }
         )
     }
@@ -130,39 +131,39 @@ fun AppointmentScreen(
                 onBackButtonClick = {
                     navController.popBackStack()
                 },
-                onXButtonClick = {
-                    navController.popBackStack()
-                }
+                isNeedXButton = false
             )
-            if (state.isEmpty) {
-                EmptyAppointmentScreen()
-            } else {
-                AppointmentList(
-                    appointmentList = state.appointmentList,
-                    topSectionText = topSectionText,
-                    selectedAppointment = selectedAppointment,
-                    onEditClick = {
-                        navController.navigateRegisterAppointment(
-                            isEdit = true,
-                            chatAppointmentId = it
-                        )
-                    },
-                    onDeleteClick = {
-                        isDeletePopupShow = true
-                        deleteAppointmentId = it
-                    },
-                    onAddIconClick = {
-                        navController.navigateRegisterAppointment(
-                            isEdit = false,
-                            chatAppointmentId = -1
-                        )
-                    },
-                    onAppointmentSelected = {
-                        selectedAppointment = it
-                    },
-                    isAppointmentClickable = isAppointmentClickable,
-                    appointmentStatus = state.getAppointmentStatus()
-                )
+            if (!state.isLoading) {
+                if (state.isEmpty) {
+                    EmptyAppointmentScreen()
+                } else {
+                    AppointmentList(
+                        appointmentList = state.appointmentList,
+                        topSectionText = topSectionText,
+                        selectedAppointment = selectedAppointment,
+                        onEditClick = {
+                            navController.navigateRegisterAppointment(
+                                isEdit = true,
+                                chatAppointmentId = it
+                            )
+                        },
+                        onDeleteClick = {
+                            isDeletePopupShow = true
+                            deleteAppointmentId = it
+                        },
+                        onAddIconClick = {
+                            navController.navigateRegisterAppointment(
+                                isEdit = false,
+                                chatAppointmentId = -1
+                            )
+                        },
+                        onAppointmentSelected = {
+                            selectedAppointment = it
+                        },
+                        isAppointmentClickable = isAppointmentClickable,
+                        appointmentStatus = state.getAppointmentStatus()
+                    )
+                }
             }
         }
         Column(
