@@ -161,37 +161,35 @@ fun ProfileEditScreen(
         } else if (profileQuery.isBlank()) {
             isBioPopupShow = true
         } else {
-            if (!compProfileList(originImageModel, editImageModel)) {
-                profileEditViewModel.editImages(
-                    ModifyUserParam(
-                        name = myInfo?.name ?: "", // 변경불가
-                        job = myInfo?.job ?: "",
-                        jobName = university,
-                        gender = myInfo?.gender ?: "", // 변경불가
-                        birth = myInfo?.birth ?: "", // 변경불가
-                        instagramId = instagram,
-                        bio = profileQuery,
-                        profileImages = listOf(myInfo?.profileImages?.get(0)?.downloadUrl ?: ""),
-                        bioQuestions = listOf(
-                            BioQuestion(
-                                myInfo?.bioQuestions?.get(0)?.question ?: "음주",
-                                selectedDrink ?: myInfo?.bioQuestions?.get(0)!!.answer
-                            ),
-                            BioQuestion(
-                                myInfo?.bioQuestions?.get(1)?.question ?: "흡연",
-                                selectedSmoke ?: myInfo?.bioQuestions?.get(1)!!.answer
-                            ),
-                            BioQuestion(
-                                myInfo?.bioQuestions?.get(2)?.question ?: "운동",
-                                selectedExercise ?: myInfo?.bioQuestions?.get(2)!!.answer
-                            )
+            profileEditViewModel.editImages(
+                ModifyUserParam(
+                    name = myInfo?.name ?: "", // 변경불가
+                    job = myInfo?.job ?: "",
+                    jobName = university,
+                    gender = myInfo?.gender ?: "", // 변경불가
+                    birth = myInfo?.birth ?: "", // 변경불가
+                    instagramId = instagram,
+                    bio = profileQuery,
+                    profileImages = listOf(myInfo?.profileImages?.get(0)?.downloadUrl ?: ""),
+                    bioQuestions = listOf(
+                        BioQuestion(
+                            myInfo?.bioQuestions?.get(0)?.question ?: "음주",
+                            selectedDrink ?: myInfo?.bioQuestions?.get(0)!!.answer
                         ),
-                        pushToken = ""
+                        BioQuestion(
+                            myInfo?.bioQuestions?.get(1)?.question ?: "흡연",
+                            selectedSmoke ?: myInfo?.bioQuestions?.get(1)!!.answer
+                        ),
+                        BioQuestion(
+                            myInfo?.bioQuestions?.get(2)?.question ?: "운동",
+                            selectedExercise ?: myInfo?.bioQuestions?.get(2)!!.answer
+                        )
                     ),
-                    editImageModel = editImageModel
-                ) {
-                    navController.navigateMyPage()
-                }
+                    pushToken = ""
+                ),
+                editImageModel = editImageModel
+            ) {
+                navController.navigateMyPage()
             }
         }
     }
@@ -354,40 +352,38 @@ fun ProfileEditScreen(
                     } else if (profileQuery.isBlank()) {
                         isBioPopupShow = true
                     } else {
-                        if (!compProfileList(originImageModel, editImageModel)) {
-                            profileEditViewModel.editImages(
-                                ModifyUserParam(
-                                    name = myInfo?.name ?: "", // 변경불가
-                                    job = myInfo?.job ?: "",
-                                    jobName = university,
-                                    gender = myInfo?.gender ?: "", // 변경불가
-                                    birth = myInfo?.birth ?: "", // 변경불가
-                                    instagramId = instagram,
-                                    bio = profileQuery,
-                                    profileImages = listOf(
-                                        myInfo?.profileImages?.get(0)?.downloadUrl ?: ""
-                                    ),
-                                    bioQuestions = listOf(
-                                        BioQuestion(
-                                            myInfo?.bioQuestions?.get(0)?.question ?: "음주",
-                                            selectedDrink ?: myInfo?.bioQuestions?.get(0)!!.answer
-                                        ),
-                                        BioQuestion(
-                                            myInfo?.bioQuestions?.get(1)?.question ?: "흡연",
-                                            selectedSmoke ?: myInfo?.bioQuestions?.get(1)!!.answer
-                                        ),
-                                        BioQuestion(
-                                            myInfo?.bioQuestions?.get(2)?.question ?: "운동",
-                                            selectedExercise
-                                                ?: myInfo?.bioQuestions?.get(2)!!.answer
-                                        )
-                                    ),
-                                    pushToken = ""
+                        profileEditViewModel.editImages(
+                            ModifyUserParam(
+                                name = myInfo?.name ?: "", // 변경불가
+                                job = myInfo?.job ?: "",
+                                jobName = university,
+                                gender = myInfo?.gender ?: "", // 변경불가
+                                birth = myInfo?.birth ?: "", // 변경불가
+                                instagramId = instagram,
+                                bio = profileQuery,
+                                profileImages = listOf(
+                                    myInfo?.profileImages?.get(0)?.downloadUrl ?: ""
                                 ),
-                                editImageModel = editImageModel
-                            ) {
-                                navController.navigateMyPage()
-                            }
+                                bioQuestions = listOf(
+                                    BioQuestion(
+                                        myInfo?.bioQuestions?.get(0)?.question ?: "음주",
+                                        selectedDrink ?: myInfo?.bioQuestions?.get(0)!!.answer
+                                    ),
+                                    BioQuestion(
+                                        myInfo?.bioQuestions?.get(1)?.question ?: "흡연",
+                                        selectedSmoke ?: myInfo?.bioQuestions?.get(1)!!.answer
+                                    ),
+                                    BioQuestion(
+                                        myInfo?.bioQuestions?.get(2)?.question ?: "운동",
+                                        selectedExercise
+                                            ?: myInfo?.bioQuestions?.get(2)!!.answer
+                                    )
+                                ),
+                                pushToken = ""
+                            ),
+                            editImageModel = editImageModel
+                        ) {
+                            navController.navigateMyPage()
                         }
                     }
                 }
