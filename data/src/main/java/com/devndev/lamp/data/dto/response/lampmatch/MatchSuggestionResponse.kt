@@ -27,6 +27,10 @@ data class MatchSuggestionResponse(
     val color: String,
     @Json(name = "approveCount")
     val approveCount: Int,
+    @Json(name = "isApproved")
+    val isApproved: Boolean,
+    @Json(name = "isRejected")
+    val isRejected: Boolean,
     @Json(name = "rejectCount")
     val rejectCount: Int,
     @Json(name = "matchCompleteTime")
@@ -49,6 +53,8 @@ data class MatchSuggestionResponse(
             location = location,
             color = color,
             approveCount = approveCount,
+            isApproved = isApproved,
+            isRejected = isRejected,
             rejectCount = rejectCount,
             matchCompleteTime = matchCompleteTime,
             gender = gender,
