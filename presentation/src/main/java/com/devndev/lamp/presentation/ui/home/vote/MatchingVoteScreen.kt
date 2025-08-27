@@ -804,6 +804,26 @@ fun BottomSection(
     var totalSeconds by remember { mutableStateOf(0L) }
     var hasVote by remember { mutableStateOf(false) }
 
+    var approveButtonColor = if (matchSuggestion?.isApproved == true) {
+        if (matchSuggestion.gender == "MALE") {
+            ManColor
+        } else {
+            WomanColor
+        }
+    } else {
+        LightGray
+    }
+
+    var rejectButtonColor = if (matchSuggestion?.isApproved == true) {
+        if (matchSuggestion.gender == "MALE") {
+            ManColor
+        } else {
+            WomanColor
+        }
+    } else {
+        LightGray
+    }
+
     LaunchedEffect(matchSuggestion) {
         matchSuggestion?.let { suggestion ->
             // matchCompleteTime 문자열을 OffsetDateTime으로 변환
@@ -883,7 +903,7 @@ fun BottomSection(
                         onAcceptClick()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = LightGray,
+                        containerColor = approveButtonColor,
                         contentColor = Color.White
                     )
                 ) {
@@ -916,7 +936,7 @@ fun BottomSection(
                         onRejectClick()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = LightGray,
+                        containerColor = rejectButtonColor,
                         contentColor = Color.White
                     )
                 ) {

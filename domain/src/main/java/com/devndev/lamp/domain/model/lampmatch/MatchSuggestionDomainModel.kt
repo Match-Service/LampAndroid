@@ -10,6 +10,8 @@ data class MatchSuggestionDomainModel(
     val location: String,
     val color: String,
     val approveCount: Int,
+    val isApproved: Boolean,
+    val isRejected: Boolean,
     val rejectCount: Int,
     val matchCompleteTime: String,
     val gender: String,
