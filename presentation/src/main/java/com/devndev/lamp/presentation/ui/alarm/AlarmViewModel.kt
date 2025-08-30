@@ -8,6 +8,7 @@ import com.devndev.lamp.domain.model.lamp.AcceptInviteParam
 import com.devndev.lamp.domain.model.lamp.AcceptVisitParam
 import com.devndev.lamp.domain.model.lamp.RejectInviteParam
 import com.devndev.lamp.domain.model.lamp.RejectVisitParam
+import com.devndev.lamp.domain.usecase.alarm.DeleteAlarmUseCase
 import com.devndev.lamp.domain.usecase.alarm.GetAlarmUseCase
 import com.devndev.lamp.domain.usecase.lamp.AcceptInviteUseCase
 import com.devndev.lamp.domain.usecase.lamp.AcceptVisitUseCase
@@ -28,7 +29,8 @@ class AlarmViewModel @Inject constructor(
     private val acceptInviteUseCase: AcceptInviteUseCase,
     private val rejectInviteUseCase: RejectInviteUseCase,
     private val acceptVisitUseCase: AcceptVisitUseCase,
-    private val rejectVisitUseCase: RejectVisitUseCase
+    private val rejectVisitUseCase: RejectVisitUseCase,
+    private val deleteAlarmUseCase: DeleteAlarmUseCase
 ) : ViewModel() {
     private val logTag = "AlarmViewModel"
     private val _uiState = MutableStateFlow(AlarmUiState())
@@ -67,73 +69,135 @@ class AlarmViewModel @Inject constructor(
         }
     }
 
-    fun acceptInvite(inviteRequestUserId: Int, alarmId: Int) {
+    fun acceptInvite(inviteRequestUserId: Int, alarmId: Int, completion: (Boolean, Int) -> Unit) {
         viewModelScope.launch {
             acceptInviteUseCase(
                 acceptInviteParam = AcceptInviteParam(
                     inviteRequestUserId = inviteRequestUserId,
                     alarmId = alarmId
                 )
-            ).onSuccess {
+            ).onSuccess { code ->
                 Log.d(
                     logTag,
-                    "acceptInvite, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId, $it"
+                    "acceptInvite, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId"
                 )
-                getAlarm()
-            }.onFailure {
-                Log.e(logTag, "acceptInvite Exception", it)
+                when (code) {
+                    0 -> {
+                        completion(true, 0)
+                        getAlarm()
+                    }
+
+                    else -> {
+                        completion(false, code)
+                    }
+                }
+            }.onFailure { throwable ->
+                completion(false, 0)
+                Log.e(logTag, "acceptInvite Exception", throwable)
             }
         }
     }
 
-    fun rejectInvite(inviteRequestUserId: Int, alarmId: Int) {
+    fun rejectInvite(inviteRequestUserId: Int, alarmId: Int, completion: (Boolean, Int) -> Unit) {
         viewModelScope.launch {
             rejectInviteUseCase(
                 rejectInviteParam = RejectInviteParam(
                     inviteRequestUserId = inviteRequestUserId,
                     alarmId = alarmId
                 )
-            ).onSuccess {
+            ).onSuccess { code ->
                 Log.d(
                     logTag,
                     "rejectInvite, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId"
                 )
-                getAlarm()
-            }.onFailure {
-                Log.e(logTag, "rejectInvite Exception", it)
+                when (code) {
+                    0 -> {
+                        completion(true, 0)
+                        getAlarm()
+                    }
+
+                    else -> {
+                        completion(false, code)
+                    }
+                }
+            }.onFailure { throwable ->
+                completion(false, 0)
+                Log.e(logTag, "rejectInvite Exception", throwable)
             }
         }
     }
 
-    fun acceptVisit(lampId: Int, visitUserId: Int, alarmId: Int) {
+    fun acceptVisit(
+        lampId: Int,
+        visitUserId: Int,
+        alarmId: Int,
+        completion: (Boolean, Int) -> Unit
+    ) {
         viewModelScope.launch {
             acceptVisitUseCase(
                 AcceptVisitParam(visitUserId, alarmId)
-            ).onSuccess {
+            ).onSuccess { code ->
                 Log.d(
                     logTag,
                     "acceptVisit, lampId: $lampId visitUserId: $visitUserId alarmId: $alarmId"
                 )
-                getAlarm()
-            }.onFailure {
-                Log.e(logTag, "acceptVisit Exception", it)
+                when (code) {
+                    0 -> {
+                        completion(true, 0)
+                        getAlarm()
+                    }
+
+                    else -> {
+                        completion(false, code)
+                    }
+                }
+            }.onFailure { throwable ->
+                completion(false, 0)
+                Log.e(logTag, "acceptVisit Exception", throwable)
             }
         }
     }
 
-    fun rejectVisit(lampId: Int, visitUserId: Int, alarmId: Int) {
+    fun rejectVisit(
+        lampId: Int,
+        visitUserId: Int,
+        alarmId: Int,
+        completion: (Boolean, Int) -> Unit
+    ) {
         viewModelScope.launch {
             rejectVisitUseCase(
                 RejectVisitParam(visitUserId, alarmId)
-            ).onSuccess {
+            ).onSuccess { code ->
                 Log.d(
                     logTag,
                     "rejectVisit, lampId: $lampId visitUserId: $visitUserId alarmId: $alarmId"
                 )
-                getAlarm()
-            }.onFailure {
-                Log.e(logTag, "rejectVisit Exception", it)
+                when (code) {
+                    0 -> {
+                        completion(true, 0)
+                        getAlarm()
+                    }
+
+                    else -> {
+                        completion(false, code)
+                    }
+                }
+            }.onFailure { throwable ->
+                completion(false, 0)
+                Log.e(logTag, "rejectVisit Exception", throwable)
             }
+        }
+    }
+
+    fun deleteAlarm(alarmId: Int) {
+        viewModelScope.launch {
+            deleteAlarmUseCase(alarmId)
+                .onSuccess {
+                    Log.d(logTag, "deleteAlarm")
+                    getAlarm()
+                }.onFailure {
+                    Log.e(logTag, "deleteAlarm Exception", it)
+                }
         }
     }
 }

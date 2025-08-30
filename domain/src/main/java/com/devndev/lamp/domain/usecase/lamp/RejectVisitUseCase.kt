@@ -7,7 +7,7 @@ import javax.inject.Inject
 class RejectVisitUseCase @Inject constructor(
     private val lampRepository: LampRepository
 ) {
-    suspend operator fun invoke(rejectVisitParam: RejectVisitParam): Result<Unit> {
+    suspend operator fun invoke(rejectVisitParam: RejectVisitParam): Result<Int> {
         return runCatching {
             lampRepository.rejectVisit(rejectVisitParam)
         }
