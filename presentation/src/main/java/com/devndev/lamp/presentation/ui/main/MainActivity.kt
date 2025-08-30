@@ -3,7 +3,6 @@ package com.devndev.lamp.presentation.ui.main
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -18,12 +17,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.devndev.lamp.data.socket.LampSocketService
+import com.devndev.lamp.domain.model.alarm.AlarmMessageType
 import com.devndev.lamp.presentation.theme.LampTheme
+import com.devndev.lamp.presentation.ui.alarm.navigation.navigateAlarm
+import com.devndev.lamp.presentation.ui.chatting.navigation.navigateChatList
 import com.devndev.lamp.presentation.ui.login.LoginActivity
 import com.devndev.lamp.presentation.ui.mypage.MyPageViewModel
 import com.devndev.lamp.presentation.ui.onboarding.OnBoardingActivity
-import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -33,6 +36,8 @@ class MainActivity : ComponentActivity() {
 
     @Inject
     lateinit var lampSocketService: LampSocketService
+
+    private lateinit var navController: NavHostController
 
     private val mainViewModel by viewModels<MainViewModel>()
     private val myPageViewModel by viewModels<MyPageViewModel>()
@@ -52,6 +57,8 @@ class MainActivity : ComponentActivity() {
         lampSocketService.connect {
             Log.d(logTag, "Connect Socket")
         }
+
+        val targetScreen = AlarmMessageType.from(intent?.getStringExtra("navigate_target"))
         mainViewModel.putPushToken()
         setContent {
             val state by myPageViewModel.uiState.collectAsStateWithLifecycle()
@@ -61,9 +68,13 @@ class MainActivity : ComponentActivity() {
                     mainState.isFirstOpen == true -> {
                         checkNotificationPermission()
                     }
+
                     mainState.isFirstOpen == false -> {
+                        navController = rememberNavController()
                         Lamp(
-                            signOut = myPageViewModel::signOut
+                            navController = navController,
+                            signOut = myPageViewModel::signOut,
+                            targetScreen = targetScreen
                         )
                     }
                 }
@@ -77,44 +88,23 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        Log.d(logTag, "onStop")
-        setAppIcon(IconStatusManager.getIconStatus())
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        handleNotificationIntent(intent)
     }
 
-    private fun setAppIcon(gender: String) {
-        Log.d(logTag, "setAppIcon()")
-        val packageManager = this.packageManager
-
-        // Correct ComponentName with fully qualified class names
-        val aliases = listOf(
-            "com.devndev.lamp.presentation.ui.splsh.SplashActivity",
-            "com.devndev.lamp.MainActivityMale",
-            "com.devndev.lamp.MainActivityFemale"
-        )
-
-        // Disable all aliases first
-        aliases.forEach { alias ->
-            packageManager.setComponentEnabledSetting(
-                ComponentName(this, alias),
-                PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                PackageManager.DONT_KILL_APP
-            )
+    private fun handleNotificationIntent(intent: Intent?) {
+        val targetScreen = AlarmMessageType.from(intent?.getStringExtra("navigate_target")) ?: return
+        when (targetScreen) {
+            AlarmMessageType.INVITE_REQUEST,
+            AlarmMessageType.VISIT_REQUEST -> {
+                navController.navigateAlarm()
+            }
+            AlarmMessageType.CHAT -> {
+                navController.navigateChatList()
+            }
+            else -> {}
         }
-
-        // Enable the correct alias based on gender
-        val targetAlias = when (gender) {
-            "MALE" -> "com.devndev.lamp.MainActivityMale"
-            "FEMALE" -> "com.devndev.lamp.MainActivityFemale"
-            else -> "com.devndev.lamp.presentation.ui.splsh.SplashActivity"
-        }
-
-        packageManager.setComponentEnabledSetting(
-            ComponentName(this, targetAlias),
-            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-            PackageManager.DONT_KILL_APP
-        )
     }
 
     @SuppressLint("InlinedApi")
@@ -156,6 +146,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Lamp(signOut: () -> Unit) {
-    MainScreen(modifier = Modifier, signOut = signOut)
+fun Lamp(navController: NavHostController, signOut: () -> Unit, targetScreen: AlarmMessageType?) {
+    MainScreen(
+        navController = navController,
+        modifier = Modifier,
+        signOut = signOut,
+        targetScreen = targetScreen
+    )
 }

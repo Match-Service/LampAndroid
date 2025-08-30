@@ -33,10 +33,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navOptions
+import com.devndev.lamp.domain.model.alarm.AlarmMessageType
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.BackGroundColor
 import com.devndev.lamp.presentation.theme.Gray
@@ -65,11 +66,13 @@ import com.devndev.lamp.presentation.ui.signup.navigation.startLampNavGraph
 
 @Composable
 fun MainScreen(
+    navController: NavHostController,
     modifier: Modifier,
     viewModel: MainViewModel = hiltViewModel(),
-    signOut: () -> Unit
+    signOut: () -> Unit,
+    targetScreen: AlarmMessageType?
 ) {
-    val navController = rememberNavController()
+//    val navController = rememberNavController()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -83,6 +86,21 @@ fun MainScreen(
     var isNeedAlarmUpdate by remember { mutableStateOf(false) }
 
     var alarmExist by remember { mutableStateOf<Boolean?>(null) }
+
+    LaunchedEffect(Unit) {
+        when (targetScreen) {
+            AlarmMessageType.INVITE_REQUEST,
+            AlarmMessageType.VISIT_REQUEST -> {
+                navController.navigateAlarm()
+            }
+
+            AlarmMessageType.CHAT -> {
+                navController.navigateChatList()
+            }
+
+            else -> {}
+        }
+    }
 
     LaunchedEffect(state.isLoading) {
         if (currentRoute == Route.HOME && state.userStatus == "FIND_LAMP") {
@@ -210,7 +228,11 @@ fun MainScreen(
             searchNavGraph(padding = innerPadding, navController = navController)
             inviteNavGraph(padding = innerPadding, navController = navController)
             creationNavGraph(padding = innerPadding, navController = navController)
-            alarmNavGraph(padding = innerPadding, navController = navController, alarmExist = { alarmExist = it })
+            alarmNavGraph(
+                padding = innerPadding,
+                navController = navController,
+                alarmExist = { alarmExist = it }
+            )
             signUpNavGraph(padding = innerPadding, navController = navController)
             startLampNavGraph(navController = navController)
             profileEditNavGraph(padding = innerPadding, navController = navController)
