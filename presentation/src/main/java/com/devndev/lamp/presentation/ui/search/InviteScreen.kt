@@ -1,6 +1,7 @@
 package com.devndev.lamp.presentation.ui.search
 
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
@@ -24,6 +25,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -68,6 +70,8 @@ fun InviteScreen(
     LaunchedEffect(Unit) {
         searchViewModel.resetUsers()
     }
+
+    val context = LocalContext.current
 
     Column(
         modifier = modifier
@@ -164,8 +168,24 @@ fun InviteScreen(
         if (showBottomButton) {
             BottomSpaceForInvite(onClick = {
                 Log.d(logTag, selectedItems.toString())
+                val selectedCount = selectedItems.size
+
+                if (selectedCount == 0) return@BottomSpaceForInvite
+
+                val message = if (selectedCount == 1) {
+                    context.getString(R.string.invite_toast_msg, selectedItems[0].name)
+                } else {
+                    context.getString(
+                        R.string.invite_many_toast_mag,
+                        selectedItems[0].name,
+                        selectedCount - 1
+                    )
+                }
+
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
                 val selectedIds = selectedItems.map { it.id }
                 searchViewModel.inviteUsers(selectedIds)
+                navController.popBackStack()
             })
         }
     }

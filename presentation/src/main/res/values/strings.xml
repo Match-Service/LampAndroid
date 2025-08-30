@@ -323,5 +323,6 @@
     <string name="matching_reject_popup_msg">상대 램프와 매칭을 거절 하시겠어요?</string>
     <string name="matching_popup_hint">투표가 완료될 때까지 수정하실 수 없어요</string>
 
-
+    <string name="invite_toast_msg">%s님을 초대했어요.</string>
+    <string name="invite_many_toast_mag">%s님 외 %d명을 초대했어요.</string>
 </resources>
