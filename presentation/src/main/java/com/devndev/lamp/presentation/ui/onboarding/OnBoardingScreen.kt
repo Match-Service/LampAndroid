@@ -64,7 +64,7 @@ fun OnBoardingScreen(
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = Modifier.fillMaxSize().background(LampBlack)) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
