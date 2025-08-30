@@ -26,6 +26,7 @@
             android:icon="@mipmap/ic_launcher_default"
             android:roundIcon="@mipmap/ic_launcher_default_round"
             android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleTop"
             android:exported="true">
         </activity>
 
