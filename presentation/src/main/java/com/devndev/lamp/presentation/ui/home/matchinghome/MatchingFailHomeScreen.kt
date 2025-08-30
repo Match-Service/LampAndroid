@@ -257,6 +257,7 @@ fun MatchingFailHomeScreen(
                         onClick = {
                             viewModel.updateIsMatching(false)
                             homeViewModel.updateUserStatus("PREPARE")
+                            viewModel.stopMatch()
                         },
                         enabled = true
                     )
