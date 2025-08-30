@@ -236,8 +236,7 @@ fun MatchingHomeScreen(
                         } else {
                             isExitPopupShow = true
                         }
-                    },
-                    onShareIconClick = {}
+                    }
                 )
                 Text(
                     text = lampTitle,
@@ -551,13 +550,13 @@ fun ProfileInfo(
 }
 
 @Composable
-fun MatchingHomeTopBar(onExitIconClick: () -> Unit, onShareIconClick: () -> Unit) {
+fun MatchingHomeTopBar(onExitIconClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(24.dp)
             .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.Start
     ) {
         Icon(
             painter = painterResource(id = R.drawable.exit_icon),
@@ -565,14 +564,6 @@ fun MatchingHomeTopBar(onExitIconClick: () -> Unit, onShareIconClick: () -> Unit
             tint = Gray3,
             modifier = Modifier.clickable {
                 onExitIconClick()
-            }
-        )
-        Icon(
-            painter = painterResource(id = R.drawable.share_icon),
-            contentDescription = null,
-            tint = Gray3,
-            modifier = Modifier.clickable {
-                onShareIconClick()
             }
         )
     }
