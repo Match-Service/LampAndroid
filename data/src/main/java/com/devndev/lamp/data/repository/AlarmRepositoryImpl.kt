@@ -12,4 +12,8 @@ class AlarmRepositoryImpl @Inject constructor(
     override suspend fun getAlarm(): List<AlarmDomainModel> {
         return alarmDataSource.getAlarm().toDomainModel()
     }
+
+    override suspend fun deleteAlarm(alarmId: Int) {
+        alarmDataSource.deleteAlarm(alarmId)
+    }
 }

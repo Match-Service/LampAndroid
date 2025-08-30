@@ -182,28 +182,66 @@ fun AlarmScreen(
                                 viewModel.acceptInvite(
                                     inviteRequestUserId = it.inviteUserId ?: 0,
                                     alarmId = it.id
-                                )
-                                navController.popBackStack()
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.invite_accept_msg, it.inviteLampName ?: ""),
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                ) { success, code ->
+                                    if (success) {
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(
+                                                R.string.invite_accept_msg,
+                                                it.inviteLampName ?: ""
+                                            ),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        navController.popBackStack()
+                                    } else {
+                                        when (code) {
+                                            400 -> {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.not_exist_lamp),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                viewModel.deleteAlarm(it.id)
+                                            }
+                                            else -> {
+                                                viewModel.deleteAlarm(it.id)
+                                            }
+                                        }
+                                    }
+                                }
                             },
                             onRejectClick = {
                                 viewModel.rejectInvite(
                                     inviteRequestUserId = it.inviteUserId ?: 0,
                                     alarmId = it.id
-                                )
-
-                                val regex = Regex("^(.+?)님이\\s")
-                                val match = regex.find(it.content)
-
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.invite_reject_msg, match?.groupValues?.get(1) ?: ""),
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                ) { success, code ->
+                                    if (success) {
+                                        val regex = Regex("^(.+?)님이\\s")
+                                        val match = regex.find(it.content)
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(
+                                                R.string.invite_reject_msg,
+                                                match?.groupValues?.get(1) ?: ""
+                                            ),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        when (code) {
+                                            400 -> {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.not_exist_or_not_participant_lamp),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                viewModel.deleteAlarm(it.id)
+                                            }
+                                            else -> {
+                                                viewModel.deleteAlarm(it.id)
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         )
                     }
@@ -224,29 +262,69 @@ fun AlarmScreen(
                                     lampId = it.lampId,
                                     visitUserId = it.visitUserId ?: 0,
                                     alarmId = it.id
-                                )
-                                val regex = Regex("^(.+?)님이\\s")
-                                val match = regex.find(it.content)
-                                navController.popBackStack()
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.visit_accept_msg, match?.groupValues?.get(1) ?: ""),
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                ) { success, code ->
+                                    if (success) {
+                                        val regex = Regex("^(.+?)님이\\s")
+                                        val match = regex.find(it.content)
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(
+                                                R.string.visit_accept_msg,
+                                                match?.groupValues?.get(1) ?: ""
+                                            ),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        navController.popBackStack()
+                                    } else {
+                                        when (code) {
+                                            400 -> {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.not_exist_lamp),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                viewModel.deleteAlarm(it.id)
+                                            }
+                                            else -> {
+                                                viewModel.deleteAlarm(it.id)
+                                            }
+                                        }
+                                    }
+                                }
                             },
                             onRejectClick = {
                                 viewModel.rejectVisit(
                                     lampId = it.lampId,
                                     visitUserId = it.visitUserId ?: 0,
                                     alarmId = it.id
-                                )
-                                val regex = Regex("^(.+?)님이\\s")
-                                val match = regex.find(it.content)
-                                Toast.makeText(
-                                    context,
-                                    context.getString(R.string.visit_reject_msg, match?.groupValues?.get(1) ?: ""),
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                ) { success, code ->
+                                    if (success) {
+                                        val regex = Regex("^(.+?)님이\\s")
+                                        val match = regex.find(it.content)
+                                        Toast.makeText(
+                                            context,
+                                            context.getString(
+                                                R.string.visit_reject_msg,
+                                                match?.groupValues?.get(1) ?: ""
+                                            ),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        when (code) {
+                                            400 -> {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.not_exist_lamp),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                viewModel.deleteAlarm(it.id)
+                                            }
+                                            else -> {
+                                                viewModel.deleteAlarm(it.id)
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         )
                     }

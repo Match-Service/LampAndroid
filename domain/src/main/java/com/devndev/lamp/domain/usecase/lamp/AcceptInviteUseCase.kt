@@ -7,7 +7,7 @@ import javax.inject.Inject
 class AcceptInviteUseCase @Inject constructor(
     private val lampRepository: LampRepository
 ) {
-    suspend operator fun invoke(acceptInviteParam: AcceptInviteParam): Result<Unit> {
+    suspend operator fun invoke(acceptInviteParam: AcceptInviteParam): Result<Int> {
         return runCatching {
             lampRepository.acceptInvite(acceptInviteParam = acceptInviteParam)
         }

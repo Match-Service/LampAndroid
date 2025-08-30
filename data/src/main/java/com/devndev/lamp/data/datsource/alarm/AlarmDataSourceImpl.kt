@@ -10,4 +10,8 @@ class AlarmDataSourceImpl @Inject constructor(
     override suspend fun getAlarm(): List<AlarmResponse> {
         return alarmService.getAlarm()
     }
+
+    override suspend fun deleteAlarm(alarmId: Int) {
+        alarmService.deleteAlarm(alarmId)
+    }
 }

@@ -15,13 +15,13 @@ interface LampRepository {
     suspend fun deleteLamp()
     suspend fun editLamp(createLampParam: CreateLampParam)
     suspend fun inviteUser(inviteUsersParam: InviteUsersParam)
-    suspend fun acceptInvite(acceptInviteParam: AcceptInviteParam)
-    suspend fun rejectInvite(rejectInviteParam: RejectInviteParam)
+    suspend fun acceptInvite(acceptInviteParam: AcceptInviteParam): Int
+    suspend fun rejectInvite(rejectInviteParam: RejectInviteParam): Int
     suspend fun exitLamp()
     suspend fun kickUser(kickUserParam: KickUserParam)
     suspend fun visitRequest(lampId: Int)
-    suspend fun acceptVisit(acceptVisitParam: AcceptVisitParam)
-    suspend fun rejectVisit(rejectVisitParam: RejectVisitParam)
+    suspend fun acceptVisit(acceptVisitParam: AcceptVisitParam): Int
+    suspend fun rejectVisit(rejectVisitParam: RejectVisitParam): Int
     suspend fun getVisitRequestLampInfo(): String
     suspend fun cancelVisitRequest()
 }
