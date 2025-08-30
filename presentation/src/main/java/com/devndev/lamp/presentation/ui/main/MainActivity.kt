@@ -48,8 +48,6 @@ class MainActivity : ComponentActivity() {
         if (!it) {
             myPageViewModel.rejectPushSetting()
         }
-        OnBoardingActivity.openActivity(this)
-        finish()
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.login.GoogleTokenParam
+import com.devndev.lamp.domain.usecase.config.GetIsFirstOpenUseCase
 import com.devndev.lamp.domain.usecase.login.CheckIsNeedSignOutUseCase
 import com.devndev.lamp.domain.usecase.login.GoogleAuthUseCase
 import com.devndev.lamp.domain.usecase.login.SaveIsNeedSignOutUseCase
@@ -31,7 +32,8 @@ class LoginViewModel @Inject constructor(
     private val googleAuthUseCase: GoogleAuthUseCase,
     private val checkIsNeedSignOutUseCase: CheckIsNeedSignOutUseCase,
     private val saveIsNeedSignOutUseCase: SaveIsNeedSignOutUseCase,
-    private val setTokenUseCase: SetTokenUseCase
+    private val setTokenUseCase: SetTokenUseCase,
+    private val getIsFirstOpenUseCase: GetIsFirstOpenUseCase
 ) : ViewModel() {
     private val logTag = "LoginViewModel"
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -40,6 +42,7 @@ class LoginViewModel @Inject constructor(
     init {
         IconStatusManager.setIconStatus("NONE")
         checkLoginStatus()
+        updateIsFirstOpen()
     }
 
     fun getSignInIntent(): Intent {
@@ -76,6 +79,17 @@ class LoginViewModel @Inject constructor(
                     isUserLoggedIn = true
                 )
             }
+        }
+    }
+
+    private fun updateIsFirstOpen() {
+        viewModelScope.launch {
+            getIsFirstOpenUseCase()
+                .onSuccess {
+                    _uiState.update { state -> state.copy(isFirstOpen = it) }
+                }.onFailure {
+                    _uiState.update { state -> state.copy(isFirstOpen = false) }
+                }
         }
     }
 

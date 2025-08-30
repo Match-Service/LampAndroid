@@ -22,6 +22,7 @@ import com.devndev.lamp.presentation.theme.LampTheme
 import com.devndev.lamp.presentation.ui.common.Route
 import com.devndev.lamp.presentation.ui.login.navigation.LoginNavHost
 import com.devndev.lamp.presentation.ui.main.MainActivity
+import com.devndev.lamp.presentation.ui.onboarding.OnBoardingActivity
 import com.devndev.lamp.presentation.ui.registration.RegistrationViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -56,12 +57,16 @@ class LoginActivity : ComponentActivity() {
                 }
                 if (loginState.isUserLoggedIn) {
                     Log.d(logTag, "isUserLoggedIn true")
-                    MainActivity.openActivity(this)
+                    if (loginState.isFirstOpen == true) {
+                        OnBoardingActivity.openActivity(this)
+                    } else {
+                        MainActivity.openActivity(this)
+                    }
                     finish()
                 }
                 if (registrationState.isSignedUp) {
                     Log.d(logTag, "isSignedUp")
-                    MainActivity.openActivity(this)
+                    OnBoardingActivity.openActivity(this)
                     finish()
                 }
             }
