@@ -148,7 +148,13 @@ fun MatchingVoteScreen(
     }
 
     val lampProfile = if (matchSuggestion != null) {
-        listOf(matchSuggestion!!.name, matchSuggestion!!.location, lampCnt.toString() + "명", matchSuggestion!!.color, matchSuggestion!!.description)
+        listOf(
+            matchSuggestion!!.name,
+            matchSuggestion!!.location,
+            lampCnt.toString() + "명",
+            matchSuggestion!!.color,
+            matchSuggestion!!.description
+        )
     } else {
         null
     }
@@ -317,7 +323,11 @@ fun MatchingVoteScreen(
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.Center
                     ) {
-                        ProfileTop(context = context, matchSuggestion = matchSuggestion, index = selectedImage)
+                        ProfileTop(
+                            context = context,
+                            matchSuggestion = matchSuggestion,
+                            index = selectedImage
+                        )
                         Spacer(modifier = Modifier.height(35.dp))
                         ProfileAttractive(matchSuggestion = matchSuggestion, index = selectedImage)
                         Spacer(modifier = Modifier.height(35.dp))
@@ -363,7 +373,10 @@ fun ProfileTop(context: Context, matchSuggestion: MatchSuggestionDomainModel?, i
     // 나이 list
     val ageList = listOf(
         matchSuggestion?.owner?.birth?.let { calculateManAge(it) }
-    ) + (matchSuggestion?.participants?.map { it.birth.let { birth -> calculateManAge(birth) } } ?: emptyList())
+    ) + (
+        matchSuggestion?.participants?.map { it.birth.let { birth -> calculateManAge(birth) } }
+            ?: emptyList()
+        )
 
     // 이름 list
     val nameList = listOfNotNull(
@@ -804,24 +817,36 @@ fun BottomSection(
     var totalSeconds by remember { mutableStateOf(0L) }
     var hasVote by remember { mutableStateOf(false) }
 
-    var approveButtonColor = if (matchSuggestion?.isApproved == true) {
-        if (matchSuggestion.gender == "MALE") {
-            ManColor
-        } else {
-            WomanColor
-        }
-    } else {
+    var approveButtonColor = if (matchSuggestion?.isRejected == true) {
         LightGray
+    } else {
+        if (matchSuggestion?.gender == "MALE") {
+            WomanColor
+        } else {
+            ManColor
+        }
     }
 
     var rejectButtonColor = if (matchSuggestion?.isApproved == true) {
-        if (matchSuggestion.gender == "MALE") {
-            ManColor
-        } else {
-            WomanColor
-        }
-    } else {
         LightGray
+    } else {
+        if (matchSuggestion?.gender == "MALE") {
+            WomanColor
+        } else {
+            ManColor
+        }
+    }
+
+    var approveCountColor = if (matchSuggestion?.isApproved == true) {
+        Color.White
+    } else {
+        Gray3
+    }
+
+    var rejectCountColor = if (matchSuggestion?.isRejected == true) {
+        Color.White
+    } else {
+        Gray3
     }
 
     LaunchedEffect(matchSuggestion) {
@@ -839,10 +864,11 @@ fun BottomSection(
         if (totalSeconds > 0) {
             delay(1000L)
             totalSeconds -= 1
-        } else if (!hasVote) {
-            hasVote = true
-            matchSuggestion?.lampId?.let { viewModel.reject(it) }
         }
+//        else if (!hasVote) {
+//            hasVote = true
+//            matchSuggestion?.lampId?.let { viewModel.reject(it) }
+//        }
     }
 
     // 시, 분, 초로 변환
@@ -903,9 +929,12 @@ fun BottomSection(
                         onAcceptClick()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = approveButtonColor,
-                        contentColor = Color.White
-                    )
+                        containerColor = LightGray,
+                        contentColor = Color.White,
+                        disabledContainerColor = approveButtonColor,
+                        disabledContentColor = Color.White
+                    ),
+                    enabled = matchSuggestion?.isRejected == false && !matchSuggestion.isApproved
                 ) {
                     Row(
                         modifier = Modifier
@@ -923,7 +952,7 @@ fun BottomSection(
                         Text(
                             text = "$approveCount" + "명",
                             style = Typography.medium10,
-                            color = Gray3,
+                            color = approveCountColor,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -936,9 +965,12 @@ fun BottomSection(
                         onRejectClick()
                     },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = rejectButtonColor,
-                        contentColor = Color.White
-                    )
+                        containerColor = LightGray,
+                        contentColor = Color.White,
+                        disabledContainerColor = rejectButtonColor,
+                        disabledContentColor = Color.White
+                    ),
+                    enabled = matchSuggestion?.isRejected == false && !matchSuggestion.isApproved
                 ) {
                     Row(
                         modifier = Modifier
@@ -956,7 +988,7 @@ fun BottomSection(
                         Text(
                             text = "$rejectCount" + "명",
                             style = Typography.medium10,
-                            color = Gray3,
+                            color = rejectCountColor,
                             textAlign = TextAlign.Center
                         )
                     }
@@ -1174,7 +1206,9 @@ fun calculateManAge(birthdate: String): String {
         Calendar.getInstance().get(Calendar.MONTH) < birthCalendar.get(Calendar.MONTH) ||
         (
             Calendar.getInstance().get(Calendar.MONTH) == birthCalendar.get(Calendar.MONTH) &&
-                Calendar.getInstance().get(Calendar.DAY_OF_MONTH) < birthCalendar.get(Calendar.DAY_OF_MONTH)
+                Calendar.getInstance().get(Calendar.DAY_OF_MONTH) < birthCalendar.get(
+                Calendar.DAY_OF_MONTH
+            )
             )
     ) {
         age -= 1
