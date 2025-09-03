@@ -18,6 +18,7 @@ import com.devndev.lamp.domain.model.lamp.LampDomainModel
 import com.devndev.lamp.domain.model.lamp.RejectInviteParam
 import com.devndev.lamp.domain.model.lamp.RejectVisitParam
 import com.devndev.lamp.domain.repository.LampRepository
+import retrofit2.Response
 import javax.inject.Inject
 
 class LampRepositoryImpl @Inject constructor(
@@ -66,7 +67,7 @@ class LampRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun acceptInvite(acceptInviteParam: AcceptInviteParam): Int {
+    override suspend fun acceptInvite(acceptInviteParam: AcceptInviteParam): Response<Unit> {
         val acceptUserRequest = AcceptInviteRequest(
             inviteRequestUserId = acceptInviteParam.inviteRequestUserId,
             alarmId = acceptInviteParam.alarmId
@@ -75,17 +76,16 @@ class LampRepositoryImpl @Inject constructor(
 
         if (response.isSuccessful) {
             Log.d(TAG, "AcceptInvite successfully, Status Code: ${response.code()}")
-            return 0
         } else {
             Log.e(
                 TAG,
                 "Failed to AcceptInvite, Status Code: ${response.code()} ${response.raw()}"
             )
-            return response.code()
         }
+        return response
     }
 
-    override suspend fun rejectInvite(rejectInviteParam: RejectInviteParam): Int {
+    override suspend fun rejectInvite(rejectInviteParam: RejectInviteParam): Response<Unit> {
         val rejectInviteRequest = RejectInviteRequest(
             inviteRequestUserId = rejectInviteParam.inviteRequestUserId,
             alarmId = rejectInviteParam.alarmId
@@ -94,14 +94,13 @@ class LampRepositoryImpl @Inject constructor(
 
         if (response.isSuccessful) {
             Log.d(TAG, "RejectInvite successfully, Status Code: ${response.code()}")
-            return 0
         } else {
             Log.e(
                 TAG,
                 "Failed to RejectInvite, Status Code: ${response.code()} ${response.raw()}"
             )
-            return response.code()
         }
+        return response
     }
 
     override suspend fun exitLamp() {
@@ -119,7 +118,7 @@ class LampRepositoryImpl @Inject constructor(
         lampDataSource.requestVisit(lampId)
     }
 
-    override suspend fun acceptVisit(acceptVisitParam: AcceptVisitParam): Int {
+    override suspend fun acceptVisit(acceptVisitParam: AcceptVisitParam): Response<Unit> {
         val acceptVisitRequest = AcceptVisitRequest(
             visitUserId = acceptVisitParam.visitUserId,
             alarmId = acceptVisitParam.alarmId
@@ -128,17 +127,16 @@ class LampRepositoryImpl @Inject constructor(
 
         if (response.isSuccessful) {
             Log.d(TAG, "AcceptVisit successfully, Status Code: ${response.code()}")
-            return 0
         } else {
             Log.e(
                 TAG,
                 "Failed to AcceptVisit, Status Code: ${response.code()} ${response.raw()}"
             )
-            return response.code()
         }
+        return response
     }
 
-    override suspend fun rejectVisit(rejectVisitParam: RejectVisitParam): Int {
+    override suspend fun rejectVisit(rejectVisitParam: RejectVisitParam): Response<Unit> {
         val rejectVisitRequest = RejectVisitRequest(
             visitUserId = rejectVisitParam.visitUserId,
             alarmId = rejectVisitParam.alarmId
@@ -147,14 +145,13 @@ class LampRepositoryImpl @Inject constructor(
 
         if (response.isSuccessful) {
             Log.d(TAG, "RejectVisit successfully, Status Code: ${response.code()}")
-            return 0
         } else {
             Log.e(
                 TAG,
                 "Failed to RejectVisit, Status Code: ${response.code()} ${response.raw()}"
             )
-            return response.code()
         }
+        return response
     }
 
     override suspend fun getVisitRequestLampInfo(): String {

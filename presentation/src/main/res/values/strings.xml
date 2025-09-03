@@ -314,13 +314,14 @@
     <string name="chat_list_assessment_msg">%s, %s 램프와 만남은 어땠나요?\n빛나는 그날의 기억을 기록해주세요</string>
 
     <!-- Alarm Toast -->
-    <string name="invite_accept_msg">%s 램프에 참여 하셨어요.</string>
-    <string name="invite_reject_msg">%s님의 램프 초대를 거절 하셨어요.</string>
-    <string name="visit_accept_msg">%s님이 램프에 참여 하셨어요.</string>
-    <string name="visit_reject_msg">%s님의 램프 방문을 거절 하셨어요.</string>
-    <string name="no_empty_slot_msg">%s 램프에 빈자리가 없어요.</string>
-    <string name="not_exist_lamp">램프가 존재하지 않아요.</string>
-    <string name="not_exist_or_not_participant_lamp">램프가 없거나 램프에 참여중이 아니에요</string>
+    <string name="invite_accept_msg">%s 램프에 참여 하셨어요</string>
+    <string name="invite_reject_msg">%s님의 램프 초대를 거절 하셨어요</string>
+    <string name="visit_accept_msg">%s님이 램프에 참여 하셨어요</string>
+    <string name="visit_reject_msg">%s님의 램프 방문을 거절 하셨어요</string>
+    <string name="no_empty_slot_msg">%s 램프에 빈자리가 없어요</string>
+    <string name="not_exist_lamp">램프가 존재하지 않아요</string>
+    <string name="invite_accept_server_error_msg">일시적인 문제로 입장할 수 없어요</string>
+    <string name="internal_server_error_msg">일시적인 문제가 발생했어요</string>
 
     <string name="matching_accept_popup_msg">상대 램프와 매칭을 수락 하시겠어요?</string>
     <string name="matching_reject_popup_msg">상대 램프와 매칭을 거절 하시겠어요?</string>
