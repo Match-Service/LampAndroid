@@ -28,6 +28,7 @@ import com.devndev.lamp.presentation.ui.chatting.ChatViewModel
 import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -133,20 +134,34 @@ class HomeViewModel @Inject constructor(
 
     fun getMatchSuggestion(onComplete: (() -> Unit)? = null) {
         viewModelScope.launch {
-            try {
-                val result = getMatchSuggestionUseCase()
-                Log.d(TAG, "getMatchSuggestion $result")
-                _matchSuggestion.value = result.copy()
-                _approveCount.value = result.approveCount
-                _rejectCount.value = result.rejectCount
-                onComplete?.invoke()
-                Log.d(TAG, "MatchSuggestion ${matchSuggestion.value}")
-                _isLoaded.value = true
-                loadFindState(result.lampId, false)
-            } catch (e: HttpException) {
-                Log.e(TAG, "getMatchSuggestion HttpException", e)
-            } catch (e: Exception) {
-                Log.e(TAG, "getMatchSuggestion Exception", e)
+            var retryCount = 0
+            val maxRetries = 3
+            val delayMillis = 2000L
+
+            while (true) {
+                try {
+                    val result = getMatchSuggestionUseCase()
+                    Log.d(TAG, "getMatchSuggestion $result")
+                    _matchSuggestion.value = result.copy()
+                    _approveCount.value = result.approveCount
+                    _rejectCount.value = result.rejectCount
+                    onComplete?.invoke()
+                    Log.d(TAG, "MatchSuggestion ${matchSuggestion.value}")
+                    _isLoaded.value = true
+                    loadFindState(result.lampId, false)
+                    break
+                } catch (e: HttpException) {
+                    Log.e(TAG, "getMatchSuggestion HttpException", e)
+                    break
+                } catch (e: Exception) {
+                    retryCount++
+                    Log.e(TAG, "getMatchSuggestion Exception (retry $retryCount)", e)
+                    if (retryCount > maxRetries) {
+                        Log.e(TAG, "Max retry count reached. Giving up.")
+                        break
+                    }
+                    delay(delayMillis)
+                }
             }
         }
     }
