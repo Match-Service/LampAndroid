@@ -69,30 +69,34 @@ class AlarmViewModel @Inject constructor(
         }
     }
 
-    fun acceptInvite(inviteRequestUserId: Int, alarmId: Int, completion: (Boolean, Int) -> Unit) {
+    fun acceptInvite(inviteRequestUserId: Int, alarmId: Int, completion: (Boolean, Int, String) -> Unit) {
         viewModelScope.launch {
             acceptInviteUseCase(
                 acceptInviteParam = AcceptInviteParam(
                     inviteRequestUserId = inviteRequestUserId,
                     alarmId = alarmId
                 )
-            ).onSuccess { code ->
+            ).onSuccess { response ->
                 Log.d(
                     logTag,
                     "acceptInvite, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId"
                 )
-                when (code) {
-                    0 -> {
-                        completion(true, 0)
-                        getAlarm()
+                when {
+                    response.code() in 200..299 -> {
+                        completion(true, 200, "")
                     }
-
-                    else -> {
-                        completion(false, code)
+                    response.code() == 400 -> {
+                        completion(false, response.code(), "")
+                    }
+                    response.code() in 401..499 -> {
+                        completion(false, response.code(), response.message())
+                    }
+                    response.code() in 500..599 -> {
+                        completion(false, 500, "")
                     }
                 }
             }.onFailure { throwable ->
-                completion(false, 0)
+                completion(false, 500, "")
                 Log.e(logTag, "acceptInvite Exception", throwable)
             }
         }
@@ -105,23 +109,24 @@ class AlarmViewModel @Inject constructor(
                     inviteRequestUserId = inviteRequestUserId,
                     alarmId = alarmId
                 )
-            ).onSuccess { code ->
+            ).onSuccess { response ->
                 Log.d(
                     logTag,
                     "rejectInvite, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId"
                 )
-                when (code) {
-                    0 -> {
-                        completion(true, 0)
-                        getAlarm()
+                when {
+                    response.code() in 200..299 -> {
+                        completion(true, 200)
                     }
-
-                    else -> {
-                        completion(false, code)
+                    response.code() in 400..499 -> {
+                        completion(false, 400)
+                    }
+                    response.code() in 500..599 -> {
+                        completion(false, 500)
                     }
                 }
             }.onFailure { throwable ->
-                completion(false, 0)
+                completion(false, 500)
                 Log.e(logTag, "rejectInvite Exception", throwable)
             }
         }
@@ -131,28 +136,33 @@ class AlarmViewModel @Inject constructor(
         lampId: Int,
         visitUserId: Int,
         alarmId: Int,
-        completion: (Boolean, Int) -> Unit
+        completion: (Boolean, Int, String) -> Unit
     ) {
         viewModelScope.launch {
             acceptVisitUseCase(
                 AcceptVisitParam(visitUserId, alarmId)
-            ).onSuccess { code ->
+            ).onSuccess { response ->
                 Log.d(
                     logTag,
                     "acceptVisit, lampId: $lampId visitUserId: $visitUserId alarmId: $alarmId"
                 )
-                when (code) {
-                    0 -> {
-                        completion(true, 0)
-                        getAlarm()
+                // TODO 예외 케이스 정리 되면 수정 필요
+                when {
+                    response.code() in 200..299 -> {
+                        completion(true, 200, "")
                     }
-
-                    else -> {
-                        completion(false, code)
+                    response.code() == 400 -> {
+                        completion(false, response.code(), "")
+                    }
+                    response.code() in 401..499 -> {
+                        completion(false, response.code(), response.message())
+                    }
+                    response.code() in 500..599 -> {
+                        completion(false, 500, "")
                     }
                 }
             }.onFailure { throwable ->
-                completion(false, 0)
+                completion(false, 500, "")
                 Log.e(logTag, "acceptVisit Exception", throwable)
             }
         }
@@ -167,19 +177,20 @@ class AlarmViewModel @Inject constructor(
         viewModelScope.launch {
             rejectVisitUseCase(
                 RejectVisitParam(visitUserId, alarmId)
-            ).onSuccess { code ->
+            ).onSuccess { response ->
                 Log.d(
                     logTag,
                     "rejectVisit, lampId: $lampId visitUserId: $visitUserId alarmId: $alarmId"
                 )
-                when (code) {
-                    0 -> {
-                        completion(true, 0)
-                        getAlarm()
+                when {
+                    response.code() in 200..299 -> {
+                        completion(true, 200)
                     }
-
-                    else -> {
-                        completion(false, code)
+                    response.code() in 400..499 -> {
+                        completion(false, 400)
+                    }
+                    response.code() in 500..599 -> {
+                        completion(false, 500)
                     }
                 }
             }.onFailure { throwable ->

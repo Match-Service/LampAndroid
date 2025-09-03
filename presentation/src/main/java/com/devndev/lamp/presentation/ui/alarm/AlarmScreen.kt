@@ -182,7 +182,7 @@ fun AlarmScreen(
                                 viewModel.acceptInvite(
                                     inviteRequestUserId = it.inviteUserId ?: 0,
                                     alarmId = it.id
-                                ) { success, code ->
+                                ) { success, code, msg ->
                                     if (success) {
                                         Toast.makeText(
                                             context,
@@ -203,7 +203,19 @@ fun AlarmScreen(
                                                 ).show()
                                                 viewModel.deleteAlarm(it.id)
                                             }
+                                            500 -> {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.invite_accept_server_error_msg),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
                                             else -> {
+                                                Toast.makeText(
+                                                    context,
+                                                    msg,
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                                 viewModel.deleteAlarm(it.id)
                                             }
                                         }
@@ -226,18 +238,28 @@ fun AlarmScreen(
                                             ),
                                             Toast.LENGTH_SHORT
                                         ).show()
+                                        viewModel.getAlarm()
                                     } else {
                                         when (code) {
                                             400 -> {
+                                                val regex = Regex("^(.+?)님이\\s")
+                                                val match = regex.find(it.content)
                                                 Toast.makeText(
                                                     context,
-                                                    context.getString(R.string.not_exist_or_not_participant_lamp),
+                                                    context.getString(
+                                                        R.string.invite_reject_msg,
+                                                        match?.groupValues?.get(1) ?: ""
+                                                    ),
                                                     Toast.LENGTH_SHORT
                                                 ).show()
                                                 viewModel.deleteAlarm(it.id)
                                             }
-                                            else -> {
-                                                viewModel.deleteAlarm(it.id)
+                                            500 -> {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.internal_server_error_msg),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                         }
                                     }
@@ -262,7 +284,7 @@ fun AlarmScreen(
                                     lampId = it.lampId,
                                     visitUserId = it.visitUserId ?: 0,
                                     alarmId = it.id
-                                ) { success, code ->
+                                ) { success, code, msg ->
                                     if (success) {
                                         val regex = Regex("^(.+?)님이\\s")
                                         val match = regex.find(it.content)
@@ -284,6 +306,13 @@ fun AlarmScreen(
                                                     Toast.LENGTH_SHORT
                                                 ).show()
                                                 viewModel.deleteAlarm(it.id)
+                                            }
+                                            500 -> {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.internal_server_error_msg),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                             else -> {
                                                 viewModel.deleteAlarm(it.id)
@@ -309,18 +338,28 @@ fun AlarmScreen(
                                             ),
                                             Toast.LENGTH_SHORT
                                         ).show()
+                                        viewModel.getAlarm()
                                     } else {
                                         when (code) {
                                             400 -> {
+                                                val regex = Regex("^(.+?)님이\\s")
+                                                val match = regex.find(it.content)
                                                 Toast.makeText(
                                                     context,
-                                                    context.getString(R.string.not_exist_lamp),
+                                                    context.getString(
+                                                        R.string.visit_reject_msg,
+                                                        match?.groupValues?.get(1) ?: ""
+                                                    ),
                                                     Toast.LENGTH_SHORT
                                                 ).show()
                                                 viewModel.deleteAlarm(it.id)
                                             }
-                                            else -> {
-                                                viewModel.deleteAlarm(it.id)
+                                            500 -> {
+                                                Toast.makeText(
+                                                    context,
+                                                    context.getString(R.string.internal_server_error_msg),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
                                         }
                                     }
