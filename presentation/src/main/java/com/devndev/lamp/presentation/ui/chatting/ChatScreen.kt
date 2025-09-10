@@ -79,7 +79,6 @@ import com.devndev.lamp.presentation.ui.appointment.navigation.navigateAppointme
 import com.devndev.lamp.presentation.ui.common.AppointmentStatus
 import com.devndev.lamp.presentation.ui.common.ProfilePopup
 import com.devndev.lamp.presentation.utils.DateFormatUtil
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import java.time.OffsetDateTime
@@ -151,10 +150,17 @@ fun ChatScreen(
         }
     }
 
+    var initialScrollDone by remember { mutableStateOf(false) }
+
+    LaunchedEffect(state.chatItems.size) {
+        if (!initialScrollDone && state.chatItems.isNotEmpty()) {
+            lazyListState.scrollToItem(state.chatItems.lastIndex)
+            initialScrollDone = true
+        }
+    }
+
     LaunchedEffect(Unit) {
         viewModel.fetchChatData(lastMessageId = null, chatRoomId = chatRoomId)
-        delay(300)
-        lazyListState.scrollToItem(state.chatItems.size)
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -169,13 +175,11 @@ fun ChatScreen(
                     viewModel.fetchChatData(
                         lastMessageId = firstVisibleMessageId,
                         chatRoomId = chatRoomId,
-                        onPrependComplete = { newItemCount ->
-                            if (newItemCount > 0) {
-                                coroutineScope.launch {
-                                    lazyListState.scrollToItem(
-                                        index = newItemCount,
-                                        scrollOffset = offset
-                                    )
+                        onPrependComplete = { _ ->
+                            coroutineScope.launch {
+                                val newIndex = state.chatItems.indexOfFirst { it.message.id == firstVisibleMessageId }
+                                if (newIndex != -1) {
+                                    lazyListState.scrollToItem(newIndex, offset)
                                 }
                             }
                         }
