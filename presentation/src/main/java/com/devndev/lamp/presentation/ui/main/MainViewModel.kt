@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.user.PushTokenParam
+import com.devndev.lamp.domain.usecase.chat.GetChatListUseCase
 import com.devndev.lamp.domain.usecase.config.GetIsFirstOpenUseCase
 import com.devndev.lamp.domain.usecase.user.GetUserStatusUseCase
 import com.devndev.lamp.domain.usecase.user.PutPushTokenUseCase
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val putPushTokenUseCase: PutPushTokenUseCase,
     private val getIsFirstOpenUseCase: GetIsFirstOpenUseCase,
-    private val getUserStatusUseCase: GetUserStatusUseCase
+    private val getUserStatusUseCase: GetUserStatusUseCase,
+    private val getChatListUseCase: GetChatListUseCase
 ) : ViewModel() {
     private val logTag = "MainViewModel"
 
@@ -29,6 +31,7 @@ class MainViewModel @Inject constructor(
     init {
         updateIsFirstOpen()
         getUserStatue()
+        getChatList()
     }
 
     private fun updateIsFirstOpen() {
@@ -60,6 +63,20 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             val userStatus = getUserStatusUseCase().userLampStatus
             _state.update { it.copy(userStatus = userStatus, isLoading = false) }
+        }
+    }
+
+    private fun getChatList() {
+        viewModelScope.launch {
+            getChatListUseCase()
+                .onSuccess { chatList ->
+                    if (chatList.isNullOrEmpty()) {
+                        _state.update { it.copy(chatList = false) }
+                    } else {
+                        _state.update { it.copy(chatList = true) }
+                    }
+                }
+                .onFailure {}
         }
     }
 

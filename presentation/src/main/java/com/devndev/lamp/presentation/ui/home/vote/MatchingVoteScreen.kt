@@ -581,7 +581,7 @@ fun ProfileAttractive(matchSuggestion: MatchSuggestionDomainModel?, index: Int) 
 
         Spacer(modifier = Modifier.height(9.dp))
 
-        ProgressBar(attractiveList, index)
+        ProgressBar(attractiveList, index, LightGray)
     }
 }
 
@@ -589,6 +589,7 @@ fun ProfileAttractive(matchSuggestion: MatchSuggestionDomainModel?, index: Int) 
 fun ProgressBar(
     attractiveList: List<IndividualityDomainModel?>,
     index: Int?,
+    color: Color = Color.Gray,
     isMyPage: Boolean = false
 ) {
     val modifier = if (isMyPage) {
@@ -626,7 +627,7 @@ fun ProgressBar(
 
                         // 회색 원 그리기 (전체 원)
                         drawCircle(
-                            color = Gray,
+                            color = color,
                             radius = radius,
                             style = Stroke(width = 20f) // 회색 원 스트로크
                         )
@@ -680,7 +681,8 @@ fun ProfileDescription(matchSuggestion: MatchSuggestionDomainModel?, index: Int)
         text = bioList[index],
         color = Color.White,
         style = Typography.normal12.copy(lineHeight = 16.sp),
-        maxLines = 3
+        maxLines = 3,
+        textAlign = TextAlign.Center
     )
     Spacer(modifier = Modifier.height(8.dp))
     Row(
@@ -709,7 +711,7 @@ fun ProfileDescription(matchSuggestion: MatchSuggestionDomainModel?, index: Int)
             }
         }
     }
-    Spacer(modifier = Modifier.height(25.dp))
+    Spacer(modifier = Modifier.height(55.dp))
 }
 
 // 무드 및 정보 섹션

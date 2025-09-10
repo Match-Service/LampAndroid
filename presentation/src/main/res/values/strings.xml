@@ -323,8 +323,8 @@
     <string name="invite_accept_server_error_msg">일시적인 문제로 입장할 수 없어요</string>
     <string name="internal_server_error_msg">일시적인 문제가 발생했어요</string>
 
-    <string name="matching_accept_popup_msg">상대 램프와 매칭을 수락 하시겠어요?</string>
-    <string name="matching_reject_popup_msg">상대 램프와 매칭을 거절 하시겠어요?</string>
+    <string name="matching_accept_popup_msg">상대 램프와 매칭을\n수락 하시겠어요?</string>
+    <string name="matching_reject_popup_msg">상대 램프와 매칭을\n거절 하시겠어요?</string>
     <string name="matching_popup_hint">투표가 완료될 때까지 수정하실 수 없어요</string>
 
     <string name="invite_toast_msg">%s님을 초대했어요.</string>
