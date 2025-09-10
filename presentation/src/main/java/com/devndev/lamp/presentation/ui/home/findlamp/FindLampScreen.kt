@@ -43,9 +43,6 @@ import androidx.navigation.NavController
 import androidx.navigation.navOptions
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.ManColor
-import com.devndev.lamp.presentation.theme.MoodBlue
-import com.devndev.lamp.presentation.theme.MoodRed
-import com.devndev.lamp.presentation.theme.MoodYellow
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.home.main.HomeTextArea
@@ -101,7 +98,7 @@ fun FindLampScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                BreathingAnimation(matchSuggestion!!.color)
+                BreathingAnimation(myInfo?.gender ?: "MALE")
             }
 
             Column(
@@ -175,13 +172,12 @@ fun BreathingAnimation(color: String) {
     }
 }
 
-fun DrawScope.drawBreathing(blur: Float, alpha: Float, center: Offset, mood: String) {
+fun DrawScope.drawBreathing(blur: Float, alpha: Float, center: Offset, gender: String) {
     val radius = size.minDimension / 2
-    val moodColor = when (mood) {
-        "FUNNY" -> MoodRed
-        "CASUAL" -> MoodYellow
-        "SERIOUS" -> MoodBlue
-        else -> MoodRed
+    val genderColor = if (gender == "MALE") {
+        WomanColor
+    } else {
+        ManColor
     }
 
     drawIntoCanvas { canvas ->
@@ -192,7 +188,7 @@ fun DrawScope.drawBreathing(blur: Float, alpha: Float, center: Offset, mood: Str
                 blur,
                 0f,
                 0f,
-                moodColor.copy(alpha = alpha + 0.5f).toArgb()
+                genderColor.copy(alpha = alpha + 0.5f).toArgb()
             )
         }
         canvas.nativeCanvas.drawCircle(center.x, center.y, radius + blur, paint)
