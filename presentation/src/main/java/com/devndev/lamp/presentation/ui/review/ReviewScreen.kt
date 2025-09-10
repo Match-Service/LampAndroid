@@ -191,7 +191,11 @@ fun ReviewScreen(
                 ) { step ->
                     when (step) {
                         ReviewScreen.LAMP -> state.assessment?.let {
-                            LampReviewScreen(it, lampScore ?: 1) {
+                            LampReviewScreen(
+                                it,
+                                lampScore ?: 1,
+                                state.myInfo?.gender ?: "MALE"
+                            ) {
                                 lampScore = it
                             }
                         }

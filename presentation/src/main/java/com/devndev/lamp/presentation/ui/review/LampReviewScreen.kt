@@ -44,6 +44,7 @@ import androidx.compose.ui.zIndex
 import com.devndev.lamp.domain.model.assessment.AssessmentDomainModel
 import com.devndev.lamp.presentation.R
 import com.devndev.lamp.presentation.theme.Gray
+import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.utils.DateFormatUtil
@@ -53,6 +54,7 @@ import com.devndev.lamp.presentation.utils.DateFormatUtil
 fun LampReviewScreen(
     assessment: AssessmentDomainModel,
     lampScore: Int,
+    gender: String,
     onScoreChange: (Int) -> Unit
 ) {
     Column(
@@ -64,7 +66,7 @@ fun LampReviewScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             // circle animation
-            BreathingCircleAnimation(convertIntToF(lampScore))
+            BreathingCircleAnimation(convertIntToF(lampScore), gender)
 
             Column(
                 modifier = Modifier
@@ -198,7 +200,7 @@ fun ReviewProgressBar(progress: Float, onProgressChange: (Float) -> Unit) {
 }
 
 @Composable
-fun BreathingCircleAnimation(progress: Float) {
+fun BreathingCircleAnimation(progress: Float, gender: String) {
     val animatedBlur by animateFloatAsState(
         targetValue = when {
             progress == 25f -> 50f
@@ -228,13 +230,20 @@ fun BreathingCircleAnimation(progress: Float) {
             drawBreathingCircle(
                 blur = animatedBlur,
                 alpha = 1f,
-                center = center
+                center = center,
+                gender = gender
             )
         }
     }
 }
 
-fun DrawScope.drawBreathingCircle(blur: Float, alpha: Float, center: Offset) {
+fun DrawScope.drawBreathingCircle(blur: Float, alpha: Float, center: Offset, gender: String) {
+    val circleColor = if (gender == "MALE") {
+        WomanColor
+    } else {
+        ManColor
+    }
+
     val radius = size.minDimension / 2
 
     drawIntoCanvas { canvas ->
@@ -245,7 +254,7 @@ fun DrawScope.drawBreathingCircle(blur: Float, alpha: Float, center: Offset) {
                 blur,
                 0f,
                 0f,
-                WomanColor.copy(alpha = alpha + 0.5f).toArgb()
+                circleColor.copy(alpha = alpha + 0.5f).toArgb()
             )
         }
         canvas.nativeCanvas.drawCircle(center.x, center.y, radius + blur, paint)

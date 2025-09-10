@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
+import com.devndev.lamp.presentation.theme.ManColor
 import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.LampButtonWithIcon
 import com.devndev.lamp.presentation.ui.home.main.HomeTextArea
@@ -73,7 +74,7 @@ fun WaitingHomeScreen(
         modifier = modifier.fillMaxSize()
     ) {
         BreathingCircleAnimation()
-        GradientBackground(animationProgress = animationProgress)
+        GradientBackground(animationProgress = animationProgress, myInfo?.gender ?: "MALE")
         Column(
             modifier = modifier
                 .fillMaxSize(),
@@ -125,7 +126,12 @@ fun WaitingHomeScreen(
 }
 
 @Composable
-fun GradientBackground(animationProgress: Float) {
+fun GradientBackground(animationProgress: Float, gender: String) {
+    val color = if (gender == "MALE") {
+        ManColor
+    } else {
+        WomanColor
+    }
     Canvas(modifier = Modifier.fillMaxSize()) {
         val maxRadius = size.minDimension / 2f
         val radius = (maxRadius * animationProgress).coerceAtLeast(1f)

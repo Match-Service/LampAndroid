@@ -7,6 +7,7 @@ import com.devndev.lamp.domain.model.assessment.AssessmentParam
 import com.devndev.lamp.domain.usecase.assessment.AssessmentUseCase
 import com.devndev.lamp.domain.usecase.assessment.GetAssessmentListUseCase
 import com.devndev.lamp.domain.usecase.assessment.GetAssessmentUseCase
+import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,13 +20,15 @@ import javax.inject.Inject
 class AssessmentListViewModel @Inject constructor(
     private val getAssessmentListUseCase: GetAssessmentListUseCase,
     private val getAssessmentUseCase: GetAssessmentUseCase,
-    private val assessmentUseCase: AssessmentUseCase
+    private val assessmentUseCase: AssessmentUseCase,
+    private val getMyInfoUseCase: GetMyInfoUseCase
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(AssessmentUiState())
     val uiState: StateFlow<AssessmentUiState> = _uiState.asStateFlow()
 
     init {
         getAssessmentList()
+        getMyInfo()
     }
 
     private fun getAssessmentList() {
@@ -38,6 +41,15 @@ class AssessmentListViewModel @Inject constructor(
                 }.onFailure {
                     Log.e(TAG, "getAssessmentList Failure", it)
                 }
+        }
+    }
+
+    private fun getMyInfo() {
+        viewModelScope.launch {
+            getMyInfoUseCase()
+                .onSuccess { myInfo ->
+                    _uiState.update { it.copy(myInfo = myInfo) }
+                }.onFailure { }
         }
     }
 
