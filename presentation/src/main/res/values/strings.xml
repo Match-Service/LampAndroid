@@ -329,4 +329,6 @@
 
     <string name="invite_toast_msg">%s님을 초대했어요.</string>
     <string name="invite_many_toast_mag">%s님 외 %d명을 초대했어요.</string>
+
+    <string name="edit_lamp_perssonel_fail_msg">"현재 인원이 변경 인원보다 많아요"</string>
 </resources>
