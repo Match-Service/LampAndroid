@@ -279,7 +279,7 @@ fun PersonalReviewProgressBar(
                 text = when (progress) {
                     25f -> "아쉬웠어요"
                     50f -> "보통이에요"
-                    75f -> "즐거웠어요"
+                    75f -> "좋아요"
                     100f -> "최고에요"
                     else -> ""
                 },

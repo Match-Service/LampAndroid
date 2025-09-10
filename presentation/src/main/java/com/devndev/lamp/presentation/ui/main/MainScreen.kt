@@ -159,6 +159,7 @@ fun MainScreen(
                             LampTopBar(
                                 navController = navController,
                                 isAlarmIconNeed = false,
+                                isChatExist = state.chatList,
                                 needAlarmUpdate = isNeedAlarmUpdate
                             )
                         }
@@ -167,6 +168,7 @@ fun MainScreen(
                             LampTopBar(
                                 navController = navController,
                                 isAlarmIconNeed = true,
+                                isChatExist = state.chatList,
                                 needAlarmUpdate = isNeedAlarmUpdate,
                                 isAssessmentExist = state.isAssessmentListExist,
                                 alarmExist = alarmExist

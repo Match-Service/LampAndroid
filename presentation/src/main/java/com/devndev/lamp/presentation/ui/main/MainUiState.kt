@@ -4,5 +4,6 @@ data class MainUiState(
     val isFirstOpen: Boolean? = null,
     val isAssessmentListExist: Boolean = false,
     val userStatus: String = "",
-    val isLoading: Boolean = true
+    val isLoading: Boolean = true,
+    val chatList: Boolean = false
 )

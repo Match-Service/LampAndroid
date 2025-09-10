@@ -52,6 +52,7 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
@@ -253,6 +254,9 @@ fun ChatScreen(
                         )
                         Spacer(modifier = Modifier.height(10.dp))
                         Text(
+                            modifier = Modifier.clickable {
+                                navController.navigateAppointment()
+                            },
                             text = buildAnnotatedString {
                                 val text = stringResource(id = R.string.register_appointment)
                                 val startIndex = text.indexOf(text)
@@ -293,6 +297,7 @@ fun ChatScreen(
             }
         }
 
+        var textLayoutResult by remember { mutableStateOf<TextLayoutResult?>(null) }
         Row(
             verticalAlignment = Alignment.Bottom,
             horizontalArrangement = Arrangement.spacedBy(4.dp),
@@ -307,8 +312,18 @@ fun ChatScreen(
                 modifier = Modifier
                     .background(Gray)
                     .weight(1f)
-                    .clip(RoundedCornerShape(27.dp))
-                    .border(1.dp, LightGray, RoundedCornerShape(27.dp))
+                    .clip(
+                        RoundedCornerShape(
+                            if ((textLayoutResult?.lineCount ?: 1) > 1) 5.dp else 27.dp
+                        )
+                    )
+                    .border(
+                        1.dp,
+                        LightGray,
+                        RoundedCornerShape(
+                            if ((textLayoutResult?.lineCount ?: 1) > 1) 5.dp else 27.dp
+                        )
+                    )
                     .padding(horizontal = 12.dp, vertical = 5.dp),
                 value = currentMessage,
                 onValueChange = { currentMessage = it },
@@ -324,7 +339,10 @@ fun ChatScreen(
                             currentMessage = ""
                         }
                     }
-                )
+                ),
+                onTextLayout = {
+                    textLayoutResult = it
+                }
             ) { innerTextField ->
                 if (currentMessage.isEmpty()) {
                     Text(

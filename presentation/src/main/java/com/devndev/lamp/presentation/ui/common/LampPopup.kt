@@ -149,7 +149,7 @@ fun TwoButtonPopup(
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 40.dp),
+                    .padding(vertical = 40.dp, horizontal = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(10.dp)
             ) {
@@ -221,6 +221,7 @@ fun EditPopup(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.6f))
                 .padding(vertical = 20.dp, horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -334,160 +335,173 @@ fun ProfilePopup(
     )
 
     Dialog(onDismissRequest = {}, properties = DialogProperties(usePlatformDefaultWidth = false)) {
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
+                .background(Color.Black.copy(alpha = 0.6f))
                 .padding(horizontal = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            contentAlignment = Alignment.Center
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color.Transparent),
-                verticalArrangement = Arrangement.spacedBy(10.dp)
+                    .padding(horizontal = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 10.dp)
-                ) {
-                    Icon(
-                        modifier = Modifier
-                            .align(Alignment.TopEnd)
-                            .padding(end = 15.dp)
-                            .clickable {
-                                onXButtonClick()
-                            },
-                        painter = painterResource(id = R.drawable.x_button_big),
-                        contentDescription = null,
-                        tint = Color.White
-                    )
-                }
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Gray, shape = RoundedCornerShape(15.dp))
-                        .padding(vertical = 25.dp, horizontal = 20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .background(Color.Transparent),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    Row(
-                        modifier = Modifier.horizontalScroll(rememberScrollState()),
-                        horizontalArrangement = Arrangement.spacedBy(5.dp)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 10.dp)
                     ) {
-                        userInfo?.profileImages?.forEach { imageUrl ->
-                            AsyncImage(
-                                model = imageUrl,
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(120.dp),
-                                contentScale = ContentScale.Crop
-                            )
-                        }
-                    }
-
-                    Row(
-                        modifier = Modifier.height(56.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            text = userInfo?.name ?: "",
-                            color = nameColor,
-                            style = IncTypography.normal42
-                        )
-                        Text(
-                            text = stringResource(id = R.string.sir),
-                            color = nameColor,
-                            style = IncTypography.normal42
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
                         Icon(
-                            painter = painterResource(id = R.drawable.instagram_icon),
-                            tint = Color.White,
-                            contentDescription = "instagram",
                             modifier = Modifier
-                                .size(24.dp)
+                                .align(Alignment.TopEnd)
+                                .padding(end = 15.dp)
                                 .clickable {
-                                    InstagramUtils.openInstagramProfile(context, userInfo?.instagramId ?: "")
-                                }
+                                    onXButtonClick()
+                                },
+                            painter = painterResource(id = R.drawable.x_button_big),
+                            contentDescription = null,
+                            tint = Color.White
                         )
                     }
-                    Row() {
-                        Text(
-                            text = calculateManAge(
-                                userInfo?.birth ?: ""
-                            ) + stringResource(id = R.string.age),
-
-                            fontSize = 18.sp,
-                            color = Color.White
-                        )
-                        if (!userInfo?.jobName.isNullOrEmpty()) {
-                            Text(
-                                text = (", " + userInfo?.jobName),
-                                fontSize = 18.sp,
-                                color = Color.White
-                            )
-                        }
-                    }
-                    Spacer(modifier = Modifier.height(30.dp))
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .background(Gray, shape = RoundedCornerShape(15.dp))
+                            .padding(vertical = 25.dp, horizontal = 20.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
+                            modifier = Modifier.horizontalScroll(rememberScrollState()),
+                            horizontalArrangement = Arrangement.spacedBy(5.dp)
                         ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.heart),
-                                contentDescription = "Heart",
-                                tint = Color.White,
-                                modifier = Modifier
-                                    .size(16.dp)
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                text = "${stringResource(id = R.string.attractiveness)} $avgAttractive",
-                                color = Color.White,
-                                style = Typography.medium18.copy(lineHeight = 20.sp),
-                                fontSize = 18.sp,
-                                textAlign = TextAlign.Center
-                            )
+                            userInfo?.profileImages?.forEach { imageUrl ->
+                                AsyncImage(
+                                    model = imageUrl,
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .size(120.dp),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
                         }
 
-                        Spacer(modifier = Modifier.height(9.dp))
-
-                        ProgressBar(attractiveDomainModel, 0)
-                    }
-                    Spacer(modifier = Modifier.height(30.dp))
-                    Text(
-                        text = userInfo?.bio ?: "",
-                        textAlign = TextAlign.Center,
-                        style = Typography.normal12,
-                        color = Color.White
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Row() {
-                        userInfo?.bioQuestions?.forEachIndexed { index, bioQuestion ->
+                        Row(
+                            modifier = Modifier.height(56.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Text(
-                                text = "${bioQuestion.question} : ${bioQuestion.answer}",
-                                style = Typography.medium10,
-                                color = Gray3
+                                text = userInfo?.name ?: "",
+                                color = nameColor,
+                                style = IncTypography.normal42
                             )
-                            if (index != userInfo.bioQuestions.lastIndex) {
+                            Text(
+                                text = stringResource(id = R.string.sir),
+                                color = nameColor,
+                                style = IncTypography.normal42
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            if (!userInfo?.instagramId.isNullOrEmpty()) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.instagram_icon),
+                                    tint = Color.White,
+                                    contentDescription = "instagram",
+                                    modifier = Modifier
+                                        .size(24.dp)
+                                        .clickable {
+                                            InstagramUtils.openInstagramProfile(
+                                                context,
+                                                userInfo?.instagramId ?: ""
+                                            )
+                                        }
+                                )
+                            }
+                        }
+                        Row() {
+                            Text(
+                                text = calculateManAge(
+                                    userInfo?.birth ?: ""
+                                ) + stringResource(id = R.string.age),
+
+                                fontSize = 18.sp,
+                                color = Color.White
+                            )
+                            if (!userInfo?.jobName.isNullOrEmpty()) {
                                 Text(
-                                    text = " | ",
+                                    text = (", " + userInfo?.jobName),
+                                    fontSize = 18.sp,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(30.dp))
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Center
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.heart),
+                                    contentDescription = "Heart",
+                                    tint = Color.White,
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(4.dp))
+                                Text(
+                                    text = "${stringResource(id = R.string.attractiveness)} $avgAttractive",
+                                    color = Color.White,
+                                    style = Typography.medium18.copy(lineHeight = 20.sp),
+                                    fontSize = 18.sp,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(9.dp))
+
+                            ProgressBar(attractiveDomainModel, 0)
+                        }
+                        Spacer(modifier = Modifier.height(30.dp))
+                        Text(
+                            text = userInfo?.bio ?: "",
+                            textAlign = TextAlign.Center,
+                            style = Typography.normal12,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Row() {
+                            userInfo?.bioQuestions?.forEachIndexed { index, bioQuestion ->
+                                Text(
+                                    text = "${bioQuestion.question} : ${bioQuestion.answer}",
                                     style = Typography.medium10,
                                     color = Gray3
                                 )
+                                if (index != userInfo.bioQuestions.lastIndex) {
+                                    Text(
+                                        text = " | ",
+                                        style = Typography.medium10,
+                                        color = Gray3
+                                    )
+                                }
                             }
                         }
                     }
                 }
+                Spacer(modifier = Modifier.height(30.dp))
             }
-            Spacer(modifier = Modifier.height(30.dp))
         }
     }
 }

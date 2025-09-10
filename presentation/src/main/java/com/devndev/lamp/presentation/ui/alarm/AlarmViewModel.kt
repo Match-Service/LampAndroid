@@ -81,14 +81,16 @@ class AlarmViewModel @Inject constructor(
                     logTag,
                     "acceptInvite, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId"
                 )
+
+                Log.d(logTag, "body ${response.body()} msg ${response.message()}")
                 when {
                     response.code() in 200..299 -> {
                         completion(true, 200, "")
                     }
-                    response.code() == 400 -> {
-                        completion(false, response.code(), "")
-                    }
-                    response.code() in 401..499 -> {
+//                    response.code()  400 ..499-> {
+//                        completion(false, response.code(), "")
+//                    }
+                    response.code() in 400..499 -> {
                         completion(false, response.code(), response.message())
                     }
                     response.code() in 500..599 -> {
