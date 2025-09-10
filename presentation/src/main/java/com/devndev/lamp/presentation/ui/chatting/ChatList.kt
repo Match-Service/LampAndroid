@@ -46,10 +46,20 @@ fun Chat(
     val isChatExist = chat.lastMessageInfo != null
     val isAppointmentExist = chat.appointment != null
 
-    val color = if (gender == "MALE") {
-        ManColor
+    val color = if (chat.isAssessmentCompleted) {
+        LightGray
     } else {
-        WomanColor
+        if (gender == "MALE") {
+            ManColor
+        } else {
+            WomanColor
+        }
+    }
+
+    val textColor = if (chat.isAssessmentCompleted) {
+        LightGray
+    } else {
+        Color.White
     }
 
     Column(
@@ -76,14 +86,14 @@ fun Chat(
                 horizontalArrangement = Arrangement.spacedBy(5.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(text = chat.myLampName, color = Color.White, style = Typography.medium18)
+                Text(text = chat.myLampName, color = textColor, style = Typography.medium18)
                 Icon(
                     modifier = Modifier.size(16.dp),
                     painter = painterResource(id = R.drawable.heart),
                     contentDescription = null,
-                    tint = Color.White
+                    tint = textColor
                 )
-                Text(text = chat.otherLampName, color = Color.White, style = Typography.medium18)
+                Text(text = chat.otherLampName, color = textColor, style = Typography.medium18)
             }
 
             if (isChatExist) {
@@ -101,7 +111,7 @@ fun Chat(
                     Text(
                         modifier = Modifier.width(220.dp),
                         text = text,
-                        color = Color.White,
+                        color = textColor,
                         style = Typography.medium15,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
@@ -132,7 +142,7 @@ fun Chat(
                                 Text(
                                     modifier = Modifier.align(Alignment.Center),
                                     text = unreadMessageCount,
-                                    color = Color.White,
+                                    color = textColor,
                                     style = Typography.normal9
                                 )
                             }

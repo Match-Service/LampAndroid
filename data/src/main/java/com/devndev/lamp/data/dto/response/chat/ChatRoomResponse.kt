@@ -27,7 +27,9 @@ data class ChatRoomResponse(
     @Json(name = "appointment")
     val appointment: ChatAppointmentResponse?,
     @Json(name = "unreadMessageCount")
-    val unreadMessageCount: Int
+    val unreadMessageCount: Int,
+    @Json(name = "isAssessmentCompleted")
+    val isAssessmentCompleted: Boolean
 )
 
 @JsonClass(generateAdapter = true)
@@ -61,7 +63,8 @@ fun ChatRoomResponse.toDomainModel(): ChatRoomDomainModel {
         otherLampId = otherLampId,
         lastMessageInfo = lastMessageInfo?.toDomainModel(),
         appointment = appointment?.toDomainModel(),
-        unreadMessageCount = unreadMessageCount
+        unreadMessageCount = unreadMessageCount,
+        isAssessmentCompleted = isAssessmentCompleted
     )
 }
 

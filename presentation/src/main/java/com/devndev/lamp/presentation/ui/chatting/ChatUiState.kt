@@ -23,7 +23,8 @@ data class ChatUiState(
     val showNewMessageBadge: Boolean = false,
     val isEmpty: Boolean = true,
     val appointment: AppointmentListDomainModel? = null,
-    val assessmentList: List<AssessmentListDomainModel> = emptyList()
+    val assessmentList: List<AssessmentListDomainModel> = emptyList(),
+    val isFirstLaunch: Boolean = true
 ) {
     fun getAppointmentStatus(): Int {
         if (appointment?.selectedChatAppointment != null) {

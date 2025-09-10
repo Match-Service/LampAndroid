@@ -294,6 +294,10 @@ class ChatViewModel @Inject constructor(
         _uiState.update { it.copy(showNewMessageBadge = showNewMessage) }
     }
 
+    fun updateIsFirstLaunch(isFirstLaunch: Boolean) {
+        _uiState.update { it.copy(isFirstLaunch = isFirstLaunch) }
+    }
+
     private fun parseDate(dateStr: String): Date {
         return try {
             val odt = OffsetDateTime.parse(dateStr, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
