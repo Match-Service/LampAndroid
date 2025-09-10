@@ -24,7 +24,9 @@ class LampCreationViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(LampCreationUiState())
     val uiState: StateFlow<LampCreationUiState> = _uiState.asStateFlow()
 
-    fun getMyLamp() {
+    fun getMyLamp(
+        onSuccess: (Boolean, Int) -> Unit = { _, _ -> }
+    ) {
         viewModelScope.launch {
             getMyLampUseCase()
                 .onSuccess { lamp ->
@@ -39,8 +41,10 @@ class LampCreationViewModel @Inject constructor(
                             lampSummary = lamp.lamp?.description ?: ""
                         )
                     }
+                    onSuccess(true, lamp.lamp?.participants?.size ?: 0)
                 }.onFailure {
                     Log.e(TAG, "getMyLamp Failure", it)
+                    onSuccess(false, 0)
                 }
         }
     }
@@ -63,18 +67,28 @@ class LampCreationViewModel @Inject constructor(
     }
 
     fun editLamp(
+        hopeMatchNumber: Int,
         editLampParam: CreateLampParam,
-        onSuccess: () -> Unit
+        onSuccess: (Boolean, Int) -> Unit
     ) {
-        viewModelScope.launch {
-            editLampUseCase(editLampParam)
-                .onSuccess {
-                    Log.d(TAG, "editLamp Success")
-                    onSuccess()
+        getMyLamp { success, participantSize ->
+            if (success) {
+                if (hopeMatchNumber < participantSize) {
+                    onSuccess(false, 400)
+                } else {
+                    viewModelScope.launch {
+                        editLampUseCase(editLampParam)
+                            .onSuccess {
+                                Log.d(TAG, "editLamp Success")
+                                onSuccess(true, 0)
+                            }
+                            .onFailure {
+                                Log.e(TAG, "editLamp failure", it)
+                                onSuccess(false, 400)
+                            }
+                    }
                 }
-                .onFailure {
-                    Log.e(TAG, "editLamp failure", it)
-                }
+            }
         }
     }
 

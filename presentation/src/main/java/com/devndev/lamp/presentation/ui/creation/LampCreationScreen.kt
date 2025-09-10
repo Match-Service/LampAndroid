@@ -1,5 +1,6 @@
 package com.devndev.lamp.presentation.ui.creation
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
@@ -27,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -52,6 +54,7 @@ fun LampCreationScreen(
     val state by lampCreationViewModel.uiState.collectAsStateWithLifecycle()
 
     var currentStep by remember { mutableIntStateOf(1) }
+    val context = LocalContext.current
 
     LaunchedEffect(Unit) {
         if (isEdit) {
@@ -200,6 +203,7 @@ fun LampCreationScreen(
                         val hopeMatchNumber = state.personnel.split(":")[0].toInt()
                         if (isEdit) {
                             lampCreationViewModel.editLamp(
+                                hopeMatchNumber = hopeMatchNumber,
                                 CreateLampParam(
                                     name = state.lampName,
                                     description = state.lampSummary,
@@ -207,7 +211,15 @@ fun LampCreationScreen(
                                     location = convertLocation(state.region),
                                     color = convertMood(state.mood)
                                 )
-                            ) {
+                            ) { success, errCode ->
+                                // TODO errCode 구분 추가
+                                if (!success) {
+                                    Toast.makeText(
+                                        context,
+                                        context.getString(R.string.edit_lamp_perssonel_fail_msg),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                                 navController.navigateHome()
                             }
                         } else {
