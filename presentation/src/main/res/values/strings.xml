@@ -331,4 +331,10 @@
     <string name="invite_many_toast_mag">%s님 외 %d명을 초대했어요.</string>
 
     <string name="edit_lamp_perssonel_fail_msg">"현재 인원이 변경 인원보다 많아요"</string>
+
+    <string name="camera_popup_title">카메라 권한 필요</string>
+    <string name="gallery_popup_title">갤러리 권한 필요</string>
+    <string name="camera_permission_popup_msg">카메라 권한이 필요합니다\n설정 화면으로 이동하여 권한을 허용해 주세요</string>
+    <string name="gallery_permission_popup_msg">갤러리 권한이 필요합니다\n설정 화면으로 이동하여 권한을 허용해 주세요</string>
+
 </resources>

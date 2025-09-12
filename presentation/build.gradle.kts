@@ -92,4 +92,6 @@ dependencies {
     implementation(libs.android.image.cropper)
 
     implementation(libs.firebase.messaging)
+
+    implementation(libs.accompanist.permissions)
 }
