@@ -1,9 +1,11 @@
 package com.devndev.lamp.presentation.ui.mypage
 
+import android.content.Intent
 import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
+import android.provider.Settings
 import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -73,7 +75,12 @@ import com.devndev.lamp.presentation.ui.common.ProfileImage
 import com.devndev.lamp.presentation.ui.common.TopNavigationBar
 import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateMyPage
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.isGranted
+import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.permissions.shouldShowRationale
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun ProfileEditScreen(
     modifier: Modifier,
@@ -114,6 +121,76 @@ fun ProfileEditScreen(
     var isShowEditInstagramPopup by remember { mutableStateOf(false) }
     var isProfilePopupShow by remember { mutableStateOf(false) }
     var isBioPopupShow by remember { mutableStateOf(false) }
+
+    var isShowCameraPermissionPopup by remember { mutableStateOf(false) }
+    var isShowGalleryPermissionPopup by remember { mutableStateOf(false) }
+
+    var isCameraPermissionAsked by remember { mutableStateOf(false) }
+    var isGalleryPermissionAsked by remember { mutableStateOf(false) }
+
+    val galleryPermissionState = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        rememberPermissionState(android.Manifest.permission.READ_MEDIA_IMAGES)
+    } else {
+        rememberPermissionState(android.Manifest.permission.READ_EXTERNAL_STORAGE)
+    }
+
+    val cameraPermissionState = rememberPermissionState(
+        android.Manifest.permission.CAMERA,
+        onPermissionResult = {
+            if (!galleryPermissionState.status.isGranted) {
+                if (galleryPermissionState.status.shouldShowRationale) {
+                    galleryPermissionState.launchPermissionRequest()
+                } else {
+                    isShowGalleryPermissionPopup = true
+                }
+            }
+        }
+    )
+
+    if (isShowCameraPermissionPopup) {
+        TwoButtonPopup(
+            stringResource(R.string.camera_popup_title),
+            stringResource(R.string.cancel),
+            stringResource(R.string.push_popup_btn_end),
+            stringResource(R.string.camera_permission_popup_msg),
+            onStartButtonClick = {
+                if (!galleryPermissionState.status.isGranted) {
+                    if (galleryPermissionState.status.shouldShowRationale) {
+                        galleryPermissionState.launchPermissionRequest()
+                    } else {
+                        isShowGalleryPermissionPopup = true
+                    }
+                }
+                isShowCameraPermissionPopup = false
+            },
+            onEndButtonClick = {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", context.packageName, null)
+                }
+                context.startActivity(intent)
+                isShowCameraPermissionPopup = false
+            }
+        )
+    }
+
+    if (isShowGalleryPermissionPopup) {
+        TwoButtonPopup(
+            stringResource(R.string.gallery_popup_title),
+            stringResource(R.string.cancel),
+            stringResource(R.string.push_popup_btn_end),
+            stringResource(R.string.gallery_permission_popup_msg),
+            onStartButtonClick = {
+                isShowGalleryPermissionPopup = false
+            },
+            onEndButtonClick = {
+                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                    data = Uri.fromParts("package", context.packageName, null)
+                }
+                context.startActivity(intent)
+                isShowGalleryPermissionPopup = false
+            }
+        )
+    }
 
     LaunchedEffect(myInfo) {
         selectedDrink = myInfo?.bioQuestions?.get(0)?.answer ?: ""
@@ -414,17 +491,87 @@ fun ProfileEditScreen(
                                     url = currentUrl,
                                     onClick = {
                                         imageIndex = index
-                                        imageCropLauncher.launch(
-                                            CropImageContractOptions(
-                                                uriContent,
-                                                CropImageOptions().apply {
-                                                    aspectRatioX = 1
-                                                    aspectRatioY = 1
-                                                    fixAspectRatio = true
-                                                    guidelines = CropImageView.Guidelines.ON
+
+                                        val canUseCamera =
+                                            cameraPermissionState.status.isGranted
+                                        val canUseGallery =
+                                            galleryPermissionState.status.isGranted
+
+                                        when {
+                                            canUseCamera && canUseGallery -> {
+                                                imageCropLauncher.launch(
+                                                    CropImageContractOptions(
+                                                        uriContent,
+                                                        CropImageOptions().apply {
+                                                            aspectRatioX = 1
+                                                            aspectRatioY = 1
+                                                            fixAspectRatio = true
+                                                            guidelines = CropImageView.Guidelines.ON
+                                                        }
+                                                    )
+                                                )
+                                            }
+
+                                            canUseCamera -> {
+                                                if (!isGalleryPermissionAsked) {
+                                                    if (galleryPermissionState.status.shouldShowRationale) {
+                                                        galleryPermissionState.launchPermissionRequest()
+                                                    } else {
+                                                        isShowGalleryPermissionPopup = true
+                                                        isGalleryPermissionAsked = true
+                                                    }
+                                                } else {
+                                                    imageCropLauncher.launch(
+                                                        CropImageContractOptions(
+                                                            uriContent,
+                                                            CropImageOptions().apply {
+                                                                aspectRatioX = 1
+                                                                aspectRatioY = 1
+                                                                fixAspectRatio = true
+                                                                guidelines =
+                                                                    CropImageView.Guidelines.ON
+                                                                imageSourceIncludeGallery = false
+                                                                imageSourceIncludeCamera = true
+                                                            }
+                                                        )
+                                                    )
                                                 }
-                                            )
-                                        )
+                                            }
+
+                                            canUseGallery -> {
+                                                if (!isCameraPermissionAsked) {
+                                                    if (cameraPermissionState.status.shouldShowRationale) {
+                                                        cameraPermissionState.launchPermissionRequest()
+                                                    } else {
+                                                        isShowCameraPermissionPopup = true
+                                                        isCameraPermissionAsked = true
+                                                    }
+                                                } else {
+                                                    imageCropLauncher.launch(
+                                                        CropImageContractOptions(
+                                                            uriContent,
+                                                            CropImageOptions().apply {
+                                                                aspectRatioX = 1
+                                                                aspectRatioY = 1
+                                                                fixAspectRatio = true
+                                                                guidelines =
+                                                                    CropImageView.Guidelines.ON
+                                                                imageSourceIncludeCamera = false
+                                                                imageSourceIncludeGallery = true
+                                                            }
+                                                        )
+                                                    )
+                                                }
+                                            }
+
+                                            else -> {
+                                                if (cameraPermissionState.status.shouldShowRationale) {
+                                                    cameraPermissionState.launchPermissionRequest()
+                                                } else {
+                                                    isShowCameraPermissionPopup = true
+                                                }
+                                            }
+                                        }
                                     },
                                     onDelete = {
                                         deleteIndex = index
