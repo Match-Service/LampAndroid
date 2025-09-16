@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devndev.lamp.domain.model.setting.PushSettingDomainModel
 import com.devndev.lamp.domain.model.setting.PushSettingParam
+import com.devndev.lamp.domain.model.user.DeleteAccountUseCase
 import com.devndev.lamp.domain.model.user.MyInfoDomainModel
 import com.devndev.lamp.domain.usecase.login.SignOutUseCase
 import com.devndev.lamp.domain.usecase.setting.GetPushSettingUseCase
@@ -28,7 +29,8 @@ class MyPageViewModel @Inject constructor(
     private val getMyInfoUseCase: GetMyInfoUseCase,
     private val signOutUseCase: SignOutUseCase,
     private val getPushSettingUseCase: GetPushSettingUseCase,
-    private val putPushSettingUseCase: PutPushSettingUseCase
+    private val putPushSettingUseCase: PutPushSettingUseCase,
+    private val deleteAccountUseCase: DeleteAccountUseCase
 ) : ViewModel() {
     private val logTag = "MyPageViewModel"
 
@@ -133,6 +135,19 @@ class MyPageViewModel @Inject constructor(
                 receiveMessage = false
             )
             putPushSettingUseCase(pushSettingParam)
+        }
+    }
+
+    fun deleteAccount(onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            deleteAccountUseCase(myInfo.value?.userId ?: -1)
+                .onSuccess {
+                    signOut()
+                    onSuccess()
+                }
+                .onFailure { e ->
+                    Log.e(logTag, "deleteAccount Failure", e)
+                }
         }
     }
 }

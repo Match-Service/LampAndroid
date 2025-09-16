@@ -94,4 +94,8 @@ class UserRepositoryImpl @Inject constructor(private val userDataSource: UserDat
     override suspend fun getRecentUsers(): List<UserDomainModel> {
         return userDataSource.getRecentUsers().toDomainModel()
     }
+
+    override suspend fun deleteAccount(userId: Int) {
+        userDataSource.deleteAccount(userId)
+    }
 }

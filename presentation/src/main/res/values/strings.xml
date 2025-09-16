@@ -342,4 +342,6 @@
     <string name="terms_and_conditions">이용약관</string>
     <string name="privacy_policy">개인정보처리방침</string>
     <string name="terms_and_policy">약관 및 정책</string>
+
+    <string name="delete_account_popup_msg">정말 계정을 삭제하시겠어요?</string>
 </resources>

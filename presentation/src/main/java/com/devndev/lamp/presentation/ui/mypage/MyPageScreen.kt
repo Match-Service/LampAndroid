@@ -107,6 +107,25 @@ fun MyPageScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     val myInfo by viewModel.myInfo.collectAsState()
 
+    var isDeleteAccountPopupShow by remember { mutableStateOf(false) }
+
+    if (isDeleteAccountPopupShow) {
+        TwoButtonPopup(
+            mainText = stringResource(R.string.delete_account_popup_msg),
+            startButtonText = stringResource(R.string.no),
+            endButtonText = stringResource(R.string.yes),
+            onStartButtonClick = {
+                isDeleteAccountPopupShow = false
+            },
+            onEndButtonClick = {
+                isDeleteAccountPopupShow = false
+                viewModel.deleteAccount {
+                    signOut()
+                }
+            }
+        )
+    }
+
     val attractive by remember(myInfo) {
         derivedStateOf {
             listOf(
@@ -194,7 +213,9 @@ fun MyPageScreen(
 
                     AlarmSettingsSection(modifier = outlineModifier, alarmsState = alarmsState)
                     PolicySection(modifier = outlineModifier)
-                    AskQuestionSection(modifier = outlineModifier)
+                    AskQuestionSection(modifier = outlineModifier) {
+                        isDeleteAccountPopupShow = true
+                    }
                     LogOutSection(modifier = outlineModifier, signOut = signOut)
                 }
             }
@@ -578,7 +599,7 @@ fun GradientSwitch(
 }
 
 @Composable
-fun AskQuestionSection(modifier: Modifier) {
+fun AskQuestionSection(modifier: Modifier, onDeleteAccountClick: () -> Unit) {
     Column(
         modifier = modifier.padding(vertical = 15.dp),
         verticalArrangement = Arrangement.spacedBy(7.dp)
@@ -594,6 +615,9 @@ fun AskQuestionSection(modifier: Modifier) {
 //            style = Typography.normal12
 //        )
         Text(
+            modifier = Modifier.clickable {
+                onDeleteAccountClick()
+            },
             text = stringResource(id = R.string.delete_account),
             color = Gray3,
             style = Typography.normal12
