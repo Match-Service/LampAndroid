@@ -337,4 +337,9 @@
     <string name="camera_permission_popup_msg">카메라 권한이 필요합니다\n설정 화면으로 이동하여 권한을 허용해 주세요</string>
     <string name="gallery_permission_popup_msg">갤러리 권한이 필요합니다\n설정 화면으로 이동하여 권한을 허용해 주세요</string>
 
+    <!-- Policy -->
+    <string name="policy_agree_msg">가입을 진행할 경우, 아래의 정책에 대해 동의한 것으로 간주합니다.</string>
+    <string name="terms_and_conditions">이용약관</string>
+    <string name="privacy_policy">개인정보처리방침</string>
+    <string name="terms_and_policy">약관 및 정책</string>
 </resources>

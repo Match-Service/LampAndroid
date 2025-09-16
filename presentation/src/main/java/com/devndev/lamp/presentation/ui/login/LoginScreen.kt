@@ -5,16 +5,17 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -25,9 +26,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.devndev.lamp.presentation.R
@@ -36,6 +40,7 @@ import com.devndev.lamp.presentation.theme.LampBlack
 import com.devndev.lamp.presentation.theme.Typography
 import com.devndev.lamp.presentation.ui.common.AccountStatus
 import com.devndev.lamp.presentation.ui.registration.navigation.navigateRegistration
+import com.devndev.lamp.presentation.utils.Const
 
 @Composable
 fun LoginScreen(
@@ -45,6 +50,7 @@ fun LoginScreen(
 ) {
     val accountStatus by AuthManager.accountStatus
     val logTag = "LoginScreen"
+    val context = LocalContext.current
     val signInLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result: ActivityResult ->
@@ -90,73 +96,55 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(LocalConfiguration.current.screenHeightDp.dp * 0.25f))
         Column(
             modifier = Modifier.width(270.dp),
-            verticalArrangement = Arrangement.spacedBy(15.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
+            Spacer(modifier = Modifier.weight(1f))
+            Image(
+                painter = painterResource(R.drawable.google_sign_in_btn),
+                contentDescription = "Google Sign In",
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .height(48.dp),
-                onClick = {
-                    val signInIntent = viewModel.getSignInIntent()
-                    signInLauncher.launch(signInIntent)
-                },
-                colors = buttonColor
+                    .height(48.dp)
+                    .width(270.dp)
+                    .clickable {
+                        val signInIntent = viewModel.getSignInIntent()
+                        signInLauncher.launch(signInIntent)
+                    }
+            )
+            Spacer(modifier = Modifier.height(35.dp))
+            Text(
+                text = stringResource(R.string.policy_agree_msg),
+                color = Color.White,
+                style = Typography.medium10
+            )
+            Spacer(modifier = Modifier.height(8.dp))
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(18.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.google_logo),
-                    contentDescription = "google_logo"
-                )
-                Spacer(modifier = Modifier.width(4.dp))
                 Text(
-                    text = stringResource(id = R.string.sign_in_google),
-                    style = Typography.medium18
+                    modifier = Modifier.clickable {
+                        val intent = Intent(Intent.ACTION_VIEW, (Const.TERMS_OF_SERVICE_URL).toUri())
+                        context.startActivity(intent)
+                    },
+                    text = stringResource(R.string.terms_and_conditions),
+                    style = Typography.normal12.copy(
+                        textDecoration = TextDecoration.Underline
+                    ),
+                    color = Color.White
+                )
+                Text(
+                    modifier = Modifier.clickable {
+                        val intent = Intent(Intent.ACTION_VIEW, (Const.PRIVACY_POLICY_URL).toUri())
+                        context.startActivity(intent)
+                    },
+                    text = stringResource(R.string.privacy_policy),
+                    style = Typography.normal12.copy(
+                        textDecoration = TextDecoration.Underline
+                    ),
+                    color = Color.White
                 )
             }
-//
-//            Button(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .height(48.dp),
-//                onClick = {
-//                    val navOption = navOptions {
-//                        launchSingleTop = true
-//                    }
-//                    navController.navigateSignUp(navOption)
-//                },
-//                colors = buttonColor
-//            ) {
-//                Text(
-//                    text = stringResource(id = R.string.sign_in_email),
-//                    style = Typography.medium18
-//                )
-//            }
-            Spacer(modifier = Modifier.height(10.dp))
-//            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-//                Text(
-//                    text = stringResource(id = R.string.have_account),
-//                    color = Color.White,
-//                    style = Typography.normal12
-//                )
-//                Text(
-//                    modifier = Modifier.clickable {
-//                        val navOption = navOptions {
-//                            launchSingleTop = true
-//                        }
-//                        navController.navigateEmailLogin(navOption)
-//                    },
-//                    text = buildAnnotatedString {
-//                        append(stringResource(id = R.string.login))
-//                        addStyle(
-//                            style = SpanStyle(textDecoration = TextDecoration.Underline),
-//                            start = 0,
-//                            end = this.length
-//                        )
-//                    },
-//                    color = Color.White,
-//                    style = Typography.normal12
-//                )
-//            }
+            Spacer(modifier = Modifier.height(48.dp))
         }
     }
 }
