@@ -195,14 +195,6 @@ fun AlarmScreen(
                                         navController.popBackStack()
                                     } else {
                                         when (code) {
-//                                            400 -> {
-//                                                Toast.makeText(
-//                                                    context,
-//                                                    context.getString(R.string.not_exist_lamp),
-//                                                    Toast.LENGTH_SHORT
-//                                                ).show()
-//                                                viewModel.deleteAlarm(it.id)
-//                                            }
                                             500 -> {
                                                 Toast.makeText(
                                                     context,
@@ -211,11 +203,13 @@ fun AlarmScreen(
                                                 ).show()
                                             }
                                             else -> {
-                                                Toast.makeText(
-                                                    context,
-                                                    msg,
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
+                                                if (msg.isNotEmpty()) {
+                                                    Toast.makeText(
+                                                        context,
+                                                        msg,
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
                                                 viewModel.deleteAlarm(it.id)
                                             }
                                         }
@@ -299,22 +293,21 @@ fun AlarmScreen(
                                         navController.popBackStack()
                                     } else {
                                         when (code) {
-                                            400 -> {
-                                                Toast.makeText(
-                                                    context,
-                                                    context.getString(R.string.not_exist_lamp),
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                                viewModel.deleteAlarm(it.id)
-                                            }
                                             500 -> {
                                                 Toast.makeText(
                                                     context,
-                                                    context.getString(R.string.internal_server_error_msg),
+                                                    context.getString(R.string.invite_accept_server_error_msg),
                                                     Toast.LENGTH_SHORT
                                                 ).show()
                                             }
                                             else -> {
+                                                if (msg.isNotEmpty()) {
+                                                    Toast.makeText(
+                                                        context,
+                                                        msg,
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
                                                 viewModel.deleteAlarm(it.id)
                                             }
                                         }
