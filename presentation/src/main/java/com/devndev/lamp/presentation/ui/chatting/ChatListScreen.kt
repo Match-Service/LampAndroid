@@ -187,13 +187,13 @@ fun ChatListScreen(
                 }
             }
         } else {
-            EmptyChatScreen()
+            EmptyChatScreen(color)
         }
     }
 }
 
 @Composable
-fun EmptyChatScreen() {
+fun EmptyChatScreen(color: Color) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -209,7 +209,7 @@ fun EmptyChatScreen() {
         ) {
             Text(
                 text = stringResource(id = R.string.empty_chatting),
-                color = ManColor,
+                color = color,
                 style = IncTypography.normal42
             )
             Text(
