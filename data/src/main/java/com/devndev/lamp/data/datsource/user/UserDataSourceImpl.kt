@@ -47,4 +47,8 @@ class UserDataSourceImpl @Inject constructor(
     override suspend fun getRecentUsers(): List<UserResponseDto> {
         return userService.getRecentUsers()
     }
+
+    override suspend fun deleteAccount(userId: Int) {
+        userService.deleteAccount(userId)
+    }
 }

@@ -8,9 +8,11 @@ import com.devndev.lamp.data.dto.response.user.UserResponseDto
 import com.devndev.lamp.data.dto.response.user.UserStatusResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.PUT
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface UserService {
@@ -51,4 +53,9 @@ interface UserService {
 
     @GET("api/v1/user/recent")
     suspend fun getRecentUsers(): List<UserResponseDto>
+
+    @DELETE("api/v1/test/user/{userId}")
+    suspend fun deleteAccount(
+        @Path("userId") userId: Int
+    )
 }

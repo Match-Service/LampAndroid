@@ -17,4 +17,5 @@ interface UserRepository {
     suspend fun putPushToken(pushTokenParam: PushTokenParam)
     suspend fun getUserStatus(): UserStatusDomainModel
     suspend fun getRecentUsers(): List<UserDomainModel>
+    suspend fun deleteAccount(userId: Int)
 }
