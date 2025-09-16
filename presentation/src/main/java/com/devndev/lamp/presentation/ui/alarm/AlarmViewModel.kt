@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.json.JSONObject
 import javax.inject.Inject
 
 @HiltViewModel
@@ -69,7 +70,11 @@ class AlarmViewModel @Inject constructor(
         }
     }
 
-    fun acceptInvite(inviteRequestUserId: Int, alarmId: Int, completion: (Boolean, Int, String) -> Unit) {
+    fun acceptInvite(
+        inviteRequestUserId: Int,
+        alarmId: Int,
+        completion: (Boolean, Int, String) -> Unit
+    ) {
         viewModelScope.launch {
             acceptInviteUseCase(
                 acceptInviteParam = AcceptInviteParam(
@@ -82,17 +87,22 @@ class AlarmViewModel @Inject constructor(
                     "acceptInvite, inviteRequestUserId: $inviteRequestUserId, alarmId: $alarmId"
                 )
 
-                Log.d(logTag, "body ${response.body()} msg ${response.message()}")
                 when {
                     response.code() in 200..299 -> {
                         completion(true, 200, "")
                     }
-//                    response.code()  400 ..499-> {
-//                        completion(false, response.code(), "")
-//                    }
+
                     response.code() in 400..499 -> {
-                        completion(false, response.code(), response.message())
+                        val errorString = response.errorBody()?.string()
+                        val message = try {
+                            val json = JSONObject(errorString ?: "")
+                            json.optString("message")
+                        } catch (e: Exception) {
+                            errorString
+                        }
+                        completion(false, response.code(), message ?: "")
                     }
+
                     response.code() in 500..599 -> {
                         completion(false, 500, "")
                     }
@@ -120,9 +130,11 @@ class AlarmViewModel @Inject constructor(
                     response.code() in 200..299 -> {
                         completion(true, 200)
                     }
+
                     response.code() in 400..499 -> {
                         completion(false, 400)
                     }
+
                     response.code() in 500..599 -> {
                         completion(false, 500)
                     }
@@ -148,17 +160,22 @@ class AlarmViewModel @Inject constructor(
                     logTag,
                     "acceptVisit, lampId: $lampId visitUserId: $visitUserId alarmId: $alarmId"
                 )
-                // TODO 예외 케이스 정리 되면 수정 필요
                 when {
                     response.code() in 200..299 -> {
                         completion(true, 200, "")
                     }
-                    response.code() == 400 -> {
-                        completion(false, response.code(), "")
+
+                    response.code() in 400..499 -> {
+                        val errorString = response.errorBody()?.string()
+                        val message = try {
+                            val json = JSONObject(errorString ?: "")
+                            json.optString("message")
+                        } catch (e: Exception) {
+                            errorString
+                        }
+                        completion(false, response.code(), message ?: "")
                     }
-                    response.code() in 401..499 -> {
-                        completion(false, response.code(), response.message())
-                    }
+
                     response.code() in 500..599 -> {
                         completion(false, 500, "")
                     }
@@ -188,9 +205,11 @@ class AlarmViewModel @Inject constructor(
                     response.code() in 200..299 -> {
                         completion(true, 200)
                     }
+
                     response.code() in 400..499 -> {
                         completion(false, 400)
                     }
+
                     response.code() in 500..599 -> {
                         completion(false, 500)
                     }
