@@ -62,6 +62,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -83,6 +84,7 @@ import com.devndev.lamp.presentation.theme.WomanColor
 import com.devndev.lamp.presentation.ui.common.TwoButtonPopup
 import com.devndev.lamp.presentation.ui.home.vote.ProgressBar
 import com.devndev.lamp.presentation.ui.mypage.navigation.navigateProfileEdit
+import com.devndev.lamp.presentation.utils.Const
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -191,7 +193,7 @@ fun MyPageScreen(
                     )
 
                     AlarmSettingsSection(modifier = outlineModifier, alarmsState = alarmsState)
-
+                    PolicySection(modifier = outlineModifier)
                     AskQuestionSection(modifier = outlineModifier)
                     LogOutSection(modifier = outlineModifier, signOut = signOut)
                 }
@@ -586,13 +588,46 @@ fun AskQuestionSection(modifier: Modifier) {
             color = Color.White,
             style = Typography.medium18
         )
+//        Text(
+//            text = stringResource(id = R.string.help_and_support),
+//            color = Gray3,
+//            style = Typography.normal12
+//        )
         Text(
-            text = stringResource(id = R.string.help_and_support),
+            text = stringResource(id = R.string.delete_account),
+            color = Gray3,
+            style = Typography.normal12
+        )
+    }
+}
+
+@Composable
+fun PolicySection(modifier: Modifier) {
+    val context = LocalContext.current
+    Column(
+        modifier = modifier.padding(vertical = 15.dp),
+        verticalArrangement = Arrangement.spacedBy(7.dp)
+    ) {
+        Text(
+            text = stringResource(id = R.string.terms_and_policy),
+            color = Color.White,
+            style = Typography.medium18
+        )
+        Text(
+            modifier = Modifier.clickable {
+                val intent = Intent(Intent.ACTION_VIEW, (Const.TERMS_OF_SERVICE_URL).toUri())
+                context.startActivity(intent)
+            },
+            text = stringResource(id = R.string.terms_and_conditions),
             color = Gray3,
             style = Typography.normal12
         )
         Text(
-            text = stringResource(id = R.string.delete_account),
+            modifier = Modifier.clickable {
+                val intent = Intent(Intent.ACTION_VIEW, (Const.PRIVACY_POLICY_URL).toUri())
+                context.startActivity(intent)
+            },
+            text = stringResource(id = R.string.privacy_policy),
             color = Gray3,
             style = Typography.normal12
         )
