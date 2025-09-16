@@ -73,7 +73,7 @@ fun WaitingHomeScreen(
     Box(
         modifier = modifier.fillMaxSize()
     ) {
-        BreathingCircleAnimation()
+        BreathingCircleAnimation(myInfo?.gender ?: "MALE")
         GradientBackground(animationProgress = animationProgress, myInfo?.gender ?: "MALE")
         Column(
             modifier = modifier
@@ -139,7 +139,7 @@ fun GradientBackground(animationProgress: Float, gender: String) {
 
         drawCircle(
             brush = Brush.radialGradient(
-                colors = listOf(WomanColor.copy(alpha = 0.7f), Color.Transparent),
+                colors = listOf(color.copy(alpha = 0.7f), Color.Transparent),
                 center = center,
                 radius = radius
             ),
@@ -149,7 +149,12 @@ fun GradientBackground(animationProgress: Float, gender: String) {
 }
 
 @Composable
-fun BreathingCircleAnimation() {
+fun BreathingCircleAnimation(gender: String) {
+    val color = if (gender == "MALE") {
+        ManColor
+    } else {
+        WomanColor
+    }
     val transitionDuration = 3000
 
     var isEnlarged by remember { mutableStateOf(true) }
@@ -182,6 +187,7 @@ fun BreathingCircleAnimation() {
                 .align(Alignment.Center)
         ) {
             drawBreathingCircle(
+                circleColor = color,
                 blur = 250f,
                 alpha = animateAlpha,
                 center = center
@@ -190,7 +196,7 @@ fun BreathingCircleAnimation() {
     }
 }
 
-fun DrawScope.drawBreathingCircle(blur: Float, alpha: Float, center: Offset) {
+fun DrawScope.drawBreathingCircle(circleColor: Color, blur: Float, alpha: Float, center: Offset) {
     val radius = 150f
 
     drawIntoCanvas { canvas ->
@@ -201,7 +207,7 @@ fun DrawScope.drawBreathingCircle(blur: Float, alpha: Float, center: Offset) {
                 blur,
                 0f,
                 0f,
-                WomanColor.copy(alpha = alpha + 0.5f).toArgb()
+                circleColor.copy(alpha = alpha + 0.5f).toArgb()
             )
         }
         canvas.nativeCanvas.drawCircle(center.x, center.y, radius, paint)
