@@ -56,7 +56,10 @@ fun BirthScreen(
             style = Typography.normal12
         )
         val currentYear = LocalDate.now().year
-        val years = remember { (1900..currentYear).map { it.toString() + "년" } }
+        val adultStartYear = currentYear - 19 // 한국 성인 기준
+
+        // 성인 연도부터 올해까지
+        val years = remember { (1900..adultStartYear).map { "${it}년" } }
         val months = remember { (1..12).map { it.toString() + "월" } }
         val days = remember { (1..31).map { it.toString() + "일" } }
         Spacer(modifier = Modifier.height(40.dp))
