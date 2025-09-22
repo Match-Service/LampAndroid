@@ -226,7 +226,7 @@ fun ChatTopSection(chat: ChatRoomDomainModel) {
                 tint = Gray3
             )
             Text(
-                "${chat.inviteUserCount + 1} : ${chat.inviteUserCount + 1}",
+                "${chat.inviteUserCount / 2} : ${chat.inviteUserCount / 2}",
                 color = Gray3,
                 style = Typography.normal12
             )

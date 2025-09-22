@@ -716,9 +716,8 @@ fun ChatTopBar(
                             tint = Gray3,
                             modifier = Modifier.height(10.dp)
                         )
-                        // todo ? 뭔가 이상함 숫자가 추후 램프 정상 매칭 가능할때 살펴보기
                         Text(
-                            text = "${((chat.chatInfo?.inviteUserCount ?: 0) + 1) / 2} : ${((chat.chatInfo?.inviteUserCount ?: 0) + 1) / 2}",
+                            text = "${(chat.chatInfo?.inviteUserCount ?: 0) / 2} : ${(chat.chatInfo?.inviteUserCount ?: 0) / 2}",
                             color = Gray3,
                             style = Typography.normal12
                         )
