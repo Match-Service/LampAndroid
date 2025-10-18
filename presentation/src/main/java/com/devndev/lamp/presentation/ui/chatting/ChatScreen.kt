@@ -1,6 +1,7 @@
 package com.devndev.lamp.presentation.ui.chatting
 
 import android.app.Activity
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -160,7 +161,17 @@ fun ChatScreen(
     }
 
     LaunchedEffect(Unit) {
-        viewModel.fetchChatData(lastMessageId = null, chatRoomId = chatRoomId)
+        viewModel.fetchChatData(lastMessageId = null, chatRoomId = chatRoomId) { _, needNavBack ->
+            if (needNavBack) {
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.cannot_get_chat_info),
+                    Toast.LENGTH_SHORT
+                ).show()
+                activity?.finish()
+                activity?.overridePendingTransition(R.anim.none, R.anim.slide_out_right)
+            }
+        }
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -175,7 +186,7 @@ fun ChatScreen(
                     viewModel.fetchChatData(
                         lastMessageId = firstVisibleMessageId,
                         chatRoomId = chatRoomId,
-                        onPrependComplete = { _ ->
+                        onPrependComplete = { _, _ ->
                             coroutineScope.launch {
                                 val newIndex = state.chatItems.indexOfFirst { it.message.id == firstVisibleMessageId }
                                 if (newIndex != -1) {

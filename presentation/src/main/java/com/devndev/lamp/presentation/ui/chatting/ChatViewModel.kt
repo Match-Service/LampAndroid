@@ -88,12 +88,13 @@ class ChatViewModel @Inject constructor(
     fun fetchChatData(
         lastMessageId: String?,
         chatRoomId: Int,
-        onPrependComplete: ((newItemCount: Int) -> Unit)? = null
+        onPrependComplete: ((newItemCount: Int, needNavBack: Boolean) -> Unit)? = null
     ) {
         // 중복 요청 방지
         if (lastMessageId != null && lastMessageId == uiState.value.lastFetchedMessageId) {
             return
         }
+        var needNavBack = false
         Log.d(TAG, "fetchChatData lastMessageId $lastMessageId")
         _uiState.update { it.copy(isLoading = true, lastFetchedMessageId = lastMessageId) }
         viewModelScope.launch {
@@ -117,6 +118,7 @@ class ChatViewModel @Inject constructor(
                 }
                 .onFailure {
                     Log.e(TAG, "getChatMessage Failure", it)
+                    needNavBack = true
                 }
 
             chatInfoResult
@@ -125,12 +127,13 @@ class ChatViewModel @Inject constructor(
                 }
                 .onFailure {
                     Log.e(TAG, "getChatInfo Failure", it)
+                    needNavBack = true
                 }
 
             if (chatMessageResult.isSuccess && chatInfoResult.isSuccess) {
                 updateChatItems()
             }
-            onPrependComplete?.invoke(uiState.value.chatMessage.size - previousSize)
+            onPrependComplete?.invoke(uiState.value.chatMessage.size - previousSize, needNavBack)
             _uiState.update { it.copy(isLoading = false) }
         }
     }
