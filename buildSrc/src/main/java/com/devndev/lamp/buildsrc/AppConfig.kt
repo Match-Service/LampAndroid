@@ -3,15 +3,15 @@ package com.devndev.lamp.buildsrc
 import org.gradle.api.JavaVersion
 
 object AppConfig {
-    const val compileSdk = 34
+    const val compileSdk = 35
     const val minSdk = 26
-    const val targetSdk = 34
+    const val targetSdk = 35
     const val kotlinCompilerExtension = "1.5.13"
 
     const val applicationId = "com.devndev.lamp"
     const val appNameSpace = "com.devndev.lamp"
 
-    const val appVersionCode = 1
+    const val appVersionCode = 3
     const val appVersionName = "1.0"
 
     const val dataNameSpace = "com.devndev.lamp.data"
