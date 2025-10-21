@@ -11,7 +11,7 @@ object AppConfig {
     const val applicationId = "com.devndev.lamp"
     const val appNameSpace = "com.devndev.lamp"
 
-    const val appVersionCode = 3
+    const val appVersionCode = 4
     const val appVersionName = "1.0"
 
     const val dataNameSpace = "com.devndev.lamp.data"

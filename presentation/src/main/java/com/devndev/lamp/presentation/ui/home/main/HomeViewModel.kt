@@ -24,7 +24,6 @@ import com.devndev.lamp.domain.usecase.user.GetMyInfoUseCase
 import com.devndev.lamp.domain.usecase.user.GetUserStatusUseCase
 import com.devndev.lamp.domain.usecase.vote.AcceptVoteUseCase
 import com.devndev.lamp.domain.usecase.vote.RejectVoteUseCase
-import com.devndev.lamp.presentation.ui.chatting.ChatViewModel
 import com.devndev.lamp.presentation.utils.IconStatusManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -246,14 +245,13 @@ class HomeViewModel @Inject constructor(
         lampSuggestionId: Int
     ) {
         viewModelScope.launch {
-            try {
-                Log.d(ChatViewModel.TAG, "acceptVote")
-                acceptUseCase(
-                    AcceptVoteParam(lampSuggestionId)
-                )
-            } catch (e: Exception) {
-                Log.e(ChatViewModel.TAG, "accept Exception", e)
-            }
+            acceptUseCase(AcceptVoteParam(lampSuggestionId))
+                .onSuccess {
+                    getMatchSuggestion()
+                }
+                .onFailure {
+                    Log.e(TAG, "accept Exception", it)
+                }
         }
     }
 
@@ -261,14 +259,13 @@ class HomeViewModel @Inject constructor(
         lampSuggestionId: Int
     ) {
         viewModelScope.launch {
-            try {
-                Log.d(ChatViewModel.TAG, "rejectVote")
-                rejectUseCase(
-                    RejectVoteParam(lampSuggestionId)
-                )
-            } catch (e: Exception) {
-                Log.e(ChatViewModel.TAG, "reject Exception", e)
-            }
+            rejectUseCase(RejectVoteParam(lampSuggestionId))
+                .onSuccess {
+                    getMatchSuggestion()
+                }
+                .onFailure {
+                    Log.e(TAG, "reject Exception", it)
+                }
         }
     }
 
