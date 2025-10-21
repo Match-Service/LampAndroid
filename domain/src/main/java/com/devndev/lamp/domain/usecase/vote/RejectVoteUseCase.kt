@@ -7,7 +7,9 @@ import javax.inject.Inject
 class RejectVoteUseCase @Inject constructor(
     private val lampMatchRepository: LampMatchRepository
 ) {
-    suspend operator fun invoke(rejectVoteParam: RejectVoteParam) {
-        lampMatchRepository.reject(rejectVoteParam)
+    suspend operator fun invoke(rejectVoteParam: RejectVoteParam): Result<Unit> {
+        return runCatching {
+            lampMatchRepository.reject(rejectVoteParam)
+        }
     }
 }
